@@ -1,16 +1,16 @@
 {
-    "name": "spatie/:package_name",
-    "description": ":package_description",
+    "name": "spatie/laravel-query-builder",
+    "description": "Easily build Eloquent queries from API requests",
     "keywords": [
         "spatie",
-        ":package_name"
+        "laravel-query-builder"
     ],
-    "homepage": "https://github.com/spatie/:package_name",
+    "homepage": "https://github.com/spatie/laravel-query-builder",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": ":author_email",
+            "name": "Alex Vanderbist",
+            "email": "alex@spatie.be",
             "homepage": "https://spatie.be",
             "role": "Developer"
         }
@@ -20,16 +20,17 @@
     },
     "require-dev": {
         "larapack/dd": "^1.0",
-        "phpunit/phpunit": "^6.0"
+        "phpunit/phpunit": "^6.0",
+        "orchestra/testbench": "~3.0"
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\Skeleton\\": "src"
+            "Spatie\\QueryBuilder\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\Skeleton\\Tests\\": "tests"
+            "Spatie\\QueryBuilder\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -41,10 +42,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\Skeleton\\SkeletonServiceProvider"
+                "Spatie\\QueryBuilder\\QueryBuilderServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "Spatie\\Skeleton\\SkeletonFacade"
+                "QueryBuilder": "Spatie\\QueryBuilder\\QueryBuilderFacade"
             }
         }
     }
