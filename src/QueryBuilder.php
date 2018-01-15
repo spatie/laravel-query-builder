@@ -32,6 +32,10 @@ class QueryBuilder extends Builder
         $this->setModel($builder->getModel());
 
         $this->request = $request;
+
+        if ($this->request->sort()) {
+            $this->allowedSorts('*');
+        }
     }
 
     /**
@@ -72,7 +76,9 @@ class QueryBuilder extends Builder
     {
         $this->allowedSorts = collect($sorts);
 
-        $this->guardAgainstUnknownSorts();
+        if (! $this->allowedSorts->contains('*')) {
+            $this->guardAgainstUnknownSorts();
+        }
 
         $this->addSortToQuery($this->request->sort());
 
