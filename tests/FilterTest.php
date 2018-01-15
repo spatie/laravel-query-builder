@@ -5,10 +5,11 @@ namespace Spatie\QueryBuilder\Tests;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\Tests\Models\TestModel;
 
 class FilterTest extends TestCase
 {
-    /** @var array[\Spatie\QueryBuilder\Test\TestModel] */
+    /** @var \Illuminate\Support\Collection */
     protected $models;
 
     public function setUp()

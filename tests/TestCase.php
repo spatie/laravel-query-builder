@@ -15,6 +15,11 @@ class TestCase extends Orchestra
             $table->increments('id');
             $table->string('name');
         });
+
+        $app['db']->connection()->getSchemaBuilder()->create('related_models', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+        });
     }
 
     protected function setUp()

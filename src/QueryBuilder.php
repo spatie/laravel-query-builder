@@ -153,10 +153,10 @@ class QueryBuilder extends Builder
     {
         $includes = $this->request->includes();
 
-        $diff = $includes->diff($allowedIncludes);
+        $diff = $includes->diff($this->allowedIncludes);
 
         if ($diff->count()) {
-            throw InvalidQuery::includes($diff, $allowedIncludes);
+            throw InvalidQuery::includes($diff, $this->allowedIncludes);
         }
     }
 }
