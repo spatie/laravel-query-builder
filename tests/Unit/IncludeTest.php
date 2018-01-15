@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\QueryBuilder\Tests;
+namespace Spatie\QueryBuilder\Tests\Unit;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -8,8 +8,9 @@ use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Spatie\QueryBuilder\Tests\TestCase;
 
-class FilterTest extends TestCase
+class IncludeTest extends TestCase
 {
     /** @var \Illuminate\Support\Collection */
     protected $models;

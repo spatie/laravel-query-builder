@@ -1,11 +1,12 @@
 <?php
 
-namespace Spatie\QueryBuilder\Tests;
+namespace Spatie\QueryBuilder\Tests\Unit;
 
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Spatie\QueryBuilder\Tests\TestCase;
 
 class FilterTest extends TestCase
 {
