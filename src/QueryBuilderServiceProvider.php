@@ -65,7 +65,7 @@ class QueryBuilderServiceProvider extends ServiceProvider
                 return $filters;
             }
 
-            return $filters->contains(strtolower($filter));
+            return $filters->get(strtolower($filter));
         });
 
         Request::macro('sort', function ($sort = null) {
