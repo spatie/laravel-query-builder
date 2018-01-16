@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class InvalidQuery extends HttpException
 {
-    public static function filters(Collection $unknownFilters, Collection $allowedFilters)
+    public static function filtersNotAllowed(Collection $unknownFilters, Collection $allowedFilters)
     {
         $unknownFilters = $unknownFilters->implode(', ');
         $allowedFilters = $allowedFilters->implode(', ');
@@ -18,7 +18,7 @@ class InvalidQuery extends HttpException
         return new static(Response::HTTP_BAD_REQUEST, $message);
     }
 
-    public static function sorts(string $unknownSort, Collection $allowedSorts)
+    public static function sortsNotAllowed(string $unknownSort, Collection $allowedSorts)
     {
         $allowedSorts = $allowedSorts->implode(', ');
 
@@ -27,7 +27,7 @@ class InvalidQuery extends HttpException
         return new static(Response::HTTP_BAD_REQUEST, $message);
     }
 
-    public static function includes(Collection $unknownIncludes, Collection $allowedIncludes)
+    public static function includesNotAllowed(Collection $unknownIncludes, Collection $allowedIncludes)
     {
         $unknownIncludes = $unknownIncludes->implode(', ');
         $allowedIncludes = $allowedIncludes->implode(', ');
