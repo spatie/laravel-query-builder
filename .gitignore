@@ -3,3 +3,4 @@ composer.lock
 docs
 vendor
 .php_cs.cache
+coverage
