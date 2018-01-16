@@ -19,7 +19,6 @@
         "php": "^7.1"
     },
     "require-dev": {
-        "larapack/dd": "^1.0",
         "phpunit/phpunit": "^6.0",
         "orchestra/testbench": "~3.0"
     },
