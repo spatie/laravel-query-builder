@@ -2,8 +2,8 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
+use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\QueryBuilder\QueryBuilderServiceProvider;
 
@@ -30,8 +30,6 @@ class TestCase extends Orchestra
             $table->string('name');
         });
     }
-
-
 
     protected function getPackageProviders($app)
     {

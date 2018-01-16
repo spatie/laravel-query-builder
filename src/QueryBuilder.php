@@ -2,10 +2,10 @@
 
 namespace Spatie\QueryBuilder;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 
 class QueryBuilder extends Builder
