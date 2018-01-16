@@ -1,4 +1,5 @@
 <?php
+
 namespace Spatie\QueryBuilder\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;

@@ -3,10 +3,10 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Spatie\QueryBuilder\Exceptions\InvalidQuery;
+use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
 
 class SortTest extends TestCase
 {

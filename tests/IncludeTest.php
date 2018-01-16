@@ -2,12 +2,12 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 
 class IncludeTest extends TestCase
 {
@@ -23,16 +23,6 @@ class IncludeTest extends TestCase
         $this->models->each(function (TestModel $model) {
             $model->relatedModel()->create(['name' => 'Test']);
         });
-    }
-
-    /** @test */
-    public function it_guards_against_invalid_includes()
-    {
-        $this->expectException(InvalidQuery::class);
-
-        $this
-            ->createQueryFromIncludeRequest('random-model')
-            ->allowedIncludes('related-model');
     }
 
     /** @test */
@@ -78,6 +68,16 @@ class IncludeTest extends TestCase
             ->get();
 
         $this->assertCount(0, $models);
+    }
+
+    /** @test */
+    public function it_guards_against_invalid_includes()
+    {
+        $this->expectException(InvalidQuery::class);
+
+        $this
+            ->createQueryFromIncludeRequest('random-model')
+            ->allowedIncludes('related-model');
     }
 
     protected function createQueryFromIncludeRequest(string $includes): QueryBuilder

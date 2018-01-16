@@ -77,7 +77,7 @@ class RequestMacrosTest extends TestCase
     {
         $request = new Request([
             'filter' => [
-                'foo' => 'bar,baz'
+                'foo' => 'bar,baz',
             ],
         ]);
 
@@ -91,7 +91,7 @@ class RequestMacrosTest extends TestCase
     {
         $request = new Request([
             'filter' => [
-                'foo' => 'bar,baz'
+                'foo' => 'bar,baz',
             ],
         ]);
 

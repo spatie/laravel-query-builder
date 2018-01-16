@@ -2,13 +2,13 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 use Spatie\QueryBuilder\Filter;
-use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Spatie\QueryBuilder\Exceptions\InvalidQuery;
+use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 
 class FilterTest extends TestCase
 {
@@ -20,16 +20,6 @@ class FilterTest extends TestCase
         parent::setUp();
 
         $this->models = factory(TestModel::class, 5)->create();
-    }
-
-    /** @test */
-    public function it_guards_against_invalid_filters()
-    {
-        $this->expectException(InvalidQuery::class);
-
-        $this
-            ->createQueryFromFilterRequest(['name' => 'John'])
-            ->allowedFilters('id');
     }
 
     /** @test */
@@ -155,6 +145,16 @@ class FilterTest extends TestCase
             ->first();
 
         $this->assertEquals($testModel->id, $modelResult->id);
+    }
+
+    /** @test */
+    public function it_guards_against_invalid_filters()
+    {
+        $this->expectException(InvalidQuery::class);
+
+        $this
+            ->createQueryFromFilterRequest(['name' => 'John'])
+            ->allowedFilters('id');
     }
 
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder
