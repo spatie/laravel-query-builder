@@ -2,12 +2,12 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 
 class IncludeTest extends TestCase
 {

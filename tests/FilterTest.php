@@ -2,13 +2,13 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 use Spatie\QueryBuilder\Filter;
-use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Spatie\QueryBuilder\Exceptions\InvalidQuery;
+use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 
 class FilterTest extends TestCase
 {
