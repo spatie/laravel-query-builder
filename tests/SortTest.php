@@ -45,6 +45,17 @@ class SortTest extends TestCase
     /** @test */
     public function it_can_guard_against_sorts_that_are_not_allowed()
     {
+        $sortedModels = $this
+            ->createQueryFromSortRequest('name')
+            ->allowedSorts('name')
+            ->get();
+
+        $this->assertSortedAscending($sortedModels, 'name');
+    }
+
+    /** @test */
+    public function it_will_throw_an_exception_if_a_sort_property_is_not_allowed()
+    {
         $this->expectException(InvalidQuery::class);
 
         $this

@@ -73,6 +73,34 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
+    public function it_will_map_comma_separated_values_as_arrays_when_given_in_a_filter_query_string()
+    {
+        $request = new Request([
+            'filter' => [
+                'foo' => 'bar,baz'
+            ],
+        ]);
+
+        $expected = collect(['foo' => ['bar', 'baz']]);
+
+        $this->assertEquals($expected, $request->filters());
+    }
+
+    /** @test */
+    public function it_will_map_comma_separated_values_as_arrays_when_given_in_a_filter_query_string_and_get_those_by_key()
+    {
+        $request = new Request([
+            'filter' => [
+                'foo' => 'bar,baz'
+            ],
+        ]);
+
+        $expected = ['bar', 'baz'];
+
+        $this->assertEquals($expected, $request->filters('foo'));
+    }
+
+    /** @test */
     public function it_can_return_a_specific_filters_value_from_the_filter_query_string()
     {
         $request = new Request([

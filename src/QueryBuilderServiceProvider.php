@@ -7,17 +7,8 @@ use Illuminate\Support\ServiceProvider;
 
 class QueryBuilderServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap the application services.
-     */
     public function boot()
     {
-        // if ($this->app->runningInConsole()) {
-        //     $this->publishes([
-        //         __DIR__.'/../config/query-builder.php' => config_path('query-builder.php'),
-        //     ], 'config');
-        // }
-
         Request::macro('includes', function ($include = null) {
             $includeParts = $this->query('include');
 
@@ -41,15 +32,15 @@ class QueryBuilderServiceProvider extends ServiceProvider
                 return collect();
             }
 
-            if (! is_array($filterParts)) {
-                $filterParts = collect(explode(',', strtolower($this->query('filter'))));
-            }
-
             $filters = collect($filterParts)->filter(function ($filter) {
                 return ! is_null($filter);
             });
 
             $filters = $filters->map(function ($value) {
+                if (str_contains($value, ',')) {
+                    return explode(',', $value);
+                }
+
                 if ($value === 'true') {
                     return true;
                 }
@@ -71,13 +62,5 @@ class QueryBuilderServiceProvider extends ServiceProvider
         Request::macro('sort', function ($sort = null) {
             return $this->query('sort');
         });
-    }
-
-    /**
-     * Register the application services.
-     */
-    public function register()
-    {
-        // $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'query-builder');
     }
 }
