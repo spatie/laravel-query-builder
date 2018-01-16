@@ -6,7 +6,34 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-query-builder.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-query-builder)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
 
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
+This package allows you to easily filter, sort and include eloquent relations based on the current request's query string. The `QueryBuilder` used in this package extends Laravel's default Eloquent builder so all your favorite methods and macro's are available.
+
+## Example usage
+
+Sorting an API request: `/users?sort=-name`:
+
+```php
+// $users will contain a all `User`s sorted by descending name
+$users = QueryBuilder::for(User::class, request())->get();
+```
+
+Filtering an API request: `/users?filter[name]=John`:
+
+```php
+// $users will contain all `User`s that have "John" in their name
+$users = QueryBuilder::for(User::class, request())
+    ->allowedFilters('name')
+    ->get();
+```
+
+Requesting relations from an API request: `/users?include=posts`:
+
+```php
+// $users will contain all `User`s with their `posts` loaded
+$users = QueryBuilder::for(User::class, request())
+    ->allowedIncludes('posts')
+    ->get();
+```
 
 ## Installation
 
@@ -19,8 +46,10 @@ composer require spatie/laravel-query-builder
 ## Usage
 
 ``` php
-$skeleton = new Spatie\QueryBuilder();
-echo $skeleton->echoPhrase('Hello, Spatie!');
+QueryBuilder::for(User::class, request())
+    ->allowedFilters('name', Filter::exact('id'))
+    ->allowedIncludes('posts')
+    ->get();
 ```
 
 ### Testing
