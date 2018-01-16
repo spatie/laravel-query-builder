@@ -23,16 +23,6 @@ class FilterTest extends TestCase
     }
 
     /** @test */
-    public function it_guards_against_invalid_filters()
-    {
-        $this->expectException(InvalidQuery::class);
-
-        $this
-            ->createQueryFromFilterRequest(['name' => 'John'])
-            ->allowedFilters('id');
-    }
-
-    /** @test */
     public function it_can_filter_models_by_partial_property_by_default()
     {
         $models = $this
@@ -138,6 +128,16 @@ class FilterTest extends TestCase
             ->first();
 
         $this->assertEquals($testModel->id, $modelResult->id);
+    }
+
+    /** @test */
+    public function it_guards_against_invalid_filters()
+    {
+        $this->expectException(InvalidQuery::class);
+
+        $this
+            ->createQueryFromFilterRequest(['name' => 'John'])
+            ->allowedFilters('id');
     }
 
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder

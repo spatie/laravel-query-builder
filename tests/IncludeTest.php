@@ -26,16 +26,6 @@ class IncludeTest extends TestCase
     }
 
     /** @test */
-    public function it_guards_against_invalid_includes()
-    {
-        $this->expectException(InvalidQuery::class);
-
-        $this
-            ->createQueryFromIncludeRequest('random-model')
-            ->allowedIncludes('related-model');
-    }
-
-    /** @test */
     public function it_does_not_require_includes()
     {
         $models = QueryBuilder::for(TestModel::class, new Request())
@@ -78,6 +68,16 @@ class IncludeTest extends TestCase
             ->get();
 
         $this->assertCount(0, $models);
+    }
+
+    /** @test */
+    public function it_guards_against_invalid_includes()
+    {
+        $this->expectException(InvalidQuery::class);
+
+        $this
+            ->createQueryFromIncludeRequest('random-model')
+            ->allowedIncludes('related-model');
     }
 
     protected function createQueryFromIncludeRequest(string $includes): QueryBuilder
