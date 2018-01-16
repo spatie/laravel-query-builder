@@ -10,20 +10,13 @@ This package allows you to filter, sort and include eloquent relations based on 
 
 ## Basic usage
 
-Sorting an API request: `/users?sort=-name`:
-
-```php
-$users = QueryBuilder::for(User::class, request())->get();
-// all `User`s sorted by descending name
-```
-
 Filtering an API request: `/users?filter[name]=John`:
 
 ```php
 $users = QueryBuilder::for(User::class, request())
     ->allowedFilters('name')
     ->get();
-// all `User`s that contain the strign "John" in their name
+// all `User`s that contain the string "John" in their name
 ```
 
 Requesting relations from an API request: `/users?include=posts`:
@@ -38,10 +31,19 @@ $users = QueryBuilder::for(User::class, request())
 Works together nicely with existing queries:
 
 ```php
-$user = QueryBuilder::for(User::where('active', true), request())
+$query = User::where('active', true);
+
+$user = QueryBuilder::for($query, request())
     ->allowedIncludes('posts', 'permissions')
     ->where('score', '>', 42) // chain on any of Laravel's query builder methods
     ->first();
+```
+
+Sorting an API request: `/users?sort=name`:
+
+```php
+$users = QueryBuilder::for(User::class, request())->get();
+// all `User`s sorted by name
 ```
 
 Have a look at the [usage section](#usage) below for advanced examples and features.
@@ -55,30 +57,6 @@ composer require spatie/laravel-query-builder
 ```
 
 ## Usage
-
-### Sorting
-
-The `sort` query parameter is used to determine what property the results collection will be ordered by. Sorting is done ascending by default. Adding a hyphen (`-`) to the start of the property name will inverse the results collection.
-
-``` php
-// GET /users?sort=-name
-$users = QueryBuilder::for(User::class, request())->get();
-
-// $users will be sorted by name and descending (Z -> A)
-```
-
-By default all model properties can be used to sort the results. However, you can use the `allowedSorts` method to limit which properties are allowed to be used in the request.
-
-When trying to sort by a property that's not specified in `allowedSorts()` an `InvalidQuery` exception will be thrown.
-
-``` php
-// GET /users?sort=password
-$users = QueryBuilder::for(User::class, request())
-    ->allowedSorts('name')
-    ->get();
-
-// Will throw an `InvalidQuery` exception as `password` is not an allowed sorting property
-```
 
 ### Including relationships
 
@@ -164,7 +142,7 @@ $users = QueryBuilder::for(User::class, request())
 
 #### Custom filters
 
-You can specify custom filters using the `Filter::custom()` method. Custom filters are simple invokable classes that implement the `\Spatie\QueryBuilder\Filters\Filter` interface. This way you can create some pretty complex custom queries.
+You can specify custom filters using the `Filter::custom()` method. Custom filters are simple invokable classes that implement the `\Spatie\QueryBuilder\Filters\Filter` interface. This way you can create  any query your heart desires.
 
 For example:
 
@@ -189,6 +167,30 @@ $users = QueryBuilder::for(User::class, request())
 // $users will contain all users that have the `createPosts` permission
 ```
 
+### Sorting
+
+The `sort` query parameter is used to determine what property the results collection will be ordered by. Sorting is done ascending by default. Adding a hyphen (`-`) to the start of the property name will inverse the results collection.
+
+``` php
+// GET /users?sort=-name
+$users = QueryBuilder::for(User::class, request())->get();
+
+// $users will be sorted by name and descending (Z -> A)
+```
+
+By default all model properties can be used to sort the results. However, you can use the `allowedSorts` method to limit which properties are allowed to be used in the request.
+
+When trying to sort by a property that's not specified in `allowedSorts()` an `InvalidQuery` exception will be thrown.
+
+``` php
+// GET /users?sort=password
+$users = QueryBuilder::for(User::class, request())
+    ->allowedSorts('name')
+    ->get();
+
+// Will throw an `InvalidQuery` exception as `password` is not an allowed sorting property
+```
+
 ### Other query methods
 
 As the `QueryBuilder` extends Laravel's default Eloquent query builder you can use any method or macro you like. You can also specify a base query instead of the model FQCN:
@@ -204,11 +206,11 @@ QueryBuilder::for(User::where('id', 42), request()) // base query instead of mod
 
 This package doesn't provide any methods to help you paginate responses. However as documented above you can use Laravel's default [`paginate()` method](https://laravel.com/docs/5.5/pagination).
 
-If you want to completly adhere to the JSON API specification you can also use our very own [spatie/json-api-paginate](https://github.com/spatie/laravel-json-api-paginate)!
+If you want to completly adhere to the JSON API specification you can also use our own [spatie/json-api-paginate](https://github.com/spatie/laravel-json-api-paginate)!
 
 ### Testing
 
-``` bash
+```bash
 composer test
 ```
 
