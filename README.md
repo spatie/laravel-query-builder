@@ -2,37 +2,49 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
 [![Build Status](https://img.shields.io/travis/spatie/laravel-query-builder/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-query-builder)
+[![SensioLabsInsight](https://img.shields.io/sensiolabs/i/xxxxxxxxx.svg?style=flat-square)](https://insight.sensiolabs.com/projects/xxxxxxxxx)
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-query-builder.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-query-builder)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
 
-This package allows you to easily filter, sort and include eloquent relations based on the current request's query string. The `QueryBuilder` used in this package extends Laravel's default Eloquent builder so all your favorite methods and macro's are available.
+This package allows you to filter, sort and include eloquent relations based on a request. The `QueryBuilder` used in this package extends Laravel's default Eloquent builder. This means all your favorite methods and macro's are still available. Query parameter names follow the [JSON API specification](http://jsonapi.org/) as close as possible.
 
-## Example usage
+## Basic usage
 
 Sorting an API request: `/users?sort=-name`:
 
 ```php
-// $users will contain a all `User`s sorted by descending name
 $users = QueryBuilder::for(User::class, request())->get();
+// all `User`s sorted by descending name
 ```
 
 Filtering an API request: `/users?filter[name]=John`:
 
 ```php
-// $users will contain all `User`s that have "John" in their name
 $users = QueryBuilder::for(User::class, request())
     ->allowedFilters('name')
     ->get();
+// all `User`s that contain the strign "John" in their name
 ```
 
 Requesting relations from an API request: `/users?include=posts`:
 
 ```php
-// $users will contain all `User`s with their `posts` loaded
 $users = QueryBuilder::for(User::class, request())
     ->allowedIncludes('posts')
     ->get();
+// all `User`s with their `posts` loaded
 ```
+
+Works together nicely with existing queries:
+
+```php
+$user = QueryBuilder::for(User::where('active', true), request())
+    ->allowedIncludes('posts', 'permissions')
+    ->where('score', '>', 42) // chain on any of Laravel's query builder methods
+    ->first();
+```
+
+Have a look at the [usage section](#usage) below for advanced examples and features.
 
 ## Installation
 
@@ -44,12 +56,155 @@ composer require spatie/laravel-query-builder
 
 ## Usage
 
+### Sorting
+
+The `sort` query parameter is used to determine what property the results collection will be ordered by. Sorting is done ascending by default. Adding a hyphen (`-`) to the start of the property name will inverse the results collection.
+
 ``` php
-QueryBuilder::for(User::class, request())
-    ->allowedFilters('name', Filter::exact('id'))
+// GET /users?sort=-name
+$users = QueryBuilder::for(User::class, request())->get();
+
+// $users will be sorted by name and descending (Z -> A)
+```
+
+By default all model properties can be used to sort the results. However, you can use the `allowedSorts` method to limit which properties are allowed to be used in the request.
+
+When trying to sort by a property that's not specified in `allowedSorts()` an `InvalidQuery` exception will be thrown.
+
+``` php
+// GET /users?sort=password
+$users = QueryBuilder::for(User::class, request())
+    ->allowedSorts('name')
+    ->get();
+
+// Will throw an `InvalidQuery` exception as `password` is not an allowed sorting property
+```
+
+### Including relationships
+
+The `include` query parameter will load any Eloquent relation on the results collection.
+By default no includes are allowed. All includes must be specified using `allowedIncludes()`.
+
+``` php
+// GET /users?include=posts
+$users = QueryBuilder::for(User::class, request())
     ->allowedIncludes('posts')
     ->get();
+
+// $users will contain all users with their posts loaded
 ```
+
+You can load multiple relationship by separating them with a comma:
+
+``` php
+// GET /users?include=posts,permissions
+$users = QueryBuilder::for(User::class, request())
+    ->allowedIncludes('posts', 'permissions')
+    ->get();
+
+// $users will contain all users with their posts and permissions loaded
+```
+
+When trying to include relationships that have not been allowed using `allowedIncludes()` an `InvalidQuery` exception will be thrown.
+
+Relation/include names will converted to camelCase when looking for the corresponding relationship on the model. This means `/users?include=blog-posts` will try to load the `blogPosts()` relationship on the `User` model.
+
+Once the relationships are loaded on the results collection you can include them in your response by using [Eloquent API resources and conditional relationships](https://laravel.com/docs/5.5/eloquent-resources#conditional-relationships).
+
+### Filtering
+
+The `filter` query parmeters can be used to filter results by partial property value, exact property value or if a property value exists in a given array of values. You can also specify custom filters for more advanced queries.
+
+By default no filters are allowed. All filters have to be specified first using `allowedFilters()`.
+
+``` php
+// GET /users?filter[name]=john&filter[email]=gmail
+$users = QueryBuilder::for(User::class, request())
+    ->allowedFilters('name', 'email')
+    ->get();
+// $users will contain all users with "john" in their name AND "gmail" in their email address
+```
+
+You can specify multiple matching filter values by passing a comma separated list of values:
+
+``` php
+// GET /users?filter[name]=seb,freek
+$users = QueryBuilder::for(User::class, request())
+    ->allowedFilters('name')
+    ->get();
+// $users will contain all users that contain "seb" OR "freek" in their name
+```
+
+#### Exact filters
+
+When filtering models based on their IDs, a boolean value or a literal string you'll want to use exact filters. This way `/users?filter[id]=1` wont match all users containing the digit `1` in their ID.
+
+Exact filters can be added using `Spatie\QueryBuilder\Filter::exact('property_name')` in the `allowedFilters()` method.
+
+``` php
+use Spatie\QueryBuilder\Filter;
+
+// GET /users?filter[name]=John%20Doe
+$users = QueryBuilder::for(User::class, request())
+    ->allowedFilters(Filter::exact('name'))
+    ->get();
+// all users with the exact name "John Doe"
+```
+
+The query builder will automatically map `'true'` and `'false'` as booleans and a comma separated list of values as an array:
+``` php
+use Spatie\QueryBuilder\Filter;
+
+// GET /users?filter[id]=1,2,3,4,5&filter[admin]=true
+$users = QueryBuilder::for(User::class, request())
+    ->allowedFilters(Filter::exact('id'), Filter::exact('admin'))
+    ->get();
+// $users will contain all admin users with id 1, 2, 3, 4 or 5
+```
+
+#### Custom filters
+
+You can specify custom filters using the `Filter::custom()` method. Custom filters are simple invokable classes that implement the `\Spatie\QueryBuilder\Filters\Filter` interface. This way you can create some pretty complex custom queries.
+
+For example:
+
+``` php
+use Spatie\QueryBuilder\Filter;
+use Illuminate\Database\Eloquent\Builder;
+
+class FiltersUserPermission
+{
+    public function __invoke(Builder $query, $value, string $property)
+    {
+        return $query->whereHas('permissions', funtion (Builder $query) {
+            $query->where('name', $value);
+        });
+    }
+}
+
+// GET /users?filter[permission]=createPosts
+$users = QueryBuilder::for(User::class, request())
+    ->allowedFilters(Filter::custom('permission', FiltersUserPermission::class))
+    ->get();
+// $users will contain all users that have the `createPosts` permission
+```
+
+### Other query methods
+
+As the `QueryBuilder` extends Laravel's default Eloquent query builder you can use any method or macro you like. You can also specify a base query instead of the model FQCN:
+
+``` php
+QueryBuilder::for(User::where('id', 42), request()) // base query instead of model
+    ->allowedIncludes('posts')
+    ->where('activated', true) // chain on any of Laravel's query methods
+    ->first(); // we only need one specific user
+```
+
+#### Pagination
+
+This package doesn't provide any methods to help you paginate responses. However as documented above you can use Laravel's default [`paginate()` method](https://laravel.com/docs/5.5/pagination).
+
+If you want to completly adhere to the JSON API specification you can also use our very own [spatie/json-api-paginate](https://github.com/spatie/laravel-json-api-paginate)!
 
 ### Testing
 
