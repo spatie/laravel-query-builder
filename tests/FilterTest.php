@@ -59,6 +59,23 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_can_filter_results_based_on_the_partial_existence_of_a_property_in_an_array()
+    {
+        $model1 = TestModel::create(['name' => 'abcdef']);
+        $model2 = TestModel::create(['name' => 'uvwxyz']);
+
+        $results = $this
+            ->createQueryFromFilterRequest([
+                'name' => 'abc,xyz',
+            ])
+            ->allowedFilters('name')
+            ->get();
+
+        $this->assertCount(2, $results);
+        $this->assertEquals([$model1->id, $model2->id], $results->pluck('id')->all());
+    }
+
+    /** @test */
     public function it_can_filter_models_and_return_an_empty_collection()
     {
         $models = $this

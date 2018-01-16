@@ -10,9 +10,6 @@ use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 
 class QueryBuilder extends Builder
 {
-    public const MAX_PAGE_SIZE = 50;
-    public const DEFAULT_PAGE_SIZE = 10;
-
     /** @var \Illuminate\Support\Collection */
     protected $allowedFilters;
 
