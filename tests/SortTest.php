@@ -75,6 +75,17 @@ class SortTest extends TestCase
         $this->assertEquals($eloquentQuery, $builderQuery);
     }
 
+    /** @test */
+    public function it_uses_default_sort_parameter()
+    {
+        $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+            ->allowedSorts('name')
+            ->defaultSort('name')
+            ->get();
+
+        $this->assertSortedAscending($sortedModels, 'name');
+    }
+
     protected function createQueryFromSortRequest(string $sort): QueryBuilder
     {
         $request = new Request([
