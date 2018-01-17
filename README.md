@@ -13,7 +13,7 @@ This package allows you to filter, sort and include eloquent relations based on 
 Filtering an API request: `/users?filter[name]=John`:
 
 ```php
-$users = QueryBuilder::for(User::class, request())
+$users = QueryBuilder::for(User::class)
     ->allowedFilters('name')
     ->get();
 // all `User`s that contain the string "John" in their name
@@ -22,7 +22,7 @@ $users = QueryBuilder::for(User::class, request())
 Requesting relations from an API request: `/users?include=posts`:
 
 ```php
-$users = QueryBuilder::for(User::class, request())
+$users = QueryBuilder::for(User::class)
     ->allowedIncludes('posts')
     ->get();
 // all `User`s with their `posts` loaded
@@ -33,7 +33,7 @@ Works together nicely with existing queries:
 ```php
 $query = User::where('active', true);
 
-$user = QueryBuilder::for($query, request())
+$user = QueryBuilder::for($query)
     ->allowedIncludes('posts', 'permissions')
     ->where('score', '>', 42) // chain on any of Laravel's query builder methods
     ->first();
@@ -42,7 +42,7 @@ $user = QueryBuilder::for($query, request())
 Sorting an API request: `/users?sort=name`:
 
 ```php
-$users = QueryBuilder::for(User::class, request())->get();
+$users = QueryBuilder::for(User::class)->get();
 // all `User`s sorted by name
 ```
 
@@ -65,7 +65,7 @@ By default no includes are allowed. All includes must be specified using `allowe
 
 ``` php
 // GET /users?include=posts
-$users = QueryBuilder::for(User::class, request())
+$users = QueryBuilder::for(User::class)
     ->allowedIncludes('posts')
     ->get();
 
@@ -76,7 +76,7 @@ You can load multiple relationship by separating them with a comma:
 
 ``` php
 // GET /users?include=posts,permissions
-$users = QueryBuilder::for(User::class, request())
+$users = QueryBuilder::for(User::class)
     ->allowedIncludes('posts', 'permissions')
     ->get();
 
@@ -97,7 +97,7 @@ By default no filters are allowed. All filters have to be specified using `allow
 
 ``` php
 // GET /users?filter[name]=john&filter[email]=gmail
-$users = QueryBuilder::for(User::class, request())
+$users = QueryBuilder::for(User::class)
     ->allowedFilters('name', 'email')
     ->get();
 // $users will contain all users with "john" in their name AND "gmail" in their email address
@@ -107,7 +107,7 @@ You can specify multiple matching filter values by passing a comma separated lis
 
 ``` php
 // GET /users?filter[name]=seb,freek
-$users = QueryBuilder::for(User::class, request())
+$users = QueryBuilder::for(User::class)
     ->allowedFilters('name')
     ->get();
 // $users will contain all users that contain "seb" OR "freek" in their name
@@ -123,7 +123,7 @@ Exact filters can be added using `Spatie\QueryBuilder\Filter::exact('property_na
 use Spatie\QueryBuilder\Filter;
 
 // GET /users?filter[name]=John%20Doe
-$users = QueryBuilder::for(User::class, request())
+$users = QueryBuilder::for(User::class)
     ->allowedFilters(Filter::exact('name'))
     ->get();
 // all users with the exact name "John Doe"
@@ -134,7 +134,7 @@ The query builder will automatically map `'true'` and `'false'` as booleans and 
 use Spatie\QueryBuilder\Filter;
 
 // GET /users?filter[id]=1,2,3,4,5&filter[admin]=true
-$users = QueryBuilder::for(User::class, request())
+$users = QueryBuilder::for(User::class)
     ->allowedFilters(Filter::exact('id'), Filter::exact('admin'))
     ->get();
 // $users will contain all admin users with id 1, 2, 3, 4 or 5
@@ -161,7 +161,7 @@ class FiltersUserPermission
 }
 
 // GET /users?filter[permission]=createPosts
-$users = QueryBuilder::for(User::class, request())
+$users = QueryBuilder::for(User::class)
     ->allowedFilters(Filter::custom('permission', FiltersUserPermission::class))
     ->get();
 // $users will contain all users that have the `createPosts` permission
@@ -173,7 +173,7 @@ The `sort` query parameter is used to determine by which property the results co
 
 ``` php
 // GET /users?sort=-name
-$users = QueryBuilder::for(User::class, request())->get();
+$users = QueryBuilder::for(User::class)->get();
 
 // $users will be sorted by name and descending (Z -> A)
 ```
@@ -184,7 +184,7 @@ When trying to sort by a property that's not specified in `allowedSorts()` an `I
 
 ``` php
 // GET /users?sort=password
-$users = QueryBuilder::for(User::class, request())
+$users = QueryBuilder::for(User::class)
     ->allowedSorts('name')
     ->get();
 
@@ -196,7 +196,7 @@ $users = QueryBuilder::for(User::class, request())
 As the `QueryBuilder` extends Laravel's default Eloquent query builder you can use any method or macro you like. You can also specify a base query instead of the model FQCN:
 
 ``` php
-QueryBuilder::for(User::where('id', 42), request()) // base query instead of model
+QueryBuilder::for(User::where('id', 42)) // base query instead of model
     ->allowedIncludes('posts')
     ->where('activated', true) // chain on any of Laravel's query methods
     ->first(); // we only need one specific user

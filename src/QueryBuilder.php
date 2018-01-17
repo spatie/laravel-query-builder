@@ -2,10 +2,10 @@
 
 namespace Spatie\QueryBuilder;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 
 class QueryBuilder extends Builder
@@ -22,13 +22,13 @@ class QueryBuilder extends Builder
     /** @var \Illuminate\Http\Request */
     protected $request;
 
-    public function __construct(Builder $builder, Request $request)
+    public function __construct(Builder $builder, ?Request $request = null)
     {
         parent::__construct($builder->getQuery());
 
         $this->setModel($builder->getModel());
 
-        $this->request = $request;
+        $this->request = $request ?? request();
 
         if ($this->request->sort()) {
             $this->allowedSorts('*');
