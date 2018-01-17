@@ -6,7 +6,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-query-builder.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-query-builder)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
 
-This package allows you to filter, sort and include eloquent relations based on a request. The `QueryBuilder` used in this package extends Laravel's default Eloquent builder. This means all your favorite methods and macro's are still available. Query parameter names follow the [JSON API specification](http://jsonapi.org/) as close as possible.
+This package allows you to filter, sort and include eloquent relations based on a request. The `QueryBuilder` used in this package extends Laravel's default Eloquent builder. This means all your favorite methods and macros are still available. Query parameter names follow the [JSON API specification](http://jsonapi.org/) as closely as possible.
 
 ## Basic usage
 
@@ -93,7 +93,7 @@ Once the relationships are loaded on the results collection you can include them
 
 The `filter` query parmeters can be used to filter results by partial property value, exact property value or if a property value exists in a given array of values. You can also specify custom filters for more advanced queries.
 
-By default no filters are allowed. All filters have to be specified first using `allowedFilters()`.
+By default no filters are allowed. All filters have to be specified using `allowedFilters()`.
 
 ``` php
 // GET /users?filter[name]=john&filter[email]=gmail
@@ -115,7 +115,7 @@ $users = QueryBuilder::for(User::class, request())
 
 #### Exact filters
 
-When filtering models based on their IDs, a boolean value or a literal string you'll want to use exact filters. This way `/users?filter[id]=1` wont match all users containing the digit `1` in their ID.
+When filtering models based on their IDs, a boolean value or a literal string, you'll want to use exact filters. This way `/users?filter[id]=1` won't match all users containing the digit `1` in their ID.
 
 Exact filters can be added using `Spatie\QueryBuilder\Filter::exact('property_name')` in the `allowedFilters()` method.
 
@@ -142,7 +142,7 @@ $users = QueryBuilder::for(User::class, request())
 
 #### Custom filters
 
-You can specify custom filters using the `Filter::custom()` method. Custom filters are simple invokable classes that implement the `\Spatie\QueryBuilder\Filters\Filter` interface. This way you can create  any query your heart desires.
+You can specify custom filters using the `Filter::custom()` method. Custom filters are simple, invokable classes that implement the `\Spatie\QueryBuilder\Filters\Filter` interface. This way you can create any query your heart desires.
 
 For example:
 
@@ -169,7 +169,7 @@ $users = QueryBuilder::for(User::class, request())
 
 ### Sorting
 
-The `sort` query parameter is used to determine what property the results collection will be ordered by. Sorting is done ascending by default. Adding a hyphen (`-`) to the start of the property name will inverse the results collection.
+The `sort` query parameter is used to determine by which property the results collection will be ordered. Sorting is ascending by default. Adding a hyphen (`-`) to the start of the property name will reverse the results collection.
 
 ``` php
 // GET /users?sort=-name
