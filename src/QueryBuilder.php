@@ -2,10 +2,10 @@
 
 namespace Spatie\QueryBuilder;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 
 class QueryBuilder extends Builder
@@ -43,13 +43,13 @@ class QueryBuilder extends Builder
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
      */
-    public static function for($baseQuery, Request $request): self
+    public static function for($baseQuery, ?Request $request = null): self
     {
         if (is_string($baseQuery)) {
             $baseQuery = ($baseQuery)::query();
         }
 
-        return new static($baseQuery, $request);
+        return new static($baseQuery, $request ?? request());
     }
 
     public function allowedFilters(...$filters): self
