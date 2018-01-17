@@ -154,7 +154,7 @@ class FiltersUserPermission
 {
     public function __invoke(Builder $query, $value, string $property)
     {
-        return $query->whereHas('permissions', funtion (Builder $query) {
+        return $query->whereHas('permissions', function (Builder $query) {
             $query->where('name', $value);
         });
     }
