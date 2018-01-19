@@ -63,6 +63,18 @@ class SortTest extends TestCase
             ->allowedSorts('id');
     }
 
+    /** @test */
+    public function it_wont_sort_if_no_sort_query_parameter_is_given()
+    {
+        $builderQuery = QueryBuilder::for(TestModel::class, new Request())
+            ->allowedSorts('name')
+            ->toSql();
+
+        $eloquentQuery = TestModel::query()->toSql();
+
+        $this->assertEquals($eloquentQuery, $builderQuery);
+    }
+
     protected function createQueryFromSortRequest(string $sort): QueryBuilder
     {
         $request = new Request([
