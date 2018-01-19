@@ -71,13 +71,17 @@ class QueryBuilder extends Builder
 
     public function allowedSorts(...$sorts): self
     {
+        if (! $sort = $this->request->sort()) {
+            return $this;
+        }
+
         $this->allowedSorts = collect($sorts);
 
         if (! $this->allowedSorts->contains('*')) {
             $this->guardAgainstUnknownSorts();
         }
 
-        $this->addSortToQuery($this->request->sort());
+        $this->addSortToQuery($sort);
 
         return $this;
     }
