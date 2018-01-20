@@ -191,6 +191,18 @@ $users = QueryBuilder::for(User::class)
 // Will throw an `InvalidQuery` exception as `password` is not an allowed sorting property
 ```
 
+To define a default sort parameter that should be applied without explicitly adding it to the request, you can use the `defaultSort` method.
+
+``` php
+// GET /users
+$users = QueryBuilder::for(User::class)
+    ->defaultSort('name')
+    ->allowedSorts('name', 'street')
+    ->get();
+
+// Will retrieve the users sorted by name
+```
+
 ### Other query methods
 
 As the `QueryBuilder` extends Laravel's default Eloquent query builder you can use any method or macro you like. You can also specify a base query instead of the model FQCN:

@@ -13,6 +13,9 @@ class QueryBuilder extends Builder
     /** @var \Illuminate\Support\Collection */
     protected $allowedFilters;
 
+    /** @var string|null */
+    protected $defaultSort;
+
     /** @var \Illuminate\Support\Collection */
     protected $allowedSorts;
 
@@ -69,9 +72,18 @@ class QueryBuilder extends Builder
         return $this;
     }
 
+    public function defaultSort($sort): self
+    {
+        $this->defaultSort = $sort;
+
+        $this->addSortToQuery($this->request->sort($this->defaultSort));
+
+        return $this;
+    }
+
     public function allowedSorts(...$sorts): self
     {
-        if (! $sort = $this->request->sort()) {
+        if (! $this->request->sort()) {
             return $this;
         }
 
@@ -81,7 +93,7 @@ class QueryBuilder extends Builder
             $this->guardAgainstUnknownSorts();
         }
 
-        $this->addSortToQuery($sort);
+        $this->addSortToQuery($this->request->sort($this->defaultSort));
 
         return $this;
     }
