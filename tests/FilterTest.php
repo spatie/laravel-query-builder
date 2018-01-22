@@ -66,6 +66,22 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_escapes_like_query_on_partial()
+    {
+        $model1 = TestModel::create(['name' => 'FooXBarYBaz']);
+        $model2 = TestModel::create(['name' => 'Foo_Bar%Baz']);
+
+        $results = $this
+            ->createQueryFromFilterRequest([
+                'name' => 'Foo_Bar%Baz',
+            ])
+            ->allowedFilters('name')
+            ->get();
+
+        $this->assertEquals([$model2->id], $results->pluck('id')->all());
+    }
+
+    /** @test */
     public function it_can_filter_models_and_return_an_empty_collection()
     {
         $models = $this
