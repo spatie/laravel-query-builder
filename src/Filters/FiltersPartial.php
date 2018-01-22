@@ -24,7 +24,7 @@ class FiltersPartial implements Filter
             ->addBinding("%{$this->escapeLike($value)}%");
     }
 
-    private function escapeLike(string $value): string
+    protected function escapeLike(string $value): string
     {
         return addcslashes($value, '\%_');
     }
