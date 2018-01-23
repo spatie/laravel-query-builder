@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.1.2 - 2018-01-23
+
+- bugfix: revert #11 (escaping `_` and `%` in LIKE queries)
+
 ## 1.1.1 - 2018-01-22
 
 - escape `_` and `%` in LIKE queries
