@@ -13,7 +13,7 @@ class InvalidQuery extends HttpException
         $unknownFilters = $unknownFilters->implode(', ');
         $allowedFilters = $allowedFilters->implode(', ');
 
-        $message = "Given filter(s) `{$unknownFilters}` are not allowed. Allowed filters are `{$allowedFilters}`.";
+        $message = __('query-builder::errors.filters', ['unknown' => $unknownFilters, 'allowed' => $allowedFilters]);
 
         return new static(Response::HTTP_BAD_REQUEST, $message);
     }
@@ -22,7 +22,7 @@ class InvalidQuery extends HttpException
     {
         $allowedSorts = $allowedSorts->implode(', ');
 
-        $message = "Given sort `{$unknownSort}` is not allowed. Allowed sorts are `{$allowedSorts}`.";
+        $message = __('query-builder::errors.sorts', ['unknown' => $unknownSort, 'allowed' => $allowedSorts]);
 
         return new static(Response::HTTP_BAD_REQUEST, $message);
     }
@@ -32,7 +32,7 @@ class InvalidQuery extends HttpException
         $unknownIncludes = $unknownIncludes->implode(', ');
         $allowedIncludes = $allowedIncludes->implode(', ');
 
-        $message = "Given include(s) `{$unknownIncludes}` are not allowed. Allowed includes are `{$allowedIncludes}`.";
+        $message = __('query-builder::errors.includes', ['unknown' => $unknownIncludes, 'allowed' => $allowedIncludes]);
 
         return new static(Response::HTTP_BAD_REQUEST, $message);
     }
