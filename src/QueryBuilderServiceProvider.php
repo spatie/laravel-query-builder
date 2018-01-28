@@ -9,7 +9,7 @@ class QueryBuilderServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-         $this->loadTranslationsFrom(
+        $this->loadTranslationsFrom(
             __DIR__.'/../lang',
             'query-builder'
         );
@@ -18,7 +18,7 @@ class QueryBuilderServiceProvider extends ServiceProvider
             __DIR__.'/../lang' => resource_path('lang/vendor/query-builder'),
         ]);
 
-       Request::macro('includes', function ($include = null) {
+        Request::macro('includes', function ($include = null) {
             $includeParts = $this->query('include');
 
             if (! is_array($includeParts)) {
