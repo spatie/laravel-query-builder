@@ -25,6 +25,17 @@ class TestCase extends Orchestra
             $table->string('name');
         });
 
+        $app['db']->connection()->getSchemaBuilder()->create('soft_delete_models', function (Blueprint $table) {
+            $table->increments('id');
+            $table->softDeletes();
+            $table->string('name');
+        });
+
+        $app['db']->connection()->getSchemaBuilder()->create('scope_models', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+        });
+
         $app['db']->connection()->getSchemaBuilder()->create('related_models', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');

@@ -31,6 +31,10 @@ class QueryBuilder extends Builder
 
         $this->setModel($builder->getModel());
 
+        foreach ($this->getModel()->getGlobalScopes() as $identifier => $scope) {
+            $this->withGlobalScope($identifier, $scope);
+        }
+
         $this->request = $request ?? request();
 
         if ($this->request->sort()) {
