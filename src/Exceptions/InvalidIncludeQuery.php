@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 class InvalidIncludeQuery extends InvalidQuery
 {
-    /** @var \Illuminate\Support\Collection*/
+    /** @var \Illuminate\Support\Collection */
     private $unknownIncludes;
 
     /** @var \Illuminate\Support\Collection */

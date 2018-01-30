@@ -6,10 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
-use Spatie\QueryBuilder\Exceptions\InvalidQuery;
-use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 
 class QueryBuilder extends Builder
 {
