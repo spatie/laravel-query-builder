@@ -3,7 +3,6 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
