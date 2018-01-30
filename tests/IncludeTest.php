@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
-use Spatie\QueryBuilder\Exceptions\InvalidQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 
 class IncludeTest extends TestCase
 {
@@ -73,11 +73,20 @@ class IncludeTest extends TestCase
     /** @test */
     public function it_guards_against_invalid_includes()
     {
-        $this->expectException(InvalidQuery::class);
+        $this->expectException(InvalidIncludeQuery::class);
 
         $this
             ->createQueryFromIncludeRequest('random-model')
             ->allowedIncludes('related-model');
+    }
+
+    /** @test */
+    public function an_invalid_include_query_exception_contains_the_unknown_and_allowed_includes()
+    {
+        $exception = new InvalidIncludeQuery(collect(['unknown include']), collect(['allowed include']));
+
+        $this->assertEquals(['unknown include'], $exception->getUnknownIncludes()->all());
+        $this->assertEquals(['allowed include'], $exception->getAllowedIncludes()->all());
     }
 
     protected function createQueryFromIncludeRequest(string $includes): QueryBuilder

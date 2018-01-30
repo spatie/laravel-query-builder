@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 
 class QueryBuilder extends Builder
 {
@@ -159,7 +162,7 @@ class QueryBuilder extends Builder
         $diff = $filterNames->diff($allowedFilterNames);
 
         if ($diff->count()) {
-            throw InvalidQuery::filtersNotAllowed($diff, $allowedFilterNames);
+            throw InvalidFilterQuery::filtersNotAllowed($diff, $allowedFilterNames);
         }
     }
 
@@ -168,7 +171,7 @@ class QueryBuilder extends Builder
         $sort = ltrim($this->request->sort(), '-');
 
         if (! $this->allowedSorts->contains($sort)) {
-            throw InvalidQuery::sortsNotAllowed($sort, $this->allowedSorts);
+            throw InvalidSortQuery::sortsNotAllowed($sort, $this->allowedSorts);
         }
     }
 
@@ -179,7 +182,7 @@ class QueryBuilder extends Builder
         $diff = $includes->diff($this->allowedIncludes);
 
         if ($diff->count()) {
-            throw InvalidQuery::includesNotAllowed($diff, $this->allowedIncludes);
+            throw InvalidIncludeQuery::includesNotAllowed($diff, $this->allowedIncludes);
         }
     }
 }

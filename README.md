@@ -83,7 +83,7 @@ $users = QueryBuilder::for(User::class)
 // $users will contain all users with their posts and permissions loaded
 ```
 
-When trying to include relationships that have not been allowed using `allowedIncludes()` an `InvalidQuery` exception will be thrown.
+When trying to include relationships that have not been allowed using `allowedIncludes()` an `InvalidIncludeQuery` exception will be thrown.
 
 Relation/include names will converted to camelCase when looking for the corresponding relationship on the model. This means `/users?include=blog-posts` will try to load the `blogPosts()` relationship on the `User` model.
 
@@ -93,7 +93,7 @@ Once the relationships are loaded on the results collection you can include them
 
 The `filter` query parmeters can be used to filter results by partial property value, exact property value or if a property value exists in a given array of values. You can also specify custom filters for more advanced queries.
 
-By default no filters are allowed. All filters have to be specified using `allowedFilters()`.
+By default no filters are allowed. All filters have to be specified using `allowedFilters()`. When trying to filter on properties that have not been allowed `allowedFilters()` an `InvalidFilterQuery` exception will be thrown.
 
 ``` php
 // GET /users?filter[name]=john&filter[email]=gmail
@@ -180,7 +180,7 @@ $users = QueryBuilder::for(User::class)->get();
 
 By default all model properties can be used to sort the results. However, you can use the `allowedSorts` method to limit which properties are allowed to be used in the request.
 
-When trying to sort by a property that's not specified in `allowedSorts()` an `InvalidQuery` exception will be thrown.
+When trying to sort by a property that's not specified in `allowedSorts()` an `InvalidSortQuery` exception will be thrown.
 
 ``` php
 // GET /users?sort=password
@@ -188,7 +188,7 @@ $users = QueryBuilder::for(User::class)
     ->allowedSorts('name')
     ->get();
 
-// Will throw an `InvalidQuery` exception as `password` is not an allowed sorting property
+// Will throw an `InvalidSortQuery` exception as `password` is not an allowed sorting property
 ```
 
 To define a default sort parameter that should be applied without explicitly adding it to the request, you can use the `defaultSort` method.
