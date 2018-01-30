@@ -68,8 +68,8 @@ class SortTest extends TestCase
     {
         $exception = new InvalidSortQuery('unknown sort', collect(['allowed sort']));
 
-        $this->assertEquals('unknown sort', $exception->getUnknownSort());
-        $this->assertEquals(['allowed sort'], $exception->getAllowedSorts()->all());
+        $this->assertEquals('unknown sort', $exception->unknownSort);
+        $this->assertEquals(['allowed sort'], $exception->allowedSorts->all());
     }
 
     /** @test */

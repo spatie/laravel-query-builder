@@ -7,11 +7,11 @@ use Illuminate\Support\Collection;
 
 class InvalidIncludeQuery extends InvalidQuery
 {
-    /** @var \Illuminate\Support\Collection */
-    private $unknownIncludes;
+    /** @var \Illuminate\Support\Collection*/
+    public $unknownIncludes;
 
     /** @var \Illuminate\Support\Collection */
-    private $allowedIncludes;
+    public $allowedIncludes;
 
     public function __construct(Collection $unknownIncludes, Collection $allowedIncludes)
     {
@@ -28,15 +28,5 @@ class InvalidIncludeQuery extends InvalidQuery
     public static function includesNotAllowed(Collection $unknownIncludes, Collection $allowedIncludes)
     {
         return new static(...func_get_args());
-    }
-
-    public function getUnknownIncludes(): Collection
-    {
-        return $this->unknownIncludes;
-    }
-
-    public function getAllowedIncludes(): Collection
-    {
-        return $this->allowedIncludes;
     }
 }

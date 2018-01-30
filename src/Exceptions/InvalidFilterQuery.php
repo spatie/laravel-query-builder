@@ -8,10 +8,10 @@ use Illuminate\Support\Collection;
 class InvalidFilterQuery extends InvalidQuery
 {
     /** @var \Illuminate\Support\Collection */
-    private $unknownFilters;
+    public $unknownFilters;
 
     /** @var \Illuminate\Support\Collection */
-    private $allowedFilters;
+    public $allowedFilters;
 
     public function __construct(Collection $unknownFilters, Collection $allowedFilters)
     {
@@ -28,15 +28,5 @@ class InvalidFilterQuery extends InvalidQuery
     public static function filtersNotAllowed(Collection $unknownFilters, Collection $allowedFilters)
     {
         return new static(...func_get_args());
-    }
-
-    public function getUnknownFilters(): Collection
-    {
-        return $this->unknownFilters;
-    }
-
-    public function getAllowedFilters(): Collection
-    {
-        return $this->allowedFilters;
     }
 }

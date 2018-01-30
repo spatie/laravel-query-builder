@@ -13,9 +13,9 @@ class InvalidSortQuery extends InvalidQuery
     /** @var \Illuminate\Support\Collection */
     public $allowedSorts;
 
-    public function __construct(string $unknownSort, Collection $allowedSorts)
+    public function __construct(Collection $unknownSorts, Collection $allowedSorts)
     {
-        $this->unknownSort = $unknownSort;
+        $this->unknownSorts = $unknownSorts;
         $this->allowedSorts = $allowedSorts;
 
         $allowedSorts = $allowedSorts->implode(', ');
@@ -25,7 +25,7 @@ class InvalidSortQuery extends InvalidQuery
         parent::__construct(Response::HTTP_BAD_REQUEST, $message);
     }
 
-    public static function sortsNotAllowed(string $unknownSort, Collection $allowedSorts)
+    public static function sortsNotAllowed(Collection $unknownSorts, Collection $allowedSorts)
     {
         return new static(...func_get_args());
     }
