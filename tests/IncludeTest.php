@@ -85,8 +85,8 @@ class IncludeTest extends TestCase
     {
         $exception = new InvalidIncludeQuery(collect(['unknown include']), collect(['allowed include']));
 
-        $this->assertEquals(['unknown include'], $exception->getUnknownIncludes()->all());
-        $this->assertEquals(['allowed include'], $exception->getAllowedIncludes()->all());
+        $this->assertEquals(['unknown include'], $exception->unknownIncludes->all());
+        $this->assertEquals(['allowed include'], $exception->allowedIncludes->all());
     }
 
     protected function createQueryFromIncludeRequest(string $includes): QueryBuilder

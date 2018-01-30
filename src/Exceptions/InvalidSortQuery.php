@@ -8,10 +8,10 @@ use Illuminate\Support\Collection;
 class InvalidSortQuery extends InvalidQuery
 {
     /** @var string */
-    protected $unknownSort;
+    public $unknownSort;
 
     /** @var \Illuminate\Support\Collection */
-    protected $allowedSorts;
+    public $allowedSorts;
 
     public function __construct(string $unknownSort, Collection $allowedSorts)
     {
@@ -27,15 +27,5 @@ class InvalidSortQuery extends InvalidQuery
     public static function sortsNotAllowed(string $unknownSort, Collection $allowedSorts)
     {
         return new static(...func_get_args());
-    }
-
-    public function getUnknownSort(): string
-    {
-        return $this->unknownSort;
-    }
-
-    public function getAllowedSorts(): Collection
-    {
-        return $this->allowedSorts;
     }
 }

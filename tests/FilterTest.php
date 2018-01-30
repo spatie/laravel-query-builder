@@ -163,8 +163,8 @@ class FilterTest extends TestCase
     {
         $exception = new InvalidFilterQuery(collect(['unknown filter']), collect(['allowed filter']));
 
-        $this->assertEquals(['unknown filter'], $exception->getUnknownFilters()->all());
-        $this->assertEquals(['allowed filter'], $exception->getAllowedFilters()->all());
+        $this->assertEquals(['unknown filter'], $exception->unknownFilters->all());
+        $this->assertEquals(['allowed filter'], $exception->allowedFilters->all());
     }
 
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder
