@@ -3,11 +3,12 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
-use Spatie\QueryBuilder\Exceptions\InvalidQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 
 class FilterTest extends TestCase
@@ -202,11 +203,20 @@ class FilterTest extends TestCase
     /** @test */
     public function it_guards_against_invalid_filters()
     {
-        $this->expectException(InvalidQuery::class);
+        $this->expectException(InvalidFilterQuery::class);
 
         $this
             ->createQueryFromFilterRequest(['name' => 'John'])
             ->allowedFilters('id');
+    }
+
+    /** @test */
+    public function an_invalid_filter_query_exception_contains_the_unknown_and_allowed_filters()
+    {
+        $exception = new InvalidFilterQuery(collect(['unknown filter']), collect(['allowed filter']));
+
+        $this->assertEquals(['unknown filter'], $exception->getUnknownFilters()->all());
+        $this->assertEquals(['allowed filter'], $exception->getAllowedFilters()->all());
     }
 
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder
