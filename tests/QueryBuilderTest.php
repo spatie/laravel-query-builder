@@ -2,7 +2,9 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use MongoDB\Driver\Query;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\Tests\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\ScopeModel;
 use Spatie\QueryBuilder\Tests\Models\SoftDeleteModel;
@@ -50,15 +52,53 @@ class QueryBuilderTest extends TestCase
     /** @test */
     public function it_can_query_global_scopes()
     {
-        $queryBuilder = QueryBuilder::for(ScopeModel::class);
-
         ScopeModel::create(['name' => 'John Doe']);
         ScopeModel::create(['name' => 'test']);
 
-        // Global scope ignores models with name "test"
-        $this->assertCount(1, $queryBuilder->get());
+        // Global scope on ScopeModel excludes models named "test"
+        $this->assertCount(1, QueryBuilder::for(ScopeModel::class)->get());
 
-        $this->assertCount(2, $queryBuilder->withoutGlobalScopes()->get());
+        $this->assertCount(2, QueryBuilder::for(ScopeModel::query()->withoutGlobalScopes())->get());
+
+        $this->assertCount(2, QueryBuilder::for(ScopeModel::class)->withoutGlobalScopes()->get());
+    }
+
+    /** @test */
+    public function it_keeps_eager_loaded_relationships_from_the_base_query()
+    {
+        TestModel::create(['name' => 'John Doe']);
+
+        $baseQuery = TestModel::with('relatedModels');
+        $queryBuilder = QueryBuilder::for($baseQuery);
+
+        $this->assertTrue($baseQuery->first()->relationLoaded('relatedModels'));
+        $this->assertTrue($queryBuilder->first()->relationLoaded('relatedModels'));
+    }
+
+    /** @test */
+    public function it_keeps_local_macros_added_to_the_base_query()
+    {
+        $baseQuery = TestModel::query();
+
+        $baseQuery->macro('customMacro', function ($builder) {
+            return $builder->where('name', 'Foo');
+        });
+
+        $queryBuilder = QueryBuilder::for($baseQuery);
+
+        $this->assertEquals($baseQuery->customMacro()->toSql(), $queryBuilder->customMacro()->toSql());
+    }
+
+    /** @test */
+    public function it_keeps_the_on_delete_callback_added_to_the_base_query()
+    {
+        $baseQuery = TestModel::query();
+
+        $baseQuery->onDelete(function () {
+            return 'onDelete called';
+        });
+
+        $this->assertEquals('onDelete called', QueryBuilder::for($baseQuery)->delete());
     }
 
     /** @test */

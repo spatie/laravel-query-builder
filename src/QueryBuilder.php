@@ -4,7 +4,6 @@ namespace Spatie\QueryBuilder;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Exceptions\InvalidQuery;
 
@@ -27,19 +26,38 @@ class QueryBuilder extends Builder
 
     public function __construct(Builder $builder, ?Request $request = null)
     {
-        parent::__construct($builder->getQuery());
+        parent::__construct(clone $builder->getQuery());
 
-        $this->setModel($builder->getModel());
-
-        foreach ($this->getModel()->getGlobalScopes() as $identifier => $scope) {
-            $this->withGlobalScope($identifier, $scope);
-        }
+        $this->initialiseFromBuilder($builder);
 
         $this->request = $request ?? request();
 
         if ($this->request->sorts()) {
             $this->allowedSorts('*');
         }
+    }
+
+    /**
+     * Add the model, scopes, eager loaded relationships, local macro's and onDelete callback
+     * from the $builder to this query builder.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $builder
+     */
+    protected function initialiseFromBuilder(Builder $builder)
+    {
+        $this->setModel($builder->getModel());
+
+        $this->setEagerLoads($builder->getEagerLoads());
+
+        $builder->macro('getProtected', function ($builder, $property) {
+            return $builder->{$property};
+        });
+
+        $this->scopes = $builder->getProtected('scopes');
+
+        $this->localMacros = $builder->getProtected('localMacros');
+
+        $this->onDelete = $builder->getProtected('onDelete');
     }
 
     /**
