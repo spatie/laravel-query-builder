@@ -21,7 +21,7 @@ class IncludeTest extends TestCase
         $this->models = factory(TestModel::class, 5)->create();
 
         $this->models->each(function (TestModel $model) {
-            $model->relatedModel()->create(['name' => 'Test']);
+            $model->relatedModels()->create(['name' => 'Test']);
         });
     }
 
@@ -29,7 +29,7 @@ class IncludeTest extends TestCase
     public function it_does_not_require_includes()
     {
         $models = QueryBuilder::for(TestModel::class, new Request())
-            ->allowedIncludes('related-model')
+            ->allowedIncludes('related-models')
             ->get();
 
         $this->assertCount(TestModel::count(), $models);
@@ -39,22 +39,22 @@ class IncludeTest extends TestCase
     public function it_can_include_model_relations()
     {
         $models = $this
-            ->createQueryFromIncludeRequest('related-model')
-            ->allowedIncludes('related-model')
+            ->createQueryFromIncludeRequest('related-models')
+            ->allowedIncludes('related-models')
             ->get();
 
-        $this->assertRelationLoaded($models, 'relatedModel');
+        $this->assertRelationLoaded($models, 'relatedModels');
     }
 
     /** @test */
     public function it_can_include_case_insensitive()
     {
         $models = $this
-            ->createQueryFromIncludeRequest('RelaTed-Model')
-            ->allowedIncludes('related-model')
+            ->createQueryFromIncludeRequest('RelaTed-Models')
+            ->allowedIncludes('related-models')
             ->get();
 
-        $this->assertRelationLoaded($models, 'relatedModel');
+        $this->assertRelationLoaded($models, 'relatedModels');
     }
 
     /** @test */
@@ -63,8 +63,8 @@ class IncludeTest extends TestCase
         TestModel::query()->delete();
 
         $models = $this
-            ->createQueryFromIncludeRequest('related-model')
-            ->allowedIncludes('related-model')
+            ->createQueryFromIncludeRequest('related-models')
+            ->allowedIncludes('related-models')
             ->get();
 
         $this->assertCount(0, $models);
@@ -77,7 +77,7 @@ class IncludeTest extends TestCase
 
         $this
             ->createQueryFromIncludeRequest('random-model')
-            ->allowedIncludes('related-model');
+            ->allowedIncludes('related-models');
     }
 
     protected function createQueryFromIncludeRequest(string $includes): QueryBuilder
