@@ -21,7 +21,9 @@ class IncludeTest extends TestCase
         $this->models = factory(TestModel::class, 5)->create();
 
         $this->models->each(function (TestModel $model) {
-            $model->relatedModels()->create(['name' => 'Test']);
+            $model
+                ->relatedModels()->create(['name' => 'Test'])
+                ->nestedRelatedModels()->create(['name' => 'Test']);
         });
     }
 
@@ -44,6 +46,19 @@ class IncludeTest extends TestCase
             ->get();
 
         $this->assertRelationLoaded($models, 'relatedModels');
+    }
+
+    /** @test */
+    public function it_can_include_nested_model_relations()
+    {
+        $models = $this
+            ->createQueryFromIncludeRequest('related-models.nested-related-models')
+            ->allowedIncludes('related-models.nested-related-models')
+            ->get();
+
+        $models->each(function (Model $model) {
+            $this->assertRelationLoaded($model->relatedModels, 'nestedRelatedModels');
+        });
     }
 
     /** @test */
