@@ -108,6 +108,21 @@ class SortTest extends TestCase
         $this->assertSortedAscending($sortedModels, 'name');
     }
 
+    /** @test */
+    public function it_can_sort_by_multiple_columns()
+    {
+        factory(TestModel::class, 3)->create(['name' => 'foo']);
+
+        $sortedModels = $this
+            ->createQueryFromSortRequest('name,-id')
+            ->allowedSorts('name', 'id')
+            ->get();
+
+        $expected = TestModel::orderBy('name')->orderByDesc('id');
+
+        $this->assertEquals($expected->pluck('id'), $sortedModels->pluck('id'));
+    }
+
     protected function createQueryFromSortRequest(string $sort): QueryBuilder
     {
         $request = new Request([

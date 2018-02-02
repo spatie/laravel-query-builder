@@ -37,7 +37,7 @@ class QueryBuilder extends Builder
 
         $this->request = $request ?? request();
 
-        if ($this->request->sort()) {
+        if ($this->request->sorts()) {
             $this->allowedSorts('*');
         }
     }
@@ -81,7 +81,7 @@ class QueryBuilder extends Builder
     {
         $this->defaultSort = $sort;
 
-        $this->addSortToQuery($this->request->sort($this->defaultSort));
+        $this->addSortsToQuery($this->request->sorts($this->defaultSort));
 
         return $this;
     }
@@ -89,7 +89,7 @@ class QueryBuilder extends Builder
     public function allowedSorts($sorts): self
     {
         $sorts = is_array($sorts) ? $sorts : func_get_args();
-        if (! $this->request->sort()) {
+        if (! $this->request->sorts()) {
             return $this;
         }
 
@@ -99,7 +99,7 @@ class QueryBuilder extends Builder
             $this->guardAgainstUnknownSorts();
         }
 
-        $this->addSortToQuery($this->request->sort($this->defaultSort));
+        $this->addSortsToQuery($this->request->sorts($this->defaultSort));
 
         return $this;
     }
@@ -133,13 +133,16 @@ class QueryBuilder extends Builder
             });
     }
 
-    protected function addSortToQuery(string $sort)
+    protected function addSortsToQuery(Collection $sorts)
     {
-        $descending = $sort[0] === '-';
+        $sorts
+            ->each(function (string $sort) {
+                $descending = $sort[0] === '-';
 
-        $key = ltrim($sort, '-');
+                $key = ltrim($sort, '-');
 
-        $this->orderBy($key, $descending ? 'desc' : 'asc');
+                $this->orderBy($key, $descending ? 'desc' : 'asc');
+            });
     }
 
     protected function addIncludesToQuery(Collection $includes)
@@ -168,10 +171,14 @@ class QueryBuilder extends Builder
 
     protected function guardAgainstUnknownSorts()
     {
-        $sort = ltrim($this->request->sort(), '-');
+        $sorts = $this->request->sorts()->map(function ($sort) {
+            return ltrim($sort, '-');
+        });
 
-        if (! $this->allowedSorts->contains($sort)) {
-            throw InvalidQuery::sortsNotAllowed($sort, $this->allowedSorts);
+        $diff = $sorts->diff($this->allowedSorts);
+
+        if ($diff->count()) {
+            throw InvalidQuery::sortsNotAllowed($diff, $this->allowedSorts);
         }
     }
 
