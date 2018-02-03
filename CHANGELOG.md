@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.2.1 - 2018-02-03
+
+- remove auto registering facade from composer.json
+
 ## 1.2.0 - 2018-01-29
 
 - add support for global scopes and soft deletes
