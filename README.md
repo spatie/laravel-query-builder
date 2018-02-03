@@ -83,6 +83,17 @@ $users = QueryBuilder::for(User::class)
 // $users will contain all users with their posts and permissions loaded
 ```
 
+You can load nested relationships using `.`:
+
+``` php
+// GET /users?include=posts->comments,permissions
+$users = QueryBuilder::for(User::class)
+    ->allowedIncludes('posts, 'posts.comments', 'permissions')
+    ->get();
+
+// $users will contain all users with their posts, comments on their posts and permissions loaded
+```
+
 When trying to include relationships that have not been allowed using `allowedIncludes()` an `InvalidQuery` exception will be thrown.
 
 Relation/include names will converted to camelCase when looking for the corresponding relationship on the model. This means `/users?include=blog-posts` will try to load the `blogPosts()` relationship on the `User` model.
