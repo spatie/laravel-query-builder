@@ -114,6 +114,16 @@ $users = QueryBuilder::for(User::class)
 // $users will contain all users with "john" in their name AND "gmail" in their email address
 ```
 
+You can also pass in an array of filters to the `allowedFilters()` method.
+
+``` php
+// GET /users?filter[name]=john&filter[email]=gmail
+$users = QueryBuilder::for(User::class)
+    ->allowedFilters(['name', 'email'])
+    ->get();
+// $users will contain all users with "john" in their name AND "gmail" in their email address
+```
+
 You can specify multiple matching filter values by passing a comma separated list of values:
 
 ``` php
