@@ -86,6 +86,28 @@ class SortTest extends TestCase
         $this->assertSortedAscending($sortedModels, 'name');
     }
 
+    /** @test */
+    public function it_can_allow_multiple_sort_parameters()
+    {
+        $sortedModels = $this
+            ->createQueryFromSortRequest('name')
+            ->allowedSorts('id', 'name')
+            ->get();
+
+        $this->assertSortedAscending($sortedModels, 'name');
+    }
+
+    /** @test */
+    public function it_can_allow_multiple_sort_parameters_as_an_array()
+    {
+        $sortedModels = $this
+            ->createQueryFromSortRequest('name')
+            ->allowedSorts(['id', 'name'])
+            ->get();
+
+        $this->assertSortedAscending($sortedModels, 'name');
+    }
+
     protected function createQueryFromSortRequest(string $sort): QueryBuilder
     {
         $request = new Request([

@@ -86,8 +86,9 @@ class QueryBuilder extends Builder
         return $this;
     }
 
-    public function allowedSorts(...$sorts): self
+    public function allowedSorts($sorts): self
     {
+        $sorts = is_array($sorts) ? $sorts : func_get_args();
         if (! $this->request->sort()) {
             return $this;
         }
