@@ -83,6 +83,17 @@ $users = QueryBuilder::for(User::class)
 // $users will contain all users with their posts and permissions loaded
 ```
 
+You can also pass in an array of filters to the `allowedIncludes()` method.
+
+``` php
+// GET /users?include=posts,permissions
+$users = QueryBuilder::for(User::class)
+    ->allowedIncludes(['posts', 'permissions'])
+    ->get();
+
+// $users will contain all users with their posts and permissions loaded
+```
+
 You can load nested relationships using `.`:
 
 ``` php

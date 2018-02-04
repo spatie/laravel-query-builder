@@ -103,8 +103,9 @@ class QueryBuilder extends Builder
         return $this;
     }
 
-    public function allowedIncludes(...$includes): self
+    public function allowedIncludes($includes): self
     {
+        $includes = is_array($includes) ? $includes : func_get_args();
         $this->allowedIncludes = collect($includes);
 
         $this->guardAgainstUnknownIncludes();
