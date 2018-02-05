@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.3.0 - 2018-02-05
+
+- allow `allowedIncludes`, `allowedFilters` and `allowedSorts` to accept arrays
+
 ## 1.2.1 - 2018-02-03
 
 - remove auto registering facade from composer.json
