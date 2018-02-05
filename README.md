@@ -97,7 +97,7 @@ $users = QueryBuilder::for(User::class)
 You can load nested relationships using `.`:
 
 ``` php
-// GET /users?include=posts->comments,permissions
+// GET /users?include=posts.comments,permissions
 $users = QueryBuilder::for(User::class)
     ->allowedIncludes('posts, 'posts.comments', 'permissions')
     ->get();
