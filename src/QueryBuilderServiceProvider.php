@@ -62,5 +62,21 @@ class QueryBuilderServiceProvider extends ServiceProvider
         Request::macro('sort', function ($default = null) {
             return $this->query('sort', $default);
         });
+
+        Request::macro('sorts', function ($default = null) {
+            $sortParts = $this->sort();
+
+            if (! is_array($sortParts)) {
+                $sortParts = explode(',', $sortParts);
+            }
+
+            $sorts = collect($sortParts)->filter();
+
+            if ($sorts->isNotEmpty()) {
+                return $sorts;
+            }
+
+            return collect($default)->filter();
+        });
     }
 }

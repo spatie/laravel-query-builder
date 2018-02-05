@@ -18,11 +18,12 @@ class InvalidQuery extends HttpException
         return new static(Response::HTTP_BAD_REQUEST, $message);
     }
 
-    public static function sortsNotAllowed(string $unknownSort, Collection $allowedSorts)
+    public static function sortsNotAllowed(Collection $unknownSorts, Collection $allowedSorts)
     {
+        $unknownSorts = $unknownSorts->implode(', ');
         $allowedSorts = $allowedSorts->implode(', ');
 
-        $message = "Given sort `{$unknownSort}` is not allowed. Allowed sorts are `{$allowedSorts}`.";
+        $message = "Given sort(s) `{$unknownSorts}` is not allowed. Allowed sorts are `{$allowedSorts}`.";
 
         return new static(Response::HTTP_BAD_REQUEST, $message);
     }
