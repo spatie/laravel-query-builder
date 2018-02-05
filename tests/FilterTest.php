@@ -148,6 +148,58 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_can_allow_multiple_filters()
+    {
+        $model1 = TestModel::create(['name' => 'abcdef']);
+        $model2 = TestModel::create(['name' => 'abcdef']);
+
+        $results = $this
+            ->createQueryFromFilterRequest([
+                'name' => 'abc',
+            ])
+            ->allowedFilters('name', Filter::exact('id'))
+            ->get();
+
+        $this->assertCount(2, $results);
+        $this->assertEquals([$model1->id, $model2->id], $results->pluck('id')->all());
+    }
+
+    /** @test */
+    public function it_can_allow_multiple_filters_as_an_array()
+    {
+        $model1 = TestModel::create(['name' => 'abcdef']);
+        $model2 = TestModel::create(['name' => 'abcdef']);
+
+        $results = $this
+            ->createQueryFromFilterRequest([
+                'name' => 'abc',
+            ])
+            ->allowedFilters(['name', Filter::exact('id')])
+            ->get();
+
+        $this->assertCount(2, $results);
+        $this->assertEquals([$model1->id, $model2->id], $results->pluck('id')->all());
+    }
+
+    /** @test */
+    public function it_can_filter_by_multiple_filters()
+    {
+        $model1 = TestModel::create(['name' => 'abcdef']);
+        $model2 = TestModel::create(['name' => 'abcdef']);
+
+        $results = $this
+            ->createQueryFromFilterRequest([
+                'name' => 'abc',
+                'id' => "1,{$model1->id}",
+            ])
+            ->allowedFilters('name', Filter::exact('id'))
+            ->get();
+
+        $this->assertCount(1, $results);
+        $this->assertEquals([$model1->id], $results->pluck('id')->all());
+    }
+
+    /** @test */
     public function it_guards_against_invalid_filters()
     {
         $this->expectException(InvalidQuery::class);

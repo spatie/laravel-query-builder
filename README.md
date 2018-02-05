@@ -83,6 +83,17 @@ $users = QueryBuilder::for(User::class)
 // $users will contain all users with their posts and permissions loaded
 ```
 
+You can also pass in an array of filters to the `allowedIncludes()` method.
+
+``` php
+// GET /users?include=posts,permissions
+$users = QueryBuilder::for(User::class)
+    ->allowedIncludes(['posts', 'permissions'])
+    ->get();
+
+// $users will contain all users with their posts and permissions loaded
+```
+
 You can load nested relationships using `.`:
 
 ``` php
@@ -110,6 +121,16 @@ By default no filters are allowed. All filters have to be specified using `allow
 // GET /users?filter[name]=john&filter[email]=gmail
 $users = QueryBuilder::for(User::class)
     ->allowedFilters('name', 'email')
+    ->get();
+// $users will contain all users with "john" in their name AND "gmail" in their email address
+```
+
+You can also pass in an array of filters to the `allowedFilters()` method.
+
+``` php
+// GET /users?filter[name]=john&filter[email]=gmail
+$users = QueryBuilder::for(User::class)
+    ->allowedFilters(['name', 'email'])
     ->get();
 // $users will contain all users with "john" in their name AND "gmail" in their email address
 ```
@@ -209,6 +230,17 @@ To define a default sort parameter that should be applied without explicitly add
 $users = QueryBuilder::for(User::class)
     ->defaultSort('name')
     ->allowedSorts('name', 'street')
+    ->get();
+
+// Will retrieve the users sorted by name
+```
+
+You can also pass in an array of sorts to the `allowedSorts()` method.
+
+``` php
+// GET /users?sort=name
+$users = QueryBuilder::for(User::class)
+    ->allowedSorts(['name', 'street'])
     ->get();
 
 // Will retrieve the users sorted by name

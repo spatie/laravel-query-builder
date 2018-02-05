@@ -95,6 +95,40 @@ class IncludeTest extends TestCase
             ->allowedIncludes('related-models');
     }
 
+    /** @test */
+    public function it_can_allow_multiple_includes()
+    {
+        $models = $this
+            ->createQueryFromIncludeRequest('related-models')
+            ->allowedIncludes('related-models', 'other-related-models')
+            ->get();
+
+        $this->assertRelationLoaded($models, 'relatedModels');
+    }
+
+    /** @test */
+    public function it_can_allow_multiple_includes_as_an_array()
+    {
+        $models = $this
+            ->createQueryFromIncludeRequest('related-models')
+            ->allowedIncludes(['related-models', 'other-related-models'])
+            ->get();
+
+        $this->assertRelationLoaded($models, 'relatedModels');
+    }
+
+    /** @test */
+    public function it_can_include_multiple_model_relations()
+    {
+        $models = $this
+            ->createQueryFromIncludeRequest('related-models,other-related-models')
+            ->allowedIncludes(['related-models', 'other-related-models'])
+            ->get();
+
+        $this->assertRelationLoaded($models, 'relatedModels');
+        $this->assertRelationLoaded($models, 'otherRelatedModels');
+    }
+
     protected function createQueryFromIncludeRequest(string $includes): QueryBuilder
     {
         $request = new Request([

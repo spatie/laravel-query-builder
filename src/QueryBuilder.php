@@ -59,8 +59,9 @@ class QueryBuilder extends Builder
         return new static($baseQuery, $request ?? request());
     }
 
-    public function allowedFilters(...$filters): self
+    public function allowedFilters($filters): self
     {
+        $filters = is_array($filters) ? $filters : func_get_args();
         $this->allowedFilters = collect($filters)->map(function ($filter) {
             if ($filter instanceof Filter) {
                 return $filter;
@@ -85,8 +86,9 @@ class QueryBuilder extends Builder
         return $this;
     }
 
-    public function allowedSorts(...$sorts): self
+    public function allowedSorts($sorts): self
     {
+        $sorts = is_array($sorts) ? $sorts : func_get_args();
         if (! $this->request->sort()) {
             return $this;
         }
@@ -102,8 +104,9 @@ class QueryBuilder extends Builder
         return $this;
     }
 
-    public function allowedIncludes(...$includes): self
+    public function allowedIncludes($includes): self
     {
+        $includes = is_array($includes) ? $includes : func_get_args();
         $this->allowedIncludes = collect($includes);
 
         $this->guardAgainstUnknownIncludes();

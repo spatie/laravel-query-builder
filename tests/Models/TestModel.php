@@ -17,6 +17,11 @@ class TestModel extends Model
         return $this->hasMany(RelatedModel::class);
     }
 
+    public function otherRelatedModels(): HasMany
+    {
+        return $this->hasMany(RelatedModel::class);
+    }
+
     public function scopeNamed(Builder $query, string $name): Builder
     {
         return $query->where('name', $name);
