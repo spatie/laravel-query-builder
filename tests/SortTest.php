@@ -66,9 +66,9 @@ class SortTest extends TestCase
     /** @test */
     public function an_invalid_sort_query_exception_contains_the_unknown_and_allowed_sorts()
     {
-        $exception = new InvalidSortQuery('unknown sort', collect(['allowed sort']));
+        $exception = new InvalidSortQuery(collect(['unknown sort']), collect(['allowed sort']));
 
-        $this->assertEquals('unknown sort', $exception->unknownSort);
+        $this->assertEquals(['unknown sort'], $exception->unknownSorts->all());
         $this->assertEquals(['allowed sort'], $exception->allowedSorts->all());
     }
 
