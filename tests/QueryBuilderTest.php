@@ -4,7 +4,6 @@ namespace Spatie\QueryBuilder\Tests;
 
 use MongoDB\Driver\Query;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\Tests\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\ScopeModel;
 use Spatie\QueryBuilder\Tests\Models\SoftDeleteModel;
