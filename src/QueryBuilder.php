@@ -4,9 +4,10 @@ namespace Spatie\QueryBuilder;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\QueryBuilder\Exceptions\InvalidQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 
 class QueryBuilder extends Builder
 {
@@ -165,7 +166,7 @@ class QueryBuilder extends Builder
         $diff = $filterNames->diff($allowedFilterNames);
 
         if ($diff->count()) {
-            throw InvalidQuery::filtersNotAllowed($diff, $allowedFilterNames);
+            throw InvalidFilterQuery::filtersNotAllowed($diff, $allowedFilterNames);
         }
     }
 
@@ -178,7 +179,7 @@ class QueryBuilder extends Builder
         $diff = $sorts->diff($this->allowedSorts);
 
         if ($diff->count()) {
-            throw InvalidQuery::sortsNotAllowed($diff, $this->allowedSorts);
+            throw InvalidSortQuery::sortsNotAllowed($diff, $this->allowedSorts);
         }
     }
 
@@ -189,7 +190,7 @@ class QueryBuilder extends Builder
         $diff = $includes->diff($this->allowedIncludes);
 
         if ($diff->count()) {
-            throw InvalidQuery::includesNotAllowed($diff, $this->allowedIncludes);
+            throw InvalidIncludeQuery::includesNotAllowed($diff, $this->allowedIncludes);
         }
     }
 }
