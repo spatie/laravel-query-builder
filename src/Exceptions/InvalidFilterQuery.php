@@ -20,7 +20,7 @@ class InvalidFilterQuery extends InvalidQuery
 
         $unknownFilters = $this->unknownFilters->implode(', ');
         $allowedFilters = $this->allowedFilters->implode(', ');
-        $message = "Given filter(s) `{$unknownFilters}` are not allowed. Allowed filters are `{$allowedFilters}`.";
+        $message = "Given filter(s) `{$unknownFilters}` are not allowed. Allowed filter(s) are `{$allowedFilters}`.";
 
         parent::__construct(Response::HTTP_BAD_REQUEST, $message);
     }
