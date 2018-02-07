@@ -28,7 +28,7 @@ class QueryBuilder extends Builder
     {
         parent::__construct(clone $builder->getQuery());
 
-        $this->initialiseFromBuilder($builder);
+        $this->initializeFromBuilder($builder);
 
         $this->request = $request ?? request();
 
@@ -43,13 +43,12 @@ class QueryBuilder extends Builder
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
      */
-    protected function initialiseFromBuilder(Builder $builder)
+    protected function initializeFromBuilder(Builder $builder)
     {
-        $this->setModel($builder->getModel());
+        $this->setModel($builder->getModel())
+            ->setEagerLoads($builder->getEagerLoads());
 
-        $this->setEagerLoads($builder->getEagerLoads());
-
-        $builder->macro('getProtected', function ($builder, $property) {
+        $builder->macro('getProtected', function (Builder $builder, string $property) {
             return $builder->{$property};
         });
 

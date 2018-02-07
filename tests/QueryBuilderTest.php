@@ -2,7 +2,6 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use MongoDB\Driver\Query;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\ScopeModel;
@@ -54,7 +53,7 @@ class QueryBuilderTest extends TestCase
         ScopeModel::create(['name' => 'John Doe']);
         ScopeModel::create(['name' => 'test']);
 
-        // Global scope on ScopeModel excludes models named "test"
+        // Global scope on ScopeModel excludes models named 'test'
         $this->assertCount(1, QueryBuilder::for(ScopeModel::class)->get());
 
         $this->assertCount(2, QueryBuilder::for(ScopeModel::query()->withoutGlobalScopes())->get());
