@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.5.1 - 2018-02-07
+
+- fix: initializing scopes, macro's, the onDelete callback and eager loads from base query on QueryBuilder
+
 ## 1.5.0 - 2018-02-06
 
 - use specific exceptions for every invalid query
