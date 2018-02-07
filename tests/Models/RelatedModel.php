@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RelatedModel extends Model
 {
