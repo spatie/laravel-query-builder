@@ -38,6 +38,13 @@ class TestCase extends Orchestra
 
         $app['db']->connection()->getSchemaBuilder()->create('related_models', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('test_model_id');
+            $table->string('name');
+        });
+
+        $app['db']->connection()->getSchemaBuilder()->create('nested_related_models', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('related_model_id');
             $table->string('name');
         });
     }

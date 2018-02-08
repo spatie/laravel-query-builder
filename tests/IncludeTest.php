@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
-use Spatie\QueryBuilder\Exceptions\InvalidQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 
 class IncludeTest extends TestCase
 {
@@ -21,7 +21,9 @@ class IncludeTest extends TestCase
         $this->models = factory(TestModel::class, 5)->create();
 
         $this->models->each(function (TestModel $model) {
-            $model->relatedModel()->create(['name' => 'Test']);
+            $model
+                ->relatedModels()->create(['name' => 'Test'])
+                ->nestedRelatedModels()->create(['name' => 'Test']);
         });
     }
 
@@ -29,7 +31,7 @@ class IncludeTest extends TestCase
     public function it_does_not_require_includes()
     {
         $models = QueryBuilder::for(TestModel::class, new Request())
-            ->allowedIncludes('related-model')
+            ->allowedIncludes('related-models')
             ->get();
 
         $this->assertCount(TestModel::count(), $models);
@@ -39,22 +41,35 @@ class IncludeTest extends TestCase
     public function it_can_include_model_relations()
     {
         $models = $this
-            ->createQueryFromIncludeRequest('related-model')
-            ->allowedIncludes('related-model')
+            ->createQueryFromIncludeRequest('related-models')
+            ->allowedIncludes('related-models')
             ->get();
 
-        $this->assertRelationLoaded($models, 'relatedModel');
+        $this->assertRelationLoaded($models, 'relatedModels');
+    }
+
+    /** @test */
+    public function it_can_include_nested_model_relations()
+    {
+        $models = $this
+            ->createQueryFromIncludeRequest('related-models.nested-related-models')
+            ->allowedIncludes('related-models.nested-related-models')
+            ->get();
+
+        $models->each(function (Model $model) {
+            $this->assertRelationLoaded($model->relatedModels, 'nestedRelatedModels');
+        });
     }
 
     /** @test */
     public function it_can_include_case_insensitive()
     {
         $models = $this
-            ->createQueryFromIncludeRequest('RelaTed-Model')
-            ->allowedIncludes('related-model')
+            ->createQueryFromIncludeRequest('RelaTed-Models')
+            ->allowedIncludes('related-models')
             ->get();
 
-        $this->assertRelationLoaded($models, 'relatedModel');
+        $this->assertRelationLoaded($models, 'relatedModels');
     }
 
     /** @test */
@@ -63,8 +78,8 @@ class IncludeTest extends TestCase
         TestModel::query()->delete();
 
         $models = $this
-            ->createQueryFromIncludeRequest('related-model')
-            ->allowedIncludes('related-model')
+            ->createQueryFromIncludeRequest('related-models')
+            ->allowedIncludes('related-models')
             ->get();
 
         $this->assertCount(0, $models);
@@ -73,11 +88,54 @@ class IncludeTest extends TestCase
     /** @test */
     public function it_guards_against_invalid_includes()
     {
-        $this->expectException(InvalidQuery::class);
+        $this->expectException(InvalidIncludeQuery::class);
 
         $this
             ->createQueryFromIncludeRequest('random-model')
-            ->allowedIncludes('related-model');
+            ->allowedIncludes('related-models');
+    }
+
+    /** @test */
+    public function it_can_allow_multiple_includes()
+    {
+        $models = $this
+            ->createQueryFromIncludeRequest('related-models')
+            ->allowedIncludes('related-models', 'other-related-models')
+            ->get();
+
+        $this->assertRelationLoaded($models, 'relatedModels');
+    }
+
+    /** @test */
+    public function it_can_allow_multiple_includes_as_an_array()
+    {
+        $models = $this
+            ->createQueryFromIncludeRequest('related-models')
+            ->allowedIncludes(['related-models', 'other-related-models'])
+            ->get();
+
+        $this->assertRelationLoaded($models, 'relatedModels');
+    }
+
+    /** @test */
+    public function it_can_include_multiple_model_relations()
+    {
+        $models = $this
+            ->createQueryFromIncludeRequest('related-models,other-related-models')
+            ->allowedIncludes(['related-models', 'other-related-models'])
+            ->get();
+
+        $this->assertRelationLoaded($models, 'relatedModels');
+        $this->assertRelationLoaded($models, 'otherRelatedModels');
+    }
+
+    /** @test */
+    public function an_invalid_include_query_exception_contains_the_unknown_and_allowed_includes()
+    {
+        $exception = new InvalidIncludeQuery(collect(['unknown include']), collect(['allowed include']));
+
+        $this->assertEquals(['unknown include'], $exception->unknownIncludes->all());
+        $this->assertEquals(['allowed include'], $exception->allowedIncludes->all());
     }
 
     protected function createQueryFromIncludeRequest(string $includes): QueryBuilder

@@ -4,9 +4,10 @@ namespace Spatie\QueryBuilder;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\QueryBuilder\Exceptions\InvalidQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 
 class QueryBuilder extends Builder
 {
@@ -30,13 +31,9 @@ class QueryBuilder extends Builder
 
     public function __construct(Builder $builder, ?Request $request = null)
     {
-        parent::__construct($builder->getQuery());
+        parent::__construct(clone $builder->getQuery());
 
-        $this->setModel($builder->getModel());
-
-        foreach ($this->getModel()->getGlobalScopes() as $identifier => $scope) {
-            $this->withGlobalScope($identifier, $scope);
-        }
+        $this->initializeFromBuilder($builder);
 
         $this->request = $request ?? request();
 
@@ -44,7 +41,7 @@ class QueryBuilder extends Builder
             $this->addSelectedColumns($this->columns);
         }
 
-        if ($this->request->sort()) {
+        if ($this->request->sorts()) {
             $this->allowedSorts('*');
         }
     }
@@ -75,6 +72,27 @@ class QueryBuilder extends Builder
             ->map(function ($column) use ($relation) {
                 return str_replace("{$relation}.", '', $column);
             });
+
+    /**
+     * Add the model, scopes, eager loaded relationships, local macro's and onDelete callback
+     * from the $builder to this query builder.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $builder
+     */
+    protected function initializeFromBuilder(Builder $builder)
+    {
+        $this->setModel($builder->getModel())
+            ->setEagerLoads($builder->getEagerLoads());
+
+        $builder->macro('getProtected', function (Builder $builder, string $property) {
+            return $builder->{$property};
+        });
+
+        $this->scopes = $builder->getProtected('scopes');
+
+        $this->localMacros = $builder->getProtected('localMacros');
+
+        $this->onDelete = $builder->getProtected('onDelete');
     }
 
     /**
@@ -94,8 +112,9 @@ class QueryBuilder extends Builder
         return new static($baseQuery, $request ?? request());
     }
 
-    public function allowedFilters(...$filters): self
+    public function allowedFilters($filters): self
     {
+        $filters = is_array($filters) ? $filters : func_get_args();
         $this->allowedFilters = collect($filters)->map(function ($filter) {
             if ($filter instanceof Filter) {
                 return $filter;
@@ -115,14 +134,15 @@ class QueryBuilder extends Builder
     {
         $this->defaultSort = $sort;
 
-        $this->addSortToQuery($this->request->sort($this->defaultSort));
+        $this->addSortsToQuery($this->request->sorts($this->defaultSort));
 
         return $this;
     }
 
-    public function allowedSorts(...$sorts): self
+    public function allowedSorts($sorts): self
     {
-        if (! $this->request->sort()) {
+        $sorts = is_array($sorts) ? $sorts : func_get_args();
+        if (! $this->request->sorts()) {
             return $this;
         }
 
@@ -132,13 +152,14 @@ class QueryBuilder extends Builder
             $this->guardAgainstUnknownSorts();
         }
 
-        $this->addSortToQuery($this->request->sort($this->defaultSort));
+        $this->addSortsToQuery($this->request->sorts($this->defaultSort));
 
         return $this;
     }
 
-    public function allowedIncludes(...$includes): self
+    public function allowedIncludes($includes): self
     {
+        $includes = is_array($includes) ? $includes : func_get_args();
         $this->allowedIncludes = collect($includes);
 
         $this->guardAgainstUnknownIncludes();
@@ -165,13 +186,16 @@ class QueryBuilder extends Builder
             });
     }
 
-    protected function addSortToQuery(string $sort)
+    protected function addSortsToQuery(Collection $sorts)
     {
-        $descending = $sort[0] === '-';
+        $sorts
+            ->each(function (string $sort) {
+                $descending = $sort[0] === '-';
 
-        $key = ltrim($sort, '-');
+                $key = ltrim($sort, '-');
 
-        $this->orderBy($key, $descending ? 'desc' : 'asc');
+                $this->orderBy($key, $descending ? 'desc' : 'asc');
+            });
     }
 
     protected function addIncludesToQuery(Collection $includes)
@@ -202,16 +226,20 @@ class QueryBuilder extends Builder
         $diff = $filterNames->diff($allowedFilterNames);
 
         if ($diff->count()) {
-            throw InvalidQuery::filtersNotAllowed($diff, $allowedFilterNames);
+            throw InvalidFilterQuery::filtersNotAllowed($diff, $allowedFilterNames);
         }
     }
 
     protected function guardAgainstUnknownSorts()
     {
-        $sort = ltrim($this->request->sort(), '-');
+        $sorts = $this->request->sorts()->map(function ($sort) {
+            return ltrim($sort, '-');
+        });
 
-        if (! $this->allowedSorts->contains($sort)) {
-            throw InvalidQuery::sortsNotAllowed($sort, $this->allowedSorts);
+        $diff = $sorts->diff($this->allowedSorts);
+
+        if ($diff->count()) {
+            throw InvalidSortQuery::sortsNotAllowed($diff, $this->allowedSorts);
         }
     }
 
@@ -222,7 +250,7 @@ class QueryBuilder extends Builder
         $diff = $includes->diff($this->allowedIncludes);
 
         if ($diff->count()) {
-            throw InvalidQuery::includesNotAllowed($diff, $this->allowedIncludes);
+            throw InvalidIncludeQuery::includesNotAllowed($diff, $this->allowedIncludes);
         }
     }
 }

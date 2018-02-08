@@ -4,7 +4,7 @@ namespace Spatie\QueryBuilder\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TestModel extends Model
 {
@@ -12,9 +12,14 @@ class TestModel extends Model
 
     public $timestamps = false;
 
-    public function relatedModel(): BelongsTo
+    public function relatedModels(): HasMany
     {
-        return $this->belongsTo(RelatedModel::class);
+        return $this->hasMany(RelatedModel::class);
+    }
+
+    public function otherRelatedModels(): HasMany
+    {
+        return $this->hasMany(RelatedModel::class);
     }
 
     public function scopeNamed(Builder $query, string $name): Builder

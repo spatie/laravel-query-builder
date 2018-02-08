@@ -25,6 +25,46 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
+    public function it_will_return_the_given_default_value_when_no_sort_query_param_is_specified()
+    {
+        $request = new Request();
+
+        $this->assertEquals('foobar', $request->sort('foobar'));
+    }
+
+    /** @test */
+    public function it_can_get_multiple_sort_parameters_from_the_request()
+    {
+        $request = new Request([
+            'sort' => 'foo,bar',
+        ]);
+
+        $expected = collect(['foo', 'bar']);
+
+        $this->assertEquals($expected, $request->sorts());
+    }
+
+    /** @test */
+    public function it_will_return_an_empty_collection_when_no_sort_query_params_are_specified()
+    {
+        $request = new Request();
+
+        $expected = collect();
+
+        $this->assertEquals($expected, $request->sorts());
+    }
+
+    /** @test */
+    public function it_will_return_the_given_default_value_when_no_sort_query_params_are_specified()
+    {
+        $request = new Request();
+
+        $expected = collect(['foobar']);
+
+        $this->assertEquals($expected, $request->sorts('foobar'));
+    }
+
+    /** @test */
     public function it_can_get_the_filter_query_params_from_the_request()
     {
         $request = new Request([

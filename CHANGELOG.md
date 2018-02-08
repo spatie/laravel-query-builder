@@ -2,6 +2,26 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.5.1 - 2018-02-07
+
+- fix: initializing scopes, macro's, the onDelete callback and eager loads from base query on QueryBuilder
+
+## 1.5.0 - 2018-02-06
+
+- use specific exceptions for every invalid query
+
+## 1.4.0 - 2018-02-05
+
+- allow multiple sorts
+
+## 1.3.0 - 2018-02-05
+
+- allow `allowedIncludes`, `allowedFilters` and `allowedSorts` to accept arrays
+
+## 1.2.1 - 2018-02-03
+
+- remove auto registering facade from composer.json
+
 ## 1.2.0 - 2018-01-29
 
 - add support for global scopes and soft deletes

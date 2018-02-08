@@ -43,10 +43,7 @@
         "laravel": {
             "providers": [
                 "Spatie\\QueryBuilder\\QueryBuilderServiceProvider"
-            ],
-            "aliases": {
-                "QueryBuilder": "Spatie\\QueryBuilder\\QueryBuilderFacade"
-            }
+            ]
         }
     }
 }
