@@ -72,6 +72,7 @@ class QueryBuilder extends Builder
             ->map(function ($column) use ($relation) {
                 return str_replace("{$relation}.", '', $column);
             });
+    }
 
     /**
      * Add the model, scopes, eager loaded relationships, local macro's and onDelete callback
