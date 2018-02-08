@@ -25,6 +25,9 @@ class QueryBuilder extends Builder
     /** @var \Illuminate\Http\Request */
     protected $request;
 
+    /** @var \Illuminate\Support\Collection */
+    protected $columns;
+
     public function __construct(Builder $builder, ?Request $request = null)
     {
         parent::__construct($builder->getQuery());
@@ -37,9 +40,41 @@ class QueryBuilder extends Builder
 
         $this->request = $request ?? request();
 
+        if ($this->columns = $this->request->column()) {
+            $this->addSelectedColumns($this->columns);
+        }
+
         if ($this->request->sort()) {
             $this->allowedSorts('*');
         }
+    }
+
+    /**
+     * Saves selects as a collection
+     *
+     * @param array|string $select
+     * @return void
+     */
+    protected function addSelectedColumns($columns)
+    {
+        $columns = $columns->filter(function ($item) {
+            return strpos($item, '.') === false;
+        });
+
+        if ($columns->count() > 0) {
+            $this->select($columns->all());
+        }
+    }
+
+    protected function getSelectForRelation($relation)
+    {
+        return $this->columns
+            ->filter(function ($column) use ($relation) {
+                return strpos($column, "{$relation}.") !== false;
+            })
+            ->map(function ($column) use ($relation) {
+                return str_replace("{$relation}.", '', $column);
+            });
     }
 
     /**
@@ -146,7 +181,15 @@ class QueryBuilder extends Builder
                 return camel_case($include);
             })
             ->each(function (string $include) {
-                $this->with($include);
+                $selects = $this->getSelectForRelation(kebab_case($include));
+
+                if (! $selects->count()) {
+                    return $this->with($include);
+                }
+
+                $this->with([$include => function ($query) use ($selects) {
+                    $query->select($selects->all());
+                }]);
             });
     }
 
