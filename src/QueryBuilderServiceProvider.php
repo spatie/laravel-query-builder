@@ -36,7 +36,11 @@ class QueryBuilderServiceProvider extends ServiceProvider
                 return ! is_null($filter);
             });
 
-            $filters = $filters->map(function ($value) {
+            $filtersMapper = function ($value) {
+                if (is_array($value)) {
+                    return collect($value)->map($this)->all();
+                }
+
                 if (str_contains($value, ',')) {
                     return explode(',', $value);
                 }
@@ -50,7 +54,9 @@ class QueryBuilderServiceProvider extends ServiceProvider
                 }
 
                 return $value;
-            });
+            };
+
+            $filters = $filters->map($filtersMapper->bindTo($filtersMapper));
 
             if (is_null($filter)) {
                 return $filters;
