@@ -127,6 +127,23 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
+    public function it_will_map_array_in_filter_recursively_when_given_in_a_filter_query_string()
+    {
+        $request = new Request([
+            'filter' => [
+                'foo' => 'bar,baz',
+                'bar' => [
+                    'foobar' => 'baz,bar'
+                ],                
+            ],
+        ]);
+
+        $expected = collect(['foo' => ['bar', 'baz'], 'bar' => ['foobar'=> ['baz', 'bar']]]);
+
+        $this->assertEquals($expected, $request->filters());
+    }
+
+    /** @test */
     public function it_will_map_comma_separated_values_as_arrays_when_given_in_a_filter_query_string_and_get_those_by_key()
     {
         $request = new Request([
