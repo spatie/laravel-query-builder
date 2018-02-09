@@ -37,7 +37,7 @@ class QueryBuilderServiceProvider extends ServiceProvider
             });
 
             $filtersMapper = function ($value) {
-                if(is_array($value)) {
+                if (is_array($value)) {
                     return collect($value)->map($this)->all();
                 }
 

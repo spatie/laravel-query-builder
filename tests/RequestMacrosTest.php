@@ -133,8 +133,8 @@ class RequestMacrosTest extends TestCase
             'filter' => [
                 'foo' => 'bar,baz',
                 'bar' => [
-                    'foobar' => 'baz,bar'
-                ],                
+                    'foobar' => 'baz,bar',
+                ],
             ],
         ]);
 
