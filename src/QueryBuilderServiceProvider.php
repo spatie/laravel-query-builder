@@ -63,14 +63,10 @@ class QueryBuilderServiceProvider extends ServiceProvider
             return $this->query('sort', $default);
         });
 
-        Request::macro('column', function ($default = null) {
-            $columns = $this->query('column', $default);
-
-            if (is_string($columns)) {
-                return collect(explode(',', $columns));
-            }
-
-            return collect($columns);
+        Request::macro('fields', function ($default = null) {
+            return collect(
+                $this->query('fields', $default)
+            );
         });
       
         Request::macro('sorts', function ($default = null) {

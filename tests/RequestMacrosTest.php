@@ -187,14 +187,16 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_requested_columns()
+    public function it_can_get_requested_fields()
     {
         $request = new Request([
-            'column' => 'name,email'
+            'fields' => [
+                'column' => 'name,email'
+            ]
         ]);
 
-        $expected = collect(['name' ,'email']);
+        $expected = collect(['column' => 'name,email']);
 
-        $this->assertEquals($expected, $request->column());
+        $this->assertEquals($expected, $request->fields());
     }
 }

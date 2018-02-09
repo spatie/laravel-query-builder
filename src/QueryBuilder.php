@@ -27,7 +27,7 @@ class QueryBuilder extends Builder
     protected $request;
 
     /** @var \Illuminate\Support\Collection */
-    protected $columns;
+    protected $fields;
 
     public function __construct(Builder $builder, ?Request $request = null)
     {
@@ -37,8 +37,8 @@ class QueryBuilder extends Builder
 
         $this->request = $request ?? request();
 
-        if ($this->columns = $this->request->column()) {
-            $this->addSelectedColumns($this->columns);
+        if ($this->fields = $this->request->fields()) {
+            $this->addSelectedFields($this->fields);
         }
 
         if ($this->request->sorts()) {
@@ -47,31 +47,33 @@ class QueryBuilder extends Builder
     }
 
     /**
-     * Saves selects as a collection
+     * Adds fields to select statement
      *
-     * @param array|string $select
+     * @param \Illuminate\Support\Collection $fields
      * @return void
      */
-    protected function addSelectedColumns($columns)
+    protected function addSelectedFields(Collection $fields)
     {
-        $columns = $columns->filter(function ($item) {
-            return strpos($item, '.') === false;
-        });
+        $field = $fields->get(
+            $this->getModel()->getTable()
+        );
 
-        if ($columns->count() > 0) {
-            $this->select($columns->all());
+        if (is_null($field)) {
+            return;
         }
+
+        $this->select(explode(',', $field));
     }
 
-    protected function getSelectForRelation($relation)
+    protected function getFieldsForRelation($relation)
     {
-        return $this->columns
-            ->filter(function ($column) use ($relation) {
-                return strpos($column, "{$relation}.") !== false;
-            })
-            ->map(function ($column) use ($relation) {
-                return str_replace("{$relation}.", '', $column);
-            });
+        $fields = $this->fields->get($relation);
+
+        if (is_null($fields)) {
+            return;
+        }
+
+        return explode(',', $fields);
     }
 
     /**
@@ -206,14 +208,14 @@ class QueryBuilder extends Builder
                 return camel_case($include);
             })
             ->each(function (string $include) {
-                $selects = $this->getSelectForRelation(kebab_case($include));
+                $fields = $this->getFieldsForRelation(kebab_case($include));
 
-                if (! $selects->count()) {
+                if (is_null($fields)) {
                     return $this->with($include);
                 }
 
-                $this->with([$include => function ($query) use ($selects) {
-                    $query->select($selects->all());
+                $this->with([$include => function ($query) use ($fields) {
+                    $query->select($fields);
                 }]);
             });
     }

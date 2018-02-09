@@ -31,7 +31,10 @@ class ColumnTest extends TestCase
     /** @test */
     public function it_can_fetch_only_required_columns()
     {
-        $request = new Request(['column' => 'name']);
+        $request = new Request([
+            'fields' => ['test_models' => 'name']
+        ]);
+
 
         $queryBuilder = QueryBuilder::for(TestModel::class, $request)->toSql();
 
