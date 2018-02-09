@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.5.3 - 2018-02-09
+
+- allow arrays in filters
+
 ## 1.5.2 - 2018-02-08
 
 - add support for Laravel 5.6
