@@ -61,7 +61,7 @@ composer require spatie/laravel-query-builder
 ### Including relationships
 
 The `include` query parameter will load any Eloquent relation on the results collection.
-By default no includes are allowed. All includes must be specified using `allowedIncludes()`.
+By default, no includes are allowed. All includes must be specified using `allowedIncludes()`.
 
 ``` php
 // GET /users?include=posts
@@ -107,15 +107,15 @@ $users = QueryBuilder::for(User::class)
 
 When trying to include relationships that have not been allowed using `allowedIncludes()` an `InvalidIncludeQuery` exception will be thrown.
 
-Relation/include names will converted to camelCase when looking for the corresponding relationship on the model. This means `/users?include=blog-posts` will try to load the `blogPosts()` relationship on the `User` model.
+Relation/include names will be converted to camelCase when looking for the corresponding relationship on the model. This means `/users?include=blog-posts` will try to load the `blogPosts()` relationship on the `User` model.
 
 Once the relationships are loaded on the results collection you can include them in your response by using [Eloquent API resources and conditional relationships](https://laravel.com/docs/5.5/eloquent-resources#conditional-relationships).
 
 ### Filtering
 
-The `filter` query parmeters can be used to filter results by partial property value, exact property value or if a property value exists in a given array of values. You can also specify custom filters for more advanced queries.
+The `filter` query parameters can be used to filter results by partial property value, exact property value or if a property value exists in a given array of values. You can also specify custom filters for more advanced queries.
 
-By default no filters are allowed. All filters have to be specified using `allowedFilters()`. When trying to filter on properties that have not been allowed `allowedFilters()` an `InvalidFilterQuery` exception will be thrown.
+By default, no filters are allowed. All filters have to be specified using `allowedFilters()`. When trying to filter on properties that have not been allowed `allowedFilters()` an `InvalidFilterQuery` exception will be thrown.
 
 ``` php
 // GET /users?filter[name]=john&filter[email]=gmail
@@ -210,7 +210,7 @@ $users = QueryBuilder::for(User::class)->get();
 // $users will be sorted by name and descending (Z -> A)
 ```
 
-By default all model properties can be used to sort the results. However, you can use the `allowedSorts` method to limit which properties are allowed to be used in the request.
+By default, all model properties can be used to sort the results. However, you can use the `allowedSorts` method to limit which properties are allowed to be used in the request.
 
 When trying to sort by a property that's not specified in `allowedSorts()` an `InvalidSortQuery` exception will be thrown.
 
@@ -272,7 +272,7 @@ QueryBuilder::for(User::where('id', 42)) // base query instead of model
 
 This package doesn't provide any methods to help you paginate responses. However as documented above you can use Laravel's default [`paginate()` method](https://laravel.com/docs/5.5/pagination).
 
-If you want to completly adhere to the JSON API specification you can also use our own [spatie/json-api-paginate](https://github.com/spatie/laravel-json-api-paginate)!
+If you want to completely adhere to the JSON API specification you can also use our own [spatie/json-api-paginate](https://github.com/spatie/laravel-json-api-paginate)!
 
 ### Testing
 
