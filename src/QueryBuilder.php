@@ -208,15 +208,23 @@ class QueryBuilder extends Builder
                 return camel_case($include);
             })
             ->each(function (string $include) {
-                $fields = $this->getFieldsForRelation(kebab_case($include));
+                $relations = collect(explode('.', $include));
+                
+                $withs = $relations->flatMap(function ($relation, $key) use ($relations) {
+                    $fields = $this->getFieldsForRelation(kebab_case($relation));
 
-                if (is_null($fields)) {
-                    return $this->with($include);
-                }
+                    $fullRelationName = $relations->slice(0, $key + 1)->implode('.'); 
 
-                $this->with([$include => function ($query) use ($fields) {
-                    $query->select($fields);
-                }]);
+                    return is_null($fields)
+                        ? [$fullRelationName]
+                        : [$fullRelationName => function ($query) use ($fields) {
+                            $query->select($fields);
+                        }];
+                });
+
+                // var_dump($withs->first());
+
+                $this->with($withs->all());
             });
     }
 
@@ -257,3 +265,4 @@ class QueryBuilder extends Builder
         }
     }
 }
+
