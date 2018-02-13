@@ -264,9 +264,12 @@ The `q` query parameter is used to search in your data by the defined columns in
 You can define multiple columns to search in by separating them with a comma.
 
 ```php
+// GET /users?q=john
 QueryBuilder::for(User::class)
     ->allowedSearches('first_name', 'last_name')
     ->get();
+
+// $users will contain all users with a first_name or last_name that contains john
 ```
 
 You can also pass in an array to the `allowedSearches()` method.
