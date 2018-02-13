@@ -257,6 +257,26 @@ $users = QueryBuilder::for(User::class)
 // $users will be sorted by name in ascending order with a secondary sort on street in descending order.
 ```
 
+### Searching
+
+The `q` query parameter is used to search in your data by the defined columns in allowedSearches.
+
+You can define multiple columns to search in by separating them with a comma.
+
+```php
+QueryBuilder::for(User::class)
+    ->allowedSearches('first_name', 'last_name')
+    ->get();
+```
+
+You can also pass in an array to the `allowedSearches()` method.
+
+```php
+QueryBuilder::for(User::class)
+    ->allowedSearches(['first_name', 'last_name'])
+    ->get();
+```
+
 ### Other query methods
 
 As the `QueryBuilder` extends Laravel's default Eloquent query builder you can use any method or macro you like. You can also specify a base query instead of the model FQCN:

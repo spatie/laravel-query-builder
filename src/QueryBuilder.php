@@ -135,6 +135,30 @@ class QueryBuilder extends Builder
         return $this;
     }
 
+    public function allowedSearches($columns): self
+    {
+        $columns = is_array($columns) ? $columns : func_get_args();
+
+        $columns = collect($columns);
+
+        $this->addSearchesToQuery($columns);
+
+        return $this;
+    }
+
+    protected function addSearchesToQuery(Collection $columns)
+    {
+        if (! $search = $this->request->search()) {
+            return;
+        }
+
+        $this->where(function ($query) use ($columns, $search) {
+            foreach ($columns as $column) {
+                $query->orWhere($column, 'LIKE', "%{$search}%");
+            }
+        });
+    }
+
     protected function addFiltersToQuery(Collection $filters)
     {
         $filters->each(function ($value, $property) {
