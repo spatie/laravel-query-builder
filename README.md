@@ -179,18 +179,20 @@ You can specify custom filters using the `Filter::custom()` method. Custom filte
 For example:
 
 ``` php
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 
-class FiltersUserPermission
+class FiltersUserPermission implements Filter
 {
-    public function __invoke(Builder $query, $value, string $property)
+    public function __invoke(Builder $query, $value, string $property) : Builder
     {
         return $query->whereHas('permissions', function (Builder $query) use ($value) {
             $query->where('name', $value);
         });
     }
 }
+
+use Spatie\QueryBuilder\Filter;
 
 // GET /users?filter[permission]=createPosts
 $users = QueryBuilder::for(User::class)
