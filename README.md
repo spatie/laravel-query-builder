@@ -83,7 +83,7 @@ $users = QueryBuilder::for(User::class)
 // $users will contain all users with their posts and permissions loaded
 ```
 
-You can also pass in an array of filters to the `allowedIncludes()` method.
+You can also pass in an array of includes to the `allowedIncludes()` method.
 
 ``` php
 // GET /users?include=posts,permissions
@@ -115,7 +115,7 @@ Once the relationships are loaded on the results collection you can include them
 
 The `filter` query parameters can be used to filter results by partial property value, exact property value or if a property value exists in a given array of values. You can also specify custom filters for more advanced queries.
 
-By default, no filters are allowed. All filters have to be specified using `allowedFilters()`. When trying to filter on properties that have not been allowed `allowedFilters()` an `InvalidFilterQuery` exception will be thrown.
+By default, no filters are allowed. All filters have to be specified using `allowedFilters()`. When trying to filter on properties that have not been allowed using `allowedFilters()` an `InvalidFilterQuery` exception will be thrown.
 
 ``` php
 // GET /users?filter[name]=john&filter[email]=gmail
