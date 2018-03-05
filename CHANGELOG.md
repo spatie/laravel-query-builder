@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.6.0 - 2018-03-05
+
+- add support for selecting specific columns using `?fields[table]=field_name`
+
 ## 1.5.3 - 2018-02-09
 
 - allow arrays in filters

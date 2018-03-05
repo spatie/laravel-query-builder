@@ -259,6 +259,28 @@ $users = QueryBuilder::for(User::class)
 // $users will be sorted by name in ascending order with a secondary sort on street in descending order.
 ```
 
+### Selecting specific columns
+
+Sometimes you'll want to fetch only a couple fields to reduce the overall size of your SQL query. This can be done using the `fields` query parameter. The following fetch only the users' `id` and `name`
+
+```
+GET /users?fields[users]=id,name
+```
+
+The SQL query will look like this:
+
+```sql
+SELECT "id", "name" FROM "users"
+```
+
+Selecting fields for included models works the same way. This is especially useful when including entire relationships when you only need a couple of columns. Consider the following example:
+
+```
+GET /posts?include=author&fields[author]=name  
+```
+
+All posts will be fetched including only the name of the author. 
+
 ### Other query methods
 
 As the `QueryBuilder` extends Laravel's default Eloquent query builder you can use any method or macro you like. You can also specify a base query instead of the model FQCN:
