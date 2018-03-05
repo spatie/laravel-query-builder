@@ -2,10 +2,9 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
-
+use Spatie\QueryBuilder\Tests\Models\TestModel;
 
 class ColumnTest extends TestCase
 {
@@ -32,9 +31,8 @@ class ColumnTest extends TestCase
     public function it_can_fetch_only_required_columns()
     {
         $request = new Request([
-            'fields' => ['test_models' => 'name']
+            'fields' => ['test_models' => 'name'],
         ]);
-
 
         $queryBuilder = QueryBuilder::for(TestModel::class, $request)->toSql();
 

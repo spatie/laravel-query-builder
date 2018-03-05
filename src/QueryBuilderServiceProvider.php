@@ -72,7 +72,7 @@ class QueryBuilderServiceProvider extends ServiceProvider
         Request::macro('fields', function ($default = null) {
             return collect($this->query('fields', $default));
         });
-      
+
         Request::macro('sorts', function ($default = null) {
             $sortParts = $this->sort();
 
