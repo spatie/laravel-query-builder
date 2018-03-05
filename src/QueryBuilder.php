@@ -2,12 +2,12 @@
 
 namespace Spatie\QueryBuilder;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Builder;
-use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 
 class QueryBuilder extends Builder
 {
@@ -23,13 +23,13 @@ class QueryBuilder extends Builder
     /** @var \Illuminate\Support\Collection */
     protected $allowedIncludes;
 
-    /** @var \Illuminate\Http\Request */
-    protected $request;
-
     /** @var \Illuminate\Support\Collection */
     protected $fields;
 
-    public function __construct(Builder $builder, ?Request $request = null)
+    /** @var \Illuminate\Http\Request */
+    protected $request;
+
+    public function __construct(Builder $builder, ? Request $request = null)
     {
         parent::__construct(clone $builder->getQuery());
 
@@ -37,43 +37,11 @@ class QueryBuilder extends Builder
 
         $this->request = $request ?? request();
 
-        if ($this->fields = $this->request->fields()) {
-            $this->addSelectedFields($this->fields);
-        }
+        $this->parseSelectedFields();
 
         if ($this->request->sorts()) {
             $this->allowedSorts('*');
         }
-    }
-
-    /**
-     * Adds fields to select statement
-     *
-     * @param \Illuminate\Support\Collection $fields
-     * @return void
-     */
-    protected function addSelectedFields(Collection $fields)
-    {
-        $field = $fields->get(
-            $this->getModel()->getTable()
-        );
-
-        if (is_null($field)) {
-            return;
-        }
-
-        $this->select(explode(',', $field));
-    }
-
-    protected function getFieldsForRelation($relation)
-    {
-        $fields = $this->fields->get($relation);
-
-        if (is_null($fields)) {
-            return;
-        }
-
-        return explode(',', $fields);
     }
 
     /**
@@ -106,7 +74,7 @@ class QueryBuilder extends Builder
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
      */
-    public static function for($baseQuery, ?Request $request = null): self
+    public static function for($baseQuery, ? Request $request = null) : self
     {
         if (is_string($baseQuery)) {
             $baseQuery = ($baseQuery)::query();
@@ -115,7 +83,7 @@ class QueryBuilder extends Builder
         return new static($baseQuery, $request ?? request());
     }
 
-    public function allowedFilters($filters): self
+    public function allowedFilters($filters) : self
     {
         $filters = is_array($filters) ? $filters : func_get_args();
         $this->allowedFilters = collect($filters)->map(function ($filter) {
@@ -133,7 +101,7 @@ class QueryBuilder extends Builder
         return $this;
     }
 
-    public function defaultSort($sort): self
+    public function defaultSort($sort) : self
     {
         $this->defaultSort = $sort;
 
@@ -142,16 +110,16 @@ class QueryBuilder extends Builder
         return $this;
     }
 
-    public function allowedSorts($sorts): self
+    public function allowedSorts($sorts) : self
     {
         $sorts = is_array($sorts) ? $sorts : func_get_args();
-        if (! $this->request->sorts()) {
+        if (!$this->request->sorts()) {
             return $this;
         }
 
         $this->allowedSorts = collect($sorts);
 
-        if (! $this->allowedSorts->contains('*')) {
+        if (!$this->allowedSorts->contains('*')) {
             $this->guardAgainstUnknownSorts();
         }
 
@@ -160,9 +128,10 @@ class QueryBuilder extends Builder
         return $this;
     }
 
-    public function allowedIncludes($includes): self
+    public function allowedIncludes($includes) : self
     {
         $includes = is_array($includes) ? $includes : func_get_args();
+
         $this->allowedIncludes = collect($includes);
 
         $this->guardAgainstUnknownIncludes();
@@ -170,6 +139,32 @@ class QueryBuilder extends Builder
         $this->addIncludesToQuery($this->request->includes());
 
         return $this;
+    }
+
+    protected function parseSelectedFields()
+    {
+        $this->fields = $this->request->fields();
+
+        $modelFields = $this->fields->get(
+            $this->getModel()->getTable()
+        );
+
+        if (! $modelFields) {
+            return;
+        }
+
+        $this->select(explode(',', $modelFields));
+    }
+
+    protected function getFieldsForRelatedTable(string $relation): array
+    {
+        $fields = $this->fields->get($relation);
+
+        if (! $fields) {
+            return [];
+        }
+
+        return explode(',', $fields);
     }
 
     protected function addFiltersToQuery(Collection $filters)
@@ -181,7 +176,7 @@ class QueryBuilder extends Builder
         });
     }
 
-    protected function findFilter(string $property) : ?Filter
+    protected function findFilter(string $property) : ? Filter
     {
         return $this->allowedFilters
             ->first(function (Filter $filter) use ($property) {
@@ -204,26 +199,27 @@ class QueryBuilder extends Builder
     protected function addIncludesToQuery(Collection $includes)
     {
         $includes
+            ->map('camel_case')
             ->map(function (string $include) {
-                return camel_case($include);
+                return collect(explode('.', $include));
             })
-            ->each(function (string $include) {
-                $relations = collect(explode('.', $include));
-                
-                $withs = $relations->flatMap(function ($relation, $key) use ($relations) {
-                    $fields = $this->getFieldsForRelation(kebab_case($relation));
+            ->flatMap(function (Collection $relatedTables) {
+                return $relatedTables
+                    ->mapWithKeys(function ($table, $key) use ($relatedTables) {
+                        $fields = $this->getFieldsForRelatedTable(snake_case($table));
 
-                    $fullRelationName = $relations->slice(0, $key + 1)->implode('.'); 
+                        $fullRelationName = $relatedTables->slice(0, $key + 1)->implode('.');
 
-                    return is_null($fields)
-                        ? [$fullRelationName]
-                        : [$fullRelationName => function ($query) use ($fields) {
+                        if (empty($fields)) {
+                            return [$fullRelationName];
+                        }
+
+                        return [$fullRelationName => function ($query) use ($fields) {
                             $query->select($fields);
                         }];
-                });
-
-                // var_dump($withs->first());
-
+                    });
+            })
+            ->pipe(function (Collection $withs) {
                 $this->with($withs->all());
             });
     }
@@ -265,4 +261,3 @@ class QueryBuilder extends Builder
         }
     }
 }
-
