@@ -47,7 +47,7 @@ class QueryBuilder extends Builder
     }
 
     /**
-     * Adds fields to select statement
+     * Adds fields to select statement.
      *
      * @param \Illuminate\Support\Collection $fields
      * @return void
@@ -209,11 +209,11 @@ class QueryBuilder extends Builder
             })
             ->each(function (string $include) {
                 $relations = collect(explode('.', $include));
-                
+
                 $withs = $relations->flatMap(function ($relation, $key) use ($relations) {
                     $fields = $this->getFieldsForRelation(kebab_case($relation));
 
-                    $fullRelationName = $relations->slice(0, $key + 1)->implode('.'); 
+                    $fullRelationName = $relations->slice(0, $key + 1)->implode('.');
 
                     return is_null($fields)
                         ? [$fullRelationName]
@@ -265,4 +265,3 @@ class QueryBuilder extends Builder
         }
     }
 }
-
