@@ -202,4 +202,18 @@ class RequestMacrosTest extends TestCase
         $this->assertEquals(false, $request->includes('baz'));
         $this->assertEquals(true, $request->includes('bar'));
     }
+
+    /** @test */
+    public function it_can_get_requested_fields()
+    {
+        $request = new Request([
+            'fields' => [
+                'column' => 'name,email'
+            ]
+        ]);
+
+        $expected = collect(['column' => 'name,email']);
+
+        $this->assertEquals($expected, $request->fields());
+    }
 }

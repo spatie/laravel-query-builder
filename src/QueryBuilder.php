@@ -26,6 +26,9 @@ class QueryBuilder extends Builder
     /** @var \Illuminate\Http\Request */
     protected $request;
 
+    /** @var \Illuminate\Support\Collection */
+    protected $fields;
+
     public function __construct(Builder $builder, ?Request $request = null)
     {
         parent::__construct(clone $builder->getQuery());
@@ -34,9 +37,43 @@ class QueryBuilder extends Builder
 
         $this->request = $request ?? request();
 
+        if ($this->fields = $this->request->fields()) {
+            $this->addSelectedFields($this->fields);
+        }
+
         if ($this->request->sorts()) {
             $this->allowedSorts('*');
         }
+    }
+
+    /**
+     * Adds fields to select statement
+     *
+     * @param \Illuminate\Support\Collection $fields
+     * @return void
+     */
+    protected function addSelectedFields(Collection $fields)
+    {
+        $field = $fields->get(
+            $this->getModel()->getTable()
+        );
+
+        if (is_null($field)) {
+            return;
+        }
+
+        $this->select(explode(',', $field));
+    }
+
+    protected function getFieldsForRelation($relation)
+    {
+        $fields = $this->fields->get($relation);
+
+        if (is_null($fields)) {
+            return;
+        }
+
+        return explode(',', $fields);
     }
 
     /**
@@ -171,7 +208,23 @@ class QueryBuilder extends Builder
                 return camel_case($include);
             })
             ->each(function (string $include) {
-                $this->with($include);
+                $relations = collect(explode('.', $include));
+                
+                $withs = $relations->flatMap(function ($relation, $key) use ($relations) {
+                    $fields = $this->getFieldsForRelation(kebab_case($relation));
+
+                    $fullRelationName = $relations->slice(0, $key + 1)->implode('.'); 
+
+                    return is_null($fields)
+                        ? [$fullRelationName]
+                        : [$fullRelationName => function ($query) use ($fields) {
+                            $query->select($fields);
+                        }];
+                });
+
+                // var_dump($withs->first());
+
+                $this->with($withs->all());
             });
     }
 
@@ -212,3 +265,4 @@ class QueryBuilder extends Builder
         }
     }
 }
+
