@@ -5,8 +5,8 @@ namespace Spatie\QueryBuilder\Tests;
 use DB;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\Tests\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Spatie\QueryBuilder\Tests\Models\RelatedModel;
 
 class FieldsTest extends TestCase
 {
@@ -54,7 +54,7 @@ class FieldsTest extends TestCase
         $request = new Request([
             'fields' => [
                 'test_models' => 'id',
-                'related_models' => 'name'
+                'related_models' => 'name',
             ],
             'include' => ['related-models'],
         ]);

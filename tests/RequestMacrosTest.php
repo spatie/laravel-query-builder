@@ -208,8 +208,8 @@ class RequestMacrosTest extends TestCase
     {
         $request = new Request([
             'fields' => [
-                'column' => 'name,email'
-            ]
+                'column' => 'name,email',
+            ],
         ]);
 
         $expected = collect(['column' => 'name,email']);
