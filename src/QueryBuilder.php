@@ -2,12 +2,12 @@
 
 namespace Spatie\QueryBuilder;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
-use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 
 class QueryBuilder extends Builder
 {
@@ -113,13 +113,13 @@ class QueryBuilder extends Builder
     public function allowedSorts($sorts) : self
     {
         $sorts = is_array($sorts) ? $sorts : func_get_args();
-        if (!$this->request->sorts()) {
+        if (! $this->request->sorts()) {
             return $this;
         }
 
         $this->allowedSorts = collect($sorts);
 
-        if (!$this->allowedSorts->contains('*')) {
+        if (! $this->allowedSorts->contains('*')) {
             $this->guardAgainstUnknownSorts();
         }
 
