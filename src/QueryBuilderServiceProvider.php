@@ -9,11 +9,18 @@ class QueryBuilderServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+        $this->publishes([
+            __DIR__.'/../config/query-builder.php' => config_path('query-builder.php')
+        ], 'config');
+
+        $this->mergeConfigFrom(__DIR__.'/../config/query-builder.php', 'query-builder');
+
         Request::macro('includes', function ($include = null) {
-            $includeParts = $this->query('include');
+            $parameter = config('query-builder.parameters.include');
+            $includeParts = $this->query($parameter);
 
             if (! is_array($includeParts)) {
-                $includeParts = explode(',', strtolower($this->query('include')));
+                $includeParts = explode(',', strtolower($this->query($parameter)));
             }
 
             $includes = collect($includeParts)->filter();
@@ -26,7 +33,9 @@ class QueryBuilderServiceProvider extends ServiceProvider
         });
 
         Request::macro('filters', function ($filter = null) {
-            $filterParts = $this->query('filter');
+            $filterParts = $this->query(
+                config('query-builder.parameters.filter')
+            );
 
             if (! $filterParts) {
                 return collect();
@@ -66,11 +75,11 @@ class QueryBuilderServiceProvider extends ServiceProvider
         });
 
         Request::macro('sort', function ($default = null) {
-            return $this->query('sort', $default);
+            return $this->query(config('query-builder.parameters.sort'), $default);
         });
 
         Request::macro('fields', function ($default = null) {
-            return collect($this->query('fields', $default));
+            return collect($this->query(config('query-builder.parameters.fields'), $default));
         });
 
         Request::macro('sorts', function ($default = null) {
