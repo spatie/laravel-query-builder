@@ -56,6 +56,31 @@ You can install the package via composer:
 composer require spatie/laravel-query-builder
 ```
 
+You can optionally publish the config file with:
+```bash
+php artisan vendor:publish --provider="Spatie\QueryBuilder\QueryBuilderServiceProvider" --tag="config"
+```
+
+This is the contents of the published config file:
+```php
+return [
+
+    /**
+     * Define query parameter names used in the query.
+     */
+    'parameters' => [
+        'include' => 'include',
+
+        'filter' => 'filter',
+
+        'sort' => 'sort',
+
+        'fields' => 'fields',
+    ],
+
+];
+```
+
 ## Usage
 
 ### Including relationships
