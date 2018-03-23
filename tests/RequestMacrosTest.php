@@ -264,7 +264,7 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
-    public function is_can_get_different_include_fields_parameter_name()
+    public function is_can_get_different_fields_parameter_name()
     {
         config(['query-builder.parameters.fields' => 'field']);
 
