@@ -65,8 +65,10 @@ This is the contents of the published config file:
 ```php
 return [
 
-    /**
-     * Define query parameter names used in the query.
+    /*
+     * By default the package will use the `include`, `filter`, `sort` and `fields` query parameters.
+     * 
+     * Here you can customize those names.
      */
     'parameters' => [
         'include' => 'include',

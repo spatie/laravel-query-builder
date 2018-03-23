@@ -2,8 +2,10 @@
 
 return [
 
-    /**
-     * Define query parameter names used in the query.
+    /*
+     * By default the package will use the `include`, `filter`, `sort` and `fields` query parameters.
+     *
+     * Here you can customize those names.
      */
     'parameters' => [
         'include' => 'include',
