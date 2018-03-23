@@ -2,7 +2,7 @@
 
 return [
 
-    /**
+    /*
      * Define query parameter names used in the query.
      */
     'parameters' => [
