@@ -17,6 +17,18 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
+    public function is_can_get_different_sort_query_parameter_name()
+    {
+        config(['query-builder.parameters.sort' => 'sorts']);
+
+        $request = new Request([
+            'sorts' => 'foobar',
+        ]);
+
+        $this->assertEquals('foobar', $request->sort());
+    }
+
+    /** @test */
     public function it_will_return_null_when_no_sort_query_param_is_specified()
     {
         $request = new Request();
@@ -77,6 +89,26 @@ class RequestMacrosTest extends TestCase
         $expected = collect([
                 'foo' => 'bar',
                 'baz' => 'qux',
+        ]);
+
+        $this->assertEquals($expected, $request->filters());
+    }
+
+    /** @test */
+    public function is_can_get_different_filter_query_parameter_name()
+    {
+        config(['query-builder.parameters.filter' => 'filters']);
+
+        $request = new Request([
+            'filters' => [
+                'foo' => 'bar',
+                'baz' => 'qux',
+            ],
+        ]);
+
+        $expected = collect([
+            'foo' => 'bar',
+            'baz' => 'qux',
         ]);
 
         $this->assertEquals($expected, $request->filters());
@@ -183,6 +215,20 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
+    public function is_can_get_different_include_query_parameter_name()
+    {
+        config(['query-builder.parameters.include' => 'includes']);
+
+        $request = new Request([
+            'includes' => 'foo,bar',
+        ]);
+
+        $expected = collect(['foo', 'bar']);
+
+        $this->assertEquals($expected, $request->includes());
+    }
+
+    /** @test */
     public function it_will_return_an_empty_collection_when_no_include_query_params_are_specified()
     {
         $request = new Request();
@@ -208,6 +254,22 @@ class RequestMacrosTest extends TestCase
     {
         $request = new Request([
             'fields' => [
+                'column' => 'name,email',
+            ],
+        ]);
+
+        $expected = collect(['column' => 'name,email']);
+
+        $this->assertEquals($expected, $request->fields());
+    }
+
+    /** @test */
+    public function is_can_get_different_include_fields_parameter_name()
+    {
+        config(['query-builder.parameters.fields' => 'field']);
+
+        $request = new Request([
+            'field' => [
                 'column' => 'name,email',
             ],
         ]);
