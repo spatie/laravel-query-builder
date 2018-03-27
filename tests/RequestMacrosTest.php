@@ -278,4 +278,51 @@ class RequestMacrosTest extends TestCase
 
         $this->assertEquals($expected, $request->fields());
     }
+
+    /** @test */
+    public function it_can_get_the_append_query_params_from_the_request()
+    {
+        $request = new Request([
+            'append' => 'foo,bar',
+        ]);
+
+        $expected = collect(['foo', 'bar']);
+
+        $this->assertEquals($expected, $request->appends());
+    }
+
+    /** @test */
+    public function is_can_get_different_append_query_parameter_name()
+    {
+        config(['query-builder.parameters.append' => 'appendit']);
+
+        $request = new Request([
+            'appendit' => 'foo,bar',
+        ]);
+
+        $expected = collect(['foo', 'bar']);
+
+        $this->assertEquals($expected, $request->appends());
+    }
+
+    /** @test */
+    public function it_will_return_an_empty_collection_when_no_append_query_params_are_specified()
+    {
+        $request = new Request();
+
+        $expected = collect();
+
+        $this->assertEquals($expected, $request->appends());
+    }
+
+    /** @test */
+    public function it_knows_if_a_specific_append_from_the_query_string_is_required()
+    {
+        $request = new Request([
+            'append' => 'foo,bar',
+        ]);
+
+        $this->assertEquals(false, $request->appends('baz'));
+        $this->assertEquals(true, $request->appends('bar'));
+    }
 }

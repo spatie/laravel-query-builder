@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 
 class QueryBuilder extends Builder
 {
@@ -24,7 +25,13 @@ class QueryBuilder extends Builder
     protected $allowedIncludes;
 
     /** @var \Illuminate\Support\Collection */
+    protected $allowedAppends;
+
+    /** @var \Illuminate\Support\Collection */
     protected $fields;
+
+    /** @var array */
+    protected $appends;
 
     /** @var \Illuminate\Http\Request */
     protected $request;
@@ -141,6 +148,19 @@ class QueryBuilder extends Builder
         return $this;
     }
 
+    public function allowedAppends($appends) : self
+    {
+        $appends = is_array($appends) ? $appends : func_get_args();
+
+        $this->allowedAppends = collect($appends);
+
+        $this->guardAgainstUnknownAppends();
+
+        $this->appends = $this->request->appends();
+
+        return $this;
+    }
+
     protected function parseSelectedFields()
     {
         $this->fields = $this->request->fields();
@@ -224,6 +244,16 @@ class QueryBuilder extends Builder
             });
     }
 
+    public function setAppendsToResult($result)
+    {
+        $result->map(function ($item) {
+            $item->append($this->appends->toArray());
+            return $item;
+        });
+            
+        return $result;
+    }
+
     protected function guardAgainstUnknownFilters()
     {
         $filterNames = $this->request->filters()->keys();
@@ -259,5 +289,27 @@ class QueryBuilder extends Builder
         if ($diff->count()) {
             throw InvalidIncludeQuery::includesNotAllowed($diff, $this->allowedIncludes);
         }
+    }
+
+    protected function guardAgainstUnknownAppends()
+    {
+        $appends = $this->request->appends();
+
+        $diff = $appends->diff($this->allowedAppends);
+
+        if ($diff->count()) {
+            throw InvalidAppendQuery::appendsNotAllowed($diff, $this->allowedAppends);
+        }
+    }
+
+    public function get($columns = ['*'])
+    {
+        $result = parent::get($columns);
+
+        if (count($this->appends) > 0) {
+            $result = $this->setAppendsToResult($result);
+        }
+
+        return $result;
     }
 }

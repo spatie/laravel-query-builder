@@ -32,6 +32,23 @@ class QueryBuilderServiceProvider extends ServiceProvider
             return $includes->contains(strtolower($include));
         });
 
+        Request::macro('appends', function ($append = null) {
+            $parameter = config('query-builder.parameters.append');
+            $appendParts = $this->query($parameter);
+
+            if (! is_array($appendParts)) {
+                $appendParts = explode(',', strtolower($this->query($parameter)));
+            }
+
+            $appends = collect($appendParts)->filter();
+
+            if (is_null($append)) {
+                return $appends;
+            }
+
+            return $appends->contains(strtolower($append));
+        });
+
         Request::macro('filters', function ($filter = null) {
             $filterParts = $this->query(
                 config('query-builder.parameters.filter')
