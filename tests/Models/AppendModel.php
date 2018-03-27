@@ -12,11 +12,11 @@ class AppendModel extends Model
 
     public function getFullnameAttribute()
     {
-        return $this->firstname .' '.$this->lastname;
+        return $this->firstname.' '.$this->lastname;
     }
 
     public function getReversenameAttribute()
     {
-        return $this->lastname.' ' .$this->firstname;
+        return $this->lastname.' '.$this->firstname;
     }
 }

@@ -3,9 +3,7 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Tests\Models\AppendModel;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 

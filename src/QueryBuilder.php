@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
-use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 
 class QueryBuilder extends Builder
 {
@@ -31,7 +31,7 @@ class QueryBuilder extends Builder
     protected $fields;
 
     /** @var array */
-    protected $appends;
+    protected $appends = [];
 
     /** @var \Illuminate\Http\Request */
     protected $request;
@@ -248,9 +248,10 @@ class QueryBuilder extends Builder
     {
         $result->map(function ($item) {
             $item->append($this->appends->toArray());
+
             return $item;
         });
-            
+
         return $result;
     }
 
