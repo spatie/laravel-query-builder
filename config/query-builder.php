@@ -15,6 +15,8 @@ return [
         'sort' => 'sort',
 
         'fields' => 'fields',
+
+        'append' => 'append',
     ],
 
 ];

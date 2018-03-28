@@ -308,6 +308,35 @@ GET /posts?include=author&fields[author]=name
 
 All posts will be fetched including only the name of the author. 
 
+### Append attributes
+
+Sometimes you will want to append some custom attributes into result from a Model. This can be done using the `append` parameter.
+
+```
+class User extends Model{
+
+    public function getFullnameAttribute()
+    {
+        return $this->firstname.' '.$this->lastname;
+    }
+}
+```
+
+```
+// GET /users?append=fullname
+
+$users = QueryBuilder::for(User::class)
+    ->allowedAppends('fullname')
+    ->get();
+```
+
+Of course you can pass a list of attributes to be appended.
+
+```
+// GET /users?append=fullname,ranking
+```
+
+
 ### Other query methods
 
 As the `QueryBuilder` extends Laravel's default Eloquent query builder you can use any method or macro you like. You can also specify a base query instead of the model FQCN:
