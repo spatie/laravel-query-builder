@@ -315,7 +315,7 @@ Sometimes you will want to append some custom attributes into result from a Mode
 ```
 class User extends Model{
 
-    getFullnameAttribute()
+    public function getFullnameAttribute()
     {
         return $this->firstname.' '.$this->lastname;
     }

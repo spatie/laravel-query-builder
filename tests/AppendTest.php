@@ -93,11 +93,11 @@ class AppendTest extends TestCase
     }
 
     /** @test */
-    public function an_invalid_append_query_exception_contains_the_unknown_and_allowed_appends()
+    public function an_invalid_append_query_exception_contains_the_not_allowed_and_allowed_appends()
     {
-        $exception = new InvalidAppendQuery(collect(['unknown append']), collect(['allowed append']));
+        $exception = new InvalidAppendQuery(collect(['not allowed append']), collect(['allowed append']));
 
-        $this->assertEquals(['unknown append'], $exception->unknownAppends->all());
+        $this->assertEquals(['not allowed append'], $exception->appendsNotAllowed->all());
         $this->assertEquals(['allowed append'], $exception->allowedAppends->all());
     }
 
