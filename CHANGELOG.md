@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.8.0 - 2018-03-28
+
+- add `allowedAppends()`
+
 ## 1.7.0 - 2018-03-23
 
 - add ability to customize query parameter names
