@@ -354,7 +354,7 @@ This package doesn't provide any methods to help you paginate responses. However
 
 If you want to completely adhere to the JSON API specification you can also use our own [spatie/json-api-paginate](https://github.com/spatie/laravel-json-api-paginate)!
 
-## Building queries at the front end
+### Building queries at the front end
 
 If you use [Vue](https://vuejs.org/), you might be interested in the [vue-api-query package](https://github.com/robsontenorio/vue-api-query) by [Robson Tenório](https://github.com/robsontenorio).
 
