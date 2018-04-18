@@ -144,7 +144,7 @@ class QueryBuilder extends Builder
                 return collect(explode('.', $include))
                     ->reduce(function ($collection, $include) {
 
-                        if( $collection->isEmpty() ) {
+                        if ($collection->isEmpty()) {
                             return $collection->push($include);
                         }
 
