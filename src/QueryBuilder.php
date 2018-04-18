@@ -143,7 +143,6 @@ class QueryBuilder extends Builder
             ->flatMap(function ($include) {
                 return collect(explode('.', $include))
                     ->reduce(function ($collection, $include) {
-
                         if ($collection->isEmpty()) {
                             return $collection->push($include);
                         }
