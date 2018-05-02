@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
@@ -123,6 +124,34 @@ class FilterTest extends TestCase
             ->get();
 
         $this->assertCount(0, $modelsResult);
+    }
+
+    /** @test */
+    public function it_can_filter_results_by_scope()
+    {
+        $testModel = TestModel::create(['name' => 'John Testing Doe']);
+
+        $modelsResult = $this
+            ->createQueryFromFilterRequest(['named' => 'John Testing Doe'])
+            ->allowedFilters(Filter::scope('named'))
+            ->get();
+
+        $this->assertCount(1, $modelsResult);
+    }
+
+    /** @test */
+    public function it_can_filter_results_by_scope_with_multiple_parameters()
+    {
+        Carbon::setTestNow(Carbon::parse('2016-05-05'));
+
+        $testModel = TestModel::create(['name' => 'John Testing Doe']);
+
+        $modelsResult = $this
+            ->createQueryFromFilterRequest(['created_between' => '2016-01-01,2017-01-01'])
+            ->allowedFilters(Filter::scope('created_between'))
+            ->get();
+
+        $this->assertCount(1, $modelsResult);
     }
 
     /** @test */
