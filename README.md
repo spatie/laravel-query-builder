@@ -126,7 +126,7 @@ You can load nested relationships using `.`:
 ``` php
 // GET /users?include=posts.comments,permissions
 $users = QueryBuilder::for(User::class)
-    ->allowedIncludes('posts', 'posts.comments', 'permissions')
+    ->allowedIncludes('posts.comments', 'permissions')
     ->get();
 
 // $users will contain all users with their posts, comments on their posts and permissions loaded

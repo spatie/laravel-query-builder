@@ -139,7 +139,17 @@ class QueryBuilder extends Builder
     {
         $includes = is_array($includes) ? $includes : func_get_args();
 
-        $this->allowedIncludes = collect($includes);
+        $this->allowedIncludes = collect($includes)
+            ->flatMap(function ($include) {
+                return collect(explode('.', $include))
+                    ->reduce(function ($collection, $include) {
+                        if ($collection->isEmpty()) {
+                            return $collection->push($include);
+                        }
+
+                        return $collection->push("{$collection->last()}.{$include}");
+                    }, collect());
+            });
 
         $this->guardAgainstUnknownIncludes();
 
