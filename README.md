@@ -224,7 +224,17 @@ QueryBuilder::for(Event::class)
     ->get();
 ```
 
-You can now use the `?filter[starts_before]=2018-01-01` filter on your request to add the `startsBefore` scope to the underlying query.
+The following filter will now add the `startsBefore` scope to the underlying query:
+
+```
+GET /events?filter[starts_before]=2018-01-01
+```
+
+You can even pass multiple parameters to the scope by passing a comma separated list to the filter:
+
+```
+GET /events?filter[starts_between]=2018-01-01,2018-12-31
+```
 
 #### Custom filters
 
