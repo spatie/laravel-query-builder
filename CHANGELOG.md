@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.9.0 - 2018-05-02
+
+- add `Filter::scope()` for querying scopes
+
 ## 1.8.0 - 2018-03-28
 
 - add `allowedAppends()`
