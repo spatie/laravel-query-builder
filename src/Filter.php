@@ -4,8 +4,8 @@ namespace Spatie\QueryBuilder;
 
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Filters\FiltersExact;
-use Spatie\QueryBuilder\Filters\FiltersPartial;
 use Spatie\QueryBuilder\Filters\FiltersScope;
+use Spatie\QueryBuilder\Filters\FiltersPartial;
 
 class Filter
 {
