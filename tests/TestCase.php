@@ -22,6 +22,7 @@ class TestCase extends Orchestra
     {
         $app['db']->connection()->getSchemaBuilder()->create('test_models', function (Blueprint $table) {
             $table->increments('id');
+            $table->timestamps();
             $table->string('name');
         });
 
