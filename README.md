@@ -219,7 +219,7 @@ To filter based on the `startsBefore` scope simply add it to the `allowedFilters
 ```php
 QueryBuilder::for(Event::class)
     ->allowedFilters([
-        Filter::scope('starts_before', 'startsBefore'),
+        Filter::scope('starts_before'),
     ])
     ->get();
 ```
