@@ -2,10 +2,10 @@
 
 namespace Spatie\QueryBuilder\Tests\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 
 class TestModel extends Model
 {
@@ -29,7 +29,7 @@ class TestModel extends Model
     public function scopeCreatedBetween(Builder $query, $from, $to) : Builder
     {
         return $query->whereBetween('created_at', [
-            Carbon::parse($from), Carbon::parse($to)
+            Carbon::parse($from), Carbon::parse($to),
         ]);
     }
 }
