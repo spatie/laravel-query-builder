@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 class FiltersScope implements Filter
 {
-    public function __invoke(Builder $query, $value, string $property) : Builder
+    public function __invoke(Builder $query, $values, string $property) : Builder
     {
-        return $query->$property($value);
+        $scope = camel_case($property);
+        $values = array_wrap($values);
+
+        return $query->$scope(...$values);
     }
 }

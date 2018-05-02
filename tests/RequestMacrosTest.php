@@ -102,13 +102,13 @@ class RequestMacrosTest extends TestCase
         $request = new Request([
             'filters' => [
                 'foo' => 'bar',
-                'baz' => 'qux',
+                'baz' => 'qux,lex',
             ],
         ]);
 
         $expected = collect([
             'foo' => 'bar',
-            'baz' => 'qux',
+            'baz' => ['qux', 'lex'],
         ]);
 
         $this->assertEquals($expected, $request->filters());
