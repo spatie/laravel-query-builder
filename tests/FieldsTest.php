@@ -11,12 +11,14 @@ use Spatie\QueryBuilder\Tests\Models\RelatedModel;
 class FieldsTest extends TestCase
 {
     protected $model;
+    protected $modelTableName;
 
     public function setUp()
     {
         parent::setUp();
 
         $this->model = factory(TestModel::class)->create();
+        $this->modelTableName = $this->model->getTable();
     }
 
     /** @test */
@@ -24,7 +26,7 @@ class FieldsTest extends TestCase
     {
         $queryBuilder = QueryBuilder::for(TestModel::class)->toSql();
 
-        $expected = TestModel::query()->toSql();
+        $expected = TestModel::query()->select("{$this->modelTableName}.*")->toSql();
 
         $this->assertEquals($expected, $queryBuilder);
     }
@@ -37,8 +39,9 @@ class FieldsTest extends TestCase
         ]);
 
         $queryBuilder = QueryBuilder::for(TestModel::class, $request)->toSql();
-
-        $expected = TestModel::query()->select('name', 'id')->toSql();
+        $expected = TestModel::query()
+                             ->select("{$this->modelTableName}.name", "{$this->modelTableName}.id")
+                             ->toSql();
 
         $this->assertEquals($expected, $queryBuilder);
     }
@@ -65,7 +68,7 @@ class FieldsTest extends TestCase
 
         $queryBuilder->first()->relatedModels;
 
-        $this->assertQueryLogContains('select "id" from "test_models"');
+        $this->assertQueryLogContains('select "test_models"."id" from "test_models"');
         $this->assertQueryLogContains('select "name" from "related_models"');
     }
 
