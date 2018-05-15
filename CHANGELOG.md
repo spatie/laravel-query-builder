@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.9.1 - 2018-05-15
+
+- improvements around field selection
+
 ## 1.9.0 - 2018-05-02
 
 - add `Filter::scope()` for querying scopes
