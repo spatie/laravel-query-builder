@@ -14,12 +14,14 @@ class SortTest extends TestCase
 
     /** @var \Illuminate\Support\Collection */
     protected $models;
+    protected $modelTableName;
 
     public function setUp()
     {
         parent::setUp();
 
         $this->models = factory(TestModel::class, 5)->create();
+        $this->modelTableName = $this->models->first()->getTable();
     }
 
     /** @test */
@@ -79,7 +81,7 @@ class SortTest extends TestCase
             ->allowedSorts('name')
             ->toSql();
 
-        $eloquentQuery = TestModel::query()->toSql();
+        $eloquentQuery = TestModel::query()->select("{$this->modelTableName}.*")->toSql();
 
         $this->assertEquals($eloquentQuery, $builderQuery);
     }

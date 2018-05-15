@@ -28,8 +28,12 @@ class QueryBuilderTest extends TestCase
         $queryBuilder = QueryBuilder::for(TestModel::where('id', 1));
 
         $eloquentBuilder = TestModel::where('id', 1);
+        $modelTableName = (new TestModel)->getTable();
 
-        $this->assertEquals($eloquentBuilder->toSql(), $queryBuilder->toSql());
+        $this->assertEquals(
+            $eloquentBuilder->select("$modelTableName.*")->toSql(),
+            $queryBuilder->toSql()
+        );
     }
 
     /** @test */
@@ -79,7 +83,9 @@ class QueryBuilderTest extends TestCase
         $baseQuery = TestModel::query();
 
         $baseQuery->macro('customMacro', function ($builder) {
-            return $builder->where('name', 'Foo');
+            $modelTableName = (new TestModel)->getTable();
+
+            return $builder->select("$modelTableName.*")->where('name', 'Foo');
         });
 
         $queryBuilder = QueryBuilder::for($baseQuery);
@@ -105,8 +111,12 @@ class QueryBuilderTest extends TestCase
         $queryBuilderQuery = QueryBuilder::for(TestModel::class)
             ->named('john')
             ->toSql();
+        $modelTableName = (new TestModel)->getTable();
 
-        $expectedQuery = TestModel::query()->where('name', 'john')->toSql();
+        $expectedQuery = TestModel::query()
+                                  ->select("$modelTableName.*")
+                                  ->where('name', 'john')
+                                  ->toSql();
 
         $this->assertEquals($expectedQuery, $queryBuilderQuery);
     }

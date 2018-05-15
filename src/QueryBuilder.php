@@ -175,15 +175,21 @@ class QueryBuilder extends Builder
     {
         $this->fields = $this->request->fields();
 
-        $modelFields = $this->fields->get(
-            $this->getModel()->getTable()
-        );
+        $modelTableName = $this->getModel()->getTable();
+        $modelFields = $this->fields->get($modelTableName);
 
         if (! $modelFields) {
-            return;
+            $modelFields = '*';
         }
 
-        $this->select(explode(',', $modelFields));
+        $this->select($this->prependFieldsWithTableName(explode(',', $modelFields), $modelTableName));
+    }
+
+    protected function prependFieldsWithTableName(array $fields, string $tableName): array
+    {
+        return array_map(function ($field) use ($tableName) {
+            return "$tableName.$field";
+        }, $fields);
     }
 
     protected function getFieldsForRelatedTable(string $relation): array
