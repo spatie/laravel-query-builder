@@ -188,7 +188,7 @@ class QueryBuilder extends Builder
     protected function prependFieldsWithTableName(array $fields, string $tableName): array
     {
         return array_map(function ($field) use ($tableName) {
-            return "$tableName.$field";
+            return "{$tableName}.{$field}";
         }, $fields);
     }
 
