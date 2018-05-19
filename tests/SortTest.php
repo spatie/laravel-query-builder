@@ -32,7 +32,7 @@ class SortTest extends TestCase
             ->createQueryFromSortRequest('name')
             ->get();
 
-        $this->assertSame(\DB::getQueryLog()[0]['query'],'select "test_models".* from "test_models" order by "name" asc');
+        $this->assertSame(\DB::getQueryLog()[0]['query'], 'select "test_models".* from "test_models" order by "name" asc');
         $this->assertSortedAscending($sortedModels, 'name');
     }
 
@@ -44,7 +44,7 @@ class SortTest extends TestCase
             ->createQueryFromSortRequest('-name')
             ->get();
 
-        $this->assertSame(\DB::getQueryLog()[0]['query'],'select "test_models".* from "test_models" order by "name" desc');
+        $this->assertSame(\DB::getQueryLog()[0]['query'], 'select "test_models".* from "test_models" order by "name" desc');
         $this->assertSortedDescending($sortedModels, 'name');
     }
 
@@ -99,7 +99,7 @@ class SortTest extends TestCase
             ->defaultSort('name')
             ->get();
 
-        $this->assertSame(\DB::getQueryLog()[0]['query'],'select "test_models".* from "test_models" order by "name" asc');
+        $this->assertSame(\DB::getQueryLog()[0]['query'], 'select "test_models".* from "test_models" order by "name" asc');
         $this->assertSortedAscending($sortedModels, 'name');
     }
 
@@ -112,7 +112,7 @@ class SortTest extends TestCase
             ->allowedSorts('id', 'name')
             ->get();
 
-        $this->assertSame(\DB::getQueryLog()[0]['query'],'select "test_models".* from "test_models" order by "name" asc');
+        $this->assertSame(\DB::getQueryLog()[0]['query'], 'select "test_models".* from "test_models" order by "name" asc');
         $this->assertSortedAscending($sortedModels, 'name');
     }
 
@@ -139,7 +139,7 @@ class SortTest extends TestCase
             ->get();
 
         $expected = TestModel::orderBy('name')->orderByDesc('id');
-        $this->assertSame(\DB::getQueryLog()[0]['query'],'select "test_models".* from "test_models" order by "name" asc, "id" desc');
+        $this->assertSame(\DB::getQueryLog()[0]['query'], 'select "test_models".* from "test_models" order by "name" asc, "id" desc');
         $this->assertEquals($expected->pluck('id'), $sortedModels->pluck('id'));
     }
 
