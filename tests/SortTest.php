@@ -153,7 +153,7 @@ class SortTest extends TestCase
 
     protected function assertQueryExecuted(string $query)
     {
-        $queries = array_map(function($queryLogItem) {
+        $queries = array_map(function ($queryLogItem) {
             return $queryLogItem['query'];
         }, DB::getQueryLog());
 
