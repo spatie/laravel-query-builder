@@ -222,7 +222,7 @@ class QueryBuilder extends Builder
 
     protected function addSortsToQuery(Collection $sorts)
     {
-        $sorts
+        $this->filterDuplicates($sorts)
             ->each(function (string $sort) {
                 $descending = $sort[0] === '-';
 
@@ -230,6 +230,25 @@ class QueryBuilder extends Builder
 
                 $this->orderBy($key, $descending ? 'desc' : 'asc');
             });
+    }
+
+    protected function filterDuplicates(Collection $sorts): Collection
+    {
+        if (! is_array($orders = $this->getQuery()->orders)) {
+            return $sorts;
+        }
+
+        return $sorts->reject(function (string $sort) use ($orders) {
+            $toSort = [
+                'column' => ltrim($sort, '-'),
+                'direction' => ($sort[0] === '-') ? 'desc' : 'asc',
+            ];
+            foreach ($orders as $order) {
+                if ($order === $toSort) {
+                    return true;
+                }
+            }
+        });
     }
 
     protected function addIncludesToQuery(Collection $includes)
