@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use DB;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
@@ -20,6 +21,8 @@ class SortTest extends TestCase
     {
         parent::setUp();
 
+        DB::enableQueryLog();
+
         $this->models = factory(TestModel::class, 5)->create();
         $this->modelTableName = $this->models->first()->getTable();
     }
@@ -27,24 +30,22 @@ class SortTest extends TestCase
     /** @test */
     public function it_can_sort_a_collection_ascending()
     {
-        \DB::enableQueryLog();
         $sortedModels = $this
             ->createQueryFromSortRequest('name')
             ->get();
 
-        $this->assertSame(\DB::getQueryLog()[0]['query'], 'select "test_models".* from "test_models" order by "name" asc');
+        $this->assertQueryExecuted('select "test_models".* from "test_models" order by "name" asc');
         $this->assertSortedAscending($sortedModels, 'name');
     }
 
     /** @test */
     public function it_can_sort_a_collection_descending()
     {
-        \DB::enableQueryLog();
         $sortedModels = $this
             ->createQueryFromSortRequest('-name')
             ->get();
 
-        $this->assertSame(\DB::getQueryLog()[0]['query'], 'select "test_models".* from "test_models" order by "name" desc');
+        $this->assertQueryExecuted('select "test_models".* from "test_models" order by "name" desc');
         $this->assertSortedDescending($sortedModels, 'name');
     }
 
@@ -93,26 +94,25 @@ class SortTest extends TestCase
     /** @test */
     public function it_uses_default_sort_parameter()
     {
-        \DB::enableQueryLog();
         $sortedModels = QueryBuilder::for(TestModel::class, new Request())
             ->allowedSorts('name')
             ->defaultSort('name')
             ->get();
 
-        $this->assertSame(\DB::getQueryLog()[0]['query'], 'select "test_models".* from "test_models" order by "name" asc');
+        $this->assertQueryExecuted('select "test_models".* from "test_models" order by "name" asc');
         $this->assertSortedAscending($sortedModels, 'name');
     }
 
     /** @test */
     public function it_can_allow_multiple_sort_parameters()
     {
-        \DB::enableQueryLog();
+        DB::enableQueryLog();
         $sortedModels = $this
             ->createQueryFromSortRequest('name')
             ->allowedSorts('id', 'name')
             ->get();
 
-        $this->assertSame(\DB::getQueryLog()[0]['query'], 'select "test_models".* from "test_models" order by "name" asc');
+        $this->assertQueryExecuted('select "test_models".* from "test_models" order by "name" asc');
         $this->assertSortedAscending($sortedModels, 'name');
     }
 
@@ -131,7 +131,6 @@ class SortTest extends TestCase
     public function it_can_sort_by_multiple_columns()
     {
         factory(TestModel::class, 3)->create(['name' => 'foo']);
-        \DB::enableQueryLog();
 
         $sortedModels = $this
             ->createQueryFromSortRequest('name,-id')
@@ -139,7 +138,7 @@ class SortTest extends TestCase
             ->get();
 
         $expected = TestModel::orderBy('name')->orderByDesc('id');
-        $this->assertSame(\DB::getQueryLog()[0]['query'], 'select "test_models".* from "test_models" order by "name" asc, "id" desc');
+        $this->assertQueryExecuted('select "test_models".* from "test_models" order by "name" asc, "id" desc');
         $this->assertEquals($expected->pluck('id'), $sortedModels->pluck('id'));
     }
 
@@ -150,5 +149,14 @@ class SortTest extends TestCase
         ]);
 
         return QueryBuilder::for(TestModel::class, $request);
+    }
+
+    protected function assertQueryExecuted(string $query)
+    {
+        $queries = array_map(function($queryLogItem) {
+            return $queryLogItem['query'];
+        }, DB::getQueryLog());
+
+        $this->assertContains($query, $queries);
     }
 }
