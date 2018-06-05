@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.9.3 - 2018-06-05
+
+- resolved #14
+
 ## 1.9.2 - 2018-05-21
 
 - prevent double sorting statments
