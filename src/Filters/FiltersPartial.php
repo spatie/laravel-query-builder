@@ -8,7 +8,7 @@ class FiltersPartial implements Filter
 {
     public function __invoke(Builder $query, $value, string $property): Builder
     {
-        $sql = "LOWER({$property}) LIKE ?";
+        $sql = "LOWER(`{$property}`) LIKE ?";
 
         if (is_array($value)) {
             return $query->where(function (Builder $query) use ($value, $sql) {
