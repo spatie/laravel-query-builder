@@ -13,14 +13,14 @@ class FiltersPartial implements Filter
         if (is_array($value)) {
             return $query->where(function (Builder $query) use ($value, $sql) {
                 foreach ($value as $partialValue) {
-                    $partialValue = strtolower($partialValue);
+                    $partialValue = mb_strtolower($partialValue, 'UTF8');
 
                     $query->orWhereRaw($sql, ["%{$partialValue}%"]);
                 }
             });
         }
 
-        $value = strtolower($value);
+        $value = mb_strtolower($value, 'UTF8');
 
         return $query->whereRaw($sql, ["%{$value}%"]);
     }
