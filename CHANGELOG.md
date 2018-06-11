@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.9.6 - 2018-06-11
+
+- fix for using reserved SQL words as attributes in Postgres
+
 ## 1.9.5 - 2018-06-09
 
 - make sure filtering on string with special characters just works
