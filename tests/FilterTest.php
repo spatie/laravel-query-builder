@@ -9,6 +9,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 
 class FilterTest extends TestCase
@@ -236,6 +237,36 @@ class FilterTest extends TestCase
         $this
             ->createQueryFromFilterRequest(['name' => 'John'])
             ->allowedFilters('id');
+    }
+
+    /** @test */
+    public function it_can_create_a_custom_filter_with_an_instantiated_filter()
+    {
+        $customFilter = new class('test1') implements CustomFilter {
+            /** @var string */
+            private $filter;
+
+            public function __construct(string $filter)
+            {
+                $this->filter = $filter;
+            }
+
+            public function __invoke(Builder $query, $value, string $property): Builder
+            {
+                return $query;
+            }
+        };
+
+        TestModel::create(['name' => 'abcdef']);
+
+        $results = $this
+            ->createQueryFromFilterRequest([
+                '*' => '*',
+            ])
+            ->allowedFilters('name', Filter::custom('*', $customFilter))
+            ->get();
+
+        $this->assertNotEmpty($results);
     }
 
     /** @test */
