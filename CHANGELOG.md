@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.10.0 - 2018-06-12
+
+- add support for instantiated custom filter classes
+
 ## 1.9.6 - 2018-06-11
 
 - fix for using reserved SQL words as attributes in Postgres
