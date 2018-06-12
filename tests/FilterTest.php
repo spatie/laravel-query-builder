@@ -5,11 +5,11 @@ namespace Spatie\QueryBuilder\Tests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Spatie\QueryBuilder\Filter;
-use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 
 class FilterTest extends TestCase
@@ -261,7 +261,7 @@ class FilterTest extends TestCase
 
         $results = $this
             ->createQueryFromFilterRequest([
-                '*' => '*'
+                '*' => '*',
             ])
             ->allowedFilters('name', Filter::custom('*', $customFilter))
             ->get();
