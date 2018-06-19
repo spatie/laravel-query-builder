@@ -13,6 +13,10 @@ This package allows you to filter, sort and include eloquent relations based on 
 Filtering an API request: `/users?filter[name]=John`:
 
 ```php
+use Spatie\QueryBuilder\QueryBuilder;
+
+// ...
+
 $users = QueryBuilder::for(User::class)
     ->allowedFilters('name')
     ->get();
