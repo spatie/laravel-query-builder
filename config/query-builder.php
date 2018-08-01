@@ -12,6 +12,8 @@ return [
 
         'filter' => 'filter',
 
+        'exclude' => [],
+
         'sort' => 'sort',
 
         'fields' => 'fields',
