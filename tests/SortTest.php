@@ -3,11 +3,14 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use DB;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
+use Spatie\QueryBuilder\Sort;
+use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
 
 class SortTest extends TestCase
 {
@@ -140,6 +143,25 @@ class SortTest extends TestCase
         $expected = TestModel::orderBy('name')->orderByDesc('id');
         $this->assertQueryExecuted('select "test_models".* from "test_models" order by "name" asc, "id" desc');
         $this->assertEquals($expected->pluck('id'), $sortedModels->pluck('id'));
+    }
+
+    /** @test */
+    public function it_can_sort_by_a_custom_sort_class()
+    {
+        $sortClass = new class implements SortInterface {
+            public function __invoke(Builder $query, $descending, string $property) : Builder
+            {
+                return $query->orderBy('name', $descending ? 'desc' : 'asc');
+            }
+        };
+
+        $sortedModels = $this
+            ->createQueryFromSortRequest('custom_name')
+            ->allowedSorts(Sort::custom('custom_name', get_class($sortClass)))
+            ->get();
+
+        $this->assertQueryExecuted('select "test_models".* from "test_models" order by "name" asc');
+        $this->assertSortedAscending($sortedModels, 'name');
     }
 
     protected function createQueryFromSortRequest(string $sort): QueryBuilder
