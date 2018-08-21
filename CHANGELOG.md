@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.10.1 - 2018-08-21
+
+- improve compatibility with Lumen by only publishing the config file in console mode
+
 ## 1.10.0 - 2018-06-12
 
 - add support for instantiated custom filter classes
