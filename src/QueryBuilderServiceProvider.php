@@ -60,8 +60,8 @@ class QueryBuilderServiceProvider extends ServiceProvider
                 return collect();
             }
 
-            $filters = collect($filterParts)->filter(function ($filter) {
-                return ! is_null($filter);
+            $filters = collect($filterParts)->filter(function ($filter,$key) {
+                return ! is_null($filter) && ! in_array($key,config('query-builder.parameters.exclude'));
             });
 
             $filtersMapper = function ($value) {
