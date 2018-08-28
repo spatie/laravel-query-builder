@@ -13,6 +13,8 @@ class ScopeModel extends Model
 
     public static function boot()
     {
+        parent::boot();
+
         static::addGlobalScope('nameNotTest', function (Builder $builder) {
             $builder->where('name', '<>', 'test');
         });

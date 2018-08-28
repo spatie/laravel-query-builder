@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.10.2 - 2018-08-28
+
+- add support for Laravel 5.7
+- add framework/laravel as a dependency
+
 ## 1.10.1 - 2018-08-21
 
 - improve compatibility with Lumen by only publishing the config file in console mode
