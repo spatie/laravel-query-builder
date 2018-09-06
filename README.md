@@ -8,6 +8,35 @@
 
 This package allows you to filter, sort and include eloquent relations based on a request. The `QueryBuilder` used in this package extends Laravel's default Eloquent builder. This means all your favorite methods and macros are still available. Query parameter names follow the [JSON API specification](http://jsonapi.org/) as closely as possible.
 
+## Table of Contents
+
+<!-- toc -->
+
+- [Basic usage](#basic-usage)
+- [Installation](#installation)
+- [Usage](#usage)
+  * [Including relationships](#including-relationships)
+  * [Filtering](#filtering)
+    + [Exact filters](#exact-filters)
+    + [Scope filters](#scope-filters)
+    + [Custom filters](#custom-filters)
+  * [Sorting](#sorting)
+  * [Selecting specific columns](#selecting-specific-columns)
+  * [Append attributes](#append-attributes)
+  * [Other query methods](#other-query-methods)
+    + [Pagination](#pagination)
+  * [Building queries at the front end](#building-queries-at-the-front-end)
+  * [Testing](#testing)
+  * [Changelog](#changelog)
+- [Contributing](#contributing)
+  * [Security](#security)
+- [Postcardware](#postcardware)
+- [Credits](#credits)
+- [Support us](#support-us)
+- [License](#license)
+
+<!-- tocstop -->
+
 ## Basic usage
 
 Filtering an API request: `/users?filter[name]=John`:
