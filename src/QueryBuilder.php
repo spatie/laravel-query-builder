@@ -137,7 +137,7 @@ class QueryBuilder extends Builder
     public function allowedSorts($sorts) : self
     {
         $sorts = is_array($sorts) ? $sorts : func_get_args();
-        if (! $this->request->sorts()) {
+        if (! $this->request->get('sorts')) {
             return $this;
         }
 
