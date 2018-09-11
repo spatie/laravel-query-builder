@@ -36,6 +36,11 @@ class QueryBuilder extends Builder
     /** @var \Illuminate\Http\Request */
     protected $request;
 
+    /**
+     * QueryBuilder constructor.
+     * @param Builder $builder
+     * @param Request|null $request
+     */
     public function __construct(Builder $builder, ? Request $request = null)
     {
         parent::__construct(clone $builder->getQuery());
@@ -46,7 +51,7 @@ class QueryBuilder extends Builder
 
         $this->parseSelectedFields();
 
-        if ($this->request->sorts()) {
+        if ($this->request->get('sorts')) {
             $this->allowedSorts('*');
         }
     }
@@ -90,6 +95,10 @@ class QueryBuilder extends Builder
         return new static($baseQuery, $request ?? request());
     }
 
+    /**
+     * @param $filters
+     * @return QueryBuilder
+     */
     public function allowedFilters($filters) : self
     {
         $filters = is_array($filters) ? $filters : func_get_args();
@@ -103,20 +112,28 @@ class QueryBuilder extends Builder
 
         $this->guardAgainstUnknownFilters();
 
-        $this->addFiltersToQuery($this->request->filters());
+        $this->addFiltersToQuery(new Collection($this->request->get('filters')));
 
         return $this;
     }
 
+    /**
+     * @param $sort
+     * @return QueryBuilder
+     */
     public function defaultSort($sort) : self
     {
         $this->defaultSort = $sort;
 
-        $this->addSortsToQuery($this->request->sorts($this->defaultSort));
+        $this->addSortsToQuery(new Collection($this->request->get('sorts', $this->defaultSort)));
 
         return $this;
     }
 
+    /**
+     * @param $sorts
+     * @return QueryBuilder
+     */
     public function allowedSorts($sorts) : self
     {
         $sorts = is_array($sorts) ? $sorts : func_get_args();
@@ -130,11 +147,15 @@ class QueryBuilder extends Builder
             $this->guardAgainstUnknownSorts();
         }
 
-        $this->addSortsToQuery($this->request->sorts($this->defaultSort));
+        $this->addSortsToQuery( new Collection($this->request->get('sorts', $this->defaultSort)));
 
         return $this;
     }
 
+    /**
+     * @param $includes
+     * @return QueryBuilder
+     */
     public function allowedIncludes($includes) : self
     {
         $includes = is_array($includes) ? $includes : func_get_args();
@@ -153,11 +174,15 @@ class QueryBuilder extends Builder
 
         $this->guardAgainstUnknownIncludes();
 
-        $this->addIncludesToQuery($this->request->includes());
+        $this->addIncludesToQuery( new Collection($this->request->get('includes')));
 
         return $this;
     }
 
+    /**
+     * @param $appends
+     * @return QueryBuilder
+     */
     public function allowedAppends($appends) : self
     {
         $appends = is_array($appends) ? $appends : func_get_args();
@@ -166,14 +191,17 @@ class QueryBuilder extends Builder
 
         $this->guardAgainstUnknownAppends();
 
-        $this->appends = $this->request->appends();
+        $this->appends =  new Collection($this->request->get('appends'));
 
         return $this;
     }
 
+    /**
+     * @return void
+     */
     protected function parseSelectedFields()
     {
-        $this->fields = $this->request->fields();
+        $this->fields = new Collection($this->request->get('fields'));
 
         $modelTableName = $this->getModel()->getTable();
         $modelFields = $this->fields->get($modelTableName);
@@ -185,6 +213,11 @@ class QueryBuilder extends Builder
         $this->select($this->prependFieldsWithTableName(explode(',', $modelFields), $modelTableName));
     }
 
+    /**
+     * @param array $fields
+     * @param string $tableName
+     * @return array
+     */
     protected function prependFieldsWithTableName(array $fields, string $tableName): array
     {
         return array_map(function ($field) use ($tableName) {
@@ -192,6 +225,10 @@ class QueryBuilder extends Builder
         }, $fields);
     }
 
+    /**
+     * @param string $relation
+     * @return array
+     */
     protected function getFieldsForRelatedTable(string $relation): array
     {
         $fields = $this->fields->get($relation);
@@ -203,6 +240,9 @@ class QueryBuilder extends Builder
         return explode(',', $fields);
     }
 
+    /**
+     * @param Collection $filters
+     */
     protected function addFiltersToQuery(Collection $filters)
     {
         $filters->each(function ($value, $property) {
@@ -212,6 +252,10 @@ class QueryBuilder extends Builder
         });
     }
 
+    /**
+     * @param string $property
+     * @return null|Filter
+     */
     protected function findFilter(string $property) : ? Filter
     {
         return $this->allowedFilters
@@ -220,6 +264,9 @@ class QueryBuilder extends Builder
             });
     }
 
+    /**
+     * @param Collection $sorts
+     */
     protected function addSortsToQuery(Collection $sorts)
     {
         $this->filterDuplicates($sorts)
@@ -232,6 +279,10 @@ class QueryBuilder extends Builder
             });
     }
 
+    /**
+     * @param Collection $sorts
+     * @return Collection
+     */
     protected function filterDuplicates(Collection $sorts): Collection
     {
         if (! is_array($orders = $this->getQuery()->orders)) {
@@ -251,6 +302,9 @@ class QueryBuilder extends Builder
         });
     }
 
+    /**
+     * @param Collection $includes
+     */
     protected function addIncludesToQuery(Collection $includes)
     {
         $includes
@@ -279,6 +333,10 @@ class QueryBuilder extends Builder
             });
     }
 
+    /**
+     * @param $result
+     * @return mixed
+     */
     public function setAppendsToResult($result)
     {
         $result->map(function ($item) {
@@ -290,9 +348,14 @@ class QueryBuilder extends Builder
         return $result;
     }
 
+    /**
+     * @return void
+     */
     protected function guardAgainstUnknownFilters()
     {
-        $filterNames = $this->request->filters()->keys();
+        $filters = new Collection($this->request->get('filters'));
+
+        $filterNames = $filters->keys();
 
         $allowedFilterNames = $this->allowedFilters->map->getProperty();
 
@@ -303,9 +366,12 @@ class QueryBuilder extends Builder
         }
     }
 
+    /**
+     * @return void
+     */
     protected function guardAgainstUnknownSorts()
     {
-        $sorts = $this->request->sorts()->map(function ($sort) {
+        $sorts = (new Collection($this->request->get('sorts')))->map(function ($sort) {
             return ltrim($sort, '-');
         });
 
@@ -316,9 +382,12 @@ class QueryBuilder extends Builder
         }
     }
 
+    /**
+     * @return void
+     */
     protected function guardAgainstUnknownIncludes()
     {
-        $includes = $this->request->includes();
+        $includes = new Collection($this->request->get('includes'));
 
         $diff = $includes->diff($this->allowedIncludes);
 
@@ -327,9 +396,12 @@ class QueryBuilder extends Builder
         }
     }
 
+    /**
+     * @return void
+     */
     protected function guardAgainstUnknownAppends()
     {
-        $appends = $this->request->appends();
+        $appends = new Collection($this->request->get('appends'));
 
         $diff = $appends->diff($this->allowedAppends);
 
@@ -338,6 +410,10 @@ class QueryBuilder extends Builder
         }
     }
 
+    /**
+     * @param array $columns
+     * @return mixed
+     */
     public function get($columns = ['*'])
     {
         $result = parent::get($columns);
