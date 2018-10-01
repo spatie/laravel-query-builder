@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\RelatedModel;
+use Spatie\QueryBuilder\Exceptions\InvalidFieldsQuery;
 
 class FieldsTest extends TestCase
 {
@@ -34,16 +35,22 @@ class FieldsTest extends TestCase
     /** @test */
     public function it_can_fetch_only_required_columns()
     {
-        $request = new Request([
-            'fields' => ['test_models' => 'name,id'],
-        ]);
-
-        $queryBuilder = QueryBuilder::for(TestModel::class, $request)->toSql();
+        $queryBuilder = $this->createQueryFromFieldRequest(['test_models' => 'name,id'])->allowedFields(['name', 'id'])->toSql();
         $expected = TestModel::query()
                              ->select("{$this->modelTableName}.name", "{$this->modelTableName}.id")
                              ->toSql();
 
         $this->assertEquals($expected, $queryBuilder);
+    }
+
+    /** @test */
+    public function it_guards_against_invalid_fields()
+    {
+        $this->expectException(InvalidFieldsQuery::class);
+        
+        $this
+            ->createQueryFromFieldRequest(['test_models' => 'random-column'])
+            ->allowedFields('name');
     }
 
     /** @test */
@@ -70,6 +77,15 @@ class FieldsTest extends TestCase
 
         $this->assertQueryLogContains('select "test_models"."id" from "test_models"');
         $this->assertQueryLogContains('select "name" from "related_models"');
+    }
+
+    protected function createQueryFromFieldRequest(array $fields): QueryBuilder
+    {
+        $request = new Request([
+            'fields' => $fields,
+        ]);
+
+        return QueryBuilder::for(TestModel::class, $request);
     }
 
     protected function assertQueryLogContains(string $partialSql)

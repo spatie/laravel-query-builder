@@ -8,12 +8,16 @@ use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidFieldsQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 
 class QueryBuilder extends Builder
 {
     /** @var \Illuminate\Support\Collection */
     protected $allowedFilters;
+
+    /** @var \Illuminate\Support\Collection */
+    protected $allowedFields;
 
     /** @var string|null */
     protected $defaultSort;
@@ -104,6 +108,17 @@ class QueryBuilder extends Builder
         $this->guardAgainstUnknownFilters();
 
         $this->addFiltersToQuery($this->request->filters());
+
+        return $this;
+    }
+
+    public function allowedFields($fields) : self
+    {
+        $fields = is_array($fields) ? $fields : func_get_args();
+
+        $this->allowedFields = collect($fields);
+
+        $this->guardAgainstUnknownFields();
 
         return $this;
     }
@@ -300,6 +315,19 @@ class QueryBuilder extends Builder
 
         if ($diff->count()) {
             throw InvalidFilterQuery::filtersNotAllowed($diff, $allowedFilterNames);
+        }
+    }
+
+    protected function guardAgainstUnknownFields()
+    {
+        $fields = $this->request->fields()->flatMap(function($value){
+            return explode(',',$value);
+        })->unique();
+
+        $diff = $fields->diff($this->allowedFields);
+
+        if ($diff->count()) {
+            throw InvalidFieldsQuery::fieldsNotAllowed($diff, $this->allowedFields);
         }
     }
 
