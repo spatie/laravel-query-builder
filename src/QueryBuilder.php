@@ -7,8 +7,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
-use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldsQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 
 class QueryBuilder extends Builder
@@ -320,8 +320,8 @@ class QueryBuilder extends Builder
 
     protected function guardAgainstUnknownFields()
     {
-        $fields = $this->request->fields()->flatMap(function($value){
-            return explode(',',$value);
+        $fields = $this->request->fields()->flatMap(function ($value) {
+            return explode(',', $value);
         })->unique();
 
         $diff = $fields->diff($this->allowedFields);

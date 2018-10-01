@@ -47,7 +47,7 @@ class FieldsTest extends TestCase
     public function it_guards_against_invalid_fields()
     {
         $this->expectException(InvalidFieldsQuery::class);
-        
+
         $this
             ->createQueryFromFieldRequest(['test_models' => 'random-column'])
             ->allowedFields('name');
