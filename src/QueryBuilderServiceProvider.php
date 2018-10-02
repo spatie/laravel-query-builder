@@ -52,17 +52,13 @@ class QueryBuilderServiceProvider extends ServiceProvider
         });
 
         Request::macro('filters', function ($filter = null) {
-            $filterParts = $this->query(
-                config('query-builder.parameters.filter')
-            );
+            $filterParts = $this->query(config('query-builder.parameters.filter'), []);
 
-            if (! $filterParts) {
+            if (is_string($filterParts)) {
                 return collect();
             }
 
-            $filters = collect($filterParts)->filter(function ($filter) {
-                return ! is_null($filter);
-            });
+            $filters = collect($filterParts);
 
             $filtersMapper = function ($value) {
                 if (is_array($value)) {

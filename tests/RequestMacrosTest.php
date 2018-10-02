@@ -17,7 +17,7 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
-    public function is_can_get_different_sort_query_parameter_name()
+    public function it_can_get_different_sort_query_parameter_name()
     {
         config(['query-builder.parameters.sort' => 'sorts']);
 
@@ -95,7 +95,7 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
-    public function is_can_get_different_filter_query_parameter_name()
+    public function it_can_get_different_filter_query_parameter_name()
     {
         config(['query-builder.parameters.filter' => 'filters']);
 
@@ -109,6 +109,26 @@ class RequestMacrosTest extends TestCase
         $expected = collect([
             'foo' => 'bar',
             'baz' => ['qux', 'lex'],
+        ]);
+
+        $this->assertEquals($expected, $request->filters());
+    }
+
+    /** @test */
+    public function it_can_get_empty_filters()
+    {
+        config(['query-builder.parameters.filter' => 'filters']);
+
+        $request = new Request([
+            'filters' => [
+                'foo' => 'bar',
+                'baz' => null,
+            ],
+        ]);
+
+        $expected = collect([
+            'foo' => 'bar',
+            'baz' => '',
         ]);
 
         $this->assertEquals($expected, $request->filters());
@@ -215,7 +235,7 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
-    public function is_can_get_different_include_query_parameter_name()
+    public function it_can_get_different_include_query_parameter_name()
     {
         config(['query-builder.parameters.include' => 'includes']);
 
@@ -264,7 +284,7 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
-    public function is_can_get_different_fields_parameter_name()
+    public function it_can_get_different_fields_parameter_name()
     {
         config(['query-builder.parameters.fields' => 'field']);
 
@@ -292,7 +312,7 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
-    public function is_can_get_different_append_query_parameter_name()
+    public function it_can_get_different_append_query_parameter_name()
     {
         config(['query-builder.parameters.append' => 'appendit']);
 

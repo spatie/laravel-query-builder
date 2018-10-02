@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.10.4 - 2018-10-02
+
+- fix parsing empty filters from url
+
 ## 1.10.3 - 2018-09-17
 
 - improve compatibility with Lumen
