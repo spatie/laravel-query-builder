@@ -23,24 +23,28 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_fetch_all_columns_if_none_is_given()
+    public function it_fetches_all_columns_if_no_field_was_requested()
     {
-        $queryBuilder = QueryBuilder::for(TestModel::class)->toSql();
+        $query = QueryBuilder::for(TestModel::class)->toSql();
 
         $expected = TestModel::query()->select("{$this->modelTableName}.*")->toSql();
 
-        $this->assertEquals($expected, $queryBuilder);
+        $this->assertEquals($expected, $query);
     }
 
     /** @test */
-    public function it_can_fetch_only_required_columns()
+    public function it_can_fetch_specific_columns()
     {
-        $queryBuilder = $this->createQueryFromFieldRequest(['test_models' => 'name,id'])->allowedFields(['name', 'id'])->toSql();
-        $expected = TestModel::query()
-                             ->select("{$this->modelTableName}.name", "{$this->modelTableName}.id")
-                             ->toSql();
+        $query = $this
+            ->createQueryFromFieldRequest(['test_models' => 'name,id'])
+            ->allowedFields(['name', 'id'])
+            ->toSql();
 
-        $this->assertEquals($expected, $queryBuilder);
+        $expected = TestModel::query()
+            ->select("{$this->modelTableName}.name", "{$this->modelTableName}.id")
+            ->toSql();
+
+        $this->assertEquals($expected, $query);
     }
 
     /** @test */
@@ -54,9 +58,19 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_fetch_only_required_columns_from_an_included_model()
+    public function it_guards_against_invalid_fields_from_an_included_resource()
     {
-        $relatedModel = RelatedModel::create([
+        $this->expectException(InvalidFieldQuery::class);
+
+        $this
+            ->createQueryFromFieldRequest(['related_models' => 'random_column'])
+            ->allowedFields('related_models.name');
+    }
+
+    /** @test */
+    public function it_can_fetch_only_requested_columns_from_an_included_model()
+    {
+        RelatedModel::create([
             'test_model_id' => $this->model->id,
             'name' => 'related',
         ]);
@@ -77,6 +91,26 @@ class FieldsTest extends TestCase
 
         $this->assertQueryLogContains('select "test_models"."id" from "test_models"');
         $this->assertQueryLogContains('select "name" from "related_models"');
+    }
+
+    /** @test */
+    public function it_can_allow_specific_fields_on_an_included_model()
+    {
+        $request = new Request([
+            'fields' => ['related_models' => 'id,first_name'],
+            'include' => ['related-models'],
+        ]);
+
+        $queryBuilder = QueryBuilder::for(TestModel::class, $request)
+            ->allowedIncludes('related-models')
+            ->allowedFields(['related_models.id', 'related_models.first_name']);
+
+        DB::enableQueryLog();
+
+        $queryBuilder->first()->relatedModels;
+
+        $this->assertQueryLogContains('select "test_models".* from "test_models"');
+        $this->assertQueryLogContains('select "id", "first_name" from "related_models"');
     }
 
     protected function createQueryFromFieldRequest(array $fields): QueryBuilder

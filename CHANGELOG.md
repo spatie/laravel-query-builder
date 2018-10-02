@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.11.0 - 2018-10-02
+
+- add `allowedFields` method
+
 ## 1.10.4 - 2018-10-02
 
 - fix parsing empty filters from url

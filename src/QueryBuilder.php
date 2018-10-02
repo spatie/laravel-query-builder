@@ -116,7 +116,16 @@ class QueryBuilder extends Builder
     {
         $fields = is_array($fields) ? $fields : func_get_args();
 
-        $this->allowedFields = collect($fields);
+        $this->allowedFields = collect($fields)
+            ->map(function (string $fieldName) {
+                if (! str_contains($fieldName, '.')) {
+                    $modelTableName = $this->getModel()->getTable();
+
+                    return "{$modelTableName}.{$fieldName}";
+                }
+
+                return $fieldName;
+            });
 
         if (! $this->allowedFields->contains('*')) {
             $this->guardAgainstUnknownFields();
@@ -322,9 +331,19 @@ class QueryBuilder extends Builder
 
     protected function guardAgainstUnknownFields()
     {
-        $fields = $this->request->fields()->flatMap(function ($value) {
-            return explode(',', $value);
-        })->unique();
+        $fields = $this->request->fields()
+            ->map(function ($value) {
+                return explode(',', $value);
+            })
+            ->map(function ($fields, $model) {
+                $tableName = snake_case(preg_replace('/-/', '_', $model));
+
+                $fields = array_map('snake_case', $fields);
+
+                return $this->prependFieldsWithTableName($fields, $tableName);
+            })
+            ->flatten()
+            ->unique();
 
         $diff = $fields->diff($this->allowedFields);
 
