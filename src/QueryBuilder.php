@@ -118,7 +118,9 @@ class QueryBuilder extends Builder
 
         $this->allowedFields = collect($fields);
 
-        $this->guardAgainstUnknownFields();
+        if (! $this->allowedFields->contains('*')) {
+            $this->guardAgainstUnknownFields();
+        }
 
         return $this;
     }
