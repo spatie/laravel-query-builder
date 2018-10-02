@@ -48,7 +48,9 @@ class QueryBuilder extends Builder
 
         $this->request = $request ?? request();
 
-        $this->parseSelectedFields();
+        if ($this->request->fields()) {
+            $this->parseSelectedFields();
+        }
 
         if ($this->request->sorts()) {
             $this->allowedSorts('*');
@@ -202,13 +204,9 @@ class QueryBuilder extends Builder
         $this->fields = $this->request->fields();
 
         $modelTableName = $this->getModel()->getTable();
-        $modelFields = $this->fields->get($modelTableName);
+        $modelFields = $this->fields->get($modelTableName, ['*']);
 
-        if (! $modelFields) {
-            $modelFields = '*';
-        }
-
-        $this->select($this->prependFieldsWithTableName(explode(',', $modelFields), $modelTableName));
+        $this->select($this->prependFieldsWithTableName($modelFields, $modelTableName));
     }
 
     protected function prependFieldsWithTableName(array $fields, string $tableName): array
@@ -220,13 +218,11 @@ class QueryBuilder extends Builder
 
     protected function getFieldsForRelatedTable(string $relation): array
     {
-        $fields = $this->fields->get($relation);
-
-        if (! $fields) {
-            return [];
+        if (! $this->fields) {
+            return ['*'];
         }
 
-        return explode(',', $fields);
+        return $this->fields->get($relation, []);
     }
 
     protected function addFiltersToQuery(Collection $filters)
@@ -332,9 +328,6 @@ class QueryBuilder extends Builder
     protected function guardAgainstUnknownFields()
     {
         $fields = $this->request->fields()
-            ->map(function ($value) {
-                return explode(',', $value);
-            })
             ->map(function ($fields, $model) {
                 $tableName = snake_case(preg_replace('/-/', '_', $model));
 

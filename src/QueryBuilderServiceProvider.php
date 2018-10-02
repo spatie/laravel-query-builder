@@ -89,12 +89,22 @@ class QueryBuilderServiceProvider extends ServiceProvider
             return $filters->get(strtolower($filter));
         });
 
-        Request::macro('sort', function ($default = null) {
-            return $this->query(config('query-builder.parameters.sort'), $default);
+        Request::macro('fields', function () {
+            $fieldsPerTable = collect(
+                $this->query(config('query-builder.parameters.fields'))
+            );
+
+            if ($fieldsPerTable->isEmpty()) {
+                return null;
+            }
+
+            return $fieldsPerTable->map(function ($fields) {
+                return explode(',', $fields);
+            });
         });
 
-        Request::macro('fields', function ($default = null) {
-            return collect($this->query(config('query-builder.parameters.fields'), $default));
+        Request::macro('sort', function ($default = null) {
+            return $this->query(config('query-builder.parameters.sort'), $default);
         });
 
         Request::macro('sorts', function ($default = null) {

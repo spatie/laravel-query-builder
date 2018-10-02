@@ -27,7 +27,7 @@ class FieldsTest extends TestCase
     {
         $query = QueryBuilder::for(TestModel::class)->toSql();
 
-        $expected = TestModel::query()->select("{$this->modelTableName}.*")->toSql();
+        $expected = TestModel::query()->toSql();
 
         $this->assertEquals($expected, $query);
     }
