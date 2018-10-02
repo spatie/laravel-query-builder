@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\RelatedModel;
-use Spatie\QueryBuilder\Exceptions\InvalidFieldsQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 
 class FieldsTest extends TestCase
 {
@@ -46,7 +46,7 @@ class FieldsTest extends TestCase
     /** @test */
     public function it_guards_against_invalid_fields()
     {
-        $this->expectException(InvalidFieldsQuery::class);
+        $this->expectException(InvalidFieldQuery::class);
 
         $this
             ->createQueryFromFieldRequest(['test_models' => 'random-column'])

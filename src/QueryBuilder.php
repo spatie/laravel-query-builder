@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
-use Spatie\QueryBuilder\Exceptions\InvalidFieldsQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 
@@ -327,7 +327,7 @@ class QueryBuilder extends Builder
         $diff = $fields->diff($this->allowedFields);
 
         if ($diff->count()) {
-            throw InvalidFieldsQuery::fieldsNotAllowed($diff, $this->allowedFields);
+            throw InvalidFieldQuery::fieldsNotAllowed($diff, $this->allowedFields);
         }
     }
 
