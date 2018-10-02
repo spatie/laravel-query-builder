@@ -341,6 +341,19 @@ The SQL query will look like this:
 SELECT "id", "name" FROM "users"
 ```
 
+you can also use the `allowedFields` method to limit which properties are allowed to be used in the request.
+
+When trying to select a column that's not specified in `allowedFields()` an `InvalidFieldQuery` exception will be thrown.
+
+``` php
+// GET /users?fields[users]=id
+$users = QueryBuilder::for(User::class)
+    ->allowedFields('name')
+    ->get();
+
+// Will throw an `InvalidFieldQuery` exception as `id` is not an allowed
+```
+
 Selecting fields for included models works the same way. This is especially useful when including entire relationships when you only need a couple of columns. Consider the following example:
 
 ```
