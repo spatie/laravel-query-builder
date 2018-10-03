@@ -2,9 +2,11 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
-## 1.11.0 - 2018-10-02
+## 1.11.0 - 2018-10-03
 
 - add `allowedFields` method
+- fix & cleanup `Request::fields()` macro
+- fix fields option (`SELECT * FROM table` instead of `SELECT table.* FROM table`)
 
 ## 1.10.4 - 2018-10-02
 
