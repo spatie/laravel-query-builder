@@ -294,7 +294,7 @@ class RequestMacrosTest extends TestCase
             ],
         ]);
 
-        $expected = collect(['column' => ['name','email']]);
+        $expected = collect(['column' => ['name', 'email']]);
 
         $this->assertEquals($expected, $request->fields());
     }
