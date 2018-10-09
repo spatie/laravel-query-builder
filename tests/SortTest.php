@@ -48,6 +48,21 @@ class SortTest extends TestCase
     }
 
     /** @test */
+    public function it_can_sort_a_query_with_custom_select()
+    {
+        $request = new Request([
+            'sort' => '-id',
+        ]);
+
+        QueryBuilder::for(TestModel::select('id', 'name'), $request)
+            ->allowedSorts('-id', 'id')
+            ->defaultSort('id')
+            ->paginate(15);
+
+        $this->assertQueryExecuted('select "id", "name" from "test_models" order by "id" desc limit 15 offset 0');
+    }
+
+    /** @test */
     public function it_can_guard_against_sorts_that_are_not_allowed()
     {
         $sortedModels = $this
