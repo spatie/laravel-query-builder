@@ -23,11 +23,24 @@ class QueryBuilderTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_given_a_custom_base_query()
+    public function it_can_be_given_a_custom_base_query_using_where()
     {
         $queryBuilder = QueryBuilder::for(TestModel::where('id', 1));
 
         $eloquentBuilder = TestModel::where('id', 1);
+
+        $this->assertEquals(
+            $eloquentBuilder->toSql(),
+            $queryBuilder->toSql()
+        );
+    }
+
+    /** @test */
+    public function it_can_be_given_a_custom_base_query_using_select()
+    {
+        $queryBuilder = QueryBuilder::for(TestModel::select('id', 'name'));
+
+        $eloquentBuilder = TestModel::select('id', 'name');
 
         $this->assertEquals(
             $eloquentBuilder->toSql(),
