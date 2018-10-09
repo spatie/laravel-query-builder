@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
@@ -78,6 +79,24 @@ class FilterTest extends TestCase
             ->get();
 
         $this->assertCount(0, $models);
+    }
+
+    /** @test */
+    public function it_can_filter_a_custom_base_query_with_select()
+    {
+        $request = new Request([
+            'filter' => ['name' => 'john'],
+        ]);
+
+        $queryBuilderSql = QueryBuilder::for(TestModel::select('id', 'name'), $request)
+            ->allowedFilters('name', 'id')
+            ->toSql();
+
+        $expectedSql = TestModel::select('id', 'name')
+            ->where(DB::raw('LOWER("name")'), 'LIKE', 'john')
+            ->toSql();
+
+        $this->assertEquals($expectedSql, $queryBuilderSql);
     }
 
     /** @test */
