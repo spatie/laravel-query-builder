@@ -33,6 +33,16 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
+    public function it_fetches_all_columns_if_no_specific_columns_were_requested()
+    {
+        $query = QueryBuilder::for(TestModel::class)->allowedFields('id', 'name')->toSql();
+
+        $expected = TestModel::query()->toSql();
+
+        $this->assertEquals($expected, $query);
+    }
+
+    /** @test */
     public function it_can_fetch_specific_columns()
     {
         $query = $this

@@ -48,11 +48,11 @@ class QueryBuilder extends Builder
 
         $this->request = $request ?? request();
 
-        if ($this->request->fields()) {
+        if ($this->request->fields()->isNotEmpty()) {
             $this->parseSelectedFields();
         }
 
-        if ($this->request->sorts()) {
+        if ($this->request->sorts()->isNotEmpty()) {
             $this->allowedSorts('*');
         }
     }

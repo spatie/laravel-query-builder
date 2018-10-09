@@ -95,7 +95,7 @@ class QueryBuilderServiceProvider extends ServiceProvider
             );
 
             if ($fieldsPerTable->isEmpty()) {
-                return null;
+                return collect();
             }
 
             return $fieldsPerTable->map(function ($fields) {
