@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.11.1 - 2018-10-09
+
+- fix exception when using `allowedFields()` but selecting none
+
 ## 1.11.0 - 2018-10-03
 
 - add `allowedFields` method
