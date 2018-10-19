@@ -214,7 +214,7 @@ Consider the following scope on your model:
 ```php
 public function scopeStartsBefore(Builder $query, $date): Builder
 {
-    return $query->where('starts_at', '>=', Carbon::parse($date));
+    return $query->where('starts_at', '<=', Carbon::parse($date));
 }
 ```
 
