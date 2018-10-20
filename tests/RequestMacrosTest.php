@@ -12,13 +12,13 @@ class RequestMacrosTest extends TestCase
         $expected = [
             'info' => [
                 'foo' => [
-                    'bar' => 1
-                ]
-            ]
+                    'bar' => 1,
+                ],
+            ],
         ];
 
         $request = new Request([
-            'filter' => $expected
+            'filter' => $expected,
         ]);
 
         $this->assertEquals($expected, $request->filters()->toArray());
@@ -31,18 +31,18 @@ class RequestMacrosTest extends TestCase
             'filter' => [
                 'info' => [
                     'foo' => [
-                        'bar' => null
-                    ]
-                ]
-            ]
+                        'bar' => null,
+                    ],
+                ],
+            ],
         ]);
 
         $expected = [
             'info' => [
                 'foo' => [
-                    'bar' => ''
-                ]
-            ]
+                    'bar' => '',
+                ],
+            ],
         ];
 
         $this->assertEquals($expected, $request->filters()->toArray());
@@ -57,10 +57,10 @@ class RequestMacrosTest extends TestCase
                     'foo' => [
                         'bar' => 'true',
                         'baz' => 'false',
-                        'bazs' => '0'
-                    ]
-                ]
-            ]
+                        'bazs' => '0',
+                    ],
+                ],
+            ],
         ]);
 
         $expected = [
@@ -68,9 +68,9 @@ class RequestMacrosTest extends TestCase
                 'foo' => [
                     'bar' => true,
                     'baz' => false,
-                    'bazs' => '0'
-                ]
-            ]
+                    'bazs' => '0',
+                ],
+            ],
         ];
 
         $this->assertEquals($expected, $request->filters()->toArray());
