@@ -7,6 +7,76 @@ use Illuminate\Http\Request;
 class RequestMacrosTest extends TestCase
 {
     /** @test */
+    public function it_can_filter_nested_arrays()
+    {
+        $expected = [
+            'info' => [
+                'foo' => [
+                    'bar' => 1
+                ]
+            ]
+        ];
+
+        $request = new Request([
+            'filter' => $expected
+        ]);
+
+        $this->assertEquals($expected, $request->filters()->toArray());
+    }
+
+    /** @test */
+    public function it_can_get_empty_filters_recursively()
+    {
+        $request = new Request([
+            'filter' => [
+                'info' => [
+                    'foo' => [
+                        'bar' => null
+                    ]
+                ]
+            ]
+        ]);
+
+        $expected = [
+            'info' => [
+                'foo' => [
+                    'bar' => ''
+                ]
+            ]
+        ];
+
+        $this->assertEquals($expected, $request->filters()->toArray());
+    }
+
+    /** @test */
+    public function it_will_map_true_and_false_as_booleans_recursively()
+    {
+        $request = new Request([
+            'filter' => [
+                'info' => [
+                    'foo' => [
+                        'bar' => 'true',
+                        'baz' => 'false',
+                        'bazs' => '0'
+                    ]
+                ]
+            ]
+        ]);
+
+        $expected = [
+            'info' => [
+                'foo' => [
+                    'bar' => true,
+                    'baz' => false,
+                    'bazs' => '0'
+                ]
+            ]
+        ];
+
+        $this->assertEquals($expected, $request->filters()->toArray());
+    }
+
+    /** @test */
     public function it_can_get_the_sort_query_param_from_the_request()
     {
         $request = new Request([
@@ -87,8 +157,8 @@ class RequestMacrosTest extends TestCase
         ]);
 
         $expected = collect([
-                'foo' => 'bar',
-                'baz' => 'qux',
+            'foo' => 'bar',
+            'baz' => 'qux',
         ]);
 
         $this->assertEquals($expected, $request->filters());
@@ -156,10 +226,10 @@ class RequestMacrosTest extends TestCase
         ]);
 
         $expected = collect([
-                'foo' => true,
-                'bar' => false,
-                'baz' => '0',
-            ]);
+            'foo' => true,
+            'bar' => false,
+            'baz' => '0',
+        ]);
 
         $this->assertEquals($expected, $request->filters());
     }
@@ -190,7 +260,7 @@ class RequestMacrosTest extends TestCase
             ],
         ]);
 
-        $expected = collect(['foo' => ['bar', 'baz'], 'bar' => ['foobar'=> ['baz', 'bar']]]);
+        $expected = collect(['foo' => ['bar', 'baz'], 'bar' => ['foobar' => ['baz', 'bar']]]);
 
         $this->assertEquals($expected, $request->filters());
     }
