@@ -27,7 +27,7 @@ class IncludeTest extends TestCase
 
             $model->relatedThroughPivotModels()->create([
                 'id'   => $model->id + 1,
-                'name' => 'Test'
+                'name' => 'Test',
             ]);
         });
     }
