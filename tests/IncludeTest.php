@@ -24,6 +24,11 @@ class IncludeTest extends TestCase
             $model
                 ->relatedModels()->create(['name' => 'Test'])
                 ->nestedRelatedModels()->create(['name' => 'Test']);
+
+            $model->relatedThroughPivotModels()->create([
+                'id'   => $model->id + 1,
+                'name' => 'Test'
+            ]);
         });
     }
 
@@ -138,6 +143,19 @@ class IncludeTest extends TestCase
 
         $this->assertRelationLoaded($models, 'relatedModels');
         $this->assertRelationLoaded($models, 'otherRelatedModels');
+    }
+
+    /** @test */
+    public function it_returns_correct_id_when_including_many_to_many_relationship()
+    {
+        $models = $this
+            ->createQueryFromIncludeRequest('related-through-pivot-models')
+            ->allowedIncludes('related-through-pivot-models')
+            ->get();
+
+        $relatedModel = $models->first()->relatedThroughPivotModels->first();
+
+        $this->assertEquals($relatedModel->id, $relatedModel->pivot->related_through_pivot_model_id);
     }
 
     /** @test */
