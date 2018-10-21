@@ -100,27 +100,27 @@ class FieldsTest extends TestCase
         $queryBuilder->first()->relatedModels;
 
         $this->assertQueryLogContains('select "test_models"."id" from "test_models"');
-        $this->assertQueryLogContains('select "name" from "related_models"');
+        $this->assertQueryLogContains('select "related_models"."name" from "related_models"');
     }
 
     /** @test */
     public function it_can_allow_specific_fields_on_an_included_model()
     {
         $request = new Request([
-            'fields' => ['related_models' => 'id,first_name'],
+            'fields' => ['related_models' => 'id,name'],
             'include' => ['related-models'],
         ]);
 
         $queryBuilder = QueryBuilder::for(TestModel::class, $request)
             ->allowedIncludes('related-models')
-            ->allowedFields(['related_models.id', 'related_models.first_name']);
+            ->allowedFields(['related_models.id', 'related_models.name']);
 
         DB::enableQueryLog();
 
         $queryBuilder->first()->relatedModels;
 
         $this->assertQueryLogContains('select "test_models".* from "test_models"');
-        $this->assertQueryLogContains('select "id", "first_name" from "related_models"');
+        $this->assertQueryLogContains('select "related_models"."id", "related_models"."name" from "related_models"');
     }
 
     protected function createQueryFromFieldRequest(array $fields): QueryBuilder
