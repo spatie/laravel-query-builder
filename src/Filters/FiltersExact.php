@@ -20,7 +20,7 @@ class FiltersExact implements Filter
             return $query->whereIn($property, $value);
         }
 
-        return $query->where($property, $value);
+        return $query->where($property, '=', $value);
     }
 
     protected function isRelationProperty(string $property) : bool
