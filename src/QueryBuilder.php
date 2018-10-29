@@ -292,7 +292,7 @@ class QueryBuilder extends Builder
                         }
 
                         return [$fullRelationName => function ($query) use ($fields) {
-                            $query->select($fields);
+                            $query->select($this->prependFieldsWithTableName($fields, $query->getModel()->getTable()));
                         }];
                     });
             })

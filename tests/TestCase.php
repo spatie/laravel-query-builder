@@ -54,6 +54,17 @@ class TestCase extends Orchestra
             $table->integer('related_model_id');
             $table->string('name');
         });
+
+        $app['db']->connection()->getSchemaBuilder()->create('pivot_models', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('test_model_id');
+            $table->integer('related_through_pivot_model_id');
+        });
+
+        $app['db']->connection()->getSchemaBuilder()->create('related_through_pivot_models', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+        });
     }
 
     protected function getPackageProviders($app)
