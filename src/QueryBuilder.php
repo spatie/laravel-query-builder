@@ -47,7 +47,7 @@ class QueryBuilder extends Builder
 
         $this->initializeFromBuilder($builder);
 
-        $this->request = $request ?? request();
+        $this->request = $request ?? app(Request::class);
 
         $this->parseSelectedFields();
 
@@ -92,7 +92,7 @@ class QueryBuilder extends Builder
             $baseQuery = ($baseQuery)::query();
         }
 
-        return new static($baseQuery, $request ?? request());
+        return new static($baseQuery, $request ?? app(Request::class));
     }
 
     /**
