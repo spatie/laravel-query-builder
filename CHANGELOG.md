@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.11.2 - 2018-10-30
+
+- fix exception when using filters with nested arrays (#117)
+- fix overwritten fields when using `allowedIncludes` with many-to-many relationships (#118)
+
 ## 1.11.1 - 2018-10-09
 
 - fix exception when using `allowedFields()` but selecting none
