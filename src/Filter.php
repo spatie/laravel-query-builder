@@ -73,7 +73,7 @@ class Filter
             is_array($values) ? $values : func_get_args()
         );
         
-        return $this:
+        return $this;
     }
     
     protected function shouldBeIgnored($value)
