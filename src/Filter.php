@@ -15,6 +15,9 @@ class Filter
 
     /** @var string */
     protected $property;
+    
+    /** @var array */
+    protected $ignorableValues = [];
 
     public function __construct(string $property, $filterClass)
     {
@@ -24,6 +27,10 @@ class Filter
 
     public function filter(Builder $builder, $value)
     {
+        if ($this->shouldBeIgnored($value)) {
+            return;
+        }
+        
         $filterClass = $this->resolveFilterClass();
 
         ($filterClass)($builder, $value, $this->property);
@@ -57,6 +64,21 @@ class Filter
     public function isForProperty(string $property): bool
     {
         return $this->property === $property;
+    }
+    
+    public function ignore($values) : self
+    {
+        $this->ignorableValues = array_merge(
+            $this->ignorableValues,
+            is_array($values) ? $values : func_get_args()
+        );
+        
+        return $this:
+    }
+    
+    protected function shouldBeIgnored($value)
+    {
+        return in_array($value, $this->ignorableValues);
     }
 
     private function resolveFilterClass(): CustomFilter
