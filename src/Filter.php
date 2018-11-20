@@ -19,6 +19,7 @@ class Filter
     public function __construct(string $property, $filterClass)
     {
         $this->property = $property;
+
         $this->filterClass = $filterClass;
     }
 
