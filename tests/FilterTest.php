@@ -340,7 +340,6 @@ class FilterTest extends TestCase
         $this->assertCount(1, $models);
     }
 
-
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder
     {
         $request = new Request([

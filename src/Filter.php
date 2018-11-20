@@ -101,6 +101,6 @@ class Filter
             return array_diff($property, $this->ignored->toArray());
         }
 
-        return !$this->ignored->contains($property) ? $property : null;
+        return ! $this->ignored->contains($property) ? $property : null;
     }
 }
