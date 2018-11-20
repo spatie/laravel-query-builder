@@ -297,6 +297,50 @@ class FilterTest extends TestCase
         $this->assertEquals(['allowed filter'], $exception->allowedFilters->all());
     }
 
+    /** @test */
+    public function it_allows_for_adding_ignorable_values()
+    {
+        $shouldBeIgnored = ['', '-1', null, 'ignored_string', 'another_ignored_string'];
+
+        $filter = Filter::exact('name')->ignore($shouldBeIgnored[0]);
+        $filter
+            ->ignore($shouldBeIgnored[1], $shouldBeIgnored[2])
+            ->ignore([$shouldBeIgnored[3], $shouldBeIgnored[4]]);
+
+        $valuesIgnoredByFilter = $filter->getIgnored();
+
+        $this->assertEquals(sort($shouldBeIgnored), sort($valuesIgnoredByFilter));
+    }
+
+    /** @test */
+    public function it_should_not_apply_a_filter_if_the_supplied_value_is_ignored()
+    {
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'name' => '-1',
+            ])
+            ->allowedFilters(Filter::exact('name')->ignore('-1'))
+            ->get();
+
+        $this->assertCount(TestModel::count(), $models);
+    }
+
+    /** @test */
+    public function it_should_apply_the_filter_on_the_subset_of_allowed_values()
+    {
+        TestModel::create(['name' => 'John Doe']);
+
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'name' => '-1,John Doe',
+            ])
+            ->allowedFilters(Filter::exact('name')->ignore('-1'))
+            ->get();
+
+        $this->assertCount(1, $models);
+    }
+
+
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder
     {
         $request = new Request([
