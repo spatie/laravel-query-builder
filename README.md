@@ -175,6 +175,20 @@ $users = QueryBuilder::for(User::class)
     ->get();
 // $users will contain all users that contain "seb" OR "freek" in their name
 ```
+#### Property Column Alias
+
+It can be useful to expose properties for filtering, that do not share the exact naming of your database column. If you wanted to allow filtering on columns that may have a prefix in the database, you can use the following notation.
+
+```php
+use Spatie\QueryBuilder\Filter;
+
+// GET /users?filter[name]=John
+$users = QueryBuilder::for(User::class)
+	->allowedFilters(Filter::exact('name', 'user_name')) // public filter, column name
+    ->get();
+// filter by the column 'user_name'
+```
+
 
 #### Exact filters
 
