@@ -329,12 +329,13 @@ class FilterTest extends TestCase
     public function it_should_apply_the_filter_on_the_subset_of_allowed_values()
     {
         TestModel::create(['name' => 'John Doe']);
+        TestModel::create(['name' => 'John Deer']);
 
         $models = $this
             ->createQueryFromFilterRequest([
-                'name' => '-1,John Doe',
+                'name' => 'John Deer,John Doe',
             ])
-            ->allowedFilters(Filter::exact('name')->ignore('-1'))
+            ->allowedFilters(Filter::exact('name')->ignore('John Deer'))
             ->get();
 
         $this->assertCount(1, $models);
