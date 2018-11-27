@@ -342,8 +342,6 @@ class FilterTest extends TestCase
         $this->assertCount(1, $models);
     }
 
-
-
     /** @test */
     public function it_can_take_an_argument_for_custom_column_name_resolution()
     {
