@@ -8,6 +8,7 @@ use Spatie\QueryBuilder\Filter;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
@@ -336,6 +337,42 @@ class FilterTest extends TestCase
                 'name' => 'John Deer,John Doe',
             ])
             ->allowedFilters(Filter::exact('name')->ignore('John Deer'))
+            ->get();
+
+        $this->assertCount(1, $models);
+    }
+
+
+
+    /** @test */
+    public function it_can_take_an_argument_for_custom_column_name_resolution()
+    {
+        $filter = Filter::custom('property_name', FiltersExact::class, 'property_column_name');
+
+        $this->assertInstanceOf(Filter::class, $filter);
+        $this->assertClassHasAttribute('columnName', get_class($filter));
+    }
+
+    /** @test */
+    public function it_sets_property_column_name_to_property_name_by_default()
+    {
+        $filter = Filter::custom('property_name', FiltersExact::class);
+
+        $this->assertEquals($filter->getProperty(), $filter->getColumnName());
+    }
+
+    /** @test */
+    public function it_resolves_queries_using_property_column_name()
+    {
+        $filter = Filter::custom('nickname', FiltersExact::class, 'name');
+
+        TestModel::create(['name' => 'abcdef']);
+
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'nickname' => 'abcdef',
+            ])
+            ->allowedFilters($filter)
             ->get();
 
         $this->assertCount(1, $models);

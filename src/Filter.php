@@ -17,16 +17,21 @@ class Filter
     /** @var string */
     protected $property;
 
+    /** @var string */
+    protected $columnName;
+
     /** @var Collection */
     protected $ignored;
 
-    public function __construct(string $property, $filterClass)
+    public function __construct(string $property, $filterClass, $columnName = null)
     {
         $this->property = $property;
 
         $this->filterClass = $filterClass;
 
         $this->ignored = Collection::make();
+
+        $this->columnName = $columnName ?? $property;
     }
 
     public function filter(Builder $builder, $value)
@@ -39,27 +44,27 @@ class Filter
 
         $filterClass = $this->resolveFilterClass();
 
-        ($filterClass)($builder, $valueToFilter, $this->property);
+        ($filterClass)($builder, $valueToFilter, $this->columnName);
     }
 
-    public static function exact(string $property) : self
+    public static function exact(string $property, $columnName = null) : self
     {
-        return new static($property, FiltersExact::class);
+        return new static($property, FiltersExact::class, $columnName);
     }
 
-    public static function partial(string $property) : self
+    public static function partial(string $property, $columnName = null) : self
     {
-        return new static($property, FiltersPartial::class);
+        return new static($property, FiltersPartial::class, $columnName);
     }
 
-    public static function scope(string $property) : self
+    public static function scope(string $property, $columnName = null) : self
     {
-        return new static($property, FiltersScope::class);
+        return new static($property, FiltersScope::class, $columnName);
     }
 
-    public static function custom(string $property, $filterClass) : self
+    public static function custom(string $property, $filterClass, $columnName = null) : self
     {
-        return new static($property, $filterClass);
+        return new static($property, $filterClass, $columnName);
     }
 
     public function getProperty(): string
@@ -84,6 +89,11 @@ class Filter
     public function getIgnored(): array
     {
         return $this->ignored->toArray();
+    }
+
+    public function getColumnName(): string
+    {
+        return $this->columnName;
     }
 
     private function resolveFilterClass(): CustomFilter
