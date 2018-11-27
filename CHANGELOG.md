@@ -4,7 +4,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 ## 1.12.0 - 2018-11-27
 
--  allow differently named columns
+- allow differently named columns
 
 ## 1.11.2 - 2018-10-30
 
