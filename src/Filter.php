@@ -17,42 +17,42 @@ class Filter
     protected $property;
 
     /** @var string */
-    protected $propertyColumnName;
+    protected $columnName;
 
-    public function __construct(string $property, $filterClass, $propertyColumnName = null)
+    public function __construct(string $property, $filterClass, $columnName = null)
     {
         $this->property = $property;
 
         $this->filterClass = $filterClass;
 
-        $this->propertyColumnName = $propertyColumnName ?? $property;
+        $this->columnName = $columnName ?? $property;
     }
 
     public function filter(Builder $builder, $value)
     {
         $filterClass = $this->resolveFilterClass();
 
-        ($filterClass)($builder, $value, $this->propertyColumnName);
+        ($filterClass)($builder, $value, $this->columnName);
     }
 
-    public static function exact(string $property, $propertyColumnName = null) : self
+    public static function exact(string $property, $columnName = null) : self
     {
-        return new static($property, FiltersExact::class, $propertyColumnName);
+        return new static($property, FiltersExact::class, $columnName);
     }
 
-    public static function partial(string $property, $propertyColumnName = null) : self
+    public static function partial(string $property, $columnName = null) : self
     {
-        return new static($property, FiltersPartial::class, $propertyColumnName);
+        return new static($property, FiltersPartial::class, $columnName);
     }
 
-    public static function scope(string $property, $propertyColumnName = null) : self
+    public static function scope(string $property, $columnName = null) : self
     {
-        return new static($property, FiltersScope::class, $propertyColumnName);
+        return new static($property, FiltersScope::class, $columnName);
     }
 
-    public static function custom(string $property, $filterClass, $propertyColumnName = null) : self
+    public static function custom(string $property, $filterClass, $columnName = null) : self
     {
-        return new static($property, $filterClass, $propertyColumnName);
+        return new static($property, $filterClass, $columnName);
     }
 
     public function getProperty(): string
@@ -65,9 +65,9 @@ class Filter
         return $this->property === $property;
     }
 
-    public function getPropertyColumnName(): string
+    public function getcolumnName(): string
     {
-        return $this->propertyColumnName;
+        return $this->columnName;
     }
 
     private function resolveFilterClass(): CustomFilter
