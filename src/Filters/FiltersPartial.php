@@ -4,10 +4,14 @@ namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class FiltersPartial implements Filter
+class FiltersPartial extends FiltersExact implements Filter
 {
     public function __invoke(Builder $query, $value, string $property): Builder
     {
+        if ($this->isRelationProperty($property)) {
+            return $this->withRelationConstraint($query, $value, $property);
+        }
+
         $wrappedProperty = $query->getQuery()->getGrammar()->wrap($property);
 
         $sql = "LOWER({$wrappedProperty}) LIKE ?";
