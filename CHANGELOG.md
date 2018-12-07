@@ -2,6 +2,42 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.12.0 - 2018-11-27
+
+- allow differently named columns
+
+## 1.11.2 - 2018-10-30
+
+- fix exception when using filters with nested arrays (#117)
+- fix overwritten fields when using `allowedIncludes` with many-to-many relationships (#118)
+
+## 1.11.1 - 2018-10-09
+
+- fix exception when using `allowedFields()` but selecting none
+
+## 1.11.0 - 2018-10-03
+
+- add `allowedFields` method
+- fix & cleanup `Request::fields()` macro
+- fix fields option (`SELECT * FROM table` instead of `SELECT table.* FROM table`)
+
+## 1.10.4 - 2018-10-02
+
+- fix parsing empty filters from url
+
+## 1.10.3 - 2018-09-17
+
+- improve compatibility with Lumen
+
+## 1.10.2 - 2018-08-28
+
+- add support for Laravel 5.7
+- add framework/laravel as a dependency
+
+## 1.10.1 - 2018-08-21
+
+- improve compatibility with Lumen by only publishing the config file in console mode
+
 ## 1.10.0 - 2018-06-12
 
 - add support for instantiated custom filter classes

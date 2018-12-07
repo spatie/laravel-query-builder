@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\RelatedModel;
+use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 
 class FieldsTest extends TestCase
 {
@@ -22,34 +23,64 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_fetch_all_columns_if_none_is_given()
+    public function it_fetches_all_columns_if_no_field_was_requested()
     {
-        $queryBuilder = QueryBuilder::for(TestModel::class)->toSql();
+        $query = QueryBuilder::for(TestModel::class)->toSql();
 
-        $expected = TestModel::query()->select("{$this->modelTableName}.*")->toSql();
+        $expected = TestModel::query()->toSql();
 
-        $this->assertEquals($expected, $queryBuilder);
+        $this->assertEquals($expected, $query);
     }
 
     /** @test */
-    public function it_can_fetch_only_required_columns()
+    public function it_fetches_all_columns_if_no_specific_columns_were_requested()
     {
-        $request = new Request([
-            'fields' => ['test_models' => 'name,id'],
-        ]);
+        $query = QueryBuilder::for(TestModel::class)->allowedFields('id', 'name')->toSql();
 
-        $queryBuilder = QueryBuilder::for(TestModel::class, $request)->toSql();
+        $expected = TestModel::query()->toSql();
+
+        $this->assertEquals($expected, $query);
+    }
+
+    /** @test */
+    public function it_can_fetch_specific_columns()
+    {
+        $query = $this
+            ->createQueryFromFieldRequest(['test_models' => 'name,id'])
+            ->allowedFields(['name', 'id'])
+            ->toSql();
+
         $expected = TestModel::query()
-                             ->select("{$this->modelTableName}.name", "{$this->modelTableName}.id")
-                             ->toSql();
+            ->select("{$this->modelTableName}.name", "{$this->modelTableName}.id")
+            ->toSql();
 
-        $this->assertEquals($expected, $queryBuilder);
+        $this->assertEquals($expected, $query);
     }
 
     /** @test */
-    public function it_can_fetch_only_required_columns_from_an_included_model()
+    public function it_guards_against_invalid_fields()
     {
-        $relatedModel = RelatedModel::create([
+        $this->expectException(InvalidFieldQuery::class);
+
+        $this
+            ->createQueryFromFieldRequest(['test_models' => 'random-column'])
+            ->allowedFields('name');
+    }
+
+    /** @test */
+    public function it_guards_against_invalid_fields_from_an_included_resource()
+    {
+        $this->expectException(InvalidFieldQuery::class);
+
+        $this
+            ->createQueryFromFieldRequest(['related_models' => 'random_column'])
+            ->allowedFields('related_models.name');
+    }
+
+    /** @test */
+    public function it_can_fetch_only_requested_columns_from_an_included_model()
+    {
+        RelatedModel::create([
             'test_model_id' => $this->model->id,
             'name' => 'related',
         ]);
@@ -69,7 +100,36 @@ class FieldsTest extends TestCase
         $queryBuilder->first()->relatedModels;
 
         $this->assertQueryLogContains('select "test_models"."id" from "test_models"');
-        $this->assertQueryLogContains('select "name" from "related_models"');
+        $this->assertQueryLogContains('select "related_models"."name" from "related_models"');
+    }
+
+    /** @test */
+    public function it_can_allow_specific_fields_on_an_included_model()
+    {
+        $request = new Request([
+            'fields' => ['related_models' => 'id,name'],
+            'include' => ['related-models'],
+        ]);
+
+        $queryBuilder = QueryBuilder::for(TestModel::class, $request)
+            ->allowedIncludes('related-models')
+            ->allowedFields(['related_models.id', 'related_models.name']);
+
+        DB::enableQueryLog();
+
+        $queryBuilder->first()->relatedModels;
+
+        $this->assertQueryLogContains('select "test_models".* from "test_models"');
+        $this->assertQueryLogContains('select "related_models"."id", "related_models"."name" from "related_models"');
+    }
+
+    protected function createQueryFromFieldRequest(array $fields): QueryBuilder
+    {
+        $request = new Request([
+            'fields' => $fields,
+        ]);
+
+        return QueryBuilder::for(TestModel::class, $request);
     }
 
     protected function assertQueryLogContains(string $partialSql)

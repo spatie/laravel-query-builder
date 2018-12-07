@@ -5,8 +5,10 @@ namespace Spatie\QueryBuilder\Tests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Spatie\QueryBuilder\Filter;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
@@ -78,6 +80,24 @@ class FilterTest extends TestCase
             ->get();
 
         $this->assertCount(0, $models);
+    }
+
+    /** @test */
+    public function it_can_filter_a_custom_base_query_with_select()
+    {
+        $request = new Request([
+            'filter' => ['name' => 'john'],
+        ]);
+
+        $queryBuilderSql = QueryBuilder::for(TestModel::select('id', 'name'), $request)
+            ->allowedFilters('name', 'id')
+            ->toSql();
+
+        $expectedSql = TestModel::select('id', 'name')
+            ->where(DB::raw('LOWER("name")'), 'LIKE', 'john')
+            ->toSql();
+
+        $this->assertEquals($expectedSql, $queryBuilderSql);
     }
 
     /** @test */
@@ -276,6 +296,40 @@ class FilterTest extends TestCase
 
         $this->assertEquals(['unknown filter'], $exception->unknownFilters->all());
         $this->assertEquals(['allowed filter'], $exception->allowedFilters->all());
+    }
+
+    /** @test */
+    public function it_can_take_an_argument_for_custom_column_name_resolution()
+    {
+        $filter = Filter::custom('property_name', FiltersExact::class, 'property_column_name');
+
+        $this->assertInstanceOf(Filter::class, $filter);
+        $this->assertClassHasAttribute('columnName', get_class($filter));
+    }
+
+    /** @test */
+    public function it_sets_property_column_name_to_property_name_by_default()
+    {
+        $filter = Filter::custom('property_name', FiltersExact::class);
+
+        $this->assertEquals($filter->getProperty(), $filter->getcolumnName());
+    }
+
+    /** @test */
+    public function it_resolves_queries_using_property_column_name()
+    {
+        $filter = Filter::custom('nickname', FiltersExact::class, 'name');
+
+        TestModel::create(['name' => 'abcdef']);
+
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'nickname' => 'abcdef',
+            ])
+            ->allowedFilters($filter)
+            ->get();
+
+        $this->assertCount(1, $models);
     }
 
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder
