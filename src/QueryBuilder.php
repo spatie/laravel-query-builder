@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
@@ -14,6 +15,9 @@ class QueryBuilder extends Builder
 {
     /** @var \Illuminate\Support\Collection */
     protected $allowedFilters;
+
+    /** @var \Illuminate\Support\Collection */
+    protected $allowedFields;
 
     /** @var string|null */
     protected $defaultSort;
@@ -104,6 +108,28 @@ class QueryBuilder extends Builder
         return $this;
     }
 
+    public function allowedFields($fields) : self
+    {
+        $fields = is_array($fields) ? $fields : func_get_args();
+
+        $this->allowedFields = collect($fields)
+            ->map(function (string $fieldName) {
+                if (! str_contains($fieldName, '.')) {
+                    $modelTableName = $this->getModel()->getTable();
+
+                    return "{$modelTableName}.{$fieldName}";
+                }
+
+                return $fieldName;
+            });
+
+        if (! $this->allowedFields->contains('*')) {
+            $this->guardAgainstUnknownFields();
+        }
+
+        return $this;
+    }
+
     public function defaultSort($sort) : self
     {
         $this->defaultSort = $sort;
@@ -176,13 +202,9 @@ class QueryBuilder extends Builder
         $this->fields = $this->request->fields();
 
         $modelTableName = $this->getModel()->getTable();
-        $modelFields = $this->fields->get($modelTableName);
+        $modelFields = $this->fields->get($modelTableName, ['*']);
 
-        if (! $modelFields) {
-            $modelFields = '*';
-        }
-
-        $this->select($this->prependFieldsWithTableName(explode(',', $modelFields), $modelTableName));
+        $this->select($this->prependFieldsWithTableName($modelFields, $modelTableName));
     }
 
     protected function prependFieldsWithTableName(array $fields, string $tableName): array
@@ -194,13 +216,11 @@ class QueryBuilder extends Builder
 
     protected function getFieldsForRelatedTable(string $relation): array
     {
-        $fields = $this->fields->get($relation);
-
-        if (! $fields) {
-            return [];
+        if (! $this->fields) {
+            return ['*'];
         }
 
-        return explode(',', $fields);
+        return $this->fields->get($relation, []);
     }
 
     protected function addFiltersToQuery(Collection $filters)
@@ -293,7 +313,7 @@ class QueryBuilder extends Builder
                         }
 
                         return [$fullRelationName => function ($query) use ($fields) {
-                            $query->select($fields);
+                            $query->select($this->prependFieldsWithTableName($fields, $query->getModel()->getTable()));
                         }];
                     });
             })
@@ -323,6 +343,26 @@ class QueryBuilder extends Builder
 
         if ($diff->count()) {
             throw InvalidFilterQuery::filtersNotAllowed($diff, $allowedFilterNames);
+        }
+    }
+
+    protected function guardAgainstUnknownFields()
+    {
+        $fields = $this->request->fields()
+            ->map(function ($fields, $model) {
+                $tableName = snake_case(preg_replace('/-/', '_', $model));
+
+                $fields = array_map('snake_case', $fields);
+
+                return $this->prependFieldsWithTableName($fields, $tableName);
+            })
+            ->flatten()
+            ->unique();
+
+        $diff = $fields->diff($this->allowedFields);
+
+        if ($diff->count()) {
+            throw InvalidFieldQuery::fieldsNotAllowed($diff, $this->allowedFields);
         }
     }
 

@@ -175,6 +175,20 @@ $users = QueryBuilder::for(User::class)
     ->get();
 // $users will contain all users that contain "seb" OR "freek" in their name
 ```
+#### Property Column Alias
+
+It can be useful to expose properties for filtering, that do not share the exact naming of your database column. If you wanted to allow filtering on columns that may have a prefix in the database, you can use the following notation.
+
+```php
+use Spatie\QueryBuilder\Filter;
+
+// GET /users?filter[name]=John
+$users = QueryBuilder::for(User::class)
+	->allowedFilters(Filter::exact('name', 'user_name')) // public filter, column name
+    ->get();
+// filter by the column 'user_name'
+```
+
 
 #### Exact filters
 
@@ -214,7 +228,7 @@ Consider the following scope on your model:
 ```php
 public function scopeStartsBefore(Builder $query, $date): Builder
 {
-    return $query->where('starts_at', '>=', Carbon::parse($date));
+    return $query->where('starts_at', '<=', Carbon::parse($date));
 }
 ```
 
@@ -339,6 +353,18 @@ The SQL query will look like this:
 
 ```sql
 SELECT "id", "name" FROM "users"
+```
+
+Using the `allowedFields` method you can limit which fields (columns) are allowed to be queried in the request.
+
+When trying to select a column that's not specified in `allowedFields()` an `InvalidFieldQuery` exception will be thrown.
+
+``` php
+$users = QueryBuilder::for(User::class)
+    ->allowedFields('name')
+    ->get();
+
+// GET /users?fields[users]=email will throw an `InvalidFieldQuery` exception as `email` is not an allowed field.
 ```
 
 Selecting fields for included models works the same way. This is especially useful when including entire relationships when you only need a couple of columns. Consider the following example:
