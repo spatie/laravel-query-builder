@@ -59,7 +59,9 @@ class SortTest extends TestCase
             ->defaultSort('id')
             ->paginate(15);
 
-        $this->assertQueryExecuted('select "id", "name" from "test_models" order by "id" desc limit 15 offset 0');
+        $this->assertQueryExecuted(
+            'select "id", "name" from "test_models" order by "id" desc limit 15 offset 0'
+        );
     }
 
     /** @test */
@@ -151,8 +153,54 @@ class SortTest extends TestCase
             ->get();
 
         $expected = TestModel::orderBy('name')->orderByDesc('id');
-        $this->assertQueryExecuted('select * from "test_models" order by "name" asc, "id" desc');
+        $this->assertQueryExecuted(
+            'select * from "test_models" order by "name" asc, "id" desc'
+        );
         $this->assertEquals($expected->pluck('id'), $sortedModels->pluck('id'));
+    }
+
+    /** @test */
+    public function it_can_sort_by_column_with_same_name_in_joined_table()
+    {
+        $request = new Request([
+            'sort' => 'name',
+        ]);
+
+        $query = (new TestModel)
+            ->query()
+            ->select('*')
+            ->join('related_models', 'test_models.id', '=', 'related_models.test_model_id');
+
+        $sortedModels = QueryBuilder::for($query, $request)->get();
+
+        $this->assertQueryExecuted(
+            'select * from "test_models" '.
+            'inner join "related_models" on "test_models"."id" = "related_models"."test_model_id" '.
+            'order by "test_models"."name" asc'
+        );
+        $this->assertSortedAscending($sortedModels, 'name');
+    }
+
+    /** @test */
+    public function it_can_sort_by_column_without_same_name_in_joined_table()
+    {
+        $request = new Request([
+            'sort' => 'created_at',
+        ]);
+
+        $query = (new TestModel)
+            ->query()
+            ->select('*')
+            ->join('related_models', 'test_models.id', '=', 'related_models.test_model_id');
+
+        $sortedModels = QueryBuilder::for($query, $request)->get();
+
+        $this->assertQueryExecuted(
+            'select * from "test_models" '.
+            'inner join "related_models" on "test_models"."id" = "related_models"."test_model_id" '.
+            'order by "created_at" asc'
+        );
+        $this->assertSortedAscending($sortedModels, 'created_at');
     }
 
     protected function createQueryFromSortRequest(string $sort): QueryBuilder

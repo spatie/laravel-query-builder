@@ -40,6 +40,12 @@ class QueryBuilder extends Builder
     /** @var \Illuminate\Http\Request */
     protected $request;
 
+    /** @var string */
+    protected $modelTableName;
+
+    /** @var array|null */
+    private $joinColumnConflicts = null;
+
     public function __construct(Builder $builder, ? Request $request = null)
     {
         parent::__construct(clone $builder->getQuery());
@@ -47,6 +53,8 @@ class QueryBuilder extends Builder
         $this->initializeFromBuilder($builder);
 
         $this->request = $request ?? request();
+
+        $this->modelTableName = $this->getModel()->getTable();
 
         if ($this->request->fields()->isNotEmpty()) {
             $this->parseSelectedFields();
@@ -121,9 +129,7 @@ class QueryBuilder extends Builder
         $this->allowedFields = collect($fields)
             ->map(function (string $fieldName) {
                 if (! str_contains($fieldName, '.')) {
-                    $modelTableName = $this->getModel()->getTable();
-
-                    return "{$modelTableName}.{$fieldName}";
+                    return "{$this->modelTableName}.{$fieldName}";
                 }
 
                 return $fieldName;
@@ -203,10 +209,9 @@ class QueryBuilder extends Builder
     {
         $this->fields = $this->request->fields();
 
-        $modelTableName = $this->getModel()->getTable();
-        $modelFields = $this->fields->get($modelTableName, ['*']);
+        $modelFields = $this->fields->get($this->modelTableName, ['*']);
 
-        $this->select($this->prependFieldsWithTableName($modelFields, $modelTableName));
+        $this->select($this->prependFieldsWithTableName($modelFields, $this->modelTableName));
     }
 
     protected function prependFieldsWithTableName(array $fields, string $tableName): array
@@ -244,11 +249,17 @@ class QueryBuilder extends Builder
 
     protected function addSortsToQuery(Collection $sorts)
     {
+        $this->getJoinColumnConflicts();
+
         $this->filterDuplicates($sorts)
             ->each(function (string $sort) {
                 $descending = $sort[0] === '-';
 
                 $key = ltrim($sort, '-');
+
+                if (in_array($key, $this->joinColumnConflicts)) {
+                    $key = "{$this->modelTableName}.{$key}";
+                }
 
                 $this->orderBy($key, $descending ? 'desc' : 'asc');
             });
@@ -260,9 +271,17 @@ class QueryBuilder extends Builder
             return $sorts;
         }
 
+        $this->getJoinColumnConflicts();
+
         return $sorts->reject(function (string $sort) use ($orders) {
+            $sortColumn = ltrim($sort, '-');
+
+            if (in_array($sortColumn, $this->joinColumnConflicts)) {
+                $sortColumn = "{$this->modelTableName}.{$sortColumn}";
+            }
+
             $toSort = [
-                'column' => ltrim($sort, '-'),
+                'column' => $sortColumn,
                 'direction' => ($sort[0] === '-') ? 'desc' : 'asc',
             ];
             foreach ($orders as $order) {
@@ -389,5 +408,47 @@ class QueryBuilder extends Builder
         }
 
         return $result;
+    }
+
+    public function getDbColumns(string $tableName)
+    {
+        return \Schema::getColumnListing($tableName);
+    }
+
+    /**
+     * Get the names of the columns in the selected table that have the same
+     * name as a column in a JOINed table.
+     *
+     * @return array
+     */
+    protected function getJoinColumnConflicts()
+    {
+        // Check if all of the column conflicts have been gathered before. If
+        // so, there is no need to do it again.
+        if (is_array($this->joinColumnConflicts)) {
+            return $this->joinColumnConflicts;
+        }
+
+        $joins = $this->getQuery()->joins;
+
+        // Check if there are any JOIN statements in the query
+        if (! is_array($joins)) {
+            return $this->joinColumnConflicts = [];
+        }
+
+        $joinColumns = [];
+
+        // Get all of the column names of the joined tables
+        foreach ($joins as $join) {
+            // Only get the first word in the table name just in case the
+            // table name contains an AS (Example: "table as my_table")
+            $joinTableName = explode(' ', trim($join->table))[0];
+
+            $joinColumns = array_merge($joinColumns, $this->getDbColumns($joinTableName));
+        }
+
+        $this->joinColumnConflicts = array_intersect($joinColumns, $this->getDbColumns($this->modelTableName));
+
+        return $this->joinColumnConflicts;
     }
 }
