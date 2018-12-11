@@ -114,4 +114,56 @@ class AppendTest extends TestCase
     {
         $this->assertTrue(array_key_exists($attribute, $model->toArray()));
     }
+
+    /** @test */
+    public function it_allows_callbacks_for_when_relations_are_appended()
+    {
+        $builder = $this->createQueryFromAppendRequest('fullname');
+
+        $callbackMock = $this->makeCallbackMock();
+        $callbackMock
+            ->expects($this->once())
+            ->method('__invoke')
+            ->with($builder);
+
+        $builder
+            ->allowedAppends('fullname')
+            ->whenAppended('fullname', $callbackMock);
+    }
+
+    private function makeCallbackMock()
+    {
+        return $this->createPartialMock(\stdClass::class, ['__invoke']);
+    }
+
+    /** @test */
+    public function it_allows_for_a_list_of_appends_to_trigger_a_the_callback()
+    {
+        $builder = $this->createQueryFromAppendRequest('fullname,reversename');
+
+        $shouldNotBeInvoked = $this->makeCallbackMock();
+        $shouldNotBeInvoked->expects($this->never())->method('__invoke');
+
+        $shouldBeInvoked = $this->makeCallbackMock();
+        $shouldBeInvoked->expects($this->once())->method('__invoke');
+
+        $builder
+            ->allowedAppends('fullname', 'reversename')
+            ->whenAppended(['fullname', 'reversename'], $shouldBeInvoked)
+            ->whenAppended('fullname', $shouldNotBeInvoked)
+            ->whenAppended('reversename', $shouldBeInvoked);
+    }
+
+    /** @test */
+    public function it_allows_for_a_wildcard_callback()
+    {
+        $builder = $this->createQueryFromAppendRequest('fullname');
+
+        $shouldBeInvoked = $this->makeCallbackMock();
+        $shouldBeInvoked->expects($this->once())->method('__invoke');
+
+        $builder
+            ->allowedAppends('fullname')
+            ->whenAppended('*', $shouldBeInvoked);
+    }
 }

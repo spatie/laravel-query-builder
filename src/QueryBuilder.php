@@ -34,8 +34,8 @@ class QueryBuilder extends Builder
     /** @var \Illuminate\Support\Collection */
     protected $fields;
 
-    /** @var array */
-    protected $appends = [];
+    /** @var \Illuminate\Support\Collection */
+    protected $appends;
 
     /** @var \Illuminate\Http\Request */
     protected $request;
@@ -43,6 +43,8 @@ class QueryBuilder extends Builder
     public function __construct(Builder $builder, ? Request $request = null)
     {
         parent::__construct(clone $builder->getQuery());
+
+        $this->appends = Collection::make();
 
         $this->initializeFromBuilder($builder);
 
@@ -120,7 +122,7 @@ class QueryBuilder extends Builder
 
         $this->allowedFields = collect($fields)
             ->map(function (string $fieldName) {
-                if (! str_contains($fieldName, '.')) {
+                if (!str_contains($fieldName, '.')) {
                     $modelTableName = $this->getModel()->getTable();
 
                     return "{$modelTableName}.{$fieldName}";
@@ -129,7 +131,7 @@ class QueryBuilder extends Builder
                 return $fieldName;
             });
 
-        if (! $this->allowedFields->contains('*')) {
+        if (!$this->allowedFields->contains('*')) {
             $this->guardAgainstUnknownFields();
         }
 
@@ -378,6 +380,28 @@ class QueryBuilder extends Builder
         if ($diff->count()) {
             throw InvalidAppendQuery::appendsNotAllowed($diff, $this->allowedAppends);
         }
+    }
+
+    /**
+     * @param string|string[] $appends
+     * @param callable        $callback
+     * @return $this
+     */
+    public function whenAppended($appends, callable $callback): self
+    {
+        if ($this->shouldExecuteAppendedCallback($appends)) {
+            $callback($this);
+        }
+
+        return $this;
+    }
+
+    private function shouldExecuteAppendedCallback($appends)
+    {
+        $requiredAppends = array_wrap($appends);
+
+        return in_array('*', $requiredAppends) ||
+               $this->appends->diff($requiredAppends)->count() === 0;
     }
 
     public function get($columns = ['*'])
