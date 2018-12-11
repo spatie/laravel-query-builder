@@ -122,7 +122,7 @@ class QueryBuilder extends Builder
 
         $this->allowedFields = collect($fields)
             ->map(function (string $fieldName) {
-                if (!str_contains($fieldName, '.')) {
+                if (! str_contains($fieldName, '.')) {
                     $modelTableName = $this->getModel()->getTable();
 
                     return "{$modelTableName}.{$fieldName}";
@@ -131,7 +131,7 @@ class QueryBuilder extends Builder
                 return $fieldName;
             });
 
-        if (!$this->allowedFields->contains('*')) {
+        if (! $this->allowedFields->contains('*')) {
             $this->guardAgainstUnknownFields();
         }
 

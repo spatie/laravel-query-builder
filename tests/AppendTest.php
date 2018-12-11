@@ -173,7 +173,7 @@ class AppendTest extends TestCase
         $builder = $this->createQueryFromAppendRequest('fullname');
 
         $this->expectException(\BadMethodCallException::class);
-        $this->expectExceptionMessage("Appending of required appends [reversename, lastname] for callback is not allowed on builder instance!");
+        $this->expectExceptionMessage('Appending of required appends [reversename, lastname] for callback is not allowed on builder instance!');
 
         $builder
             ->allowedAppends('fullname')
