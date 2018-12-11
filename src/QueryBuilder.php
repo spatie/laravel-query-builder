@@ -382,6 +382,18 @@ class QueryBuilder extends Builder
         }
     }
 
+    protected function guardAgainstUnreachableCallback($requiredAppends)
+    {
+        $forbiddenAppends = collect($requiredAppends)->diff($this->allowedAppends);
+
+        if ($forbiddenAppends->isNotEmpty()) {
+            $forbidden = $forbiddenAppends->implode(', ');
+            throw new \BadMethodCallException(
+                "Appending of required appends [$forbidden] for callback is not allowed on builder instance!"
+            );
+        }
+    }
+
     /**
      * @param string|string[] $appends
      * @param callable        $callback
@@ -399,9 +411,13 @@ class QueryBuilder extends Builder
     private function shouldExecuteAppendedCallback($appends)
     {
         $requiredAppends = array_wrap($appends);
+        if (in_array('*', $requiredAppends)) {
+            return true;
+        }
 
-        return in_array('*', $requiredAppends) ||
-               $this->appends->diff($requiredAppends)->count() === 0;
+        $this->guardAgainstUnreachableCallback($requiredAppends);
+
+        return $this->appends->diff($requiredAppends)->count() === 0;
     }
 
     public function get($columns = ['*'])

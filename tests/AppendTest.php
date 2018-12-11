@@ -166,4 +166,17 @@ class AppendTest extends TestCase
             ->allowedAppends('fullname')
             ->whenAppended('*', $shouldBeInvoked);
     }
+
+    /** @test */
+    public function it_throws_an_exception_the_suggested_appends_are_not_allowed()
+    {
+        $builder = $this->createQueryFromAppendRequest('fullname');
+
+        $this->expectException(\BadMethodCallException::class);
+        $this->expectExceptionMessage("Appending of required appends [reversename, lastname] for callback is not allowed on builder instance!");
+
+        $builder
+            ->allowedAppends('fullname')
+            ->whenAppended(['fullname', 'reversename', 'lastname'], $this->makeCallbackMock());
+    }
 }
