@@ -403,6 +403,26 @@ Of course you can pass a list of attributes to be appended.
 // GET /users?append=fullname,ranking
 ```
 
+#### Append Callbacks
+The `QueryBuilder` allows for a callback to be executed, when a given set of appends or a wildcard ('*') is present.  
+It always requires all appends to be present and does not match on a subset.
+
+``` php
+// GET /users?append=fullname,nickname
+QueryBuilder::for(User::class)
+    ->allowedAppends('fullname','nickname')
+    ->whenAppended(['fullname', 'nickname'], function(QueryBuilder $builder) {
+        $builder->withCount('fullname');
+    })
+    ->get();
+```
+
+If the QueryBuilder can not possibly execute the callback, because the required subset of appends is not allowed, an exception gets thrown.
+``` php
+QueryBuilder::for(User::class)
+    ->whenAppends('fullname', $callback) // BadMethodCallException::class
+    ->get();
+```
 
 ### Other query methods
 
