@@ -299,6 +299,50 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_allows_for_adding_ignorable_values()
+    {
+        $shouldBeIgnored = ['', '-1', null, 'ignored_string', 'another_ignored_string'];
+
+        $filter = Filter::exact('name')->ignore($shouldBeIgnored[0]);
+        $filter
+            ->ignore($shouldBeIgnored[1], $shouldBeIgnored[2])
+            ->ignore([$shouldBeIgnored[3], $shouldBeIgnored[4]]);
+
+        $valuesIgnoredByFilter = $filter->getIgnored();
+
+        $this->assertEquals(sort($shouldBeIgnored), sort($valuesIgnoredByFilter));
+    }
+
+    /** @test */
+    public function it_should_not_apply_a_filter_if_the_supplied_value_is_ignored()
+    {
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'name' => '-1',
+            ])
+            ->allowedFilters(Filter::exact('name')->ignore('-1'))
+            ->get();
+
+        $this->assertCount(TestModel::count(), $models);
+    }
+
+    /** @test */
+    public function it_should_apply_the_filter_on_the_subset_of_allowed_values()
+    {
+        TestModel::create(['name' => 'John Doe']);
+        TestModel::create(['name' => 'John Deer']);
+
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'name' => 'John Deer,John Doe',
+            ])
+            ->allowedFilters(Filter::exact('name')->ignore('John Deer'))
+            ->get();
+
+        $this->assertCount(1, $models);
+    }
+
+    /** @test */
     public function it_can_take_an_argument_for_custom_column_name_resolution()
     {
         $filter = Filter::custom('property_name', FiltersExact::class, 'property_column_name');
@@ -312,7 +356,7 @@ class FilterTest extends TestCase
     {
         $filter = Filter::custom('property_name', FiltersExact::class);
 
-        $this->assertEquals($filter->getProperty(), $filter->getcolumnName());
+        $this->assertEquals($filter->getProperty(), $filter->getColumnName());
     }
 
     /** @test */

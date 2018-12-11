@@ -282,6 +282,36 @@ $users = QueryBuilder::for(User::class)
     ->get();
 // $users will contain all users that have the `createPosts` permission
 ```
+#### Ignored values for filters
+
+You can specify a set of ignored values for every filter. This allows you to not apply a filter when these values are submitted.
+```php
+QueryBuilder::for(User::class)
+    ->allowedFilters(Filter::exact('name')->ignore(null))
+    ->get();
+```
+The `ignore()` method takes one or more values, where each may be an array of ignored values. Each of the following calls are valid:
+* `ignore('should_be_ignored')`  
+* `ignore(null, '-1')`
+* `ignore([null, 'ignore_me'],['also_ignored'])`
+
+Given an array of values to filter for, only the subset of non-ignored values get passed to the filter. If all values are ignored, the filter does not get applied.
+
+```php
+// GET /user?name=forbidden,John Doe
+QueryBuilder::for(User::class)
+    ->allowedFilters(Filter::exact('name')->ignore('forbidden'))
+    ->get();
+
+// Only users where name matches 'John Doe'
+
+// GET /user?name=ignored,ignored_too
+QueryBuilder::for(User::class)
+    ->allowedFilters(Filter::exact('name')->ignore(['ignored', 'ignored_too']))
+    ->get();
+
+// Filter does not get applied
+```
 
 ### Sorting
 

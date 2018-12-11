@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder;
 
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\Filters\FiltersScope;
@@ -19,20 +20,31 @@ class Filter
     /** @var string */
     protected $columnName;
 
+    /** @var Collection */
+    protected $ignored;
+
     public function __construct(string $property, $filterClass, $columnName = null)
     {
         $this->property = $property;
 
         $this->filterClass = $filterClass;
 
+        $this->ignored = Collection::make();
+
         $this->columnName = $columnName ?? $property;
     }
 
     public function filter(Builder $builder, $value)
     {
+        $valueToFilter = $this->resolveValueForFiltering($value);
+
+        if (empty($valueToFilter)) {
+            return;
+        }
+
         $filterClass = $this->resolveFilterClass();
 
-        ($filterClass)($builder, $value, $this->columnName);
+        ($filterClass)($builder, $valueToFilter, $this->columnName);
     }
 
     public static function exact(string $property, $columnName = null) : self
@@ -65,7 +77,21 @@ class Filter
         return $this->property === $property;
     }
 
-    public function getcolumnName(): string
+    public function ignore(...$values): self
+    {
+        $this->ignored = $this->ignored
+            ->merge($values)
+            ->flatten();
+
+        return $this;
+    }
+
+    public function getIgnored(): array
+    {
+        return $this->ignored->toArray();
+    }
+
+    public function getColumnName(): string
     {
         return $this->columnName;
     }
@@ -77,5 +103,14 @@ class Filter
         }
 
         return new $this->filterClass;
+    }
+
+    private function resolveValueForFiltering($property)
+    {
+        if (is_array($property)) {
+            return array_diff($property, $this->ignored->toArray());
+        }
+
+        return ! $this->ignored->contains($property) ? $property : null;
     }
 }
