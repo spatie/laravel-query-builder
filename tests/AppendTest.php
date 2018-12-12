@@ -168,6 +168,19 @@ class AppendTest extends TestCase
     }
 
     /** @test */
+    public function it_does_not_fire_for_a_wildcard_if_nothing_is_appended()
+    {
+        $builder = QueryBuilder::for(AppendModel::class, new Request());
+
+        $shouldNotBeInvoked = $this->makeCallbackMock();
+        $shouldNotBeInvoked->expects($this->never())->method('__invoke');
+
+        $builder
+            ->allowedAppends('fullname')
+            ->whenAppended('*', $shouldNotBeInvoked);
+    }
+
+    /** @test */
     public function it_throws_an_exception_the_suggested_appends_are_not_allowed()
     {
         $builder = $this->createQueryFromAppendRequest('fullname');
