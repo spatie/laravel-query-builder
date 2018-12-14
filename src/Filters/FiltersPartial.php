@@ -8,7 +8,7 @@ class FiltersPartial extends FiltersExact implements Filter
 {
     public function __invoke(Builder $query, $value, string $property): Builder
     {
-        if ($this->isRelationProperty($property)) {
+        if ($this->isRelationProperty($query, $property)) {
             return $this->withRelationConstraint($query, $value, $property);
         }
 
