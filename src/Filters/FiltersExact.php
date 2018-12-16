@@ -33,7 +33,7 @@ class FiltersExact implements Filter
             return false;
         }
 
-        if (Str::startsWith($property, $query->getModel()->getTable() . '.')) {
+        if (Str::startsWith($property, $query->getModel()->getTable().'.')) {
             return false;
         }
 
