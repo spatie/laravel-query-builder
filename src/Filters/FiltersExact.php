@@ -25,9 +25,19 @@ class FiltersExact implements Filter
 
     protected function isRelationProperty(Builder $query, string $property) : bool
     {
-        return Str::contains($property, '.')
-               && ! in_array($property, $this->relationConstraints)
-               && ! Str::startsWith($property, $query->getModel()->getTable());
+        if (! Str::contains($property, '.')) {
+            return false;
+        }
+
+        if (in_array($property, $this->relationConstraints)) {
+            return false;
+        }
+
+        if (Str::startsWith($property, $query->getModel()->getTable() . '.')) {
+            return false;
+        }
+
+        return true;
     }
 
     protected function withRelationConstraint(Builder $query, $value, string $property) : Builder
