@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
@@ -27,6 +28,9 @@ class QueryBuilder extends Builder
 
     /** @var \Illuminate\Support\Collection */
     protected $allowedIncludes;
+
+    /** @var \Illuminate\Support\Collection */
+    protected $relationAliases;
 
     /** @var \Illuminate\Support\Collection */
     protected $allowedAppends;
@@ -181,6 +185,8 @@ class QueryBuilder extends Builder
 
         $this->guardAgainstUnknownIncludes();
 
+        $this->rememberRelationAliases($includes);
+
         $this->addIncludesToQuery($this->request->includes());
 
         return $this;
@@ -285,7 +291,7 @@ class QueryBuilder extends Builder
                     ->mapWithKeys(function ($table, $key) use ($relatedTables) {
                         $fields = $this->getFieldsForRelatedTable(snake_case($table));
 
-                        $fullRelationName = $relatedTables->slice(0, $key + 1)->implode('.');
+                        $fullRelationName = $this->resolveFullRelationName($key, $relatedTables);
 
                         if (empty($fields)) {
                             return [$fullRelationName];
@@ -299,6 +305,49 @@ class QueryBuilder extends Builder
             ->pipe(function (Collection $withs) {
                 $this->with($withs->all());
             });
+    }
+
+    protected function resolveFullRelationName($key, Collection $relatedTables): string
+    {
+        $fullRelationName = $relatedTables->slice(0, $key + 1)->implode('.');
+
+        if ($resolvedRelationName = $this->relationAliases->get($fullRelationName)) {
+            return $resolvedRelationName;
+        }
+
+        return $fullRelationName;
+    }
+
+    protected function rememberRelationAliases($includes)
+    {
+        $this->relationAliases =
+            collect($includes)
+                ->filter(function ($include, $alias) {
+                    return is_string($alias);
+                })
+                ->mapWithKeys(function ($alias, $include) {
+                    return [camel_case($alias) => camel_case($include)];
+                });
+    }
+
+    protected function replaceRelationsWithAlias(Collection $result)
+    {
+        if (is_null($this->relationAliases) || $this->relationAliases->isEmpty()) {
+            return;
+        }
+
+        $reverseAliasLookup = $this->relationAliases->flip();
+
+        /** @var Model $model */
+        foreach ($result as $model) {
+            collect($model->getRelations())
+                ->each(function ($items, $relationName) use ($model, $reverseAliasLookup) {
+                    if ($alias = $reverseAliasLookup->get($relationName)) {
+                        $model->unsetRelation($relationName);
+                        $model->setRelation($alias, $items);
+                    }
+                });
+        }
     }
 
     public function setAppendsToResult($result)
@@ -387,6 +436,8 @@ class QueryBuilder extends Builder
         if (count($this->appends) > 0) {
             $result = $this->setAppendsToResult($result);
         }
+
+        $this->replaceRelationsWithAlias($result);
 
         return $result;
     }

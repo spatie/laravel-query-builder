@@ -167,6 +167,35 @@ class IncludeTest extends TestCase
         $this->assertEquals(['allowed include'], $exception->allowedIncludes->all());
     }
 
+    /** @test */
+    public function it_allows_for_aliases_to_be_used_when_including_relationships()
+    {
+        $models = $this->createQueryFromIncludeRequest('alias-test,other-related-models')
+                       ->allowedIncludes([
+                           'related-models' => 'alias-test',
+                           'other-related-models',
+                       ])
+                       ->get();
+
+        $this->assertRelationLoaded($models, 'aliasTest');
+        $this->assertRelationLoaded($models, 'otherRelatedModels');
+
+        $this->assertEquals($models->first()->relatedModels, $models->first()->aliasTest);
+    }
+
+    /** @test */
+    public function given_an_alias_it_will_always_replace_the_default_relation_name()
+    {
+        $models = $this->createQueryFromIncludeRequest('related-models,alias')
+            ->allowedIncludes([
+                'related-models',
+                'related-models' =>  'alias',
+            ])
+            ->get();
+
+        $this->assertRelationLoaded($models, 'alias');
+    }
+
     protected function createQueryFromIncludeRequest(string $includes): QueryBuilder
     {
         $request = new Request([
