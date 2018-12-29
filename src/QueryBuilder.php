@@ -338,16 +338,16 @@ class QueryBuilder extends Builder
 
         $reverseAliasLookup = $this->relationAliases->flip();
 
-        /** @var Model $model */
-        foreach ($result as $model) {
-            collect($model->getRelations())
-                ->each(function ($items, $relationName) use ($model, $reverseAliasLookup) {
-                    if ($alias = $reverseAliasLookup->get($relationName)) {
-                        $model->unsetRelation($relationName);
-                        $model->setRelation($alias, $items);
-                    }
+        $result->each(function (Model $model) use ($reverseAliasLookup) {
+            $relations = collect($model->getRelations())
+                ->mapWithKeys(function ($items, $relationName) use ($reverseAliasLookup) {
+                    $aliasOrRelation = $reverseAliasLookup->get($relationName, $relationName);
+
+                    return [$aliasOrRelation => $items];
                 });
-        }
+
+            $model->setRelations(Collection::unwrap($relations));
+        });
     }
 
     public function setAppendsToResult($result)
