@@ -412,8 +412,12 @@ class QueryBuilder extends Builder
     {
         $requiredAppends = array_wrap($appends);
 
+        if ($this->appends->isEmpty()) {
+            return false;
+        }
+
         if (in_array('*', $requiredAppends)) {
-            return $this->appends->isNotEmpty();
+            return true;
         }
 
         $this->guardAgainstUnreachableCallback($requiredAppends);
