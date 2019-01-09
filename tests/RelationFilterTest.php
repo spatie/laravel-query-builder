@@ -125,6 +125,19 @@ class RelationFilterTest extends TestCase
         $this->assertCount(0, $modelsResult);
     }
 
+    /** @test */
+    public function given_the_models_table_name_it_does_filter_by_property_rather_than_relation()
+    {
+        TestModel::create(['name' => $name = str_random()]);
+
+        $result = $this
+            ->createQueryFromFilterRequest(['test_models.name' => $name])
+            ->allowedFilters('test_models.name')
+            ->get();
+
+        $this->assertCount(1, $result);
+    }
+
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder
     {
         $request = new Request([

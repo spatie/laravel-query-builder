@@ -12,7 +12,7 @@ class FiltersExact implements Filter
 
     public function __invoke(Builder $query, $value, string $property) : Builder
     {
-        if ($this->isRelationProperty($property)) {
+        if ($this->isRelationProperty($query, $property)) {
             return $this->withRelationConstraint($query, $value, $property);
         }
 
@@ -23,9 +23,21 @@ class FiltersExact implements Filter
         return $query->where($property, '=', $value);
     }
 
-    protected function isRelationProperty(string $property) : bool
+    protected function isRelationProperty(Builder $query, string $property) : bool
     {
-        return Str::contains($property, '.') && ! in_array($property, $this->relationConstraints);
+        if (! Str::contains($property, '.')) {
+            return false;
+        }
+
+        if (in_array($property, $this->relationConstraints)) {
+            return false;
+        }
+
+        if (Str::startsWith($property, $query->getModel()->getTable().'.')) {
+            return false;
+        }
+
+        return true;
     }
 
     protected function withRelationConstraint(Builder $query, $value, string $property) : Builder
