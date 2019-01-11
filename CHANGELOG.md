@@ -7,6 +7,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - allow ignoring specific filter values using `$filter->ignore()`
 - allow filtering related model attributes `allowedFilters('related-model.name')`
 - fix for filtering by relation model properties
+- add custom sort classes
 
 ## 1.12.0 - 2018-11-27
 
