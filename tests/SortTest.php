@@ -3,14 +3,14 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use DB;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\Sort;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
-use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
-use Spatie\QueryBuilder\Sort;
 use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
+use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
 
 class SortTest extends TestCase
 {
