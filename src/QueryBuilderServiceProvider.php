@@ -11,11 +11,11 @@ class QueryBuilderServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/query-builder.php' => config_path('query-builder.php'),
+                __DIR__ . '/../config/query-builder.php' => config_path('query-builder.php'),
             ], 'config');
         }
 
-        $this->mergeConfigFrom(__DIR__.'/../config/query-builder.php', 'query-builder');
+        $this->mergeConfigFrom(__DIR__ . '/../config/query-builder.php', 'query-builder');
 
         Request::macro('includes', function ($include = null) {
             $parameter = config('query-builder.parameters.include');
@@ -90,9 +90,9 @@ class QueryBuilderServiceProvider extends ServiceProvider
         });
 
         Request::macro('fields', function () {
-            $fieldsPerTable = collect(
-                $this->query(config('query-builder.parameters.fields'))
-            );
+            $fieldsParameter = config('query-builder.parameters.fields');
+            
+            $fieldsPerTable = collect($this->query($fieldsParameter));
 
             if ($fieldsPerTable->isEmpty()) {
                 return collect();

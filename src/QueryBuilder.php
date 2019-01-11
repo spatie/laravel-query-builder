@@ -32,9 +32,6 @@ class QueryBuilder extends Builder
     protected $allowedAppends;
 
     /** @var \Illuminate\Support\Collection */
-    protected $fields;
-
-    /** @var \Illuminate\Support\Collection */
     protected $appends;
 
     /** @var \Illuminate\Http\Request */
@@ -47,8 +44,6 @@ class QueryBuilder extends Builder
         $this->initializeFromBuilder($builder);
 
         $this->request = $request ?? request();
-
-        $this->parseSelectedFields();
     }
 
     /**
@@ -104,6 +99,8 @@ class QueryBuilder extends Builder
         if (! $this->allowedFields->contains('*')) {
             $this->guardAgainstUnknownFields();
         }
+
+        $this->addFieldsToQuery($this->request->fields());
 
         return $this;
     }
@@ -242,12 +239,11 @@ class QueryBuilder extends Builder
         $this->onDelete = $builder->getProtected('onDelete');
     }
 
-    protected function parseSelectedFields()
+    protected function addFieldsToQuery(Collection $fields)
     {
-        $this->fields = $this->request->fields();
-
         $modelTableName = $this->getModel()->getTable();
-        $modelFields = $this->fields->get($modelTableName, ['*']);
+
+        $modelFields = $fields->get($modelTableName, ['*']);
 
         $this->select($this->prependFieldsWithTableName($modelFields, $modelTableName));
     }
@@ -259,13 +255,14 @@ class QueryBuilder extends Builder
         }, $fields);
     }
 
-    protected function getFieldsForRelatedTable(string $relation): array
+    protected function getFieldsForIncludedTable(string $relation): array
     {
-        if (! $this->fields) {
+        if (! $this->allowedFields) {
             return ['*'];
         }
 
-        return $this->fields->get($relation, []);
+        // TODO: fix with . notation?
+        return $this->allowedFields->get($relation, []);
     }
 
     protected function addFiltersToQuery(Collection $filters)
@@ -354,7 +351,7 @@ class QueryBuilder extends Builder
             ->flatMap(function (Collection $relatedTables) {
                 return $relatedTables
                     ->mapWithKeys(function ($table, $key) use ($relatedTables) {
-                        $fields = $this->getFieldsForRelatedTable(snake_case($table));
+                        $fields = $this->getFieldsForIncludedTable(snake_case($table));
 
                         $fullRelationName = $relatedTables->slice(0, $key + 1)->implode('.');
 
