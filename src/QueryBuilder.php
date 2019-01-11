@@ -182,7 +182,7 @@ class QueryBuilder extends Builder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function get($columns = ['*'])
     {
