@@ -34,8 +34,8 @@ class QueryBuilder extends Builder
     /** @var \Illuminate\Support\Collection */
     protected $fields;
 
-    /** @var array */
-    protected $appends = [];
+    /** @var \Illuminate\Support\Collection */
+    protected $appends;
 
     /** @var \Illuminate\Http\Request */
     protected $request;
@@ -52,36 +52,14 @@ class QueryBuilder extends Builder
     }
 
     /**
-     * Add the model, scopes, eager loaded relationships, local macro's and onDelete callback
-     * from the $builder to this query builder.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     */
-    protected function initializeFromBuilder(Builder $builder)
-    {
-        $this->setModel($builder->getModel())
-            ->setEagerLoads($builder->getEagerLoads());
-
-        $builder->macro('getProtected', function (Builder $builder, string $property) {
-            return $builder->{$property};
-        });
-
-        $this->scopes = $builder->getProtected('scopes');
-
-        $this->localMacros = $builder->getProtected('localMacros');
-
-        $this->onDelete = $builder->getProtected('onDelete');
-    }
-
-    /**
      * Create a new QueryBuilder for a request and model.
      *
      * @param string|\Illuminate\Database\Query\Builder $baseQuery Model class or base query builder
-     * @param Request $request
+     * @param \Illuminate\Http\Request                  $request
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
      */
-    public static function for($baseQuery, ? Request $request = null) : self
+    public static function for($baseQuery, ? Request $request = null): self
     {
         if (is_string($baseQuery)) {
             $baseQuery = ($baseQuery)::query();
@@ -90,7 +68,7 @@ class QueryBuilder extends Builder
         return new static($baseQuery, $request ?? request());
     }
 
-    public function allowedFilters($filters) : self
+    public function allowedFilters($filters): self
     {
         $filters = is_array($filters) ? $filters : func_get_args();
         $this->allowedFilters = collect($filters)->map(function ($filter) {
@@ -108,7 +86,7 @@ class QueryBuilder extends Builder
         return $this;
     }
 
-    public function allowedFields($fields) : self
+    public function allowedFields($fields): self
     {
         $fields = is_array($fields) ? $fields : func_get_args();
 
@@ -130,38 +108,7 @@ class QueryBuilder extends Builder
         return $this;
     }
 
-    public function defaultSort($sort) : self
-    {
-        $this->defaultSort = $sort;
-
-        $this->addSortsToQuery($this->request->sorts($this->defaultSort));
-
-        return $this;
-    }
-
-    public function allowedSorts($sorts) : self
-    {
-        $sorts = is_array($sorts) ? $sorts : func_get_args();
-        if (! $this->request->sorts()) {
-            return $this;
-        }
-
-        $this->allowedSorts = collect($sorts)->map(function ($sort) {
-            if ($sort instanceof Sort) {
-                return $sort;
-            }
-
-            return Sort::field(ltrim($sort, '-'));
-        });
-
-        $this->guardAgainstUnknownSorts();
-
-        $this->addSortsToQuery($this->request->sorts($this->defaultSort));
-
-        return $this;
-    }
-
-    public function allowedIncludes($includes) : self
+    public function allowedIncludes($includes): self
     {
         $includes = is_array($includes) ? $includes : func_get_args();
 
@@ -184,7 +131,7 @@ class QueryBuilder extends Builder
         return $this;
     }
 
-    public function allowedAppends($appends) : self
+    public function allowedAppends($appends): self
     {
         $appends = is_array($appends) ? $appends : func_get_args();
 
@@ -195,6 +142,104 @@ class QueryBuilder extends Builder
         $this->appends = $this->request->appends();
 
         return $this;
+    }
+
+    public function allowedSorts($sorts): self
+    {
+        $sorts = is_array($sorts) ? $sorts : func_get_args();
+        if (! $this->request->sorts()) {
+            return $this;
+        }
+
+        $this->allowedSorts = collect($sorts)->map(function ($sort) {
+            if ($sort instanceof Sort) {
+                return $sort;
+            }
+
+            return Sort::field(ltrim($sort, '-'));
+        });
+
+        $this->guardAgainstUnknownSorts();
+
+        $this->addSortsToQuery($this->request->sorts($this->defaultSort));
+
+        return $this;
+    }
+
+    public function defaultSort($sort): self
+    {
+        $this->defaultSort = $sort;
+
+        $this->addSortsToQuery($this->request->sorts($this->defaultSort));
+
+        return $this;
+    }
+
+    public function getQuery()
+    {
+        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
+            $this->addDefaultSorts();
+        }
+
+        return parent::getQuery();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function get($columns = ['*'])
+    {
+        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
+            $this->addDefaultSorts();
+        }
+
+        $results = parent::get($columns);
+
+        if (count($this->appends)) {
+            $results = $this->addAppendsToResults($results);
+        }
+
+        return $results;
+    }
+
+    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    {
+        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
+            $this->addDefaultSorts();
+        }
+
+        return parent::paginate($perPage, $columns, $pageName, $page);
+    }
+
+    public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    {
+        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
+            $this->addDefaultSorts();
+        }
+
+        return parent::simplePaginate($perPage, $columns, $pageName, $page);
+    }
+
+    /**
+     * Add the model, scopes, eager loaded relationships, local macro's and onDelete callback
+     * from the $builder to this query builder.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $builder
+     */
+    protected function initializeFromBuilder(Builder $builder)
+    {
+        $this->setModel($builder->getModel())
+            ->setEagerLoads($builder->getEagerLoads());
+
+        $builder->macro('getProtected', function (Builder $builder, string $property) {
+            return $builder->{$property};
+        });
+
+        $this->scopes = $builder->getProtected('scopes');
+
+        $this->localMacros = $builder->getProtected('localMacros');
+
+        $this->onDelete = $builder->getProtected('onDelete');
     }
 
     protected function parseSelectedFields()
@@ -232,7 +277,7 @@ class QueryBuilder extends Builder
         });
     }
 
-    protected function findFilter(string $property) : ? Filter
+    protected function findFilter(string $property): ?Filter
     {
         return $this->allowedFilters
             ->first(function (Filter $filter) use ($property) {
@@ -273,7 +318,7 @@ class QueryBuilder extends Builder
         });
     }
 
-    protected function findSort(string $property) : ? Sort
+    protected function findSort(string $property): ?Sort
     {
         return $this->allowedSorts
             ->first(function (Sort $sort) use ($property) {
@@ -292,6 +337,11 @@ class QueryBuilder extends Builder
         });
 
         $this->addSortsToQuery($this->request->sorts($this->defaultSort));
+    }
+
+    protected function addAppendsToResults(Collection $results)
+    {
+        return $results->each->append($this->appends->toArray());
     }
 
     protected function addIncludesToQuery(Collection $includes)
@@ -320,17 +370,6 @@ class QueryBuilder extends Builder
             ->pipe(function (Collection $withs) {
                 $this->with($withs->all());
             });
-    }
-
-    public function setAppendsToResult($result)
-    {
-        $result->map(function ($item) {
-            $item->append($this->appends->toArray());
-
-            return $item;
-        });
-
-        return $result;
     }
 
     protected function guardAgainstUnknownFilters()
@@ -401,47 +440,5 @@ class QueryBuilder extends Builder
         if ($diff->count()) {
             throw InvalidAppendQuery::appendsNotAllowed($diff, $this->allowedAppends);
         }
-    }
-
-    public function getQuery()
-    {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-        }
-
-        return parent::getQuery();
-    }
-
-    public function get($columns = ['*'])
-    {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-        }
-
-        $result = parent::get($columns);
-
-        if (count($this->appends) > 0) {
-            $result = $this->setAppendsToResult($result);
-        }
-
-        return $result;
-    }
-
-    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-    {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-        }
-
-        return parent::paginate($perPage, $columns, $pageName, $page);
-    }
-
-    public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-    {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-        }
-
-        return parent::simplePaginate($perPage, $columns, $pageName, $page);
     }
 }
