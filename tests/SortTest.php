@@ -3,8 +3,8 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Sort;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;

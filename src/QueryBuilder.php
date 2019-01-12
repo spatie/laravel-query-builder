@@ -248,7 +248,7 @@ class QueryBuilder extends Builder
     {
         $modelTableName = $this->getModel()->getTable();
 
-        if($modelFields = $fields->get($modelTableName)) {
+        if ($modelFields = $fields->get($modelTableName)) {
             $this->select($this->prependFieldsWithTableName($modelFields, $modelTableName));
         }
     }
