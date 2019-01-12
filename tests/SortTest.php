@@ -2,8 +2,8 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Sort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
@@ -173,7 +173,7 @@ class SortTest extends TestCase
             ->allowedSorts(Sort::custom('custom_name', get_class($sortClass)))
             ->get();
 
-        $this->assertQueryExecuted('select "test_models".* from "test_models" order by "name" asc');
+        $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
         $this->assertSortedAscending($sortedModels, 'name');
     }
 

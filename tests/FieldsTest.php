@@ -119,7 +119,7 @@ class FieldsTest extends TestCase
 
         $queryBuilder->first()->relatedModels;
 
-        $this->assertQueryLogContains('select "test_models".* from "test_models"');
+        $this->assertQueryLogContains('select * from "test_models"');
         $this->assertQueryLogContains('select "related_models"."id", "related_models"."name" from "related_models"');
     }
 

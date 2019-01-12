@@ -44,6 +44,8 @@ class QueryBuilder extends Builder
         $this->initializeFromBuilder($builder);
 
         $this->request = $request ?? request();
+
+        $this->parseFields();
     }
 
     /**
@@ -100,9 +102,12 @@ class QueryBuilder extends Builder
             $this->guardAgainstUnknownFields();
         }
 
-        $this->addFieldsToQuery($this->request->fields());
-
         return $this;
+    }
+
+    public function parseFields()
+    {
+        $this->addFieldsToQuery($this->request->fields());
     }
 
     public function allowedIncludes($includes): self
@@ -192,7 +197,7 @@ class QueryBuilder extends Builder
 
         $results = parent::get($columns);
 
-        if (count($this->appends)) {
+        if (optional($this->appends)->isNotEmpty()) {
             $results = $this->addAppendsToResults($results);
         }
 
@@ -243,9 +248,9 @@ class QueryBuilder extends Builder
     {
         $modelTableName = $this->getModel()->getTable();
 
-        $modelFields = $fields->get($modelTableName, ['*']);
-
-        $this->select($this->prependFieldsWithTableName($modelFields, $modelTableName));
+        if($modelFields = $fields->get($modelTableName)) {
+            $this->select($this->prependFieldsWithTableName($modelFields, $modelTableName));
+        }
     }
 
     protected function prependFieldsWithTableName(array $fields, string $tableName): array
@@ -257,12 +262,11 @@ class QueryBuilder extends Builder
 
     protected function getFieldsForIncludedTable(string $relation): array
     {
-        if (! $this->allowedFields) {
+        if ($this->request->fields()->isEmpty()) {
             return ['*'];
         }
 
-        // TODO: fix with . notation?
-        return $this->allowedFields->get($relation, []);
+        return $this->request->fields()->get($relation, []);
     }
 
     protected function addFiltersToQuery(Collection $filters)

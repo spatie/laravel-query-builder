@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 
 class QueryBuilderServiceProvider extends ServiceProvider
@@ -89,7 +90,7 @@ class QueryBuilderServiceProvider extends ServiceProvider
             return $filters->get(strtolower($filter));
         });
 
-        Request::macro('fields', function () {
+        Request::macro('fields', function (): Collection {
             $fieldsParameter = config('query-builder.parameters.fields');
 
             $fieldsPerTable = collect($this->query($fieldsParameter));
