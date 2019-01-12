@@ -31,9 +31,6 @@ class QueryBuilder extends Builder
     /** @var \Illuminate\Support\Collection */
     protected $allowedAppends;
 
-    /** @var \Illuminate\Support\Collection */
-    protected $appends;
-
     /** @var \Illuminate\Http\Request */
     protected $request;
 
@@ -141,8 +138,6 @@ class QueryBuilder extends Builder
 
         $this->guardAgainstUnknownAppends();
 
-        $this->appends = $this->request->appends();
-
         return $this;
     }
 
@@ -197,7 +192,7 @@ class QueryBuilder extends Builder
 
         $results = parent::get($columns);
 
-        if (optional($this->appends)->isNotEmpty()) {
+        if ($this->request->appends()->isNotEmpty()) {
             $results = $this->addAppendsToResults($results);
         }
 
@@ -342,7 +337,9 @@ class QueryBuilder extends Builder
 
     protected function addAppendsToResults(Collection $results)
     {
-        return $results->each->append($this->appends->toArray());
+        $appends = $this->request->appends();
+
+        return $results->each->append($appends->toArray());
     }
 
     protected function addIncludesToQuery(Collection $includes)
