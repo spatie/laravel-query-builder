@@ -19,7 +19,7 @@ class QueryBuilder extends Builder
     /** @var \Illuminate\Support\Collection */
     protected $allowedFields;
 
-    /** @var string|null */
+    /** @var \Spatie\QueryBuilder\Sort|null */
     protected $defaultSort;
 
     /** @var \Illuminate\Support\Collection */
@@ -144,6 +144,7 @@ class QueryBuilder extends Builder
     public function allowedSorts($sorts): self
     {
         $sorts = is_array($sorts) ? $sorts : func_get_args();
+
         if (! $this->request->sorts()) {
             return $this;
         }
@@ -158,16 +159,25 @@ class QueryBuilder extends Builder
 
         $this->guardAgainstUnknownSorts();
 
-        $this->addSortsToQuery($this->request->sorts($this->defaultSort));
+        $this->parseSorts();
 
         return $this;
     }
 
+    /**
+     * @param string|\Spatie\QueryBuilder\Sort $sort
+     *
+     * @return \Spatie\QueryBuilder\QueryBuilder
+     */
     public function defaultSort($sort): self
     {
+        if (is_string($sort)) {
+            $sort = Sort::field($sort);
+        }
+
         $this->defaultSort = $sort;
 
-        $this->addSortsToQuery($this->request->sorts($this->defaultSort));
+        $this->parseSorts();
 
         return $this;
     }
@@ -281,9 +291,16 @@ class QueryBuilder extends Builder
             });
     }
 
-    protected function addSortsToQuery(Collection $sorts)
+    protected function parseSorts()
     {
-        $this->filterDuplicates($sorts)
+        $sorts = $this->request->sorts();
+
+        if ($sorts->isEmpty()) {
+            $this->defaultSort->sort($this);
+        }
+
+        $this
+            ->filterDuplicates($sorts)
             ->each(function (string $property) {
                 $descending = $property[0] === '-';
 
@@ -317,6 +334,7 @@ class QueryBuilder extends Builder
     protected function findSort(string $property): ?Sort
     {
         return $this->allowedSorts
+            ->merge([$this->defaultSort])
             ->first(function (Sort $sort) use ($property) {
                 return $sort->isForProperty($property);
             });
@@ -324,15 +342,16 @@ class QueryBuilder extends Builder
 
     protected function addDefaultSorts()
     {
-        $this->allowedSorts = collect($this->request->sorts($this->defaultSort))->map(function ($sort) {
-            if ($sort instanceof Sort) {
-                return $sort;
-            }
+        $this->allowedSorts = collect($this->request->sorts($this->defaultSort))
+            ->map(function ($sort) {
+                if ($sort instanceof Sort) {
+                    return $sort;
+                }
 
-            return Sort::field(ltrim($sort, '-'));
-        });
+                return Sort::field(ltrim($sort, '-'));
+            });
 
-        $this->addSortsToQuery($this->request->sorts($this->defaultSort));
+        $this->parseSorts();
     }
 
     protected function addAppendsToResults(Collection $results)
