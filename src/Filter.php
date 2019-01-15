@@ -38,7 +38,7 @@ class Filter
     {
         $valueToFilter = $this->resolveValueForFiltering($value);
 
-        if (empty($valueToFilter)) {
+        if (is_null($valueToFilter)) {
             return;
         }
 
@@ -108,7 +108,8 @@ class Filter
     private function resolveValueForFiltering($property)
     {
         if (is_array($property)) {
-            return array_diff($property, $this->ignored->toArray());
+            $remainingProperties = array_diff($property, $this->ignored->toArray());
+            return ! empty($remainingProperties) ? $remainingProperties : null;
         }
 
         return ! $this->ignored->contains($property) ? $property : null;
