@@ -2,9 +2,9 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
+use Spatie\QueryBuilder\Filter;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
-use Spatie\QueryBuilder\Filter;
 
 trait FiltersQuery
 {

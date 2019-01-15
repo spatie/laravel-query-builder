@@ -2,9 +2,9 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
+use Spatie\QueryBuilder\Sort;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
-use Spatie\QueryBuilder\Sort;
 
 trait SortsQuery
 {
@@ -132,5 +132,4 @@ trait SortsQuery
             throw InvalidSortQuery::sortsNotAllowed($diff, $allowedSortNames);
         }
     }
-
 }
