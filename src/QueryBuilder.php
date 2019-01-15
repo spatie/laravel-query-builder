@@ -296,7 +296,7 @@ class QueryBuilder extends Builder
         $sorts = $this->request->sorts();
 
         if ($sorts->isEmpty()) {
-            $this->defaultSort->sort($this);
+            optional($this->defaultSort)->sort($this);
         }
 
         $this

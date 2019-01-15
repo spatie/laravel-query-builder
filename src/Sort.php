@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder;
 
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\Enums\SortDirection;
 use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Sorts\Sort as CustomSort;
 
@@ -14,15 +15,26 @@ class Sort
     /** @var string */
     protected $property;
 
+    /** @var string */
+    protected $defaultDirection;
+
     public function __construct(string $property, $sortClass)
     {
-        $this->property = $property;
+        $this->property = ltrim($property, '-');
         $this->sortClass = $sortClass;
+        $this->defaultDirection = static::parsePropertyDirection($property);
     }
 
-    public function sort(Builder $builder, $descending)
+    public static function parsePropertyDirection(string $property): string
+    {
+        return $property[0] === '-' ? SortDirection::DESCENDING : SortDirection::ASCENDING;
+    }
+
+    public function sort(Builder $builder, ?bool $descending = null)
     {
         $sortClass = $this->resolveSortClass();
+
+        $descending = $descending ?? ($this->defaultDirection === SortDirection::DESCENDING);
 
         ($sortClass)($builder, $descending, $this->property);
     }
