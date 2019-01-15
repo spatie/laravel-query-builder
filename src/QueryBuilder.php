@@ -5,11 +5,11 @@ namespace Spatie\QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\Concerns\SortsQuery;
+use Spatie\QueryBuilder\Concerns\FiltersQuery;
 use Spatie\QueryBuilder\Concerns\AddsFieldsToQuery;
 use Spatie\QueryBuilder\Concerns\AddsIncludesToQuery;
 use Spatie\QueryBuilder\Concerns\AppendsAttributesToResults;
-use Spatie\QueryBuilder\Concerns\FiltersQuery;
-use Spatie\QueryBuilder\Concerns\SortsQuery;
 
 class QueryBuilder extends Builder
 {

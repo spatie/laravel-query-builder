@@ -81,5 +81,4 @@ trait AddsFieldsToQuery
             throw InvalidFieldQuery::fieldsNotAllowed($diff, $this->allowedFields);
         }
     }
-
 }
