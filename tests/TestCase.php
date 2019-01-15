@@ -24,6 +24,7 @@ class TestCase extends Orchestra
             $table->increments('id');
             $table->timestamps();
             $table->string('name');
+            $table->boolean('is_visible')->default(true);
         });
 
         $app['db']->connection()->getSchemaBuilder()->create('append_models', function (Blueprint $table) {

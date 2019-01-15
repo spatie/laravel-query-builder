@@ -376,6 +376,21 @@ class FilterTest extends TestCase
         $this->assertCount(1, $models);
     }
 
+    /** @test */
+    public function it_can_filter_using_boolean_flags()
+    {
+        TestModel::query()->update(['is_visible' => true]);
+        $filter = Filter::exact('is_visible');
+
+        $models = $this
+            ->createQueryFromFilterRequest(['is_visible' => 'false'])
+            ->allowedFilters($filter)
+            ->get();
+
+        $this->assertCount(0, $models);
+        $this->assertGreaterThan(0, TestModel::all()->count());
+    }
+
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder
     {
         $request = new Request([
