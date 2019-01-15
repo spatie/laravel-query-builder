@@ -65,6 +65,12 @@ class TestCase extends Orchestra
             $table->increments('id');
             $table->string('name');
         });
+
+        $app['db']->connection()->getSchemaBuilder()->create('morph_models', function (Blueprint $table) {
+            $table->increments('id');
+            $table->morphs('parent');
+            $table->string('name');
+        });
     }
 
     protected function getPackageProviders($app)

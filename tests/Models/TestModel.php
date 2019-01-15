@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class TestModel extends Model
@@ -25,6 +26,11 @@ class TestModel extends Model
     public function relatedThroughPivotModels(): BelongsToMany
     {
         return $this->belongsToMany(RelatedThroughPivotModel::class, 'pivot_models');
+    }
+
+    public function morphModels(): MorphMany
+    {
+        return $this->morphMany(MorphModel::class, 'parent');
     }
 
     public function scopeNamed(Builder $query, string $name) : Builder

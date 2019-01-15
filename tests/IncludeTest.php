@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Spatie\QueryBuilder\Tests\Models\MorphModel;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 
 class IncludeTest extends TestCase
@@ -24,6 +25,8 @@ class IncludeTest extends TestCase
             $model
                 ->relatedModels()->create(['name' => 'Test'])
                 ->nestedRelatedModels()->create(['name' => 'Test']);
+
+            $model->morphModels()->create(['name' => 'Test']);
 
             $model->relatedThroughPivotModels()->create([
                 'id'   => $model->id + 1,
@@ -75,6 +78,31 @@ class IncludeTest extends TestCase
             ->get();
 
         $this->assertRelationLoaded($models, 'relatedModels');
+    }
+
+    /** @test */
+    public function it_can_include_morph_model_relations()
+    {
+        $models = $this
+            ->createQueryFromIncludeRequest('morph-models')
+            ->allowedIncludes('morph-models')
+            ->get();
+
+        $this->assertRelationLoaded($models, 'morphModels');
+    }
+
+    /** @test */
+    public function it_can_include_reverse_morph_model_relations()
+    {
+        $request = new Request([
+            'include' => 'parent'
+        ]);
+
+        $models = QueryBuilder::for(MorphModel::class, $request)
+            ->allowedIncludes('parent')
+            ->get();
+
+        $this->assertRelationLoaded($models, 'parent');
     }
 
     /** @test */
