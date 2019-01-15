@@ -109,6 +109,7 @@ class Filter
     {
         if (is_array($property)) {
             $remainingProperties = array_diff($property, $this->ignored->toArray());
+
             return ! empty($remainingProperties) ? $remainingProperties : null;
         }
 
