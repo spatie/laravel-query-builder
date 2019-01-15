@@ -95,7 +95,7 @@ class IncludeTest extends TestCase
     public function it_can_include_reverse_morph_model_relations()
     {
         $request = new Request([
-            'include' => 'parent'
+            'include' => 'parent',
         ]);
 
         $models = QueryBuilder::for(MorphModel::class, $request)
