@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 1.13.1 - 2019-01-15
+
+- moved features to traits and general cleanup
+- fix detection of false-positives for ignored values (#154)
+- removed request macros
+- started using `QueryBuilderRequest` to read data from the current request
+
 ## 1.13.0 - 2019-01-12
 
 **BROKEN - do not use**
