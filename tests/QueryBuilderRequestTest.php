@@ -2,7 +2,6 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilderRequest;
 
 class QueryBuilderRequestTest extends TestCase

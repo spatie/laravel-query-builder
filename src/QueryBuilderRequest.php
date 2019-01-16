@@ -71,7 +71,6 @@ class QueryBuilderRequest extends Request
     }
 
     /**
-     *
      * @return array|string|null
      */
     public function sort()
@@ -90,7 +89,8 @@ class QueryBuilderRequest extends Request
         return collect($sortParts)->filter();
     }
 
-    protected function getFilterValue($value) {
+    protected function getFilterValue($value)
+    {
         if (is_array($value)) {
             return collect($value)->map(function ($valueValue) {
                 return $this->getFilterValue($valueValue);
