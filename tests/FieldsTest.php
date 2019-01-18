@@ -100,7 +100,7 @@ class FieldsTest extends TestCase
         $queryBuilder->first()->relatedModels;
 
         $this->assertQueryLogContains('select "test_models"."id" from "test_models"');
-        $this->assertQueryLogContains('select "related_models"."name" from "related_models"');
+        $this->assertQueryLogContains('select "name" from "related_models"');
     }
 
     /** @test */
@@ -120,7 +120,7 @@ class FieldsTest extends TestCase
         $queryBuilder->first()->relatedModels;
 
         $this->assertQueryLogContains('select * from "test_models"');
-        $this->assertQueryLogContains('select "related_models"."id", "related_models"."name" from "related_models"');
+        $this->assertQueryLogContains('select "id", "name" from "related_models"');
     }
 
     protected function createQueryFromFieldRequest(array $fields): QueryBuilder
@@ -130,12 +130,5 @@ class FieldsTest extends TestCase
         ]);
 
         return QueryBuilder::for(TestModel::class, $request);
-    }
-
-    protected function assertQueryLogContains(string $partialSql)
-    {
-        $queryLog = collect(DB::getQueryLog())->pluck('query')->implode('|');
-
-        $this->assertContains($partialSql, $queryLog);
     }
 }

@@ -4,8 +4,10 @@ namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\QueryBuilder\Tests\Models\RelatedThroughPivotModel;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\MorphModel;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
@@ -29,7 +31,7 @@ class IncludeTest extends TestCase
             $model->morphModels()->create(['name' => 'Test']);
 
             $model->relatedThroughPivotModels()->create([
-                'id'   => $model->id + 1,
+                'id' => $model->id + 1,
                 'name' => 'Test',
             ]);
         });
@@ -171,6 +173,20 @@ class IncludeTest extends TestCase
 
         $this->assertRelationLoaded($models, 'relatedModels');
         $this->assertRelationLoaded($models, 'otherRelatedModels');
+    }
+
+    /** @test */
+    public function it_can_query_included_many_to_many_relationships()
+    {
+        DB::enableQueryLog();
+
+        $this
+            ->createQueryFromIncludeRequest('related-through-pivot-models')
+            ->allowedIncludes('related-through-pivot-models')
+            ->get();
+
+        // Based on the following queries: TestModel::with('relatedThroughPivotModels')->get();
+        $this->assertQueryLogContains('select "related_through_pivot_models".*, "pivot_models"."test_model_id" as "pivot_test_model_id", "pivot_models"."related_through_pivot_model_id" as "pivot_related_through_pivot_model_id" from "related_through_pivot_models" inner join "pivot_models" on "related_through_pivot_models"."id" = "pivot_models"."related_through_pivot_model_id" where "pivot_models"."test_model_id" in (1, 2, 3, 4, 5)');
     }
 
     /** @test */

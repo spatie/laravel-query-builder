@@ -267,10 +267,6 @@ class QueryBuilder extends Builder
 
     protected function getFieldsForIncludedTable(string $relation): array
     {
-        if ($this->request->fields()->isEmpty()) {
-            return ['*'];
-        }
-
         return $this->request->fields()->get($relation, []);
     }
 
@@ -380,7 +376,7 @@ class QueryBuilder extends Builder
                         }
 
                         return [$fullRelationName => function ($query) use ($fields) {
-                            $query->select($this->prependFieldsWithTableName($fields, $query->getModel()->getTable()));
+                            $query->select($fields);
                         }];
                     });
             })

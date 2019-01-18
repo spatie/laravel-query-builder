@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\QueryBuilder\QueryBuilderServiceProvider;
 
@@ -77,5 +78,12 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [QueryBuilderServiceProvider::class];
+    }
+
+    protected function assertQueryLogContains(string $partialSql)
+    {
+        $queryLog = collect(DB::getQueryLog())->pluck('query')->implode('|');
+
+        $this->assertContains($partialSql, $queryLog);
     }
 }
