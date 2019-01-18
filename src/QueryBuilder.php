@@ -145,7 +145,7 @@ class QueryBuilder extends Builder
     {
         $sorts = is_array($sorts) ? $sorts : func_get_args();
 
-        if (! $this->request->sorts()) {
+        if (! $this->request->sorts() || in_array('*', $sorts)) {
             return $this;
         }
 
