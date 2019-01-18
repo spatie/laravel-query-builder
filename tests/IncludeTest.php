@@ -7,7 +7,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\QueryBuilder\Tests\Models\RelatedThroughPivotModel;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\MorphModel;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;

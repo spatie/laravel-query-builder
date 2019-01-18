@@ -2,9 +2,9 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\QueryBuilder\QueryBuilderServiceProvider;
 
