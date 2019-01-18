@@ -8,9 +8,10 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - removed request macros
 - started using `QueryBuilderRequest` to read data from the current request
 
-## 1.13.1 - wip
+## 1.13.1 - 2019-01-18
 
 - fix detection of false-positives for ignored values (#154)
+- fix broken morphTo includes (#130)
 
 ## 1.13.0 - 2019-01-12
 
