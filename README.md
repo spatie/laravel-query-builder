@@ -349,6 +349,18 @@ $users = QueryBuilder::for(User::class)
 // Will retrieve the users sorted by name
 ```
 
+You can use `-` if you want to have the default order sorted descendingly.
+
+``` php
+// GET /users
+$users = QueryBuilder::for(User::class)
+    ->defaultSort('-name')
+    ->allowedSorts('name', 'street')
+    ->get();
+
+// Will retrieve the users sorted descendingly by name
+```
+
 You can also pass in an array of sorts to the `allowedSorts()` method.
 
 ``` php
