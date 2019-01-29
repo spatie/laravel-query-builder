@@ -383,6 +383,22 @@ $users = QueryBuilder::for(User::class)
 // $users will be sorted by name in ascending order with a secondary sort on street in descending order.
 ```
 
+#### Using an alias for sorting
+
+There may be occasions where it is not appropriate to expose the column name to the user.
+
+Similar to using [an alias when filtering]() you can do this with for sorts as well.
+
+This follows the pattern: `'alias' => 'actual_column'`  
+Sorts without a `string` key must still be the name of the actual column.
+
+ ``` php
+ // GET /users?sort=name,-street
+ $users = QueryBuilder::for(User::class)
+     ->allowedSorts(['name', 'street' => 'some_prefix_street'])
+     ->get();
+ ```
+
 ### Selecting specific columns
 
 Sometimes you'll want to fetch only a couple fields to reduce the overall size of your SQL query. This can be done using the `fields` query parameter. The following fetch only the users' `id` and `name`

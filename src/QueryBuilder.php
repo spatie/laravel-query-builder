@@ -149,9 +149,13 @@ class QueryBuilder extends Builder
             return $this;
         }
 
-        $this->allowedSorts = collect($sorts)->map(function ($sort) {
+        $this->allowedSorts = collect($sorts)->map(function ($sort, $alias) {
             if ($sort instanceof Sort) {
                 return $sort;
+            }
+
+            if (is_string($alias)) {
+                return Sort::field(ltrim($alias, '-'), ltrim($sort, '-'));
             }
 
             return Sort::field(ltrim($sort, '-'));
@@ -316,7 +320,7 @@ class QueryBuilder extends Builder
 
         return $sorts->reject(function (string $sort) use ($orders) {
             $toSort = [
-                'column' => ltrim($sort, '-'),
+                'column'    => ltrim($sort, '-'),
                 'direction' => ($sort[0] === '-') ? 'desc' : 'asc',
             ];
             foreach ($orders as $order) {

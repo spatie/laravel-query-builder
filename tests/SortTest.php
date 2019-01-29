@@ -177,6 +177,26 @@ class SortTest extends TestCase
         $this->assertSortedAscending($sortedModels, 'name');
     }
 
+    /** @test */
+    public function it_takes_an_optional_alias_as_column_name()
+    {
+        $this->createQueryFromSortRequest('this_is_not_the_actual_column_name')
+            ->allowedSorts(['this_is_not_the_actual_column_name' => 'name'])
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
+    }
+
+    /** @test */
+    public function it_can_sort_descending_with_an_alias()
+    {
+        $this->createQueryFromSortRequest('-this_is_not_the_actual_column_name')
+            ->allowedSorts(['this_is_not_the_actual_column_name' => 'name'])
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" order by "name" desc');
+    }
+
     protected function createQueryFromSortRequest(string $sort): QueryBuilder
     {
         $request = new Request([
