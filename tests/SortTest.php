@@ -7,6 +7,7 @@ use Spatie\QueryBuilder\Sort;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
@@ -185,6 +186,39 @@ class SortTest extends TestCase
             ->get();
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
+    }
+
+    /** @test */
+    public function it_can_take_an_argument_for_custom_column_name_resolution()
+    {
+        $sort = Sort::custom('property_name', SortsField::class, 'property_column_name');
+
+        $this->assertInstanceOf(Sort::class, $sort);
+        $this->assertClassHasAttribute('columnName', get_class($sort));
+    }
+
+    /** @test */
+    public function it_sets_property_column_name_to_property_name_by_default()
+    {
+        $sort = Sort::custom('property_name', SortsField::class);
+
+        $this->assertEquals($sort->getProperty(), $sort->getColumnName());
+    }
+
+    /** @test */
+    public function it_resolves_queries_using_property_column_name()
+    {
+        $sort = Sort::custom('nickname', SortsField::class, 'name');
+
+        $testModel = TestModel::create(['name' => 'zzzzzzzz']);
+
+        $models = $this
+            ->createQueryFromSortRequest('nickname')
+            ->allowedSorts($sort)
+            ->get();
+
+        $this->assertSorted($models, 'name');
+        $this->assertTrue($testModel->is($models->last()));
     }
 
     /** @test */
