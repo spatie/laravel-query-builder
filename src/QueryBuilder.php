@@ -149,13 +149,9 @@ class QueryBuilder extends Builder
             return $this;
         }
 
-        $this->allowedSorts = collect($sorts)->map(function ($sort, $alias) {
+        $this->allowedSorts = collect($sorts)->map(function ($sort) {
             if ($sort instanceof Sort) {
                 return $sort;
-            }
-
-            if (is_string($alias)) {
-                return Sort::field(ltrim($alias, '-'), ltrim($sort, '-'));
             }
 
             return Sort::field(ltrim($sort, '-'));

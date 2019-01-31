@@ -224,8 +224,8 @@ class SortTest extends TestCase
     /** @test */
     public function it_can_sort_descending_with_an_alias()
     {
-        $this->createQueryFromSortRequest('-this_is_not_the_actual_column_name')
-            ->allowedSorts(['this_is_not_the_actual_column_name' => 'name'])
+        $this->createQueryFromSortRequest('-exposed_property_name')
+            ->allowedSorts(Sort::field('exposed_property_name', 'name'))
             ->get();
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" desc');

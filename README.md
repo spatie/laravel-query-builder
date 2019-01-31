@@ -184,7 +184,7 @@ use Spatie\QueryBuilder\Filter;
 
 // GET /users?filter[name]=John
 $users = QueryBuilder::for(User::class)
-	->allowedFilters(Filter::exact('name', 'user_name')) // public filter, column name
+    ->allowedFilters(Filter::exact('name', 'user_name')) // public filter, column name
     ->get();
 // filter by the column 'user_name'
 ```
@@ -389,14 +389,13 @@ There may be occasions where it is not appropriate to expose the column name to 
 
 Similar to using [an alias when filtering]() you can do this with for sorts as well.
 
-This follows the pattern: `'alias' => 'actual_column'`  
-Sorts without a `string` key must still be the name of the actual column.
+The column name can be passed as optional parameter and defaults to the property string.
 
  ``` php
- // GET /users?sort=name,-street
+ // GET /users?sort=-street
  $users = QueryBuilder::for(User::class)
-     ->allowedSorts(['name', 'street' => 'some_prefix_street'])
-     ->get();
+    ->allowedSorts(Sort::field('street', 'actual_column_street')
+    ->get();
  ```
 
 ### Selecting specific columns
