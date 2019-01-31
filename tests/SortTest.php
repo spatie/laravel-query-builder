@@ -179,16 +179,6 @@ class SortTest extends TestCase
     }
 
     /** @test */
-    public function it_takes_an_optional_alias_as_column_name()
-    {
-        $this->createQueryFromSortRequest('this_is_not_the_actual_column_name')
-            ->allowedSorts(['this_is_not_the_actual_column_name' => 'name'])
-            ->get();
-
-        $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
-    }
-
-    /** @test */
     public function it_can_take_an_argument_for_custom_column_name_resolution()
     {
         $sort = Sort::custom('property_name', SortsField::class, 'property_column_name');
