@@ -45,7 +45,7 @@ class FiltersExact implements Filter
         [$relation, $property] = collect(explode('.', $property))
             ->pipe(function (Collection $parts) {
                 return [
-                    $parts->except(count($parts) - 1)->map('camel_case')->implode('.'),
+                    $parts->except(count($parts) - 1)->map([Str::class, 'camel'])->implode('.'),
                     $parts->last(),
                 ];
             });

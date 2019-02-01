@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -128,7 +129,7 @@ class RelationFilterTest extends TestCase
     /** @test */
     public function given_the_models_table_name_it_does_filter_by_property_rather_than_relation()
     {
-        TestModel::create(['name' => $name = str_random()]);
+        TestModel::create(['name' => $name = Str::random()]);
 
         $result = $this
             ->createQueryFromFilterRequest(['test_models.name' => $name])
