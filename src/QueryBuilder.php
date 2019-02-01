@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
@@ -86,7 +87,7 @@ class QueryBuilder extends Builder
 
         $this->allowedFields = collect($fields)
             ->map(function (string $fieldName) {
-                if (! str_contains($fieldName, '.')) {
+                if (! Str::contains($fieldName, '.')) {
                     $modelTableName = $this->getModel()->getTable();
 
                     return "{$modelTableName}.{$fieldName}";
@@ -402,7 +403,7 @@ class QueryBuilder extends Builder
     {
         $fields = $this->request->fields()
             ->map(function ($fields, $model) {
-                $tableName = snake_case(preg_replace('/-/', '_', $model));
+                $tableName = Str::snake(preg_replace('/-/', '_', $model));
 
                 $fields = array_map('snake_case', $fields);
 
