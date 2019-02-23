@@ -421,9 +421,9 @@ All posts will be fetched including only the name of the author.
 
 Sometimes you will want to append some custom attributes into result from a Model. This can be done using the `append` parameter.
 
-```
-class User extends Model{
-
+``` php
+class User extends Model
+{
     public function getFullnameAttribute()
     {
         return $this->firstname.' '.$this->lastname;
@@ -431,7 +431,7 @@ class User extends Model{
 }
 ```
 
-```
+``` php
 // GET /users?append=fullname
 
 $users = QueryBuilder::for(User::class)
