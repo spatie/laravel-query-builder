@@ -121,6 +121,18 @@ class SortTest extends TestCase
     }
 
     /** @test */
+    public function it_uses_default_descending_sort_parameter()
+    {
+        $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+            ->allowedSorts('-name')
+            ->defaultSort('-name')
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" order by "name" desc');
+        $this->assertSortedDescending($sortedModels, 'name');
+    }
+
+    /** @test */
     public function it_can_allow_multiple_sort_parameters()
     {
         DB::enableQueryLog();
