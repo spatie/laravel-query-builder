@@ -14,7 +14,7 @@ class FieldsTest extends TestCase
     protected $model;
     protected $modelTableName;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

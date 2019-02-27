@@ -9,7 +9,7 @@ use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 
 class AppendTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

@@ -10,7 +10,7 @@ use Spatie\QueryBuilder\QueryBuilderServiceProvider;
 
 class TestCase extends Orchestra
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -84,6 +84,6 @@ class TestCase extends Orchestra
     {
         $queryLog = collect(DB::getQueryLog())->pluck('query')->implode('|');
 
-        $this->assertContains($partialSql, $queryLog);
+        $this->assertStringContainsString($partialSql, $queryLog);
     }
 }

@@ -19,7 +19,7 @@ class SortTest extends TestCase
     /** @var \Illuminate\Support\Collection */
     protected $models;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
