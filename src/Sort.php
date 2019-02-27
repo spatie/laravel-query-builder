@@ -12,17 +12,24 @@ class Sort
     /** @var string */
     protected $sortClass;
 
-    /** @var string */
+    /** @var string|\Spatie\QueryBuilder\Sorts\Sort */
     protected $property;
 
     /** @var string */
     protected $defaultDirection;
 
-    public function __construct(string $property, $sortClass)
+    /** @var string */
+    protected $columnName;
+
+    public function __construct(string $property, $sortClass, ?string $columnName = null)
     {
         $this->property = ltrim($property, '-');
+
         $this->sortClass = $sortClass;
+
         $this->defaultDirection = static::parsePropertyDirection($property);
+
+        $this->columnName = $columnName ?? $property;
     }
 
     public static function parsePropertyDirection(string $property): string
@@ -36,17 +43,17 @@ class Sort
 
         $descending = $descending ?? ($this->defaultDirection === SortDirection::DESCENDING);
 
-        ($sortClass)($builder, $descending, $this->property);
+        ($sortClass)($builder, $descending, $this->columnName);
     }
 
-    public static function field(string $property) : self
+    public static function field(string $property, ?string $columnName = null) : self
     {
-        return new static($property, SortsField::class);
+        return new static($property, SortsField::class, $columnName);
     }
 
-    public static function custom(string $property, $sortClass) : self
+    public static function custom(string $property, $sortClass, ?string $columnName = null) : self
     {
-        return new static($property, $sortClass);
+        return new static($property, $sortClass, $columnName);
     }
 
     public function getProperty(): string
@@ -66,5 +73,10 @@ class Sort
         }
 
         return new $this->sortClass;
+    }
+
+    public function getColumnName(): string
+    {
+        return $this->columnName;
     }
 }

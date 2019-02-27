@@ -184,7 +184,7 @@ use Spatie\QueryBuilder\Filter;
 
 // GET /users?filter[name]=John
 $users = QueryBuilder::for(User::class)
-	->allowedFilters(Filter::exact('name', 'user_name')) // public filter, column name
+    ->allowedFilters(Filter::exact('name', 'user_name')) // public filter, column name
     ->get();
 // filter by the column 'user_name'
 ```
@@ -382,6 +382,21 @@ $users = QueryBuilder::for(User::class)
 
 // $users will be sorted by name in ascending order with a secondary sort on street in descending order.
 ```
+
+#### Using an alias for sorting
+
+There may be occasions where it is not appropriate to expose the column name to the user.
+
+Similar to using [an alias when filtering](#property-column-alias) you can do this with for sorts as well.
+
+The column name can be passed as optional parameter and defaults to the property string.
+
+ ``` php
+ // GET /users?sort=-street
+ $users = QueryBuilder::for(User::class)
+    ->allowedSorts(Sort::field('street', 'actual_column_street')
+    ->get();
+ ```
 
 ### Selecting specific columns
 

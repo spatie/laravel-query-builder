@@ -11,7 +11,7 @@ use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 
 class Filter
 {
-    /** @var string */
+    /** @var string|\Spatie\QueryBuilder\Filters\Filter */
     protected $filterClass;
 
     /** @var string */
@@ -23,7 +23,7 @@ class Filter
     /** @var Collection */
     protected $ignored;
 
-    public function __construct(string $property, $filterClass, $columnName = null)
+    public function __construct(string $property, $filterClass, ?string $columnName = null)
     {
         $this->property = $property;
 
@@ -47,7 +47,7 @@ class Filter
         ($filterClass)($builder, $valueToFilter, $this->columnName);
     }
 
-    public static function exact(string $property, $columnName = null) : self
+    public static function exact(string $property, ?string $columnName = null) : self
     {
         return new static($property, FiltersExact::class, $columnName);
     }

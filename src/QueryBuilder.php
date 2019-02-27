@@ -317,7 +317,7 @@ class QueryBuilder extends Builder
 
         return $sorts->reject(function (string $sort) use ($orders) {
             $toSort = [
-                'column' => ltrim($sort, '-'),
+                'column'    => ltrim($sort, '-'),
                 'direction' => ($sort[0] === '-') ? 'desc' : 'asc',
             ];
             foreach ($orders as $order) {
