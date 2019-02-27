@@ -10,6 +10,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 ## 1.13.2 - 2019-02-27
 
+- add support for Laravel 5.8
 - use Str:: and Arr:: instead of helper methods
 
 ## 1.13.1 - 2019-01-18
