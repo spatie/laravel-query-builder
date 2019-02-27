@@ -8,6 +8,10 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - removed request macros
 - started using `QueryBuilderRequest` to read data from the current request
 
+## 1.14.0 - 2019-02-27
+
+- add aliased sorts (#164)
+
 ## 1.13.2 - 2019-02-27
 
 - add support for Laravel 5.8
