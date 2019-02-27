@@ -7,6 +7,9 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - moved features to traits and general cleanup
 - removed request macros
 - started using `QueryBuilderRequest` to read data from the current request
+
+## 1.13.2 - 2019-02-27
+
 - use Str:: and Arr:: instead of helper methods
 
 ## 1.13.1 - 2019-01-18
