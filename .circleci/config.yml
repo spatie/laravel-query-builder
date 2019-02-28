@@ -9,6 +9,7 @@ jobs:
         steps:
             - checkout
             - run: composer self-update
+            - run: composer install -n --prefer-dist
             - run:
                   name: Display PHP information
                   command: |
