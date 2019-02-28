@@ -1,7 +1,7 @@
 # Easily build Eloquent queries from API requests
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
-[![Build Status](https://img.shields.io/travis/spatie/laravel-query-builder/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-query-builder)
+[![Build Status](https://img.shields.io/circleci/github/spatie/laravel-query-builder/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-query-builder)
 [![StyleCI](https://styleci.io/repos/117567334/shield?branch=master)](https://styleci.io/repos/117567334)
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-query-builder.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-query-builder)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
