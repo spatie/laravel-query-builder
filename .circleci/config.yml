@@ -2,6 +2,9 @@ version: 2
 
 shared: &shared
     working_directory: /var/www/html
+    branches:
+        ignore:
+            - /analysis-.*/
     environment:
         APP_ENV: test
         COMPOSER_FLAGS: ''
@@ -19,9 +22,6 @@ shared: &shared
 workflows:
     version: 2
     build:
-        branches:
-            ignore:
-                - /analysis-.*/
         jobs:
             - php-7.1
             - php-7.1-prefer-lowest
