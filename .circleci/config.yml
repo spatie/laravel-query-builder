@@ -1,18 +1,23 @@
 version: 2
-jobs:
-    build:
-        working_directory: /var/www/html
-        docker:
-            - image: circleci/php:7.1
-              environment:
-                  APP_ENV: test
-        steps:
+
+shared: &shared
+    working_directory: /var/www/html
+    steps:
             - checkout
             - run: composer self-update
-            - run: composer install -n --prefer-dist
+            - run: composer update $COMPOSER_FLAGS --no-interaction --prefer-source
             - run:
                   name: Display PHP information
                   command: |
                       php -v
                       composer --version
-            - run: vendor/bin/phpunit
+            - run: vendor/bin/phpunit --coverage-text
+
+jobs:
+    "php-7.1-prefer-lowest":
+        <<: *shared
+        docker:
+            - image: circleci/php:7.1
+              environment:
+                  APP_ENV: test
+                  COMPOSER_FLAGS: --prefer-lowest
