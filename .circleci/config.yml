@@ -2,6 +2,9 @@ version: 2
 
 shared: &shared
     working_directory: /var/www/html
+    environment:
+        APP_ENV: test
+        COMPOSER_FLAGS:
     steps:
         - checkout
         - run: composer self-update
@@ -11,7 +14,7 @@ shared: &shared
               command: |
                   php -v
                   composer --version
-        - run: vendor/bin/phpunit --coverage-text
+        - run: vendor/bin/phpunit
 
 workflows:
     version: 2
@@ -23,15 +26,11 @@ workflows:
 jobs:
     "php-7.1-prefer-lowest":
         <<: *shared
+        environment:
+            COMPOSER_FLAGS: --prefer-lowest
         docker:
             - image: circleci/php:7.1
-              environment:
-                  APP_ENV: test
-                  COMPOSER_FLAGS: --prefer-lowest
     "php-7.1":
         <<: *shared
         docker:
             - image: circleci/php:7.1
-              environment:
-                  APP_ENV: test
-                  COMPOSER_FLAGS:
