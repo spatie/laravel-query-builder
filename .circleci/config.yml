@@ -17,6 +17,7 @@ workflows:
     version: 2
     build:
         jobs:
+            - "php-7.1"
             - "php-7.1-prefer-lowest"
 
 jobs:
@@ -27,3 +28,11 @@ jobs:
               environment:
                   APP_ENV: test
                   COMPOSER_FLAGS: --prefer-lowest
+
+      "php-7.1":
+          <<: *shared
+          docker:
+              - image: circleci/php:7.1
+                environment:
+                    APP_ENV: test
+                    COMPOSER_FLAGS:
