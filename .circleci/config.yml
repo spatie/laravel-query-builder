@@ -4,8 +4,9 @@ shared: &shared
     working_directory: /var/www/html
     steps:
         - checkout
+        - run: echo $COMPOSER_FLAGS $APP_ENV
         - run: composer self-update
-        - run: composer update ${COMPOSER_FLAGS} --no-interaction --prefer-source
+        - run: composer update $COMPOSER_FLAGS --no-interaction --prefer-source
         - run:
             command: vendor/bin/phpunit
             environment:
