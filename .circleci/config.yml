@@ -12,7 +12,6 @@ commands:
         steps:
             - checkout
             - run: echo 'export APP_ENV="test"' >> $BASH_ENV
-            - run: echo 'Composer flags: << parameters.composer_flags >> | Laravel version = << parameters.laravel >>'
             - run: composer self-update
             - run: composer require "laravel/framework=<< parameters.laravel >>" --prefer-source --no-interaction --no-suggest
             - run: composer update << parameters.composer_flags >> --no-interaction --prefer-source
