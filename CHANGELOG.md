@@ -8,9 +8,9 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - removed request macros
 - started using `QueryBuilderRequest` to read data from the current request
 
-## 1.15.2 - 2019-02-28 (unreleased)
+## 1.15.2 - 2019-02-28
 
-- add support for Laravel 5.0 and up (again)
+- add support for Laravel 5.5 and up (again)
 - add support for PHP 7.1 and up (again)
 
 ## 1.15.1 - 2019-02-28
