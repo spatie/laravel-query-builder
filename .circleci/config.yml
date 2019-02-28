@@ -17,6 +17,35 @@ commands:
             - run: composer update << parameters.composer_flags >> --no-interaction --prefer-source
             - run: vendor/bin/phpunit
 
+workflows:
+    version: 2
+    build:
+        jobs:
+            - php71-laravel55
+            - php71-laravel55-prefer-lowest
+            - php72-laravel55
+            - php72-laravel55-prefer-lowest
+            - php73-laravel55
+            - php73-laravel55-prefer-lowest
+            - php71-laravel56
+            - php71-laravel56-prefer-lowest
+            - php72-laravel56
+            - php72-laravel56-prefer-lowest
+            - php73-laravel56
+            - php73-laravel56-prefer-lowest
+            - php71-laravel57
+            - php71-laravel57-prefer-lowest
+            - php72-laravel57
+            - php72-laravel57-prefer-lowest
+            - php73-laravel57
+            - php73-laravel57-prefer-lowest
+            - php71-laravel58
+            - php71-laravel58-prefer-lowest
+            - php72-laravel58
+            - php72-laravel58-prefer-lowest
+            - php73-laravel58
+            - php73-laravel58-prefer-lowest
+
 jobs:
     php71-laravel55-prefer-lowest:
         docker:
