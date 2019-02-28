@@ -1,0 +1,27 @@
+version: 2
+jobs:
+    build:
+        working_directory: /var/www/html
+        docker:
+            - image: php:7.1
+              environment:
+                  APP_ENV: test
+        steps:
+            - checkout
+            - run: sudo composer self-update
+            - restore_cache: # special step to restore the dependency cache if `composer.lock` does not change
+                  keys:
+                      - composer-v1-{{ checksum "composer.lock" }}
+                      # fallback to using the latest cache if no exact match is found (See https://circleci.com/docs/2.0/caching/)
+                      - composer-v1-
+            - run: composer install -n --prefer-dist
+            - save_cache: # special step to save the dependency cache with the `composer.lock` cache key template
+                  key: composer-v1-{{ checksum "composer.lock" }}
+                  paths:
+                      - vendor
+            - run:
+                  name: Display PHP information
+                  command: |
+                      php -v
+                      php composer.phar --version
+            - run: vendor/bin/phpunit
