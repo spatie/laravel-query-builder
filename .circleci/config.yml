@@ -8,7 +8,6 @@ shared: &shared
                 - /analysis-.*/
     environment:
         APP_ENV: test
-        COMPOSER_FLAGS: ''
     steps:
         - checkout
         - run: echo $COMPOSER_FLAGS $APP_ENV
@@ -16,7 +15,6 @@ shared: &shared
         - run: composer update $COMPOSER_FLAGS --no-interaction --prefer-source
         - run:
             command: vendor/bin/phpunit
-
 
 workflows:
     version: 2
@@ -28,10 +26,10 @@ workflows:
 jobs:
     "php-7.1-prefer-lowest":
         <<: *shared
+        environment:
+            COMPOSER_FLAGS: --prefer-lowest
         docker:
             - image: circleci/php:7.1
-              environment:
-                  COMPOSER_FLAGS: --prefer-lowest
     "php-7.1":
         <<: *shared
         docker:
