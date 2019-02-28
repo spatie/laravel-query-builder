@@ -18,15 +18,41 @@ workflows:
         jobs:
             - php-7.1
             - php-7.1-prefer-lowest
+            - php-7.2
+            - php-7.2-prefer-lowest
+            - php-7.3
+            - php-7.3-prefer-lowest
 
 jobs:
-    "php-7.1-prefer-lowest":
+    php-7.1-prefer-lowest:
         <<: *shared
         docker:
             - image: circleci/php:7.1
               environment:
                   COMPOSER_FLAGS: --prefer-lowest
-    "php-7.1":
+    php-7.1:
         <<: *shared
         docker:
             - image: circleci/php:7.1
+
+    php-7.2-prefer-lowest:
+        <<: *shared
+        docker:
+            - image: circleci/php:7.2
+              environment:
+                  COMPOSER_FLAGS: --prefer-lowest
+    php-7.2:
+        <<: *shared
+        docker:
+            - image: circleci/php:7.2
+
+    php-7.3-prefer-lowest:
+        <<: *shared
+        docker:
+            - image: circleci/php:7.3
+              environment:
+                  COMPOSER_FLAGS: --prefer-lowest
+    php-7.3:
+        <<: *shared
+        docker:
+            - image: circleci/php:7.3
