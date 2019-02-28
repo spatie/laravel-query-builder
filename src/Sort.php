@@ -29,7 +29,7 @@ class Sort
 
         $this->defaultDirection = static::parsePropertyDirection($property);
 
-        $this->columnName = $columnName ?? $property;
+        $this->columnName = $columnName ?? $this->property;
     }
 
     public static function parsePropertyDirection(string $property): string
