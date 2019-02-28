@@ -4,7 +4,7 @@ shared: &shared
     working_directory: /var/www/html
     environment:
         APP_ENV: test
-        COMPOSER_FLAGS:
+        COMPOSER_FLAGS: ''
     steps:
         - checkout
         - run: echo $COMPOSER_FLAGS $APP_ENV
@@ -18,6 +18,9 @@ shared: &shared
 
 workflows:
     version: 2
+    branches:
+        ignore:
+            - /analysis-.*/
     build:
         jobs:
             - php-7.1
@@ -26,10 +29,10 @@ workflows:
 jobs:
     "php-7.1-prefer-lowest":
         <<: *shared
+        environment:
+            COMPOSER_FLAGS: --prefer-lowest
         docker:
             - image: circleci/php:7.1
-              environment:
-                  COMPOSER_FLAGS: --prefer-lowest
     "php-7.1":
         <<: *shared
         docker:
