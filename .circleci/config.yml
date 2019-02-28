@@ -3,7 +3,7 @@ jobs:
     build:
         working_directory: /var/www/html
         docker:
-            - image: php:7.1
+            - image: circleci/php:7.1
               environment:
                   APP_ENV: test
         steps:
