@@ -5,6 +5,7 @@ namespace Spatie\QueryBuilder\Tests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\QueryBuilder\QueryBuilderServiceProvider;
 
@@ -84,6 +85,7 @@ class TestCase extends Orchestra
     {
         $queryLog = collect(DB::getQueryLog())->pluck('query')->implode('|');
 
-        $this->assertStringContainsString($partialSql, $queryLog);
+        // Could've used `assertStringContainsString` but we want to support L5.5 with PHPUnit 6.0
+        $this->assertTrue(Str::contains($queryLog, $partialSql));
     }
 }
