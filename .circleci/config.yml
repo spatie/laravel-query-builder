@@ -2,9 +2,10 @@ version: 2
 
 shared: &shared
     working_directory: /var/www/html
-    branches:
-        ignore:
-            - /analysis-.*/
+    filters:
+        branches:
+            ignore:
+                - /analysis-.*/
     environment:
         APP_ENV: test
         COMPOSER_FLAGS: ''
