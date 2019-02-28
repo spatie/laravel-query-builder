@@ -23,5 +23,5 @@ jobs:
                   name: Display PHP information
                   command: |
                       php -v
-                      php composer.phar --version
+                      composer --version
             - run: vendor/bin/phpunit
