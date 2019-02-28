@@ -4,6 +4,7 @@ shared: &shared
     working_directory: /var/www/html
     environment:
         APP_ENV: test
+        COMPOSER_FLAGS:
     steps:
         - checkout
         - run: echo $COMPOSER_FLAGS $APP_ENV
