@@ -12,7 +12,7 @@ commands:
         steps:
             - checkout
             - run: echo 'export APP_ENV="test"' >> $BASH_ENV
-            - run: echo 'Composer = << parameters.composer_flags >> Laravel = << parameters.laravel >>'
+            - run: echo 'Composer flags: << parameters.composer_flags >> | Laravel version = << parameters.laravel >>'
             - run: composer self-update
             - run: composer require "laravel/framework=<< parameters.laravel >>" --prefer-source --no-interaction --no-suggest
             - run: composer update << parameters.composer_flags >> --no-interaction --prefer-source
@@ -28,24 +28,24 @@ workflows:
             - php72-laravel55-prefer-lowest
             - php73-laravel55
             - php73-laravel55-prefer-lowest
-#            - php71-laravel56
-#            - php71-laravel56-prefer-lowest
-#            - php72-laravel56
-#            - php72-laravel56-prefer-lowest
-#            - php73-laravel56
-#            - php73-laravel56-prefer-lowest
-#            - php71-laravel57
-#            - php71-laravel57-prefer-lowest
-#            - php72-laravel57
-#            - php72-laravel57-prefer-lowest
-#            - php73-laravel57
-#            - php73-laravel57-prefer-lowest
-#            - php71-laravel58
-#            - php71-laravel58-prefer-lowest
-#            - php72-laravel58
-#            - php72-laravel58-prefer-lowest
-#            - php73-laravel58
-#            - php73-laravel58-prefer-lowest
+            - php71-laravel56
+            - php71-laravel56-prefer-lowest
+            - php72-laravel56
+            - php72-laravel56-prefer-lowest
+            - php73-laravel56
+            - php73-laravel56-prefer-lowest
+            - php71-laravel57
+            - php71-laravel57-prefer-lowest
+            - php72-laravel57
+            - php72-laravel57-prefer-lowest
+            - php73-laravel57
+            - php73-laravel57-prefer-lowest
+            - php71-laravel58
+            - php71-laravel58-prefer-lowest
+            - php72-laravel58
+            - php72-laravel58-prefer-lowest
+            - php73-laravel58
+            - php73-laravel58-prefer-lowest
 
 jobs:
     php71-laravel55-prefer-lowest:
@@ -87,3 +87,120 @@ jobs:
         steps:
             - install_and_test:
                   laravel: 5.5.*
+    php71-laravel56-prefer-lowest:
+        docker:
+            - image: circleci/php:7.1
+        steps:
+            - install_and_test:
+                  laravel: 5.6.*
+                  composer_flags: --prefer-lowest
+    php71-laravel56:
+        docker:
+            - image: circleci/php:7.1
+        steps:
+            - install_and_test:
+                  laravel: 5.6.*
+    php72-laravel56-prefer-lowest:
+        docker:
+            - image: circleci/php:7.2
+        steps:
+            - install_and_test:
+                  laravel: 5.6.*
+                  composer_flags: --prefer-lowest
+    php72-laravel56:
+        docker:
+            - image: circleci/php:7.2
+        steps:
+            - install_and_test:
+                  laravel: 5.6.*
+    php73-laravel56-prefer-lowest:
+        docker:
+            - image: circleci/php:7.3
+        steps:
+            - install_and_test:
+                  laravel: 5.6.*
+                  composer_flags: --prefer-lowest
+    php73-laravel56:
+        docker:
+            - image: circleci/php:7.3
+        steps:
+            - install_and_test:
+                  laravel: 5.6.*
+    php71-laravel57-prefer-lowest:
+        docker:
+            - image: circleci/php:7.1
+        steps:
+            - install_and_test:
+                  laravel: 5.7.*
+                  composer_flags: --prefer-lowest
+    php71-laravel57:
+        docker:
+            - image: circleci/php:7.1
+        steps:
+            - install_and_test:
+                  laravel: 5.7.*
+    php72-laravel57-prefer-lowest:
+        docker:
+            - image: circleci/php:7.2
+        steps:
+            - install_and_test:
+                  laravel: 5.7.*
+                  composer_flags: --prefer-lowest
+    php72-laravel57:
+        docker:
+            - image: circleci/php:7.2
+        steps:
+            - install_and_test:
+                  laravel: 5.7.*
+    php73-laravel57-prefer-lowest:
+        docker:
+            - image: circleci/php:7.3
+        steps:
+            - install_and_test:
+                  laravel: 5.7.*
+                  composer_flags: --prefer-lowest
+    php73-laravel57:
+        docker:
+            - image: circleci/php:7.3
+        steps:
+            - install_and_test:
+                  laravel: 5.7.*
+    php71-laravel58-prefer-lowest:
+        docker:
+            - image: circleci/php:7.1
+        steps:
+            - install_and_test:
+                  laravel: 5.8.*
+                  composer_flags: --prefer-lowest
+    php71-laravel58:
+        docker:
+            - image: circleci/php:7.1
+        steps:
+            - install_and_test:
+                  laravel: 5.8.*
+    php72-laravel58-prefer-lowest:
+        docker:
+            - image: circleci/php:7.2
+        steps:
+            - install_and_test:
+                  laravel: 5.8.*
+                  composer_flags: --prefer-lowest
+    php72-laravel58:
+        docker:
+            - image: circleci/php:7.2
+        steps:
+            - install_and_test:
+                  laravel: 5.8.*
+    php73-laravel58-prefer-lowest:
+        docker:
+            - image: circleci/php:7.3
+        steps:
+            - install_and_test:
+                  laravel: 5.8.*
+                  composer_flags: --prefer-lowest
+    php73-laravel58:
+        docker:
+            - image: circleci/php:7.3
+        steps:
+            - install_and_test:
+                  laravel: 5.8.*
