@@ -18,10 +18,10 @@ shared: &shared
 
 workflows:
     version: 2
-    branches:
-        ignore:
-            - /analysis-.*/
     build:
+        branches:
+            ignore:
+                - /analysis-.*/
         jobs:
             - php-7.1
             - php-7.1-prefer-lowest
