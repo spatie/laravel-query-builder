@@ -1,58 +1,89 @@
-version: 2
+version: 2.1
 
-shared: &shared
-    working_directory: /var/www/html
-    environment:
-        APP_ENV: test
-    steps:
-        - checkout
-        - run: echo $COMPOSER_FLAGS $APP_ENV
-        - run: composer self-update
-        - run: composer update $COMPOSER_FLAGS --no-interaction --prefer-source
-        - run:
-            command: vendor/bin/phpunit
+commands:
+    install_and_test:
+        parameters:
+            composer_flags:
+                type: string
+                default: ""
+            laravel:
+                type: string
+                default: ""
+        steps:
+            - checkout
+            - run: echo 'export APP_ENV="test"' >> $BASH_ENV
+            - run: echo 'Composer = << parameters.composer_flags >> Laravel = << parameters.laravel >>'
+            - run: composer self-update
+            - run: composer require "laravel/framework=<< parameters.laravel >>" --prefer-source --no-interaction --no-suggest
+            - run: composer update << parameters.composer_flags >> --no-interaction --prefer-source
+            - run: vendor/bin/phpunit
 
 workflows:
     version: 2
     build:
         jobs:
-            - php-7.1
-            - php-7.1-prefer-lowest
-            - php-7.2
-            - php-7.2-prefer-lowest
-            - php-7.3
-            - php-7.3-prefer-lowest
+            - php7.1-laravel5.5
+            - php7.1-laravel5.5-prefer-lowest
+            - php7.2-laravel5.5
+            - php7.2-laravel5.5-prefer-lowest
+            - php7.3-laravel5.5
+            - php7.3-laravel5.5-prefer-lowest
+#            - php7.1-laravel5.6
+#            - php7.1-laravel5.6-prefer-lowest
+#            - php7.2-laravel5.6
+#            - php7.2-laravel5.6-prefer-lowest
+#            - php7.3-laravel5.6
+#            - php7.3-laravel5.6-prefer-lowest
+#            - php7.1-laravel5.7
+#            - php7.1-laravel5.7-prefer-lowest
+#            - php7.2-laravel5.7
+#            - php7.2-laravel5.7-prefer-lowest
+#            - php7.3-laravel5.7
+#            - php7.3-laravel5.7-prefer-lowest
+#            - php7.1-laravel5.8
+#            - php7.1-laravel5.8-prefer-lowest
+#            - php7.2-laravel5.8
+#            - php7.2-laravel5.8-prefer-lowest
+#            - php7.3-laravel5.8
+#            - php7.3-laravel5.8-prefer-lowest
 
 jobs:
-    php-7.1-prefer-lowest:
-        <<: *shared
+    php7.1-laravel5.5-prefer-lowest:
         docker:
             - image: circleci/php:7.1
-              environment:
-                  COMPOSER_FLAGS: --prefer-lowest
-    php-7.1:
-        <<: *shared
+        steps:
+            - install_and_test:
+                  laravel: 5.5.*
+                  composer_flags: --prefer-lowest
+    php7.1-laravel5.5:
         docker:
             - image: circleci/php:7.1
-
-    php-7.2-prefer-lowest:
-        <<: *shared
+        steps:
+            - install_and_test:
+                  laravel: 5.5.*
+    php7.2-laravel5.5-prefer-lowest:
         docker:
             - image: circleci/php:7.2
-              environment:
-                  COMPOSER_FLAGS: --prefer-lowest
-    php-7.2:
-        <<: *shared
+        steps:
+            - install_and_test:
+                  laravel: 5.5.*
+                  composer_flags: --prefer-lowest
+    php7.2-laravel5.5:
         docker:
             - image: circleci/php:7.2
-
-    php-7.3-prefer-lowest:
-        <<: *shared
+        steps:
+            - install_and_test:
+                  laravel: 5.5.*
+    php7.3-laravel5.5-prefer-lowest:
         docker:
             - image: circleci/php:7.3
-              environment:
-                  COMPOSER_FLAGS: --prefer-lowest
-    php-7.3:
-        <<: *shared
+        steps:
+            - install_and_test:
+                  laravel: 5.5.*
+                  composer_flags: --prefer-lowest
+    php7.3-laravel5.5:
         docker:
             - image: circleci/php:7.3
+        steps:
+            - install_and_test:
+                  laravel: 5.5.*
