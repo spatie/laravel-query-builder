@@ -166,7 +166,7 @@ class QueryBuilder extends Builder
     }
 
     /**
-     * @param string|\Spatie\QueryBuilder\Sort $sorts
+     * @param array|string|\Spatie\QueryBuilder\Sort $sorts
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
      */
