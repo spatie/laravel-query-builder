@@ -152,6 +152,25 @@ class SortTest extends TestCase
     }
 
     /** @test */
+    public function it_allows_custom_sort_class_for_default_sort_parameter()
+    {
+        $sortClass = new class implements SortInterface {
+            public function __invoke(Builder $query, $descending, string $property) : Builder
+            {
+                return $query->orderBy('name', $descending ? 'desc' : 'asc');
+            }
+        };
+
+        $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+            ->allowedSorts(Sort::custom('custom_name', get_class($sortClass)), 'id')
+            ->defaultSort(Sort::custom('custom_name', get_class($sortClass)), '-id')
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" order by "name" asc, "id" desc');
+        $this->assertSortedAscending($sortedModels, 'name');
+    }
+
+    /** @test */
     public function it_can_allow_multiple_sort_parameters()
     {
         DB::enableQueryLog();

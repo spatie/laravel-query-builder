@@ -20,8 +20,8 @@ class QueryBuilder extends Builder
     /** @var \Illuminate\Support\Collection */
     protected $allowedFields;
 
-    /** @var \Spatie\QueryBuilder\Sort|null */
-    protected $defaultSort;
+    /** @var \Illuminate\Support\Collection */
+    protected $defaultSorts;
 
     /** @var \Illuminate\Support\Collection */
     protected $allowedSorts;
@@ -166,17 +166,21 @@ class QueryBuilder extends Builder
     }
 
     /**
-     * @param string|\Spatie\QueryBuilder\Sort $sort
+     * @param string|\Spatie\QueryBuilder\Sort $sorts
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
      */
-    public function defaultSort($sort): self
+    public function defaultSort($sorts): self
     {
-        if (is_string($sort)) {
-            $sort = Sort::field($sort);
-        }
+        $sorts = is_array($sorts) ? $sorts : func_get_args();
 
-        $this->defaultSort = $sort;
+        $this->defaultSorts = collect($sorts)->map(function ($sort) {
+            if (is_string($sort)) {
+                return Sort::field($sort);
+            }
+
+            return $sort;
+        });
 
         $this->parseSorts();
 
@@ -293,7 +297,9 @@ class QueryBuilder extends Builder
         $sorts = $this->request->sorts();
 
         if ($sorts->isEmpty()) {
-            optional($this->defaultSort)->sort($this);
+            optional($this->defaultSorts)->each(function (Sort $sort) {
+                $sort->sort($this);
+            });
         }
 
         $this
@@ -331,7 +337,7 @@ class QueryBuilder extends Builder
     protected function findSort(string $property): ?Sort
     {
         return $this->allowedSorts
-            ->merge([$this->defaultSort])
+            ->merge($this->defaultSorts)
             ->first(function (Sort $sort) use ($property) {
                 return $sort->isForProperty($property);
             });
@@ -339,7 +345,7 @@ class QueryBuilder extends Builder
 
     protected function addDefaultSorts()
     {
-        $this->allowedSorts = collect($this->request->sorts($this->defaultSort))
+        $this->allowedSorts = collect($this->request->sorts($this->defaultSorts))
             ->map(function ($sort) {
                 if ($sort instanceof Sort) {
                     return $sort;
