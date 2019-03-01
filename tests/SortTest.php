@@ -152,7 +152,7 @@ class SortTest extends TestCase
     }
 
     /** @test */
-    public function it_allows_custom_sort_class_for_default_sort_parameter()
+    public function it_allows_multiple_default_sort_parameters()
     {
         $sortClass = new class implements SortInterface {
             public function __invoke(Builder $query, $descending, string $property) : Builder
