@@ -8,6 +8,10 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - removed request macros
 - started using `QueryBuilderRequest` to read data from the current request
 
+## 1.16.0 - 2019-02-28
+
+- add support for multiple default sorts (#214)
+
 ## 1.15.2 - 2019-02-28
 
 - add support for Laravel 5.5 and up (again)

@@ -172,6 +172,16 @@ class QueryBuilder extends Builder
      */
     public function defaultSort($sorts): self
     {
+        return $this->defaultSorts(func_get_args());
+    }
+
+    /**
+     * @param array|string|\Spatie\QueryBuilder\Sort $sorts
+     *
+     * @return \Spatie\QueryBuilder\QueryBuilder
+     */
+    public function defaultSorts($sorts): self
+    {
         $sorts = is_array($sorts) ? $sorts : func_get_args();
 
         $this->defaultSorts = collect($sorts)->map(function ($sort) {
@@ -323,7 +333,7 @@ class QueryBuilder extends Builder
 
         return $sorts->reject(function (string $sort) use ($orders) {
             $toSort = [
-                'column'    => ltrim($sort, '-'),
+                'column' => ltrim($sort, '-'),
                 'direction' => ($sort[0] === '-') ? 'desc' : 'asc',
             ];
             foreach ($orders as $order) {
