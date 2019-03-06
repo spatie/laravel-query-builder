@@ -122,7 +122,11 @@ class QueryBuilderServiceProvider extends ServiceProvider
                 return $sorts;
             }
 
-            return collect($default)->filter();
+            if (! $default instanceof Collection) {
+                $default = collect($default);
+            }
+
+            return $default->filter();
         });
     }
 }

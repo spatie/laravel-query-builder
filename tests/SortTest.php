@@ -121,6 +121,25 @@ class SortTest extends TestCase
     }
 
     /** @test */
+    public function it_allows_default_custom_sort_class_parameter()
+    {
+        $sortClass = new class implements SortInterface {
+            public function __invoke(Builder $query, $descending, string $property) : Builder
+            {
+                return $query->orderBy('name', $descending ? 'desc' : 'asc');
+            }
+        };
+
+        $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+            ->allowedSorts(Sort::custom('custom_name', get_class($sortClass)))
+            ->defaultSort(Sort::custom('custom_name', get_class($sortClass)))
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
+        $this->assertSortedAscending($sortedModels, 'name');
+    }
+
+    /** @test */
     public function it_uses_default_descending_sort_parameter()
     {
         $sortedModels = QueryBuilder::for(TestModel::class, new Request())
@@ -130,6 +149,25 @@ class SortTest extends TestCase
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" desc');
         $this->assertSortedDescending($sortedModels, 'name');
+    }
+
+    /** @test */
+    public function it_allows_multiple_default_sort_parameters()
+    {
+        $sortClass = new class implements SortInterface {
+            public function __invoke(Builder $query, $descending, string $property) : Builder
+            {
+                return $query->orderBy('name', $descending ? 'desc' : 'asc');
+            }
+        };
+
+        $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+            ->allowedSorts(Sort::custom('custom_name', get_class($sortClass)), 'id')
+            ->defaultSort(Sort::custom('custom_name', get_class($sortClass)), '-id')
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" order by "name" asc, "id" desc');
+        $this->assertSortedAscending($sortedModels, 'name');
     }
 
     /** @test */
