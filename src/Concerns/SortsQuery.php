@@ -15,6 +15,9 @@ trait SortsQuery
     /** @var \Illuminate\Support\Collection */
     protected $allowedSorts;
 
+    /** @var bool */
+    protected $sortsWereParsed = false;
+
     public function allowedSorts($sorts): self
     {
         $sorts = is_array($sorts) ? $sorts : func_get_args();
@@ -32,8 +35,6 @@ trait SortsQuery
         });
 
         $this->guardAgainstUnknownSorts();
-
-        $this->parseSorts();
 
         return $this;
     }
@@ -65,14 +66,21 @@ trait SortsQuery
             return $sort;
         });
 
-        $this->parseSorts();
-
         return $this;
     }
 
     protected function parseSorts()
     {
+        // Avoid repeated calls when used by e.g. 'paginate'
+        if ($this->sortsWereParsed) {
+            return;
+        }
+
         $sorts = $this->request->sorts();
+
+        if ($sorts && ! $this->allowedSorts instanceof Collection) {
+            $this->addDefaultSorts();
+        }
 
         if ($sorts->isEmpty()) {
             optional($this->defaultSorts)->each(function (Sort $sort) {
@@ -80,8 +88,7 @@ trait SortsQuery
             });
         }
 
-        $this
-            ->filterDuplicates($sorts)
+        $sorts
             ->each(function (string $property) {
                 $descending = $property[0] === '-';
 
@@ -91,6 +98,8 @@ trait SortsQuery
 
                 $sort->sort($this, $descending);
             });
+
+        $this->sortsWereParsed = true;
     }
 
     protected function findSort(string $property): ?Sort
@@ -114,8 +123,6 @@ trait SortsQuery
 
                 return Sort::field($sortColumn);
             });
-
-        $this->parseSorts();
     }
 
     protected function guardAgainstUnknownSorts()
