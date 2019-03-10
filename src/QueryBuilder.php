@@ -3,7 +3,6 @@
 namespace Spatie\QueryBuilder;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Concerns\SortsQuery;
 use Spatie\QueryBuilder\Concerns\FiltersQuery;
@@ -48,9 +47,7 @@ class QueryBuilder extends Builder
 
     public function getQuery()
     {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-        }
+        $this->parseSorts();
 
         return parent::getQuery();
     }
@@ -60,9 +57,7 @@ class QueryBuilder extends Builder
      */
     public function get($columns = ['*'])
     {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-        }
+        $this->parseSorts();
 
         $results = parent::get($columns);
 
@@ -75,18 +70,14 @@ class QueryBuilder extends Builder
 
     public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-        }
+        $this->parseSorts();
 
         return parent::paginate($perPage, $columns, $pageName, $page);
     }
 
     public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-        }
+        $this->parseSorts();
 
         return parent::simplePaginate($perPage, $columns, $pageName, $page);
     }

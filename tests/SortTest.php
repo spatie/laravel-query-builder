@@ -271,6 +271,27 @@ class SortTest extends TestCase
         $this->assertQueryExecuted('select * from "test_models" order by "name" desc');
     }
 
+    /** @test */
+    public function it_does_not_add_sort_clauses_multiple_times()
+    {
+        $sql = QueryBuilder::for(TestModel::class)
+            ->defaultSort('name')
+            ->toSql();
+
+        $this->assertSame('select * from "test_models" order by "name" asc', $sql);
+    }
+
+    /** @test */
+    public function given_a_default_sort_a_sort_alias_will_still_be_resolved()
+    {
+        $sql = $this->createQueryFromSortRequest('-joined')
+            ->defaultSort('name')
+            ->allowedSorts(Sort::field('joined', 'created_at'))
+            ->toSql();
+
+        $this->assertSame('select * from "test_models" order by "created_at" desc', $sql);
+    }
+
     protected function createQueryFromSortRequest(string $sort): QueryBuilder
     {
         $request = new Request([
