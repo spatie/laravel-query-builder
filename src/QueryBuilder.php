@@ -35,6 +35,9 @@ class QueryBuilder extends Builder
     /** @var \Illuminate\Http\Request */
     protected $request;
 
+    /** @var bool */
+    protected $sortsWereParsed = false;
+
     public function __construct(Builder $builder, ? Request $request = null)
     {
         parent::__construct(clone $builder->getQuery());
@@ -160,8 +163,6 @@ class QueryBuilder extends Builder
 
         $this->guardAgainstUnknownSorts();
 
-        $this->parseSorts();
-
         return $this;
     }
 
@@ -192,16 +193,12 @@ class QueryBuilder extends Builder
             return $sort;
         });
 
-        $this->parseSorts();
-
         return $this;
     }
 
     public function getQuery()
     {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-        }
+        $this->parseSorts();
 
         return parent::getQuery();
     }
@@ -211,9 +208,7 @@ class QueryBuilder extends Builder
      */
     public function get($columns = ['*'])
     {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-        }
+        $this->parseSorts();
 
         $results = parent::get($columns);
 
@@ -226,18 +221,14 @@ class QueryBuilder extends Builder
 
     public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-        }
+        $this->parseSorts();
 
         return parent::paginate($perPage, $columns, $pageName, $page);
     }
 
     public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-        }
+        $this->parseSorts();
 
         return parent::simplePaginate($perPage, $columns, $pageName, $page);
     }
@@ -304,7 +295,16 @@ class QueryBuilder extends Builder
 
     protected function parseSorts()
     {
+        // Avoid repeated calls when used by e.g. 'paginate'
+        if ($this->sortsWereParsed) {
+            return;
+        }
+
         $sorts = $this->request->sorts();
+
+        if ($sorts && ! $this->allowedSorts instanceof Collection) {
+            $this->addDefaultSorts();
+        }
 
         if ($sorts->isEmpty()) {
             optional($this->defaultSorts)->each(function (Sort $sort) {
@@ -312,8 +312,7 @@ class QueryBuilder extends Builder
             });
         }
 
-        $this
-            ->filterDuplicates($sorts)
+        $sorts
             ->each(function (string $property) {
                 $descending = $property[0] === '-';
 
@@ -323,25 +322,8 @@ class QueryBuilder extends Builder
 
                 $sort->sort($this, $descending);
             });
-    }
 
-    protected function filterDuplicates(Collection $sorts): Collection
-    {
-        if (! is_array($orders = $this->getQuery()->orders)) {
-            return $sorts;
-        }
-
-        return $sorts->reject(function (string $sort) use ($orders) {
-            $toSort = [
-                'column' => ltrim($sort, '-'),
-                'direction' => ($sort[0] === '-') ? 'desc' : 'asc',
-            ];
-            foreach ($orders as $order) {
-                if ($order === $toSort) {
-                    return true;
-                }
-            }
-        });
+        $this->sortsWereParsed = true;
     }
 
     protected function findSort(string $property): ?Sort
@@ -363,8 +345,6 @@ class QueryBuilder extends Builder
 
                 return Sort::field(ltrim($sort, '-'));
             });
-
-        $this->parseSorts();
     }
 
     protected function addAppendsToResults(Collection $results)
