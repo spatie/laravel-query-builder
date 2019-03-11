@@ -11,6 +11,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - moved features to traits
 - started using `QueryBuilderRequest` to read data from the current request
 - deprecated request macros (`Request::filters()`, `Request::includes()`, etc...)
+- raise minimum patch version for Laravel 5.6 to 5.6.34
 
 ## 1.16.0 - 2019-03-05
 
