@@ -19,7 +19,7 @@ class QueryBuilderServiceProvider extends ServiceProvider
 
         $this->mergeConfigFrom(__DIR__.'/../config/query-builder.php', 'query-builder');
 
-        /** @deprecated */
+        /* @deprecated */
         Request::macro('includes', function ($include = null) {
             $parameter = config('query-builder.parameters.include');
             $includeParts = $this->query($parameter);
@@ -37,7 +37,7 @@ class QueryBuilderServiceProvider extends ServiceProvider
             return $includes->contains(strtolower($include));
         });
 
-        /** @deprecated */
+        /* @deprecated */
         Request::macro('appends', function ($append = null) {
             $parameter = config('query-builder.parameters.append');
             $appendParts = $this->query($parameter);
@@ -55,7 +55,7 @@ class QueryBuilderServiceProvider extends ServiceProvider
             return $appends->contains(strtolower($append));
         });
 
-        /** @deprecated */
+        /* @deprecated */
         Request::macro('filters', function ($filter = null) {
             $filterParts = $this->query(config('query-builder.parameters.filter'), []);
 
@@ -94,7 +94,7 @@ class QueryBuilderServiceProvider extends ServiceProvider
             return $filters->get(strtolower($filter));
         });
 
-        /** @deprecated */
+        /* @deprecated */
         Request::macro('fields', function (): Collection {
             $fieldsParameter = config('query-builder.parameters.fields');
 
@@ -109,12 +109,12 @@ class QueryBuilderServiceProvider extends ServiceProvider
             });
         });
 
-        /** @deprecated */
+        /* @deprecated */
         Request::macro('sort', function ($default = null) {
             return $this->query(config('query-builder.parameters.sort'), $default);
         });
 
-        /** @deprecated */
+        /* @deprecated */
         Request::macro('sorts', function ($default = null) {
             $sortParts = $this->sort();
 
