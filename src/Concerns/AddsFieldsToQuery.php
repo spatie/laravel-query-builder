@@ -2,8 +2,8 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 
 trait AddsFieldsToQuery
