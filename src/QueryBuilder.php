@@ -15,7 +15,7 @@ class QueryBuilder extends Builder
 {
     use FiltersQuery, SortsQuery, AddsIncludesToQuery, AddsFieldsToQuery, AppendsAttributesToResults;
 
-    /** @var \Illuminate\Http\Request */
+    /** @var \Spatie\QueryBuilder\QueryBuilderRequest */
     protected $request;
 
     public function __construct(Builder $builder, ? Request $request = null)
@@ -24,7 +24,7 @@ class QueryBuilder extends Builder
 
         $this->initializeFromBuilder($builder);
 
-        $this->request = $request ?? request();
+        $this->request = QueryBuilderRequest::fromRequest($request ?? request());
 
         $this->parseFields();
     }
