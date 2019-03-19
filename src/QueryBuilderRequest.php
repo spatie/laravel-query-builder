@@ -17,10 +17,10 @@ class QueryBuilderRequest extends Request
     {
         $parameter = config('query-builder.parameters.include');
 
-        $includeParts = $this->query($parameter);
+        $includeParts = $this->getPartsOfRequest($parameter);
 
         if (! is_array($includeParts)) {
-            $includeParts = explode(',', strtolower($this->query($parameter)));
+            $includeParts = explode(',', strtolower($this->getPartsOfRequest($parameter)));
         }
 
         return collect($includeParts)->filter();
@@ -30,7 +30,7 @@ class QueryBuilderRequest extends Request
     {
         $appendParameter = config('query-builder.parameters.append');
 
-        $appendParts = $this->query($appendParameter);
+        $appendParts = $this->getPartsOfRequest($appendParameter);
 
         if (! is_array($appendParts)) {
             $appendParts = explode(',', strtolower($appendParts));
@@ -43,7 +43,7 @@ class QueryBuilderRequest extends Request
     {
         $filterParameter = config('query-builder.parameters.filter');
 
-        $filterParts = $this->query($filterParameter, []);
+        $filterParts = $this->getPartsOfRequest($filterParameter);
 
         if (is_string($filterParts)) {
             return collect();
@@ -60,7 +60,7 @@ class QueryBuilderRequest extends Request
     {
         $fieldsParameter = config('query-builder.parameters.fields');
 
-        $fieldsPerTable = collect($this->query($fieldsParameter));
+        $fieldsPerTable = collect($this->getPartsOfRequest($fieldsParameter));
 
         if ($fieldsPerTable->isEmpty()) {
             return collect();
@@ -76,7 +76,7 @@ class QueryBuilderRequest extends Request
      */
     public function sort()
     {
-        return $this->query(config('query-builder.parameters.sort'));
+        return $this->getPartsOfRequest(config('query-builder.parameters.sort'));
     }
 
     public function sorts(): Collection
@@ -111,5 +111,18 @@ class QueryBuilderRequest extends Request
         }
 
         return $value;
+    }
+
+    protected function getPartsOfRequest($parameter)
+    {
+        if (!empty($this->query($parameter, []))) {
+            return $this->query($parameter, []);
+        }
+
+        if(!empty($this->json($parameter, []))) {
+            return $this->json($parameter, []);
+        }
+
+        return [];
     }
 }
