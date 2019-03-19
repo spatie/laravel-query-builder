@@ -19,7 +19,7 @@ class FieldsTest extends TestCase
     {
         parent::setUp();
 
-        $this->model = factory(TestModel::class)->create();
+        $this->model          = factory(TestModel::class)->create();
         $this->modelTableName = $this->model->getTable();
     }
 
@@ -98,12 +98,12 @@ class FieldsTest extends TestCase
     {
         RelatedModel::create([
             'test_model_id' => $this->model->id,
-            'name' => 'related',
+            'name'          => 'related',
         ]);
 
         $request = new Request([
-            'fields' => [
-                'test_models' => 'id',
+            'fields'  => [
+                'test_models'    => 'id',
                 'related_models' => 'name',
             ],
             'include' => ['related-models'],
@@ -123,7 +123,7 @@ class FieldsTest extends TestCase
     public function it_can_allow_specific_fields_on_an_included_model()
     {
         $request = new Request([
-            'fields' => ['related_models' => 'id,name'],
+            'fields'  => ['related_models' => 'id,name'],
             'include' => ['related-models'],
         ]);
 

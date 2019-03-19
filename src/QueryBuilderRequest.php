@@ -19,7 +19,7 @@ class QueryBuilderRequest extends Request
 
         $includeParts = $this->getPartsOfRequest($parameter);
 
-        if (! is_array($includeParts)) {
+        if (!is_array($includeParts)) {
             $includeParts = explode(',', strtolower($this->getPartsOfRequest($parameter)));
         }
 
@@ -32,7 +32,7 @@ class QueryBuilderRequest extends Request
 
         $appendParts = $this->getPartsOfRequest($appendParameter);
 
-        if (! is_array($appendParts)) {
+        if (!is_array($appendParts)) {
             $appendParts = explode(',', strtolower($appendParts));
         }
 
@@ -119,7 +119,7 @@ class QueryBuilderRequest extends Request
             return $this->query($parameter, []);
         }
 
-        if(!empty($this->json($parameter, []))) {
+        if (!empty($this->json($parameter, []))) {
             return $this->json($parameter, []);
         }
 

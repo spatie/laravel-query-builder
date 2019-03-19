@@ -135,8 +135,9 @@ class SortTest extends TestCase
     /** @test */
     public function it_allows_default_custom_sort_class_parameter()
     {
-        $sortClass = new class implements SortInterface {
-            public function __invoke(Builder $query, $descending, string $property) : Builder
+        $sortClass = new class implements SortInterface
+        {
+            public function __invoke(Builder $query, $descending, string $property): Builder
             {
                 return $query->orderBy('name', $descending ? 'desc' : 'asc');
             }
@@ -166,8 +167,9 @@ class SortTest extends TestCase
     /** @test */
     public function it_allows_multiple_default_sort_parameters()
     {
-        $sortClass = new class implements SortInterface {
-            public function __invoke(Builder $query, $descending, string $property) : Builder
+        $sortClass = new class implements SortInterface
+        {
+            public function __invoke(Builder $query, $descending, string $property): Builder
             {
                 return $query->orderBy('name', $descending ? 'desc' : 'asc');
             }
@@ -224,8 +226,9 @@ class SortTest extends TestCase
     /** @test */
     public function it_can_sort_by_a_custom_sort_class()
     {
-        $sortClass = new class implements SortInterface {
-            public function __invoke(Builder $query, $descending, string $property) : Builder
+        $sortClass = new class implements SortInterface
+        {
+            public function __invoke(Builder $query, $descending, string $property): Builder
             {
                 return $query->orderBy('name', $descending ? 'desc' : 'asc');
             }
@@ -287,11 +290,11 @@ class SortTest extends TestCase
     {
         $request = new Request();
 
-        if(!$json) {
+        if (!$json) {
             $request->query = new ParameterBag([
                 'sort' => $sort,
             ]);
-        }else {
+        } else {
             $request->setJson(new ParameterBag([
                 'sort' => $sort,
             ]));

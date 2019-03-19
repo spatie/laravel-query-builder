@@ -31,7 +31,7 @@ class IncludeTest extends TestCase
             $model->morphModels()->create(['name' => 'Test']);
 
             $model->relatedThroughPivotModels()->create([
-                'id' => $model->id + 1,
+                'id'   => $model->id + 1,
                 'name' => 'Test',
             ]);
         });
@@ -227,11 +227,11 @@ class IncludeTest extends TestCase
     {
         $request = new Request();
 
-        if(!$json){
+        if (!$json) {
             $request->query = new ParameterBag([
                 'include' => $includes,
             ]);
-        }else{
+        } else {
             $request->setJson(new ParameterBag([
                 'include' => $includes,
             ]));
@@ -244,7 +244,7 @@ class IncludeTest extends TestCase
     {
         $hasModelWithoutRelationLoaded = $collection
             ->contains(function (Model $model) use ($relation) {
-                return ! $model->relationLoaded($relation);
+                return !$model->relationLoaded($relation);
             });
 
         $this->assertFalse($hasModelWithoutRelationLoaded, "The `{$relation}` relation was expected but not loaded.");

@@ -98,7 +98,7 @@ class RelationFilterTest extends TestCase
     {
         $models = $this
             ->createQueryFromFilterRequest([
-                'related-models.name' => $this->models->first()->name,
+                'related-models.name'                       => $this->models->first()->name,
                 'related-models.nested-related-models.name' => 'test',
             ])
             ->allowedFilters('related-models.name', 'related-models.nested-related-models.name')
@@ -157,11 +157,11 @@ class RelationFilterTest extends TestCase
     {
         $request = new Request();
 
-        if(!$json) {
+        if (!$json) {
             $request->query = new ParameterBag([
                 'filter' => $filters,
             ]);
-        }else {
+        } else {
             $request->setJson(new ParameterBag([
                 'filter' => $filters,
             ]));

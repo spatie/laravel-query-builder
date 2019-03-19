@@ -54,7 +54,6 @@ class FilterTest extends TestCase
     }
 
 
-
     /** @test */
     public function it_can_filter_partially_and_case_insensitive()
     {
