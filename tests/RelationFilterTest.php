@@ -157,7 +157,7 @@ class RelationFilterTest extends TestCase
     {
         $request = new Request();
 
-        if (!$json) {
+        if (! $json) {
             $request->query = new ParameterBag([
                 'filter' => $filters,
             ]);

@@ -5,8 +5,8 @@ namespace Spatie\QueryBuilder\Tests;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\AppendModel;
-use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 
 class AppendTest extends TestCase
 {
@@ -48,7 +48,6 @@ class AppendTest extends TestCase
 
         $this->assertAttributeLoaded($model, 'fullname');
     }
-
 
     /** @test */
     public function it_can_append_case_insensitive()
@@ -118,7 +117,7 @@ class AppendTest extends TestCase
     {
         $request = new Request();
 
-        if (!$json) {
+        if (! $json) {
             $request->query = new ParameterBag([
                 'append' => $appends,
             ]);

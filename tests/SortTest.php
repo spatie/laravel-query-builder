@@ -9,10 +9,10 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 class SortTest extends TestCase
 {
@@ -287,7 +287,7 @@ class SortTest extends TestCase
     {
         $request = new Request();
 
-        if (!$json) {
+        if (! $json) {
             $request->query = new ParameterBag([
                 'sort' => $sort,
             ]);

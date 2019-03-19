@@ -9,8 +9,8 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\MorphModel;
-use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 
 class IncludeTest extends TestCase
 {
@@ -227,7 +227,7 @@ class IncludeTest extends TestCase
     {
         $request = new Request();
 
-        if (!$json) {
+        if (! $json) {
             $request->query = new ParameterBag([
                 'include' => $includes,
             ]);
@@ -244,7 +244,7 @@ class IncludeTest extends TestCase
     {
         $hasModelWithoutRelationLoaded = $collection
             ->contains(function (Model $model) use ($relation) {
-                return !$model->relationLoaded($relation);
+                return ! $model->relationLoaded($relation);
             });
 
         $this->assertFalse($hasModelWithoutRelationLoaded, "The `{$relation}` relation was expected but not loaded.");

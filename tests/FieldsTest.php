@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\RelatedModel;
-use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 
 class FieldsTest extends TestCase
 {
@@ -19,7 +19,7 @@ class FieldsTest extends TestCase
     {
         parent::setUp();
 
-        $this->model          = factory(TestModel::class)->create();
+        $this->model = factory(TestModel::class)->create();
         $this->modelTableName = $this->model->getTable();
     }
 
@@ -143,7 +143,7 @@ class FieldsTest extends TestCase
     {
         $request = new Request();
 
-        if (!$json) {
+        if (! $json) {
             $request->query = new ParameterBag([
                 'fields' => $fields,
             ]);
