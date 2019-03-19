@@ -8,6 +8,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\RelatedModel;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class FieldsTest extends TestCase
 {
@@ -47,6 +48,21 @@ class FieldsTest extends TestCase
     {
         $query = $this
             ->createQueryFromFieldRequest(['test_models' => 'name,id'])
+            ->allowedFields(['name', 'id'])
+            ->toSql();
+
+        $expected = TestModel::query()
+            ->select("{$this->modelTableName}.name", "{$this->modelTableName}.id")
+            ->toSql();
+
+        $this->assertEquals($expected, $query);
+    }
+
+    /** @test */
+    public function it_can_fetch_specific_columns_when_use_json_request()
+    {
+        $query = $this
+            ->createQueryFromFieldRequest(['test_models' => 'name,id'], true)
             ->allowedFields(['name', 'id'])
             ->toSql();
 
@@ -123,11 +139,19 @@ class FieldsTest extends TestCase
         $this->assertQueryLogContains('select "id", "name" from "related_models"');
     }
 
-    protected function createQueryFromFieldRequest(array $fields): QueryBuilder
+    protected function createQueryFromFieldRequest(array $fields, $json = false): QueryBuilder
     {
-        $request = new Request([
-            'fields' => $fields,
-        ]);
+        $request = new Request();
+
+        if (!$json) {
+            $request->query = new ParameterBag([
+                'fields' => $fields,
+            ]);
+        } else {
+            $request->setJson(new ParameterBag([
+                'fields' => $fields,
+            ]));
+        }
 
         return QueryBuilder::for(TestModel::class, $request);
     }

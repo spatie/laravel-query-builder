@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\AppendModel;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AppendTest extends TestCase
 {
@@ -36,6 +37,18 @@ class AppendTest extends TestCase
 
         $this->assertAttributeLoaded($model, 'fullname');
     }
+
+    /** @test */
+    public function it_can_append_attributes_when_use_json_request()
+    {
+        $model = $this
+            ->createQueryFromAppendRequest('fullname', true)
+            ->allowedAppends('fullname')
+            ->first();
+
+        $this->assertAttributeLoaded($model, 'fullname');
+    }
+
 
     /** @test */
     public function it_can_append_case_insensitive()
@@ -101,11 +114,19 @@ class AppendTest extends TestCase
         $this->assertEquals(['allowed append'], $exception->allowedAppends->all());
     }
 
-    protected function createQueryFromAppendRequest(string $appends): QueryBuilder
+    protected function createQueryFromAppendRequest(string $appends, $json = false): QueryBuilder
     {
-        $request = new Request([
-            'append' => $appends,
-        ]);
+        $request = new Request();
+
+        if (!$json) {
+            $request->query = new ParameterBag([
+                'append' => $appends,
+            ]);
+        } else {
+            $request->setJson(new ParameterBag([
+                'append' => $appends,
+            ]));
+        }
 
         return QueryBuilder::for(AppendModel::class, $request);
     }

@@ -12,6 +12,7 @@ use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class SortTest extends TestCase
 {
@@ -27,6 +28,17 @@ class SortTest extends TestCase
         DB::enableQueryLog();
 
         $this->models = factory(TestModel::class, 5)->create();
+    }
+
+    /** @test */
+    public function it_can_sort_a_collection_when_use_json_request()
+    {
+        $sortedModels = $this
+            ->createQueryFromSortRequest('name', true)
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
+        $this->assertSortedAscending($sortedModels, 'name');
     }
 
     /** @test */
@@ -271,11 +283,19 @@ class SortTest extends TestCase
         $this->assertQueryExecuted('select * from "test_models" order by "name" desc');
     }
 
-    protected function createQueryFromSortRequest(string $sort): QueryBuilder
+    protected function createQueryFromSortRequest(string $sort, $json = false): QueryBuilder
     {
-        $request = new Request([
-            'sort' => $sort,
-        ]);
+        $request = new Request();
+
+        if(!$json) {
+            $request->query = new ParameterBag([
+                'sort' => $sort,
+            ]);
+        }else {
+            $request->setJson(new ParameterBag([
+                'sort' => $sort,
+            ]));
+        }
 
         return QueryBuilder::for(TestModel::class, $request);
     }

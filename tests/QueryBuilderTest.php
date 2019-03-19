@@ -15,10 +15,9 @@ class QueryBuilderTest extends TestCase
         $this->getJson('/test-model?sort=name');
 
         $builder = QueryBuilder::for(TestModel::class);
-
         $this->assertEquals([
             'direction' => 'asc',
-            'column' => 'name',
+            'column'    => 'name',
         ], $builder->getQuery()->orders[0]);
     }
 
@@ -82,7 +81,7 @@ class QueryBuilderTest extends TestCase
     {
         TestModel::create(['name' => 'John Doe']);
 
-        $baseQuery = TestModel::with('relatedModels');
+        $baseQuery    = TestModel::with('relatedModels');
         $queryBuilder = QueryBuilder::for($baseQuery);
 
         $this->assertTrue($baseQuery->first()->relationLoaded('relatedModels'));

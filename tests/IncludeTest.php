@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\MorphModel;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class IncludeTest extends TestCase
 {
@@ -44,6 +45,17 @@ class IncludeTest extends TestCase
             ->get();
 
         $this->assertCount(TestModel::count(), $models);
+    }
+
+    /** @test */
+    public function it_can_include_model_relations_when_use_json_request()
+    {
+        $models = $this
+            ->createQueryFromIncludeRequest('related-models', true)
+            ->allowedIncludes('related-models')
+            ->get();
+
+        $this->assertRelationLoaded($models, 'relatedModels');
     }
 
     /** @test */
@@ -211,11 +223,19 @@ class IncludeTest extends TestCase
         $this->assertEquals(['allowed include'], $exception->allowedIncludes->all());
     }
 
-    protected function createQueryFromIncludeRequest(string $includes): QueryBuilder
+    protected function createQueryFromIncludeRequest(string $includes, $json = false): QueryBuilder
     {
-        $request = new Request([
-            'include' => $includes,
-        ]);
+        $request = new Request();
+
+        if(!$json){
+            $request->query = new ParameterBag([
+                'include' => $includes,
+            ]);
+        }else{
+            $request->setJson(new ParameterBag([
+                'include' => $includes,
+            ]));
+        }
 
         return QueryBuilder::for(TestModel::class, $request);
     }

@@ -13,6 +13,7 @@ use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class FilterTest extends TestCase
 {
@@ -38,6 +39,21 @@ class FilterTest extends TestCase
 
         $this->assertCount(1, $models);
     }
+
+    /** @test */
+    public function it_can_filter_models_when_use_json_request()
+    {
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'name' => $this->models->first()->name,
+            ], true)
+            ->allowedFilters('name')
+            ->get();
+
+        $this->assertCount(1, $models);
+    }
+
+
 
     /** @test */
     public function it_can_filter_partially_and_case_insensitive()
@@ -180,8 +196,9 @@ class FilterTest extends TestCase
     {
         $testModel = $this->models->first();
 
-        $filterClass = new class implements FilterInterface {
-            public function __invoke(Builder $query, $value, string $property) : Builder
+        $filterClass = new class implements FilterInterface
+        {
+            public function __invoke(Builder $query, $value, string $property): Builder
             {
                 return $query->where('name', $value);
             }
@@ -240,7 +257,7 @@ class FilterTest extends TestCase
         $results = $this
             ->createQueryFromFilterRequest([
                 'name' => 'abc',
-                'id' => "1,{$model1->id}",
+                'id'   => "1,{$model1->id}",
             ])
             ->allowedFilters('name', Filter::exact('id'))
             ->get();
@@ -262,7 +279,8 @@ class FilterTest extends TestCase
     /** @test */
     public function it_can_create_a_custom_filter_with_an_instantiated_filter()
     {
-        $customFilter = new class('test1') implements CustomFilter {
+        $customFilter = new class('test1') implements CustomFilter
+        {
             /** @var string */
             private $filter;
 
@@ -391,11 +409,18 @@ class FilterTest extends TestCase
         $this->assertGreaterThan(0, TestModel::all()->count());
     }
 
-    protected function createQueryFromFilterRequest(array $filters): QueryBuilder
+    protected function createQueryFromFilterRequest(array $filters, $json = false): QueryBuilder
     {
-        $request = new Request([
-            'filter' => $filters,
-        ]);
+        $request = new Request();
+
+        if (!$json) {
+            $request->query = new ParameterBag([
+                'filter' => $filters,
+            ]);
+        } else {
+            $request = new Request();
+            $request->setJson(new ParameterBag(['filter' => $filters]));
+        }
 
         return QueryBuilder::for(TestModel::class, $request);
     }

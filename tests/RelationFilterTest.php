@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class RelationFilterTest extends TestCase
 {
@@ -64,6 +65,19 @@ class RelationFilterTest extends TestCase
             ->get();
 
         $this->assertCount(0, $models);
+    }
+
+    /** @test */
+    public function it_can_filter_related_nested_model_property_when_use_json_request()
+    {
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'related-models.nested-related-models.name' => 'test',
+            ], true)
+            ->allowedFilters('related-models.nested-related-models.name')
+            ->get();
+
+        $this->assertCount(5, $models);
     }
 
     /** @test */
@@ -139,11 +153,19 @@ class RelationFilterTest extends TestCase
         $this->assertCount(1, $result);
     }
 
-    protected function createQueryFromFilterRequest(array $filters): QueryBuilder
+    protected function createQueryFromFilterRequest(array $filters, $json = false): QueryBuilder
     {
-        $request = new Request([
-            'filter' => $filters,
-        ]);
+        $request = new Request();
+
+        if(!$json) {
+            $request->query = new ParameterBag([
+                'filter' => $filters,
+            ]);
+        }else {
+            $request->setJson(new ParameterBag([
+                'filter' => $filters,
+            ]));
+        }
 
         return QueryBuilder::for(TestModel::class, $request);
     }
