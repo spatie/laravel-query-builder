@@ -81,7 +81,7 @@ class QueryBuilderTest extends TestCase
     {
         TestModel::create(['name' => 'John Doe']);
 
-        $baseQuery    = TestModel::with('relatedModels');
+        $baseQuery = TestModel::with('relatedModels');
         $queryBuilder = QueryBuilder::for($baseQuery);
 
         $this->assertTrue($baseQuery->first()->relationLoaded('relatedModels'));

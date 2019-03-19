@@ -10,10 +10,10 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 class FilterTest extends TestCase
 {
@@ -52,7 +52,6 @@ class FilterTest extends TestCase
 
         $this->assertCount(1, $models);
     }
-
 
     /** @test */
     public function it_can_filter_partially_and_case_insensitive()
@@ -410,7 +409,7 @@ class FilterTest extends TestCase
     {
         $request = new Request();
 
-        if (!$json) {
+        if (! $json) {
             $request->query = new ParameterBag([
                 'filter' => $filters,
             ]);
