@@ -20,7 +20,7 @@ class SearchesSplit extends SearchesBase
             return $query->orWhere(function (Builder $query) use ($value, $sql) {
                 foreach ($value as $partialValue) {
                     collect(explode(' ', mb_strtolower($partialValue, 'UTF8')))
-                        ->each(function($partialValue) use ($query, $sql) {
+                        ->each(function ($partialValue) use ($query, $sql) {
                             $query->orWhereRaw($sql, [$this->encloseValue($partialValue)]);
                         });
                 }
@@ -28,7 +28,7 @@ class SearchesSplit extends SearchesBase
         }
 
         collect(explode(' ', mb_strtolower($value, 'UTF8')))
-            ->each(function($value) use ($query, $sql) {
+            ->each(function ($value) use ($query, $sql) {
                 $query->orWhereRaw($sql, [$this->encloseValue($value)]);
             });
 

@@ -2,14 +2,13 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\Enums\SearchModifier;
-use Spatie\QueryBuilder\Exceptions\InvalidSearchQuery;
-use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Search;
-use Spatie\QueryBuilder\Searches\SearchesExact;
+use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Database\Eloquent\Collection;
+use Spatie\QueryBuilder\Enums\SearchModifier;
 use Spatie\QueryBuilder\Tests\Models\AppendModel;
+use Spatie\QueryBuilder\Exceptions\InvalidSearchQuery;
 
 class SearchTest extends TestCase
 {
@@ -57,7 +56,7 @@ class SearchTest extends TestCase
             ->get();
 
         $this->assertCount(1, $models);
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Freek' && $model->lastname == 'van der Herten';
         }));
     }
@@ -73,19 +72,19 @@ class SearchTest extends TestCase
             ->get();
 
         $this->assertCount(5, $models);
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Alex' && $model->lastname == 'Vanderbist';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Freek' && $model->lastname == 'van der Herten';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Jef' && $model->lastname == 'van der Voort';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Ruben' && $model->lastname == 'van Assche';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Willem' && $model->lastname == 'van Bockstal';
         }));
     }
@@ -95,22 +94,22 @@ class SearchTest extends TestCase
     {
         $models = $this
             ->createQueryFromSearchRequest([
-                'i'
+                'i',
             ])
             ->allowedSearches(['firstname', 'lastname'])
             ->get();
 
         $this->assertCount(4, $models);
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Adriaan' && $model->lastname == 'Marain';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Alex' && $model->lastname == 'Vanderbist';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Sebastian' && $model->lastname == 'de Deyne';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Willem' && $model->lastname == 'van Bockstal';
         }));
     }
@@ -126,10 +125,10 @@ class SearchTest extends TestCase
             ->get();
 
         $this->assertCount(2, $models);
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Freek' && $model->lastname == 'van der Herten';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Sebastian' && $model->lastname == 'de Deyne';
         }));
     }
@@ -141,7 +140,7 @@ class SearchTest extends TestCase
 
         $this
             ->createQueryFromSearchRequest([
-                ['firstname' => 'Freek']
+                ['firstname' => 'Freek'],
             ])
             ->allowedSearches('lastname');
     }
@@ -174,7 +173,7 @@ class SearchTest extends TestCase
             ->get();
 
         $this->assertCount(1, $models);
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Alex' && $model->lastname == 'Vanderbist';
         }));
     }
@@ -211,7 +210,7 @@ class SearchTest extends TestCase
             ->get();
 
         $this->assertCount(1, $models);
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Alex' && $model->lastname == 'Vanderbist';
         }));
     }
@@ -229,10 +228,10 @@ class SearchTest extends TestCase
             ->get();
 
         $this->assertCount(2, $models);
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Willem' && $model->lastname == 'van Bockstal';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Wouter' && $model->lastname == 'Brouwers';
         }));
     }
@@ -250,13 +249,13 @@ class SearchTest extends TestCase
             ->get();
 
         $this->assertCount(3, $models);
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Brent' && $model->lastname == 'Roose';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Ruben' && $model->lastname == 'van Assche';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Sebastian' && $model->lastname == 'de Deyne';
         }));
     }
@@ -275,19 +274,19 @@ class SearchTest extends TestCase
             ->get();
 
         $this->assertCount(5, $models);
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Brent' && $model->lastname == 'Roose';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Alex' && $model->lastname == 'Vanderbist';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Freek' && $model->lastname == 'van der Herten';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Jef' && $model->lastname == 'van der Voort';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Sebastian' && $model->lastname == 'de Deyne';
         }));
     }
@@ -306,16 +305,16 @@ class SearchTest extends TestCase
             ->get();
 
         $this->assertCount(4, $models);
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Adriaan' && $model->lastname == 'Marain';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Brent' && $model->lastname == 'Roose';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Freek' && $model->lastname == 'van der Herten';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Jef' && $model->lastname == 'van der Voort';
         }));
     }
@@ -333,19 +332,19 @@ class SearchTest extends TestCase
             ->get();
 
         $this->assertCount(5, $models);
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Adriaan' && $model->lastname == 'Marain';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Alex' && $model->lastname == 'Vanderbist';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Brent' && $model->lastname == 'Roose';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Willem' && $model->lastname == 'van Bockstal';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Wouter' && $model->lastname == 'Brouwers';
         }));
     }
@@ -363,19 +362,19 @@ class SearchTest extends TestCase
             ->get();
 
         $this->assertCount(5, $models);
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Adriaan' && $model->lastname == 'Marain';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Brent' && $model->lastname == 'Roose';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Freek' && $model->lastname == 'van der Herten';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Ruben' && $model->lastname == 'van Assche';
         }));
-        $this->assertTrue($models->contains(function($model) {
+        $this->assertTrue($models->contains(function ($model) {
             return $model->firstname = 'Sebastian' && $model->lastname == 'de Deyne';
         }));
     }
@@ -385,13 +384,13 @@ class SearchTest extends TestCase
         $searchParameter = config('query-builder.parameters.search');
 
         $search = collect($searches)
-            ->mapToGroups(function($item, $key) use ($searchParameter) {
+            ->mapToGroups(function ($item, $key) use ($searchParameter) {
                 if (is_int($key) || $key == SearchModifier::PARTIAL) {
                     return [$searchParameter => $item];
                 }
 
                 return [$searchParameter.':'.$key => $item];
-            })->map(function($item) {
+            })->map(function ($item) {
                 return $item[0];
             })
             ->toArray();

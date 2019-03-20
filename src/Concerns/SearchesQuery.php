@@ -35,13 +35,13 @@ trait SearchesQuery
 
         $searches->each(function ($item, $modifier) use ($searchParameter) {
             $modifier = preg_replace(sprintf('/^%s\:?/', $searchParameter), '', $modifier, 1);
-            collect($item)->each(function($value, $property) use ($modifier) {
+            collect($item)->each(function ($value, $property) use ($modifier) {
                 if (is_string($property)) {
                     $search = $this->findSearch($property);
 
                     $search->search($this, $value, $modifier);
                 } else {
-                    $this->allowedSearches->each(function($search) use ($value, $modifier) {
+                    $this->allowedSearches->each(function ($search) use ($value, $modifier) {
                         $search->search($this, $value, $modifier);
                     });
                 }
@@ -60,10 +60,10 @@ trait SearchesQuery
     protected function guardAgainstUnknownSearches()
     {
         $searchNames = $this->request->searches()
-            ->filter(function($item) {
+            ->filter(function ($item) {
                 return is_array($item);
             })
-            ->mapWithKeys(function($item) {
+            ->mapWithKeys(function ($item) {
                 return $item;
             })->keys();
 

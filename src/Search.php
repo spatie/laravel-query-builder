@@ -4,16 +4,15 @@ namespace Spatie\QueryBuilder;
 
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
-
-use Spatie\QueryBuilder\Searches\Search as CustomSearch;
-use Spatie\QueryBuilder\Searches\SearchesBegins;
 use Spatie\QueryBuilder\Searches\SearchesEnds;
 use Spatie\QueryBuilder\Searches\SearchesExact;
-use Spatie\QueryBuilder\Searches\SearchesPartial;
-use Spatie\QueryBuilder\Searches\SearchesModifierResolver;
 use Spatie\QueryBuilder\Searches\SearchesSplit;
-use Spatie\QueryBuilder\Searches\SearchesSplitBegins;
+use Spatie\QueryBuilder\Searches\SearchesBegins;
+use Spatie\QueryBuilder\Searches\SearchesPartial;
 use Spatie\QueryBuilder\Searches\SearchesSplitEnds;
+use Spatie\QueryBuilder\Searches\SearchesSplitBegins;
+use Spatie\QueryBuilder\Searches\Search as CustomSearch;
+use Spatie\QueryBuilder\Searches\SearchesModifierResolver;
 
 class Search
 {
@@ -141,9 +140,9 @@ class Search
         if (is_array($property)) {
             $remainingProperties = array_diff($property, $this->ignored->toArray());
 
-            return !empty($remainingProperties) ? $remainingProperties : null;
+            return ! empty($remainingProperties) ? $remainingProperties : null;
         }
 
-        return !$this->ignored->contains($property) ? $property : null;
+        return ! $this->ignored->contains($property) ? $property : null;
     }
 }
