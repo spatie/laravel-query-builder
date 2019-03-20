@@ -56,6 +56,26 @@ class QueryBuilderRequest extends Request
         });
     }
 
+    public function searches()
+    {
+        $searchParameter = config('query-builder.parameters.search');
+
+        $searchParts = collect($this->query(null, []))
+            ->filter(function ($value, $queryKey) use ($searchParameter) {
+                return $queryKey === $searchParameter || Str::startsWith($queryKey, $searchParameter.':');
+            })->toArray();
+
+        if (is_string($searchParts)) {
+            return collect();
+        }
+
+        $searches = collect($searchParts);
+
+        return $searches->map(function ($value) {
+            return $this->getSearchValue($value);
+        });
+    }
+
     public function fields(): Collection
     {
         $fieldsParameter = config('query-builder.parameters.fields');
@@ -89,6 +109,29 @@ class QueryBuilderRequest extends Request
         if (is_array($value)) {
             return collect($value)->map(function ($valueValue) {
                 return $this->getFilterValue($valueValue);
+            })->all();
+        }
+
+        if (Str::contains($value, ',')) {
+            return explode(',', $value);
+        }
+
+        if ($value === 'true') {
+            return true;
+        }
+
+        if ($value === 'false') {
+            return false;
+        }
+
+        return $value;
+    }
+
+    protected function getSearchValue($value)
+    {
+        if (is_array($value)) {
+            return collect($value)->map(function ($valueValue) {
+                return $this->getSearchValue($valueValue);
             })->all();
         }
 

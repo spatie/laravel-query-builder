@@ -1,0 +1,38 @@
+<?php
+
+namespace Spatie\QueryBuilder\Searches;
+
+use Illuminate\Database\Eloquent\Builder;
+
+class SearchesPartial extends SearchesBase
+{
+    public function __invoke(Builder $query, $value, string $property, ?string $modifier = null): Builder
+    {
+        if ($this->isRelationProperty($query, $property)) {
+            return $this->withRelationConstraint($query, $value, $property);
+        }
+
+        $wrappedProperty = $query->getQuery()->getGrammar()->wrap($property);
+
+        $sql = "LOWER({$wrappedProperty}) LIKE ?";
+
+        if (is_array($value)) {
+            return $query->orWhere(function (Builder $query) use ($value, $sql) {
+                foreach ($value as $partialValue) {
+                    $partialValue = mb_strtolower($partialValue, 'UTF8');
+
+                    $query->orWhereRaw($sql, [$this->encloseValue($partialValue)]);
+                }
+            });
+        }
+
+        $value = mb_strtolower($value, 'UTF8');
+
+        return $query->orWhereRaw($sql, [$this->encloseValue($value)]);
+    }
+
+    protected function encloseValue($value)
+    {
+        return "%{$value}%";
+    }
+}
