@@ -26,6 +26,8 @@ trait FiltersQuery
 
         $this->addFiltersToQuery($this->request->filters());
 
+        $this->addDefaultFiltersToQuery($this->allowedFilters);
+
         return $this;
     }
 
@@ -35,6 +37,21 @@ trait FiltersQuery
             $filter = $this->findFilter($property);
 
             $filter->filter($this, $value);
+        });
+    }
+
+    protected function addDefaultFiltersToQuery(Collection $filters)
+    {
+        $filters->each(function ($value) {
+            $filter = $this->findFilter($value->getProperty());
+
+            if (!$filter->defaultSet()) {
+                return;
+            }
+
+            if (!$this->request->filters()->has($filter->getProperty())) {
+                $filter->filter($this, $filter->getDefault());
+            }
         });
     }
 

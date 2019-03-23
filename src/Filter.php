@@ -23,6 +23,9 @@ class Filter
     /** @var Collection */
     protected $ignored;
 
+    /** @var */
+    protected $default;
+
     public function __construct(string $property, $filterClass, ?string $columnName = null)
     {
         $this->property = $property;
@@ -37,6 +40,10 @@ class Filter
     public function filter(Builder $builder, $value)
     {
         $valueToFilter = $this->resolveValueForFiltering($value);
+
+        if (isset($this->default) && is_null($valueToFilter)) {
+            return $this->default;
+        }
 
         if (is_null($valueToFilter)) {
             return;
@@ -89,6 +96,23 @@ class Filter
     public function getIgnored(): array
     {
         return $this->ignored->toArray();
+    }
+
+    public function default($value): self
+    {
+        $this->default = $value;
+
+        return $this;
+    }
+
+    public function getDefault()
+    {
+        return $this->default;
+    }
+
+    public function defaultSet(): bool
+    {
+        return (isset($this->default));
     }
 
     public function getColumnName(): string
