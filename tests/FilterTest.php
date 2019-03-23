@@ -348,7 +348,7 @@ class FilterTest extends TestCase
 
         $models = $this
             ->createQueryFromFilterRequest([
-                'name' => 'Doe'
+                'name' => 'Doe',
             ])
             ->allowedFilters(Filter::partial('name')->default('John'))
             ->get();

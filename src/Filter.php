@@ -112,7 +112,7 @@ class Filter
 
     public function defaultSet(): bool
     {
-        return (isset($this->default));
+        return isset($this->default);
     }
 
     public function getColumnName(): string

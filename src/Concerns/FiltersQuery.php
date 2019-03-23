@@ -45,11 +45,11 @@ trait FiltersQuery
         $filters->each(function ($value) {
             $filter = $this->findFilter($value->getProperty());
 
-            if (!$filter->defaultSet()) {
+            if (! $filter->defaultSet()) {
                 return;
             }
 
-            if (!$this->request->filters()->has($filter->getProperty())) {
+            if (! $this->request->filters()->has($filter->getProperty())) {
                 $filter->filter($this, $filter->getDefault());
             }
         });
