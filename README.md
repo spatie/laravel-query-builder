@@ -184,9 +184,8 @@ use Spatie\QueryBuilder\Filter;
 
 // GET /users?filter[name]=John
 $users = QueryBuilder::for(User::class)
-    ->allowedFilters(Filter::exact('name', 'user_name')) // public filter, column name
+    ->allowedFilters(Filter::exact('name', 'user_name')) // filter by the column 'user_name'
     ->get();
-// filter by the column 'user_name'
 ```
 
 
