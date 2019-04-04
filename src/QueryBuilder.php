@@ -13,7 +13,11 @@ use Spatie\QueryBuilder\Concerns\AppendsAttributesToResults;
 
 class QueryBuilder extends Builder
 {
-    use FiltersQuery, SortsQuery, AddsIncludesToQuery, AddsFieldsToQuery, AppendsAttributesToResults;
+    use FiltersQuery,
+        SortsQuery,
+        AddsIncludesToQuery,
+        AddsFieldsToQuery,
+        AppendsAttributesToResults;
 
     /** @var \Spatie\QueryBuilder\QueryBuilderRequest */
     protected $request;
