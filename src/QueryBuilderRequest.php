@@ -71,14 +71,6 @@ class QueryBuilderRequest extends Request
         });
     }
 
-    /**
-     * @return array|string|null
-     */
-    public function sort()
-    {
-        return $this->query(config('query-builder.parameters.sort'));
-    }
-
     public function sorts(): Collection
     {
         $sortParts = $this->sort();

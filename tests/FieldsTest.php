@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder\Tests;
 
 use DB;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\Exceptions\InvalidColumnName;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\RelatedModel;
@@ -128,6 +129,8 @@ class FieldsTest extends TestCase
         $request = new Request([
             'fields' => ['test_models' => 'id->"\')from test_models--injection'],
         ]);
+
+        $this->expectException(InvalidColumnName::class);
 
         DB::enableQueryLog();
 

@@ -2,6 +2,8 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
+use Spatie\QueryBuilder\ColumnNameSanitizer;
+use Spatie\QueryBuilder\Exceptions\InvalidColumnName;
 use Spatie\QueryBuilder\Sort;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
@@ -103,12 +105,8 @@ trait SortsQuery
 
     protected function addDefaultSorts()
     {
-        $this->allowedSorts = collect($this->request->sorts($this->defaultSorts))
+        $this->allowedSorts = $this->request->sorts()
             ->map(function ($sort) {
-                if ($sort instanceof Sort) {
-                    return $sort;
-                }
-
                 return Sort::field(ltrim($sort, '-'));
             });
 

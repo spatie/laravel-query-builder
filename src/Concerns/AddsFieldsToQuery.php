@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder\Concerns;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Spatie\QueryBuilder\ColumnNameSanitizer;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 
 trait AddsFieldsToQuery
@@ -35,7 +36,7 @@ trait AddsFieldsToQuery
 
     public function parseFields()
     {
-        $this->addFieldsToQuery($this->request->fields());
+        $this->addFieldsToQuery($this->getRequestedFields());
     }
 
     protected function addFieldsToQuery(Collection $fields)
@@ -43,7 +44,11 @@ trait AddsFieldsToQuery
         $modelTableName = $this->getModel()->getTable();
 
         if ($modelFields = $fields->get($modelTableName)) {
-            $this->select($this->prependFieldsWithTableName($modelFields, $modelTableName));
+            $sanitizedFields = ColumnNameSanitizer::sanitizeArray($modelFields);
+
+            $prependedFields = $this->prependFieldsWithTableName($sanitizedFields, $modelTableName);
+
+            $this->select($prependedFields);
         }
     }
 
@@ -56,12 +61,12 @@ trait AddsFieldsToQuery
 
     protected function getFieldsForIncludedTable(string $relation): array
     {
-        return $this->request->fields()->get($relation, []);
+        return $this->getRequestedFields()->get($relation, []);
     }
 
     protected function guardAgainstUnknownFields()
     {
-        $fields = $this->request->fields()
+        $fields = $this->getRequestedFields()
             ->map(function ($fields, $model) {
                 $tableName = Str::snake(preg_replace('/-/', '_', $model));
 
@@ -77,5 +82,10 @@ trait AddsFieldsToQuery
         if ($diff->count()) {
             throw InvalidFieldQuery::fieldsNotAllowed($diff, $this->allowedFields);
         }
+    }
+
+    protected function getRequestedFields(): Collection
+    {
+        return $this->request->fields();
     }
 }
