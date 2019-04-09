@@ -269,7 +269,11 @@ class QueryBuilder extends Builder
         $modelTableName = $this->getModel()->getTable();
 
         if ($modelFields = $fields->get($modelTableName)) {
-            $this->select($this->prependFieldsWithTableName($modelFields, $modelTableName));
+            $sanitizedFields = ColumnNameSanitizer::sanitizeArray($modelFields);
+
+            $prependedFields = $this->prependFieldsWithTableName($sanitizedFields, $modelTableName);
+
+            $this->select($prependedFields);
         }
     }
 

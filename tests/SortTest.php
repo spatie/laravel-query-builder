@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\Exceptions\InvalidColumnName;
 use Spatie\QueryBuilder\Sort;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -90,7 +91,7 @@ class SortTest extends TestCase
     /** @test */
     public function an_invalid_sort_query_exception_contains_the_unknown_and_allowed_sorts()
     {
-        $exception = new InvalidSortQuery(collect(['unknown sort']), collect(['allowed sort']));
+        $exception = InvalidSortQuery::sortsNotAllowed(collect(['unknown sort']), collect(['allowed sort']));
 
         $this->assertEquals(['unknown sort'], $exception->unknownSorts->all());
         $this->assertEquals(['allowed sort'], $exception->allowedSorts->all());
@@ -106,6 +107,18 @@ class SortTest extends TestCase
         $eloquentQuery = TestModel::query()->toSql();
 
         $this->assertEquals($eloquentQuery, $builderQuery);
+    }
+
+    /** @test */
+    public function it_wont_sort_sketchy_sort_requests()
+    {
+        $this->expectException(InvalidColumnName::class);
+
+        $this
+            ->createQueryFromSortRequest('id->"\') asc --injection')
+            ->get();
+
+        $this->assertQueryLogDoesntContain('--injection');
     }
 
     /** @test */
