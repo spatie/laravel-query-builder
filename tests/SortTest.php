@@ -3,7 +3,6 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\Exceptions\InvalidColumnName;
 use Spatie\QueryBuilder\Sort;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -12,6 +11,7 @@ use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
+use Spatie\QueryBuilder\Exceptions\InvalidColumnName;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
 
 class SortTest extends TestCase

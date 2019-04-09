@@ -15,7 +15,7 @@ class ColumnNameSanitizer
      * Column names are alphanumeric strings that can contain
      * underscores (`_`) but can't start with a number.
      */
-    private const VALID_COLUMN_NAME_REGEX = "/^(?![0-9])[A-Za-z0-9_-]*$/";
+    private const VALID_COLUMN_NAME_REGEX = '/^(?![0-9])[A-Za-z0-9_-]*$/';
 
     public static function sanitize(string $column): string
     {
