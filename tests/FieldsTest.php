@@ -4,10 +4,10 @@ namespace Spatie\QueryBuilder\Tests;
 
 use DB;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\Exceptions\InvalidColumnName;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\RelatedModel;
+use Spatie\QueryBuilder\Exceptions\InvalidColumnName;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 
 class FieldsTest extends TestCase
@@ -123,6 +123,7 @@ class FieldsTest extends TestCase
         $this->assertQueryLogContains('select * from "test_models"');
         $this->assertQueryLogContains('select "id", "name" from "related_models"');
     }
+
     /** @test */
     public function it_wont_use_sketchy_field_requests()
     {
