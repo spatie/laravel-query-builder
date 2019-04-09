@@ -11,6 +11,10 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 - security fixes
 
+## 1.16.1 - 2019-04-09
+
+- security fixes
+
 ## 1.17.0 - 2019-03-11
 
 - moved features to traits
