@@ -2,11 +2,9 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
-## 2.0.0 - unreleased
+## 1.16.1 - 2019-04-09
 
-- moved features to traits and general cleanup
-- removed request macros
-- started using `QueryBuilderRequest` to read data from the current request
+- security fixes
 
 ## 1.16.0 - 2019-03-05
 
