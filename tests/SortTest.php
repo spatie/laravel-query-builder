@@ -109,6 +109,16 @@ class SortTest extends TestCase
     }
 
     /** @test */
+    public function it_wont_sort_sketchy_sort_requests()
+    {
+        $this
+            ->createQueryFromSortRequest('id->"\') asc --injection')
+            ->get();
+
+        $this->assertQueryLogDoesntContain('--injection');
+    }
+
+    /** @test */
     public function it_uses_default_sort_parameter()
     {
         $sortedModels = QueryBuilder::for(TestModel::class, new Request())

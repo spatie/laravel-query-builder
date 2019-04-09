@@ -122,6 +122,19 @@ class FieldsTest extends TestCase
         $this->assertQueryLogContains('select * from "test_models"');
         $this->assertQueryLogContains('select "id", "name" from "related_models"');
     }
+    /** @test */
+    public function it_wont_use_sketchy_field_requests()
+    {
+        $request = new Request([
+            'fields' => ['test_models' => 'id->"\')from test_models--injection'],
+        ]);
+
+        DB::enableQueryLog();
+
+        QueryBuilder::for(TestModel::class, $request)->get();
+
+        $this->assertQueryLogDoesntContain('--injection');
+    }
 
     protected function createQueryFromFieldRequest(array $fields): QueryBuilder
     {
