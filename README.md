@@ -297,14 +297,14 @@ The `ignore()` method takes one or more values, where each may be an array of ig
 Given an array of values to filter for, only the subset of non-ignored values get passed to the filter. If all values are ignored, the filter does not get applied.
 
 ```php
-// GET /user?name=forbidden,John Doe
+// GET /user?filter[name]=forbidden,John Doe
 QueryBuilder::for(User::class)
     ->allowedFilters(Filter::exact('name')->ignore('forbidden'))
     ->get();
 
 // Only users where name matches 'John Doe'
 
-// GET /user?name=ignored,ignored_too
+// GET /user?filter[name]=ignored,ignored_too
 QueryBuilder::for(User::class)
     ->allowedFilters(Filter::exact('name')->ignore(['ignored', 'ignored_too']))
     ->get();
