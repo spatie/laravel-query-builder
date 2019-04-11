@@ -73,7 +73,9 @@ class QueryBuilderRequest extends Request
 
     public function sorts(): Collection
     {
-        $sortParts = $this->sort();
+        $sortParameter = config('query-builder.parameters.sort');
+
+        $sortParts = $this->query($sortParameter);
 
         if (is_string($sortParts)) {
             $sortParts = explode(',', $sortParts);
