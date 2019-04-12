@@ -7,6 +7,10 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - removed request macros
 - sorts and field selects are not allowed by default
 
+## 1.17.2 - **WIP**
+
+- fix missing `sort()` method on `QueryBuilderRequest`
+
 ## 1.17.1 - 2019-04-09
 
 - security fixes
