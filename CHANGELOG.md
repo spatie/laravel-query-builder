@@ -11,7 +11,8 @@ All notable changes to `laravel-query-builder` will be documented in this file
 ## 1.17.2 - **WIP**
 
 - bugfix: replace missing `sort()` method on `QueryBuilderRequest`
-- bugfix: `allowedSort`s and aliases are no longer escaped
+- bugfix: don't escape `allowedSort`s and their aliases
+- bugfix: don't escape `allowedField`s
 
 ## 1.17.1 - 2019-04-09
 
