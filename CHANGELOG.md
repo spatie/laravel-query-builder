@@ -8,7 +8,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - sorts and field selects are not allowed by default
 - field aliases
 
-## 1.17.2 - **WIP**
+## 1.17.2 - 2019-04-12
 
 - bugfix: replace missing `sort()` method on `QueryBuilderRequest`
 - bugfix: don't escape `allowedSort`s and their aliases

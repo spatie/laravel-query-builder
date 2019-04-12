@@ -37,7 +37,8 @@ trait AddsFieldsToQuery
     public function addAllRequestedFields()
     {
         if ($this->allowedFields instanceof Collection) {
-            // If we have allowed fields we will add them in the allowed fields method.
+            // If we have allowed fields we will have parsed them in the allowed fields method.
+
             return;
         }
 
@@ -72,12 +73,8 @@ trait AddsFieldsToQuery
         return ColumnNameSanitizer::sanitizeArray($fields);
     }
 
-    // TEMP: Below this point is sanitized
-
     protected function getRequestedFields(): Collection
     {
-        // We can't sanitize here yet because the sketchy fields might be allowed.
-
         return $this->request->fields();
     }
 
