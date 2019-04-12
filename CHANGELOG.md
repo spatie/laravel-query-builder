@@ -6,6 +6,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 - removed request macros
 - sorts and field selects are not allowed by default
+- field aliases
 
 ## 1.17.2 - **WIP**
 

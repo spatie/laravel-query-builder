@@ -59,6 +59,21 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
+    public function it_can_fetch_sketchy_columns_if_they_are_allowed_fields()
+    {
+        $query = $this
+            ->createQueryFromFieldRequest(['test_models' => 'name->first,id'])
+            ->allowedFields(['name->first', 'id'])
+            ->toSql();
+
+        $expected = TestModel::query()
+            ->select("{$this->modelTableName}.name->first", "{$this->modelTableName}.id")
+            ->toSql();
+
+        $this->assertEquals($expected, $query);
+    }
+
+    /** @test */
     public function it_guards_against_invalid_fields()
     {
         $this->expectException(InvalidFieldQuery::class);

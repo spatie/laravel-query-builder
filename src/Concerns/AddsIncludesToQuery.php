@@ -44,7 +44,7 @@ trait AddsIncludesToQuery
             ->flatMap(function (Collection $relatedTables) {
                 return $relatedTables
                     ->mapWithKeys(function ($table, $key) use ($relatedTables) {
-                        $fields = $this->getFieldsForIncludedTable(Str::snake($table));
+                        $fields = $this->getFieldsForRelatedTable(Str::snake($table));
 
                         $fullRelationName = $relatedTables->slice(0, $key + 1)->implode('.');
 

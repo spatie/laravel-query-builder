@@ -29,8 +29,6 @@ class QueryBuilder extends Builder
         $this->initializeFromBuilder($builder);
 
         $this->request = QueryBuilderRequest::fromRequest($request ?? request());
-
-        $this->parseFields();
     }
 
     /**
@@ -52,8 +50,12 @@ class QueryBuilder extends Builder
 
     public function getQuery()
     {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
+        if (! $this->allowedSorts instanceof Collection) {
             $this->addDefaultSorts();
+        }
+
+        if (! $this->allowedFields instanceof Collection) {
+            $this->addAllRequestedFields();
         }
 
         return parent::getQuery();
@@ -64,8 +66,12 @@ class QueryBuilder extends Builder
      */
     public function get($columns = ['*'])
     {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
+        if (! $this->allowedSorts instanceof Collection) {
             $this->addDefaultSorts();
+        }
+
+        if (! $this->allowedFields instanceof Collection) {
+            $this->addAllRequestedFields();
         }
 
         $results = parent::get($columns);
@@ -79,8 +85,12 @@ class QueryBuilder extends Builder
 
     public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
+        if (! $this->allowedSorts instanceof Collection) {
             $this->addDefaultSorts();
+        }
+
+        if (! $this->allowedFields instanceof Collection) {
+            $this->addAllRequestedFields();
         }
 
         return parent::paginate($perPage, $columns, $pageName, $page);
@@ -88,8 +98,12 @@ class QueryBuilder extends Builder
 
     public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        if ($this->request->sorts() && ! $this->allowedSorts instanceof Collection) {
+        if (! $this->allowedSorts instanceof Collection) {
             $this->addDefaultSorts();
+        }
+
+        if (! $this->allowedFields instanceof Collection) {
+            $this->addAllRequestedFields();
         }
 
         return parent::simplePaginate($perPage, $columns, $pageName, $page);

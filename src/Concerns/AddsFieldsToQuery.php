@@ -27,41 +27,58 @@ trait AddsFieldsToQuery
                 return $fieldName;
             });
 
-        if (! $this->allowedFields->contains('*')) {
-            $this->guardAgainstUnknownFields();
-        }
+        $this->guardAgainstUnknownFields();
+
+        $this->addModelFieldsToQuery();
 
         return $this;
     }
 
-    public function parseFields()
+    public function addAllRequestedFields()
     {
-        $this->addFieldsToQuery($this->getRequestedFields());
-    }
-
-    protected function addFieldsToQuery(Collection $fields)
-    {
-        $modelTableName = $this->getModel()->getTable();
-
-        if ($modelFields = $fields->get($modelTableName)) {
-            $sanitizedFields = ColumnNameSanitizer::sanitizeArray($modelFields);
-
-            $prependedFields = $this->prependFieldsWithTableName($sanitizedFields, $modelTableName);
-
-            $this->select($prependedFields);
+        if ($this->allowedFields instanceof Collection) {
+            // If we have allowed fields we will add them in the allowed fields method.
+            return;
         }
+
+        $this
+            ->getRequestedFields()
+            ->each(function (array $fields, string $table) {
+                return ColumnNameSanitizer::sanitizeArray($fields);
+            });
+
+        $this->addModelFieldsToQuery();
     }
 
-    protected function prependFieldsWithTableName(array $fields, string $tableName): array
+    protected function getFieldsForRelatedTable(string $relation): array
     {
-        return array_map(function ($field) use ($tableName) {
-            return "{$tableName}.{$field}";
-        }, $fields);
+        // This method is being called from the `allowedIncludes` section of the query builder.
+        // If `allowedIncludes` is called before `allowedFields` we don't know what fields to
+        // sanitize yet so we'll sanitize all of them. This is an edge case that will be fixed
+        // in version 2 of the package.
+        // TL;DR: Put `allowedFields` before `allowedIncludes`
+
+        $fields = $this->getRequestedFields()->get($relation, []);
+
+        if ($this->allowedFields instanceof Collection) {
+            // AllowedFields method has already sanitized for us.
+
+            return $fields;
+        }
+
+        // Empty allowed fields means they're all allowed by default.
+        // Sanitize all of them to be safe.
+
+        return ColumnNameSanitizer::sanitizeArray($fields);
     }
 
-    protected function getFieldsForIncludedTable(string $relation): array
+// TEMP: Below this point is sanitized
+
+    protected function getRequestedFields(): Collection
     {
-        return $this->getRequestedFields()->get($relation, []);
+        // We can't sanitize here yet because the sketchy fields might be allowed.
+
+        return $this->request->fields();
     }
 
     protected function guardAgainstUnknownFields()
@@ -84,8 +101,25 @@ trait AddsFieldsToQuery
         }
     }
 
-    protected function getRequestedFields(): Collection
+    protected function addModelFieldsToQuery()
     {
-        return $this->request->fields();
+        $modelTableName = $this->getModel()->getTable();
+
+        $modelFields = $this->getRequestedFields()->get($modelTableName);
+
+        if (empty($modelFields)) {
+            return;
+        }
+
+        $prependedFields = $this->prependFieldsWithTableName($modelFields, $modelTableName);
+
+        $this->select($prependedFields);
+    }
+
+    protected function prependFieldsWithTableName(array $fields, string $tableName): array
+    {
+        return array_map(function ($field) use ($tableName) {
+            return "{$tableName}.{$field}";
+        }, $fields);
     }
 }
