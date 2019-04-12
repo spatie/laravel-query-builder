@@ -2,9 +2,9 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
-use Spatie\QueryBuilder\ColumnNameSanitizer;
 use Spatie\QueryBuilder\Sort;
 use Illuminate\Support\Collection;
+use Spatie\QueryBuilder\ColumnNameSanitizer;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 
 trait SortsQuery

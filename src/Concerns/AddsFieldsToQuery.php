@@ -72,7 +72,7 @@ trait AddsFieldsToQuery
         return ColumnNameSanitizer::sanitizeArray($fields);
     }
 
-// TEMP: Below this point is sanitized
+    // TEMP: Below this point is sanitized
 
     protected function getRequestedFields(): Collection
     {
