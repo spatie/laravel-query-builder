@@ -2,10 +2,10 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Sorts\Sort;
+use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\ScopeModel;
 use Spatie\QueryBuilder\Tests\Models\SoftDeleteModel;
@@ -133,8 +133,7 @@ class QueryBuilderTest extends TestCase
     /** @test */
     public function it_executes_the_same_query_regardless_of_the_order_of_applied_filters_or_sorts()
     {
-        $customSort = new class implements Sort
-        {
+        $customSort = new class implements Sort {
             public function __invoke(Builder $query, $descending, string $property): Builder
             {
                 return $query->join(
@@ -148,7 +147,7 @@ class QueryBuilderTest extends TestCase
 
         $req = new Request([
             'filter' => ['name' => 'test'],
-            'sort' => 'name'
+            'sort' => 'name',
         ]);
 
         $usingSortFirst = QueryBuilder::for(TestModel::class, $req)
