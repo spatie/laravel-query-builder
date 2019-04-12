@@ -53,6 +53,31 @@ class SortTest extends TestCase
     }
 
     /** @test */
+    public function it_can_sort_by_json_property_if_its_an_allowed_sort()
+    {
+        TestModel::query()->update(['name' => json_encode(['first' => 'abc'])]);
+
+        $this
+            ->createQueryFromSortRequest('-name->first')
+            ->allowedSorts(['name->first'])
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" order by json_extract("name", \'$."first"\') desc');
+    }
+
+    /** @test */
+    public function it_can_sort_by_sketchy_alias_if_its_an_allowed_sort()
+    {
+        $sortedModels = $this
+            ->createQueryFromSortRequest('-sketchy<>sort')
+            ->allowedSorts(Sort::field('sketchy<>sort', 'name'))
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" order by "name" desc');
+        $this->assertSortedDescending($sortedModels, 'name');
+    }
+
+    /** @test */
     public function it_can_sort_a_query_with_custom_select()
     {
         $request = new Request([

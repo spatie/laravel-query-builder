@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
+use Spatie\QueryBuilder\ColumnNameSanitizer;
 use Spatie\QueryBuilder\Sort;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
@@ -105,7 +106,13 @@ trait SortsQuery
     {
         $this->allowedSorts = $this->request->sorts()
             ->map(function ($sort) {
-                return Sort::field(ltrim($sort, '-'));
+                $sortColumn = ltrim($sort, '-');
+
+                // This is the only place where query string parameters are passed as
+                // sort columns directly. We need to sanitize these column names.
+                $sortColumn = ColumnNameSanitizer::sanitize($sortColumn);
+
+                return Sort::field($sortColumn);
             });
 
         $this->parseSorts();

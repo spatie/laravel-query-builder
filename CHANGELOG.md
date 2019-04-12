@@ -9,7 +9,8 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 ## 1.17.2 - **WIP**
 
-- fix missing `sort()` method on `QueryBuilderRequest`
+- bugfix: replace missing `sort()` method on `QueryBuilderRequest`
+- bugfix: `allowedSort`s and aliases are no longer escaped
 
 ## 1.17.1 - 2019-04-09
 
