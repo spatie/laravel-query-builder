@@ -76,11 +76,11 @@ trait SortsQuery
             return;
         }
 
-        $sorts = $this->request->sorts();
-
-        if ($sorts && ! $this->allowedSorts instanceof Collection) {
+        if (! $this->allowedSorts instanceof Collection) {
             $this->addDefaultSorts();
         }
+
+        $sorts = $this->request->sorts();
 
         if ($sorts->isEmpty()) {
             optional($this->defaultSorts)->each(function (Sort $sort) {
