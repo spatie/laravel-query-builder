@@ -82,6 +82,10 @@ trait SortsQuery
 
         $sorts = $this->request->sorts();
 
+        if ($sorts && ! $this->allowedSorts instanceof Collection) {
+            $this->addDefaultSorts();
+        }
+
         if ($sorts->isEmpty()) {
             optional($this->defaultSorts)->each(function (Sort $sort) {
                 $sort->sort($this);
