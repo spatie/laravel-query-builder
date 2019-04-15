@@ -18,6 +18,14 @@ trait SortsQuery
     /** @var bool */
     protected $sortsWereParsed = false;
 
+    /**
+     * Per default, sorting is allowed on all columns if not specified otherwise.
+     * We keep track of those default sorts to purge them if, at a later point in time, allowed sorts are specified.
+     *
+     * @var array
+     */
+    protected $generatedDefaultSorts = [];
+
     public function allowedSorts($sorts): self
     {
         $sorts = is_array($sorts) ? $sorts : func_get_args();
@@ -76,15 +84,16 @@ trait SortsQuery
             return;
         }
 
+        $this->sortsWereParsed = true;
+
         if (! $this->allowedSorts instanceof Collection) {
             $this->addDefaultSorts();
+            $this->allowRepeatedParse();
+        } else {
+            $this->purgeGeneratedDefaultSorts();
         }
 
         $sorts = $this->request->sorts();
-
-        if ($sorts && ! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-        }
 
         if ($sorts->isEmpty()) {
             optional($this->defaultSorts)->each(function (Sort $sort) {
@@ -102,8 +111,6 @@ trait SortsQuery
 
                 $sort->sort($this, $descending);
             });
-
-        $this->sortsWereParsed = true;
     }
 
     protected function findSort(string $property): ?Sort
@@ -127,6 +134,8 @@ trait SortsQuery
 
                 return Sort::field($sortColumn);
             });
+
+        $this->generatedDefaultSorts = $this->request->sorts()->all();
     }
 
     protected function guardAgainstUnknownSorts()
@@ -144,22 +153,16 @@ trait SortsQuery
         }
     }
 
-    protected function filterDuplicates(Collection $sorts): Collection
+    protected function allowRepeatedParse(): void
     {
-        if (! is_array($orders = $this->getQuery()->orders)) {
-            return $sorts;
-        }
+        $this->sortsWereParsed = false;
+    }
 
-        return $sorts->reject(function (string $sort) use ($orders) {
-            $toSort = [
-                'column' => ltrim($sort, '-'),
-                'direction' => ($sort[0] === '-') ? 'desc' : 'asc',
-            ];
-            foreach ($orders as $order) {
-                if ($order === $toSort) {
-                    return true;
-                }
-            }
-        });
+    protected function purgeGeneratedDefaultSorts(): void
+    {
+        $this->query->orders = collect($this->query->orders)
+            ->reject(function ($order) {
+                return in_array($order['column'], $this->generatedDefaultSorts);
+            })->values()->all();
     }
 }

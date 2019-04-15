@@ -330,6 +330,18 @@ class SortTest extends TestCase
         $this->assertSame('select * from "test_models" order by "created_at" desc', $sql);
     }
 
+    /** @test */
+    public function late_specified_sorts_still_check_for_allowance()
+    {
+        $query = $this->createQueryFromSortRequest('created_at');
+
+        $this->assertSame('select * from "test_models" order by "created_at" asc', $query->toSql());
+
+        $this->expectException(InvalidSortQuery::class);
+
+        $query->allowedSorts(Sort::field('name-alias', 'name'));
+    }
+
     protected function createQueryFromSortRequest(string $sort): QueryBuilder
     {
         $request = new Request([
