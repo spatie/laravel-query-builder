@@ -62,7 +62,9 @@ class SortTest extends TestCase
             ->allowedSorts(['name->first'])
             ->get();
 
-        $this->assertQueryExecuted('select * from "test_models" order by json_extract("name", \'$."first"\') desc');
+        $expectedQuery = TestModel::query()->orderByDesc('name->first')->toSql();
+
+        $this->assertQueryExecuted($expectedQuery);
     }
 
     /** @test */
