@@ -15,6 +15,17 @@ trait SortsQuery
     /** @var \Illuminate\Support\Collection */
     protected $allowedSorts;
 
+    /** @var bool */
+    protected $sortsWereParsed = false;
+
+    /**
+     * Per default, sorting is allowed on all columns if not specified otherwise.
+     * We keep track of those default sorts to purge them if, at a later point in time, allowed sorts are specified.
+     *
+     * @var array
+     */
+    protected $generatedDefaultSorts = [];
+
     public function allowedSorts($sorts): self
     {
         $sorts = is_array($sorts) ? $sorts : func_get_args();
@@ -32,8 +43,6 @@ trait SortsQuery
         });
 
         $this->guardAgainstUnknownSorts();
-
-        $this->parseSorts();
 
         return $this;
     }
@@ -65,13 +74,25 @@ trait SortsQuery
             return $sort;
         });
 
-        $this->parseSorts();
-
         return $this;
     }
 
     protected function parseSorts()
     {
+        // Avoid repeated calls when used by e.g. 'paginate'
+        if ($this->sortsWereParsed) {
+            return;
+        }
+
+        $this->sortsWereParsed = true;
+
+        if (! $this->allowedSorts instanceof Collection) {
+            $this->addDefaultSorts();
+            $this->allowRepeatedParse();
+        } else {
+            $this->purgeGeneratedDefaultSorts();
+        }
+
         $sorts = $this->request->sorts();
 
         if ($sorts->isEmpty()) {
@@ -80,8 +101,7 @@ trait SortsQuery
             });
         }
 
-        $this
-            ->filterDuplicates($sorts)
+        $sorts
             ->each(function (string $property) {
                 $descending = $property[0] === '-';
 
@@ -115,7 +135,7 @@ trait SortsQuery
                 return Sort::field($sortColumn);
             });
 
-        $this->parseSorts();
+        $this->generatedDefaultSorts = $this->request->sorts()->all();
     }
 
     protected function guardAgainstUnknownSorts()
@@ -133,22 +153,16 @@ trait SortsQuery
         }
     }
 
-    protected function filterDuplicates(Collection $sorts): Collection
+    protected function allowRepeatedParse(): void
     {
-        if (! is_array($orders = $this->getQuery()->orders)) {
-            return $sorts;
-        }
+        $this->sortsWereParsed = false;
+    }
 
-        return $sorts->reject(function (string $sort) use ($orders) {
-            $toSort = [
-                'column' => ltrim($sort, '-'),
-                'direction' => ($sort[0] === '-') ? 'desc' : 'asc',
-            ];
-            foreach ($orders as $order) {
-                if ($order === $toSort) {
-                    return true;
-                }
-            }
-        });
+    protected function purgeGeneratedDefaultSorts(): void
+    {
+        $this->query->orders = collect($this->query->orders)
+            ->reject(function ($order) {
+                return in_array($order['column'], $this->generatedDefaultSorts);
+            })->values()->all();
     }
 }
