@@ -426,10 +426,12 @@ $users = QueryBuilder::for(User::class)
 Selecting fields for included models works the same way. This is especially useful when including entire relationships when you only need a couple of columns. Consider the following example:
 
 ```
-GET /posts?include=author&fields[author]=name
+GET /posts?include=author&fields[author]=id,name
 ```
 
-All posts will be fetched including only the name of the author.
+All posts will be fetched including only the name of the author. 
+
+⚠️ Keep in mind that the fields query will completely override the `SELECT` part of the query. This means that you'll need to manually specify any columns required for the relationship to work, in this case `id`. See issue #175 as well.
 
 ### Append attributes
 
