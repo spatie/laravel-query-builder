@@ -120,16 +120,18 @@ trait SortsQuery
 
     protected function guardAgainstUnknownSorts()
     {
-        $sortNames = $this->request->sorts()->map(function ($sort) {
+        $requestedSortNames = $this->request->sorts()->map(function (string $sort) {
             return ltrim($sort, '-');
         });
 
-        $allowedSortNames = $this->allowedSorts->map->getProperty();
+        $allowedSortNames = $this->allowedSorts->map(function (Sort $sort) {
+            return $sort->getProperty();
+        });
 
-        $diff = $sortNames->diff($allowedSortNames);
+        $unknownSorts = $requestedSortNames->diff($allowedSortNames);
 
-        if ($diff->count()) {
-            throw InvalidSortQuery::sortsNotAllowed($diff, $allowedSortNames);
+        if ($unknownSorts->isNotEmpty()) {
+            throw InvalidSortQuery::sortsNotAllowed($unknownSorts, $allowedSortNames);
         }
     }
 
