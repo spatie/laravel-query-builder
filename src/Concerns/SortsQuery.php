@@ -10,10 +10,10 @@ use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 trait SortsQuery
 {
     /** @var \Illuminate\Support\Collection */
-    protected $defaultSorts;
+    private $defaultSorts;
 
     /** @var \Illuminate\Support\Collection */
-    protected $allowedSorts;
+    private $allowedSorts;
 
     public function allowedSorts($sorts): self
     {
@@ -33,7 +33,7 @@ trait SortsQuery
 
         $this->guardAgainstUnknownSorts();
 
-        $this->parseSorts();
+        $this->parseRequestedSorts();
 
         return $this;
     }
@@ -65,19 +65,19 @@ trait SortsQuery
             return $sort;
         });
 
-        $this->parseSorts();
+        $this->parseRequestedSorts();
 
         return $this;
     }
 
-    protected function parseSorts()
+    private function parseRequestedSorts()
     {
         $sorts = $this->request->sorts();
 
         if ($sorts->isEmpty()) {
-            optional($this->defaultSorts)->each(function (Sort $sort) {
-                $sort->sort($this);
-            });
+            $this->addDefaultSortsToQuery();
+
+            return;
         }
 
         $this
@@ -102,23 +102,7 @@ trait SortsQuery
             });
     }
 
-    protected function addDefaultSorts()
-    {
-        $this->allowedSorts = $this->request->sorts()
-            ->map(function ($sort) {
-                $sortColumn = ltrim($sort, '-');
-
-                // This is the only place where query string parameters are passed as
-                // sort columns directly. We need to sanitize these column names.
-                $sortColumn = ColumnNameSanitizer::sanitize($sortColumn);
-
-                return Sort::field($sortColumn);
-            });
-
-        $this->parseSorts();
-    }
-
-    protected function guardAgainstUnknownSorts()
+    private function guardAgainstUnknownSorts(): void
     {
         $requestedSortNames = $this->request->sorts()->map(function (string $sort) {
             return ltrim($sort, '-');
@@ -135,7 +119,7 @@ trait SortsQuery
         }
     }
 
-    protected function filterDuplicates(Collection $sorts): Collection
+    private function filterDuplicates(Collection $sorts): Collection
     {
         if (! is_array($orders = $this->getQuery()->orders)) {
             return $sorts;
@@ -151,6 +135,13 @@ trait SortsQuery
                     return true;
                 }
             }
+        });
+    }
+
+    private function addDefaultSortsToQuery(): void
+    {
+        optional($this->defaultSorts)->each(function (Sort $sort) {
+            $sort->sort($this);
         });
     }
 }
