@@ -31,7 +31,7 @@ class SortTest extends TestCase
     }
 
     /** @test */
-    public function it_can_sort_a_collection_ascending()
+    public function it_can_sort_a_query_ascending()
     {
         $sortedModels = $this
             ->createQueryFromSortRequest('name')
@@ -42,7 +42,7 @@ class SortTest extends TestCase
     }
 
     /** @test */
-    public function it_can_sort_a_collection_descending()
+    public function it_can_sort_a_query_descending()
     {
         $sortedModels = $this
             ->createQueryFromSortRequest('-name')
@@ -50,6 +50,21 @@ class SortTest extends TestCase
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" desc');
         $this->assertSortedDescending($sortedModels, 'name');
+    }
+
+    /** @test */
+    public function it_can_sort_a_query_by_a_related_property()
+    {
+        $request = new Request([
+            'sort' => 'related_models.name',
+            'includes' => 'relatedModel',
+        ]);
+
+        $sortedQuery = QueryBuilder::for(TestModel::class, $request)
+            ->allowedIncludes('relatedModels')
+            ->toSql();
+
+        $this->assertEquals('select * from "test_models" order by "related_models"."name" asc', $sortedQuery);
     }
 
     /** @test */

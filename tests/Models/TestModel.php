@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Tests\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,6 +17,11 @@ class TestModel extends Model
     public function relatedModels(): HasMany
     {
         return $this->hasMany(RelatedModel::class);
+    }
+
+    public function relatedModel(): BelongsTo
+    {
+        return $this->belongsTo(RelatedModel::class);
     }
 
     public function otherRelatedModels(): HasMany
