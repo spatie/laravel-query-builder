@@ -10,10 +10,10 @@ use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 trait SortsQuery
 {
     /** @var \Illuminate\Support\Collection */
-    protected $defaultSorts;
+    private $defaultSorts;
 
     /** @var \Illuminate\Support\Collection */
-    protected $allowedSorts;
+    private $allowedSorts;
 
     /** @var bool */
     protected $sortsWereParsed = false;
@@ -43,6 +43,8 @@ trait SortsQuery
         });
 
         $this->guardAgainstUnknownSorts();
+
+        $this->parseRequestedSorts();
 
         return $this;
     }
@@ -74,10 +76,12 @@ trait SortsQuery
             return $sort;
         });
 
+        $this->parseRequestedSorts();
+
         return $this;
     }
 
-    protected function parseSorts()
+    private function parseRequestedSorts()
     {
         // Avoid repeated calls when used by e.g. 'paginate'
         if ($this->sortsWereParsed) {
@@ -96,9 +100,9 @@ trait SortsQuery
         $sorts = $this->request->sorts();
 
         if ($sorts->isEmpty()) {
-            optional($this->defaultSorts)->each(function (Sort $sort) {
-                $sort->sort($this);
-            });
+            $this->addDefaultSortsToQuery();
+
+            return;
         }
 
         $sorts
@@ -122,23 +126,7 @@ trait SortsQuery
             });
     }
 
-    protected function addDefaultSorts()
-    {
-        $this->allowedSorts = $this->request->sorts()
-            ->map(function ($sort) {
-                $sortColumn = ltrim($sort, '-');
-
-                // This is the only place where query string parameters are passed as
-                // sort columns directly. We need to sanitize these column names.
-                $sortColumn = ColumnNameSanitizer::sanitize($sortColumn);
-
-                return Sort::field($sortColumn);
-            });
-
-        $this->generatedDefaultSorts = $this->request->sorts()->all();
-    }
-
-    protected function guardAgainstUnknownSorts()
+    private function guardAgainstUnknownSorts(): void
     {
         $requestedSortNames = $this->request->sorts()->map(function (string $sort) {
             return ltrim($sort, '-');
@@ -155,7 +143,7 @@ trait SortsQuery
         }
     }
 
-    protected function allowRepeatedParse(): void
+    private function filterDuplicates(Collection $sorts): Collection
     {
         $this->sortsWereParsed = false;
     }
@@ -166,5 +154,12 @@ trait SortsQuery
             ->reject(function ($order) {
                 return in_array($order['column'], $this->generatedDefaultSorts);
             })->values()->all();
+    }
+
+    private function addDefaultSortsToQuery(): void
+    {
+        optional($this->defaultSorts)->each(function (Sort $sort) {
+            $sort->sort($this);
+        });
     }
 }
