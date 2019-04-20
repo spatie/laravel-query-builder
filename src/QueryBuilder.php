@@ -50,8 +50,6 @@ class QueryBuilder extends Builder
 
     public function getQuery()
     {
-        $this->parseSorts();
-
         if (! $this->allowedFields instanceof Collection) {
             $this->addAllRequestedFields();
         }
@@ -64,8 +62,6 @@ class QueryBuilder extends Builder
      */
     public function get($columns = ['*'])
     {
-        $this->parseSorts();
-
         if (! $this->allowedFields instanceof Collection) {
             $this->addAllRequestedFields();
         }
@@ -81,8 +77,6 @@ class QueryBuilder extends Builder
 
     public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        $this->parseSorts();
-
         if (! $this->allowedFields instanceof Collection) {
             $this->addAllRequestedFields();
         }
@@ -92,8 +86,6 @@ class QueryBuilder extends Builder
 
     public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        $this->parseSorts();
-
         if (! $this->allowedFields instanceof Collection) {
             $this->addAllRequestedFields();
         }
