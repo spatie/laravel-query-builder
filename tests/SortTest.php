@@ -11,7 +11,6 @@ use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
-use Spatie\QueryBuilder\Exceptions\InvalidColumnName;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
 
 class SortTest extends TestCase

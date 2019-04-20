@@ -2,12 +2,12 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use Illuminate\Http\Request;
 use ReflectionClass;
-use Spatie\QueryBuilder\QueryBuilderRequest;
+use Illuminate\Http\Request;
 use Spatie\QueryBuilder\Sorts\Sort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\QueryBuilderRequest;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\ScopeModel;
 use Spatie\QueryBuilder\Tests\Models\SoftDeleteModel;
@@ -44,7 +44,7 @@ class QueryBuilderTest extends TestCase
     public function it_will_determine_the_request_when_its_not_given()
     {
         $builderReflection = new ReflectionClass(QueryBuilder::class);
-        $requestProperty = $builderReflection->getProperty("request");
+        $requestProperty = $builderReflection->getProperty('request');
         $requestProperty->setAccessible(true);
 
         $this->getJson('/test-model?sort=name');
