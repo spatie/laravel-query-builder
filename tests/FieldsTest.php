@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\RelatedModel;
-use Spatie\QueryBuilder\Exceptions\InvalidColumnName;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 
 class FieldsTest extends TestCase
