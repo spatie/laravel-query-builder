@@ -3,7 +3,6 @@
 namespace Spatie\QueryBuilder;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Concerns\SortsQuery;
 use Spatie\QueryBuilder\Concerns\FiltersQuery;
@@ -61,6 +60,7 @@ class QueryBuilder extends Builder
 
         return $results;
     }
+
     /**
      * Add the model, scopes, eager loaded relationships, local macro's and onDelete callback
      * from the $builder to this query builder.
