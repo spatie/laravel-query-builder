@@ -10,7 +10,7 @@ use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 trait AddsFieldsToQuery
 {
     /** @var \Illuminate\Support\Collection */
-    protected $allowedFields;
+    private $allowedFields;
 
     public function allowedFields($fields): self
     {
@@ -18,40 +18,32 @@ trait AddsFieldsToQuery
 
         $this->allowedFields = collect($fields)
             ->map(function (string $fieldName) {
-                if (! Str::contains($fieldName, '.')) {
-                    $modelTableName = $this->getModel()->getTable();
-
-                    return "{$modelTableName}.{$fieldName}";
-                }
-
-                return $fieldName;
+                return $this->prependField($fieldName);
             });
 
         $this->guardAgainstUnknownFields();
 
-        $this->addModelFieldsToQuery();
+        $this->addRequestedModelFieldsToQuery();
 
         return $this;
     }
 
-    public function addAllRequestedFields()
+    private function addRequestedModelFieldsToQuery()
     {
-        if ($this->allowedFields instanceof Collection) {
-            // If we have allowed fields we will have parsed them in the allowed fields method.
+        $modelTableName = $this->getModel()->getTable();
 
+        $modelFields = $this->request->fields()->get($modelTableName);
+
+        if (empty($modelFields)) {
             return;
         }
 
-        $this
-            ->getRequestedFields()
-            ->each(function (array $fields, string $table) {
-                return ColumnNameSanitizer::sanitizeArray($fields);
-            });
+        $prependedFields = $this->prependFieldsWithTableName($modelFields, $modelTableName);
 
-        $this->addModelFieldsToQuery();
+        $this->select($prependedFields);
     }
 
-    protected function getFieldsForRelatedTable(string $relation): array
+    private function getFieldsForRelatedTable(string $relation): array
     {
         // This method is being called from the `allowedIncludes` section of the query builder.
         // If `allowedIncludes` is called before `allowedFields` we don't know what fields to
@@ -59,7 +51,7 @@ trait AddsFieldsToQuery
         // in version 2 of the package.
         // TL;DR: Put `allowedFields` before `allowedIncludes`
 
-        $fields = $this->getRequestedFields()->get($relation, []);
+        $fields = $this->request->fields()->get($relation, []);
 
         if ($this->allowedFields instanceof Collection) {
             // AllowedFields method has already sanitized for us.
@@ -73,14 +65,9 @@ trait AddsFieldsToQuery
         return ColumnNameSanitizer::sanitizeArray($fields);
     }
 
-    protected function getRequestedFields(): Collection
+    private function guardAgainstUnknownFields()
     {
-        return $this->request->fields();
-    }
-
-    protected function guardAgainstUnknownFields()
-    {
-        $fields = $this->getRequestedFields()
+        $requestedFields = $this->request->fields()
             ->map(function ($fields, $model) {
                 $tableName = Str::snake(preg_replace('/-/', '_', $model));
 
@@ -91,32 +78,32 @@ trait AddsFieldsToQuery
             ->flatten()
             ->unique();
 
-        $diff = $fields->diff($this->allowedFields);
+        $unknownFields = $requestedFields->diff($this->allowedFields);
 
-        if ($diff->count()) {
-            throw InvalidFieldQuery::fieldsNotAllowed($diff, $this->allowedFields);
+        if ($unknownFields->isNotEmpty()) {
+            throw InvalidFieldQuery::fieldsNotAllowed($unknownFields, $this->allowedFields);
         }
     }
 
-    protected function addModelFieldsToQuery()
-    {
-        $modelTableName = $this->getModel()->getTable();
-
-        $modelFields = $this->getRequestedFields()->get($modelTableName);
-
-        if (empty($modelFields)) {
-            return;
-        }
-
-        $prependedFields = $this->prependFieldsWithTableName($modelFields, $modelTableName);
-
-        $this->select($prependedFields);
-    }
-
-    protected function prependFieldsWithTableName(array $fields, string $tableName): array
+    private function prependFieldsWithTableName(array $fields, string $tableName): array
     {
         return array_map(function ($field) use ($tableName) {
-            return "{$tableName}.{$field}";
+            return $this->prependField($field, $tableName);
         }, $fields);
+    }
+
+    private function prependField(string $field, ?string $table = null): string
+    {
+        if (! $table) {
+            $table = $this->getModel()->getTable();
+        }
+
+        if (Str::contains($field, '.')) {
+            // Already prepended
+
+            return $field;
+        }
+
+        return "{$table}.{$field}";
     }
 }

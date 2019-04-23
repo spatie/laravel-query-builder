@@ -423,6 +423,26 @@ $users = QueryBuilder::for(User::class)
 // GET /users?fields[users]=email will throw an `InvalidFieldQuery` exception as `email` is not an allowed field.
 ```
 
+Temp:
+
+``` php
+QueryBuilder::for(User::class)
+    ->allowedFields('name', 'posts.id', 'posts.name')
+    ->allowedIncludes('posts');
+```
+
+``` php
+QueryBuilder::for(User::class)
+    ->allowedFields('name')
+    ->allowedIncludes(Include::make('posts')->allowedFields('id', 'name'));
+```
+
+``` php
+QueryBuilder::for(User::class)
+    ->allowedFields(UserResource::class) // implements `HasQueryBuilderFields` interface
+    ->allowedIncludes('posts'); // checks User::query()->posts() relationship for the related model - uses the related model's allowed fields if it implements `HasQueryBuilderFields`
+```
+    
 Selecting fields for included models works the same way. This is especially useful when including entire relationships when you only need a couple of columns. Consider the following example:
 
 ```

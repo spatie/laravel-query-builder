@@ -48,24 +48,11 @@ class QueryBuilder extends Builder
         return new static($baseQuery, $request ?? request());
     }
 
-    public function getQuery()
-    {
-        if (! $this->allowedFields instanceof Collection) {
-            $this->addAllRequestedFields();
-        }
-
-        return parent::getQuery();
-    }
-
     /**
      * {@inheritdoc}
      */
     public function get($columns = ['*'])
     {
-        if (! $this->allowedFields instanceof Collection) {
-            $this->addAllRequestedFields();
-        }
-
         $results = parent::get($columns);
 
         if ($this->request->appends()->isNotEmpty()) {
@@ -74,25 +61,6 @@ class QueryBuilder extends Builder
 
         return $results;
     }
-
-    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-    {
-        if (! $this->allowedFields instanceof Collection) {
-            $this->addAllRequestedFields();
-        }
-
-        return parent::paginate($perPage, $columns, $pageName, $page);
-    }
-
-    public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-    {
-        if (! $this->allowedFields instanceof Collection) {
-            $this->addAllRequestedFields();
-        }
-
-        return parent::simplePaginate($perPage, $columns, $pageName, $page);
-    }
-
     /**
      * Add the model, scopes, eager loaded relationships, local macro's and onDelete callback
      * from the $builder to this query builder.

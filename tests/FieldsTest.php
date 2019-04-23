@@ -34,7 +34,7 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
-    public function it_fetches_all_columns_if_no_specific_columns_were_requested()
+    public function it_fetches_all_columns_if_no_field_was_requested_but_allowed_fields_were_specified()
     {
         $query = QueryBuilder::for(TestModel::class)->allowedFields('id', 'name')->toSql();
 
@@ -109,11 +109,42 @@ class FieldsTest extends TestCase
             'include' => ['related-models'],
         ]);
 
-        $queryBuilder = QueryBuilder::for(TestModel::class, $request)->allowedIncludes('related-models');
+        $queryBuilder = QueryBuilder::for(TestModel::class, $request)
+            ->allowedFields('related_models.name', 'id')
+            ->allowedIncludes('related-models');
 
         DB::enableQueryLog();
 
         $queryBuilder->first()->relatedModels;
+
+        $this->assertQueryLogContains('select "test_models"."id" from "test_models"');
+        $this->assertQueryLogContains('select "name" from "related_models"');
+    }
+
+    /** @test */
+    public function it_cant_request_disallowed_columns_from_an_included_model()
+    {
+        RelatedModel::create([
+            'test_model_id' => $this->model->id,
+            'name' => 'related',
+        ]);
+
+        $request = new Request([
+            'fields' => [
+                'test_models' => 'id',
+                'related_models' => 'name',
+            ],
+            'include' => ['related-models'],
+        ]);
+
+        $queryBuilder = QueryBuilder::for(TestModel::class, $request)
+            ->allowedIncludes('related-models');
+
+        DB::enableQueryLog();
+
+        $queryBuilder->first()->relatedModels;
+
+        dd(DB::getQueryLog());
 
         $this->assertQueryLogContains('select "test_models"."id" from "test_models"');
         $this->assertQueryLogContains('select "name" from "related_models"');
@@ -145,8 +176,6 @@ class FieldsTest extends TestCase
         $request = new Request([
             'fields' => ['test_models' => 'id->"\')from test_models--injection'],
         ]);
-
-        $this->expectException(InvalidColumnName::class);
 
         DB::enableQueryLog();
 
