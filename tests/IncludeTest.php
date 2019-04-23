@@ -163,6 +163,25 @@ class IncludeTest extends TestCase
     }
 
     /** @test */
+    public function it_can_remove_duplicate_includes()
+    {
+        $query = $this
+            ->createQueryFromIncludeRequest('related-models')
+            ->allowedIncludes('related-models.nested-related-models', 'related-models');
+
+        $reflector = new \ReflectionClass($query);
+        $property = $reflector->getProperty('allowedIncludes');
+        $property->setAccessible(true);
+        $includes = $property->getValue($query);
+
+        $this->assertEquals(
+            $includes->count(),
+            $includes->unique()->count(),
+            "Duplicate values get filtered out."
+        );
+    }
+
+    /** @test */
     public function it_can_include_multiple_model_relations()
     {
         $models = $this
