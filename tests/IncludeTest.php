@@ -177,7 +177,7 @@ class IncludeTest extends TestCase
         $this->assertEquals(
             $includes->count(),
             $includes->unique()->count(),
-            "Duplicate values get filtered out."
+            'Duplicate values get filtered out.'
         );
     }
 
