@@ -20,7 +20,7 @@ class InvalidFieldQuery extends InvalidQuery
 
         $unknownFields = $unknownFields->implode(', ');
         $allowedFields = $allowedFields->implode(', ');
-        $message = "Given field(s) `{$unknownFields}` are not allowed. Allowed field(s) are `{$allowedFields}`.";
+        $message = "Requested field(s) `{$unknownFields}` are not allowed. Allowed field(s) are `{$allowedFields}`.";
 
         parent::__construct(Response::HTTP_BAD_REQUEST, $message);
     }

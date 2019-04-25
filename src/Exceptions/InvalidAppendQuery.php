@@ -20,7 +20,7 @@ class InvalidAppendQuery extends InvalidQuery
 
         $appendsNotAllowed = $appendsNotAllowed->implode(', ');
         $allowedAppends = $allowedAppends->implode(', ');
-        $message = "Given append(s) `{$appendsNotAllowed}` are not allowed. Allowed append(s) are `{$allowedAppends}`.";
+        $message = "Requested append(s) `{$appendsNotAllowed}` are not allowed. Allowed append(s) are `{$allowedAppends}`.";
 
         parent::__construct(Response::HTTP_BAD_REQUEST, $message);
     }

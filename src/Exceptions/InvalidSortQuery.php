@@ -20,7 +20,7 @@ class InvalidSortQuery extends InvalidQuery
 
         $allowedSorts = $allowedSorts->implode(', ');
         $unknownSorts = $unknownSorts->implode(', ');
-        $message = "Given sort(s) `{$unknownSorts}` is not allowed. Allowed sort(s) are `{$allowedSorts}`.";
+        $message = "Requested sort(s) `{$unknownSorts}` is not allowed. Allowed sort(s) are `{$allowedSorts}`.";
 
         parent::__construct(Response::HTTP_BAD_REQUEST, $message);
     }

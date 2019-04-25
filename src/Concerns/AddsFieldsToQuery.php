@@ -4,8 +4,9 @@ namespace Spatie\QueryBuilder\Concerns;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
-use Spatie\QueryBuilder\ColumnNameSanitizer;
+use Spatie\QueryBuilder\Exceptions\AllowedIncludesBeforeAllowedFields;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
+use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
 
 trait AddsFieldsToQuery
 {
@@ -14,6 +15,10 @@ trait AddsFieldsToQuery
 
     public function allowedFields($fields): self
     {
+        if ($this->allowedIncludes instanceof Collection) {
+            throw new AllowedIncludesBeforeAllowedFields();
+        }
+
         $fields = is_array($fields) ? $fields : func_get_args();
 
         $this->allowedFields = collect($fields)
@@ -43,26 +48,26 @@ trait AddsFieldsToQuery
         $this->select($prependedFields);
     }
 
-    private function getFieldsForRelatedTable(string $relation): array
+    private function getRequestedFieldsForRelatedTable(string $relation): array
     {
         // This method is being called from the `allowedIncludes` section of the query builder.
         // If `allowedIncludes` is called before `allowedFields` we don't know what fields to
-        // sanitize yet so we'll sanitize all of them. This is an edge case that will be fixed
-        // in version 2 of the package.
+        // allow yet so we'll throw an exception.
         // TL;DR: Put `allowedFields` before `allowedIncludes`
 
-        $fields = $this->request->fields()->get($relation, []);
+        $fields = $this->request->fields()->get($relation);
 
-        if ($this->allowedFields instanceof Collection) {
-            // AllowedFields method has already sanitized for us.
-
-            return $fields;
+        if (! $fields) {
+            return [];
         }
 
-        // Empty allowed fields means they're all allowed by default.
-        // Sanitize all of them to be safe.
+        if (! $this->allowedFields instanceof Collection) {
+            // We have requested fields but no allowed fields (yet?)
 
-        return ColumnNameSanitizer::sanitizeArray($fields);
+            throw new UnknownIncludedFieldsQuery($fields);
+        }
+
+        return $fields;
     }
 
     private function guardAgainstUnknownFields()
