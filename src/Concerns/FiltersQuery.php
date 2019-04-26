@@ -45,7 +45,7 @@ trait FiltersQuery
         $filters->each(function ($value) {
             $filter = $this->findFilter($value->getProperty());
 
-            if (! $filter->defaultSet()) {
+            if (! $filter->isDefaultSet()) {
                 return;
             }
 

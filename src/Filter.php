@@ -110,7 +110,7 @@ class Filter
         return $this->default;
     }
 
-    public function defaultSet(): bool
+    public function isDefaultSet(): bool
     {
         return isset($this->default);
     }
