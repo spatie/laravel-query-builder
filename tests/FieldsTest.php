@@ -60,6 +60,17 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
+    public function it_wont_fetch_a_specific_column_if_its_not_allowed()
+    {
+        $query = $this->createQueryFromFieldRequest(['test_models' => 'random-column'])->toSql();
+
+        $expected = TestModel::query()->toSql();
+
+        $this->assertEquals($expected, $query);
+    }
+
+
+    /** @test */
     public function it_can_fetch_sketchy_columns_if_they_are_allowed_fields()
     {
         $query = $this
@@ -75,7 +86,7 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
-    public function it_guards_against_invalid_fields()
+    public function it_guards_against_not_allowed_fields()
     {
         $this->expectException(InvalidFieldQuery::class);
 
@@ -85,7 +96,7 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
-    public function it_guards_against_invalid_fields_from_an_included_resource()
+    public function it_guards_against_not_allowed_fields_from_an_included_resource()
     {
         $this->expectException(InvalidFieldQuery::class);
 
