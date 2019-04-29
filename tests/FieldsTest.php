@@ -4,12 +4,12 @@ namespace Spatie\QueryBuilder\Tests;
 
 use DB;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\Exceptions\AllowedIncludesBeforeAllowedFields;
-use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\RelatedModel;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
+use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
+use Spatie\QueryBuilder\Exceptions\AllowedIncludesBeforeAllowedFields;
 
 class FieldsTest extends TestCase
 {

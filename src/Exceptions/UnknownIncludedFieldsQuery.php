@@ -3,7 +3,6 @@
 namespace Spatie\QueryBuilder\Exceptions;
 
 use Illuminate\Http\Response;
-use Illuminate\Support\Collection;
 
 class UnknownIncludedFieldsQuery extends InvalidQuery
 {

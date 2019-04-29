@@ -4,9 +4,9 @@ namespace Spatie\QueryBuilder\Concerns;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
-use Spatie\QueryBuilder\Exceptions\AllowedIncludesBeforeAllowedFields;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
+use Spatie\QueryBuilder\Exceptions\AllowedIncludesBeforeAllowedFields;
 
 trait AddsFieldsToQuery
 {
