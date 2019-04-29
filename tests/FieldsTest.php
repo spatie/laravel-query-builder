@@ -69,7 +69,6 @@ class FieldsTest extends TestCase
         $this->assertEquals($expected, $query);
     }
 
-
     /** @test */
     public function it_can_fetch_sketchy_columns_if_they_are_allowed_fields()
     {
