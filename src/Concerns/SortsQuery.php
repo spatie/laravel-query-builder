@@ -162,6 +162,10 @@ trait SortsQuery
     {
         $this->query->orders = collect($this->query->orders)
             ->reject(function ($order) {
+                if (! isset($order['column'])) {
+                    return false;
+                }
+
                 return in_array($order['column'], $this->generatedDefaultSorts);
             })->values()->all();
     }
