@@ -29,14 +29,14 @@ trait AddsIncludesToQuery
 
         $this->guardAgainstUnknownIncludes();
 
-        $this->addIncludesToQuery($this->request->includes());
+        $this->addRequestedIncludesToQuery();
 
         return $this;
     }
 
-    protected function addIncludesToQuery(Collection $includes)
+    protected function addRequestedIncludesToQuery()
     {
-        $includes
+        $this->request->includes()
             ->map([Str::class, 'camel'])
             ->map(function (string $include) {
                 return collect(explode('.', $include));
