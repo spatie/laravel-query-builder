@@ -66,7 +66,7 @@ class Sort
         return $this->property === $property;
     }
 
-    private function resolveSortClass(): CustomSort
+    protected function resolveSortClass(): CustomSort
     {
         if ($this->sortClass instanceof CustomSort) {
             return $this->sortClass;

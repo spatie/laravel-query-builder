@@ -8,7 +8,7 @@ use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 trait SortsQuery
 {
     /** @var \Illuminate\Support\Collection */
-    private $allowedSorts;
+    protected $allowedSorts;
 
     public function allowedSorts($sorts): self
     {
@@ -75,7 +75,7 @@ trait SortsQuery
         return $this;
     }
 
-    private function addRequestedSortsToQuery()
+    protected function addRequestedSortsToQuery()
     {
         $this->request->sorts()
             ->each(function (string $property) {
@@ -89,7 +89,7 @@ trait SortsQuery
             });
     }
 
-    private function findSort(string $property): ?Sort
+    protected function findSort(string $property): ?Sort
     {
         return $this->allowedSorts
             ->first(function (Sort $sort) use ($property) {
@@ -97,7 +97,7 @@ trait SortsQuery
             });
     }
 
-    private function guardAgainstUnknownSorts(): void
+    protected function guardAgainstUnknownSorts(): void
     {
         $requestedSortNames = $this->request->sorts()->map(function (string $sort) {
             return ltrim($sort, '-');

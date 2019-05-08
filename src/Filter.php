@@ -96,7 +96,7 @@ class Filter
         return $this->columnName;
     }
 
-    private function resolveFilterClass(): CustomFilter
+    protected function resolveFilterClass(): CustomFilter
     {
         if ($this->filterClass instanceof CustomFilter) {
             return $this->filterClass;
@@ -105,7 +105,7 @@ class Filter
         return new $this->filterClass;
     }
 
-    private function resolveValueForFiltering($property)
+    protected function resolveValueForFiltering($property)
     {
         if (is_array($property)) {
             $remainingProperties = array_diff($property, $this->ignored->toArray());

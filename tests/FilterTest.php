@@ -264,7 +264,7 @@ class FilterTest extends TestCase
     {
         $customFilter = new class('test1') implements CustomFilter {
             /** @var string */
-            private $filter;
+            protected $filter;
 
             public function __construct(string $filter)
             {

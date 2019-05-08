@@ -11,7 +11,7 @@ use Spatie\QueryBuilder\Exceptions\AllowedIncludesBeforeAllowedFields;
 trait AddsFieldsToQuery
 {
     /** @var \Illuminate\Support\Collection */
-    private $allowedFields;
+    protected $allowedFields;
 
     public function allowedFields($fields): self
     {
@@ -33,7 +33,7 @@ trait AddsFieldsToQuery
         return $this;
     }
 
-    private function addRequestedModelFieldsToQuery()
+    protected function addRequestedModelFieldsToQuery()
     {
         $modelTableName = $this->getModel()->getTable();
 
@@ -48,7 +48,7 @@ trait AddsFieldsToQuery
         $this->select($prependedFields);
     }
 
-    private function getRequestedFieldsForRelatedTable(string $relation): array
+    protected function getRequestedFieldsForRelatedTable(string $relation): array
     {
         // This method is being called from the `allowedIncludes` section of the query builder.
         // If `allowedIncludes` is called before `allowedFields` we don't know what fields to
@@ -70,7 +70,7 @@ trait AddsFieldsToQuery
         return $fields;
     }
 
-    private function guardAgainstUnknownFields()
+    protected function guardAgainstUnknownFields()
     {
         $requestedFields = $this->request->fields()
             ->map(function ($fields, $model) {
@@ -90,14 +90,14 @@ trait AddsFieldsToQuery
         }
     }
 
-    private function prependFieldsWithTableName(array $fields, string $tableName): array
+    protected function prependFieldsWithTableName(array $fields, string $tableName): array
     {
         return array_map(function ($field) use ($tableName) {
             return $this->prependField($field, $tableName);
         }, $fields);
     }
 
-    private function prependField(string $field, ?string $table = null): string
+    protected function prependField(string $field, ?string $table = null): string
     {
         if (! $table) {
             $table = $this->getModel()->getTable();
