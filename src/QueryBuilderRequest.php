@@ -13,7 +13,7 @@ class QueryBuilderRequest extends Request
         return static::createFrom($request, new self());
     }
 
-    public function includes()
+    public function includes(): Collection
     {
         $parameter = config('query-builder.parameters.include');
 
@@ -26,7 +26,7 @@ class QueryBuilderRequest extends Request
         return collect($includeParts)->filter();
     }
 
-    public function appends()
+    public function appends(): Collection
     {
         $appendParameter = config('query-builder.parameters.append');
 
@@ -39,7 +39,7 @@ class QueryBuilderRequest extends Request
         return collect($appendParts)->filter();
     }
 
-    public function filters()
+    public function filters(): Collection
     {
         $filterParameter = config('query-builder.parameters.filter');
 
@@ -84,6 +84,11 @@ class QueryBuilderRequest extends Request
         return collect($sortParts)->filter();
     }
 
+    /**
+     * @param $value
+     *
+     * @return array|bool
+     */
     protected function getFilterValue($value)
     {
         if (is_array($value)) {
