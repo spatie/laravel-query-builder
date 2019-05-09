@@ -14,6 +14,7 @@ trait FiltersQuery
     public function allowedFilters($filters): self
     {
         $filters = is_array($filters) ? $filters : func_get_args();
+
         $this->allowedFilters = collect($filters)->map(function ($filter) {
             if ($filter instanceof Filter) {
                 return $filter;

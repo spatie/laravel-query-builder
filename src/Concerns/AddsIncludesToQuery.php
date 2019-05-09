@@ -5,6 +5,7 @@ namespace Spatie\QueryBuilder\Concerns;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
+use Spatie\QueryBuilder\Included;
 
 trait AddsIncludesToQuery
 {
@@ -16,16 +17,11 @@ trait AddsIncludesToQuery
         $includes = is_array($includes) ? $includes : func_get_args();
 
         $this->allowedIncludes = collect($includes)
-            ->map([Str::class, 'camel'])
-            ->flatMap(function ($include) {
-                return collect(explode('.', $include))
-                    ->reduce(function ($collection, $include) {
-                        if ($collection->isEmpty()) {
-                            return $collection->push($include);
-                        }
-
-                        return $collection->push("{$collection->last()}.{$include}");
-                    }, collect());
+            ->flatMap(function (string $include) {
+                return $this->getIndividualRelationshipPathsFromInclude($include);
+            })
+            ->map(function (string $include) {
+                return Included::relationship($include);
             });
 
         $this->guardAgainstUnknownIncludes();
@@ -65,12 +61,24 @@ trait AddsIncludesToQuery
     {
         $includes = $this->request->includes();
 
-        $diff = $includes->diff($this->allowedIncludes);
+        $diff = $includes->diff($this->allowedIncludes->map->getName());
 
         if ($diff->count()) {
             throw InvalidIncludeQuery::includesNotAllowed($diff, $this->allowedIncludes);
         }
 
         // TODO: Check for non-existing relationships?
+    }
+
+    protected function getIndividualRelationshipPathsFromInclude(string $include)
+    {
+        return collect(explode('.', $include))
+            ->reduce(function ($includes, $relationship) {
+                if ($includes->isEmpty()) {
+                    return $includes->push($relationship);
+                }
+
+                return $includes->push("{$includes->last()}.{$relationship}");
+            }, collect());
     }
 }

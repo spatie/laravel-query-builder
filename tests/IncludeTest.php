@@ -58,6 +58,18 @@ class IncludeTest extends TestCase
     }
 
     /** @test */
+    public function it_can_include_an_includes_count()
+    {
+        $model = $this
+            ->createQueryFromIncludeRequest('related-models-count')
+            ->allowedIncludes('relatedModelsCount')
+            ->withCount('relatedModels')
+            ->first();
+
+        $this->assertNotNull($model->related_models_count);
+    }
+
+    /** @test */
     public function it_can_include_nested_model_relations()
     {
         $models = $this
