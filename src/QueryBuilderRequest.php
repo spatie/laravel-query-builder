@@ -23,7 +23,9 @@ class QueryBuilderRequest extends Request
             $includeParts = explode(',', strtolower($this->query($parameter)));
         }
 
-        return collect($includeParts)->filter();
+        return collect($includeParts)
+            ->filter()
+            ->map([Str::class, 'camel']);
     }
 
     public function appends(): Collection

@@ -16,6 +16,7 @@ trait AddsIncludesToQuery
         $includes = is_array($includes) ? $includes : func_get_args();
 
         $this->allowedIncludes = collect($includes)
+            ->map([Str::class, 'camel'])
             ->flatMap(function ($include) {
                 return collect(explode('.', $include))
                     ->reduce(function ($collection, $include) {
@@ -37,11 +38,9 @@ trait AddsIncludesToQuery
     protected function addRequestedIncludesToQuery()
     {
         $this->request->includes()
-            ->map([Str::class, 'camel'])
-            ->map(function (string $include) {
-                return collect(explode('.', $include));
-            })
-            ->flatMap(function (Collection $relatedTables) {
+            ->flatMap(function (string $include) {
+                $relatedTables = collect(explode('.', $include));
+
                 return $relatedTables
                     ->mapWithKeys(function ($table, $key) use ($relatedTables) {
                         $fields = $this->getRequestedFieldsForRelatedTable(Str::snake($table));
@@ -71,5 +70,7 @@ trait AddsIncludesToQuery
         if ($diff->count()) {
             throw InvalidIncludeQuery::includesNotAllowed($diff, $this->allowedIncludes);
         }
+
+        // TODO: Check for non-existing relationships?
     }
 }
