@@ -3,9 +3,9 @@
 namespace Spatie\QueryBuilder\Concerns;
 
 use Illuminate\Support\Str;
+use Spatie\QueryBuilder\Included;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
-use Spatie\QueryBuilder\Included;
 
 trait AddsIncludesToQuery
 {
