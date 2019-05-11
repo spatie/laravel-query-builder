@@ -3,13 +3,13 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\Sorts\Sort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\ScopeModel;
 use Spatie\QueryBuilder\Tests\Models\SoftDeleteModel;
-use Spatie\QueryBuilder\Filter;
 
 class QueryBuilderTest extends TestCase
 {
