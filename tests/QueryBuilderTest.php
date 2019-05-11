@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\ScopeModel;
 use Spatie\QueryBuilder\Tests\Models\SoftDeleteModel;
+use Spatie\QueryBuilder\Filter;
 
 class QueryBuilderTest extends TestCase
 {
@@ -161,5 +162,23 @@ class QueryBuilderTest extends TestCase
             ->toSql();
 
         $this->assertEquals($usingSortFirst, $usingFilterFirst);
+    }
+
+    /** @test */
+    public function it_executes_query_from_params()
+    {
+        $params = [
+            'filter' => ['name' => 'test']
+        ];
+
+        $queryBuilder = QueryBuilder::for(TestModel::class, null, $params)
+            ->allowedFilters(Filter::exact('name'))
+            ->toSql();
+
+        $expectedQuery = TestModel::query()
+            ->where('name', 'test')
+            ->toSql();
+
+        $this->assertEquals($queryBuilder, $expectedQuery);
     }
 }

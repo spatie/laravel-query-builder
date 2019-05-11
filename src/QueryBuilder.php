@@ -36,13 +36,18 @@ class QueryBuilder extends Builder
      *
      * @param string|\Illuminate\Database\Query\Builder $baseQuery Model class or base query builder
      * @param \Illuminate\Http\Request                  $request
+     * @param array                                     $params
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
      */
-    public static function for($baseQuery, ?Request $request = null): self
+    public static function for($baseQuery, ?Request $request = null, array $params = []): self
     {
         if (is_string($baseQuery)) {
             $baseQuery = ($baseQuery)::query();
+        }
+
+        if (null === $request && !empty($params)) {
+            $request = new Request($params);
         }
 
         return new static($baseQuery, $request ?? request());
