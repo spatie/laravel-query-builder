@@ -393,7 +393,7 @@ The column name can be passed as optional parameter and defaults to the property
  ``` php
  // GET /users?sort=-street
  $users = QueryBuilder::for(User::class)
-    ->allowedSorts(Sort::field('street', 'actual_column_street')
+    ->allowedSorts(Sort::field('street', 'actual_column_street'))
     ->get();
  ```
 
