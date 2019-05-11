@@ -46,7 +46,7 @@ class QueryBuilder extends Builder
             $baseQuery = ($baseQuery)::query();
         }
 
-        if (null === $request && !empty($params)) {
+        if (null === $request && ! empty($params)) {
             $request = new Request($params);
         }
 

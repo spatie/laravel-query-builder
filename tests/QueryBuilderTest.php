@@ -168,7 +168,7 @@ class QueryBuilderTest extends TestCase
     public function it_executes_query_from_params()
     {
         $params = [
-            'filter' => ['name' => 'test']
+            'filter' => ['name' => 'test'],
         ];
 
         $queryBuilder = QueryBuilder::for(TestModel::class, null, $params)
