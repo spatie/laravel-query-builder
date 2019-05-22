@@ -124,18 +124,19 @@ trait SortsQuery
 
     protected function addDefaultSorts()
     {
-        $this->allowedSorts = $this->request->sorts()
-            ->map(function ($sort) {
-                $sortColumn = ltrim($sort, '-');
+        $sanitizedSortColumns = $this->request->sorts()->map(function ($sort) {
+            $sortColumn = ltrim($sort, '-');
 
-                // This is the only place where query string parameters are passed as
-                // sort columns directly. We need to sanitize these column names.
-                $sortColumn = ColumnNameSanitizer::sanitize($sortColumn);
+            // This is the only place where query string parameters are passed as
+            // sort columns directly. We need to sanitize these column names.
+            return ColumnNameSanitizer::sanitize($sortColumn);
+        });
 
-                return Sort::field($sortColumn);
-            });
+        $this->allowedSorts = $sanitizedSortColumns->map(function ($column) {
+            return Sort::field($column);
+        });
 
-        $this->generatedDefaultSorts = $this->request->sorts()->all();
+        $this->generatedDefaultSorts = $sanitizedSortColumns->toArray();
     }
 
     protected function guardAgainstUnknownSorts()
