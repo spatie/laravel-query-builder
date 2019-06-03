@@ -2,10 +2,10 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use ReflectionClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use ReflectionClass;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
