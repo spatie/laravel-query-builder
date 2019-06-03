@@ -360,6 +360,18 @@ class SortTest extends TestCase
     }
 
     /** @test */
+    public function it_deletes_default_sorts_generated_for_descending_aliased_sorts()
+    {
+        $query = $this->createQueryFromSortRequest('-alias');
+
+        $this->assertSame('select * from "test_models" order by "alias" desc', $query->toSql());
+
+        $query->allowedSorts(Sort::field('alias', 'name'));
+
+        $this->assertSame('select * from "test_models" order by "name" desc', $query->toSql());
+    }
+  
+    /** @test */
     public function raw_sorts_do_not_get_purged_when_specifying_allowed_sorts()
     {
         $query = $this->createQueryFromSortRequest('-name')
