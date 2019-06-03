@@ -25,7 +25,7 @@ trait AddsIncludesToQuery
 
                         return $collection->push("{$collection->last()}.{$include}");
                     }, collect());
-            });
+            })->unique();
 
         $this->guardAgainstUnknownIncludes();
 
