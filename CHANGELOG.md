@@ -8,6 +8,10 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - sorts and field selects are not allowed by default
 - field aliases
 
+## 1.17.4 - 2019-06-03
+
+- bugfix: `orderByRaw` is no longer being rejected as a sorting option (#258)
+
 ## 1.17.3 - 2019-04-16
 
 - bugfix: remove duplicate parsing of (default) sort clauses
