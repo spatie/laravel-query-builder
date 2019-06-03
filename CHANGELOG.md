@@ -13,6 +13,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - bugfix: `orderByRaw` is no longer being rejected as a sorting option (#258)
 - bugfix: `addSelect` is no longer being replaced by the `?fields` parameter (#260)
 - bugfix: take leading dash into account when remembering generated sort columns (#272)
+- bugfix: `allowedIncludes` no longer adds duplicate includes for nested includes (#251)
 
 ## 1.17.3 - 2019-04-16
 

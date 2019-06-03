@@ -5,6 +5,7 @@ namespace Spatie\QueryBuilder\Tests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use ReflectionClass;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
@@ -163,22 +164,18 @@ class IncludeTest extends TestCase
     }
 
     /** @test */
-    public function it_can_remove_duplicate_includes()
+    public function it_can_remove_duplicate_includes_from_nested_includes()
     {
         $query = $this
             ->createQueryFromIncludeRequest('related-models')
             ->allowedIncludes('related-models.nested-related-models', 'related-models');
 
-        $reflector = new \ReflectionClass($query);
-        $property = $reflector->getProperty('allowedIncludes');
+        $property = (new ReflectionClass($query))->getProperty('allowedIncludes');
         $property->setAccessible(true);
+
         $includes = $property->getValue($query);
 
-        $this->assertEquals(
-            $includes->count(),
-            $includes->unique()->count(),
-            'Duplicate values get filtered out.'
-        );
+        $this->assertCount(2, $includes);
     }
 
     /** @test */
