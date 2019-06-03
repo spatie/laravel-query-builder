@@ -370,7 +370,7 @@ class SortTest extends TestCase
 
         $this->assertSame('select * from "test_models" order by "name" desc', $query->toSql());
     }
-  
+
     /** @test */
     public function raw_sorts_do_not_get_purged_when_specifying_allowed_sorts()
     {
