@@ -11,6 +11,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 ## 1.17.4 - 2019-06-03
 
 - bugfix: `orderByRaw` is no longer being rejected as a sorting option (#258)
+- bugfix: `addSelect` is no longer being replaced by the `?fields` parameter (#260)
 
 ## 1.17.3 - 2019-04-16
 

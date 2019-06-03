@@ -110,7 +110,9 @@ trait AddsFieldsToQuery
 
         $prependedFields = $this->prependFieldsWithTableName($modelFields, $modelTableName);
 
-        $this->select($prependedFields);
+        foreach ($prependedFields as $field) {
+            $this->addSelect($field);
+        }
     }
 
     protected function prependFieldsWithTableName(array $fields, string $tableName): array
