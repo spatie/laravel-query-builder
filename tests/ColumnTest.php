@@ -20,7 +20,7 @@ class ColumnTest extends TestCase
     }
 
     /** @test */
-    public function it_can_fetch_all_columns_if_none_is_given()
+    public function it_fetches_all_columns_if_none_are_given()
     {
         $queryBuilder = QueryBuilder::for(TestModel::class)->toSql();
 
@@ -39,6 +39,22 @@ class ColumnTest extends TestCase
         $queryBuilder = QueryBuilder::for(TestModel::class, $request)->toSql();
 
         $expected = TestModel::query()->select("{$this->modelTableName}.name")->toSql();
+
+        $this->assertEquals($expected, $queryBuilder);
+    }
+
+    /** @test */
+    public function it_can_fetch_requested_columns_and_manually_added_selects()
+    {
+        $request = new Request([
+            'fields' => ['test_models' => 'name'],
+        ]);
+
+        $queryBuilder = QueryBuilder::for(TestModel::class, $request)
+            ->addSelect('email')
+            ->toSql();
+
+        $expected = 'select "email", "test_models"."name" from "test_models"';
 
         $this->assertEquals($expected, $queryBuilder);
     }

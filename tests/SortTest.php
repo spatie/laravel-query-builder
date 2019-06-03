@@ -370,6 +370,16 @@ class SortTest extends TestCase
 
         $this->assertSame('select * from "test_models" order by "name" desc', $query->toSql());
     }
+  
+    /** @test */
+    public function raw_sorts_do_not_get_purged_when_specifying_allowed_sorts()
+    {
+        $query = $this->createQueryFromSortRequest('-name')
+            ->orderByRaw('RANDOM()')
+            ->allowedSorts('name');
+
+        $this->assertSame('select * from "test_models" order by RANDOM(), "name" desc', $query->toSql());
+    }
 
     protected function createQueryFromSortRequest(string $sort): QueryBuilder
     {
