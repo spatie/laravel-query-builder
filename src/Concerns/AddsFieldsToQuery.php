@@ -48,7 +48,7 @@ trait AddsFieldsToQuery
         $this->select($prependedFields);
     }
 
-    protected function getRequestedFieldsForRelatedTable(string $relation): array
+    public function getRequestedFieldsForRelatedTable(string $relation): array
     {
         // This method is being called from the `allowedIncludes` section of the query builder.
         // If `allowedIncludes` is called before `allowedFields` we don't know what fields to

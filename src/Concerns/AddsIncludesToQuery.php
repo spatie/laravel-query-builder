@@ -5,6 +5,7 @@ namespace Spatie\QueryBuilder\Concerns;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\Included;
 use Illuminate\Support\Collection;
+use Spatie\QueryBuilder\Includes\Includable;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 
 trait AddsIncludesToQuery
@@ -17,96 +18,56 @@ trait AddsIncludesToQuery
         $includes = is_array($includes) ? $includes : func_get_args();
 
         $this->allowedIncludes = collect($includes)
-            ->flatMap(function (string $include) {
-                return $this->getIndividualRelationshipPathsFromInclude($include);
-            })
-            ->map(function (string $include) {
+            ->flatMap(function ($include): Collection {
+                if ($include instanceof Includable) {
+                    return collect([$include]);
+                }
+
+                if (Str::endsWith($include, config('query-builder.count_suffix'))) {
+                    return Included::count($include);
+                }
+
                 return Included::relationship($include);
             });
 
         $this->guardAgainstUnknownIncludes();
 
-        $this->addRequestedIncludesToQuery();
+        $this->addIncludesToQuery($this->request->includes());
 
         return $this;
     }
 
-    protected function addRequestedIncludesToQuery()
+    protected function addIncludesToQuery(Collection $includes)
     {
-        $this->request->includes()
-            ->reject(function (string $include) {
-                return Str::endsWith($include, config('query-builder.count_suffix'));
-            })
-            ->pipe(function (Collection $includes) {
-                $this->addIncludedWithsToQuery($includes);
-            });
+        $includes->each(function ($include) {
+            $include = $this->findInclude($include);
 
-        $this->request->includes()
-            ->filter(function (string $include) {
-                return Str::endsWith($include, config('query-builder.count_suffix'));
-            })
-            ->pipe(function (Collection $withCounts) {
-                $this->addIncludedWithCountsToQuery($withCounts);
+            $include->include($this);
+        });
+    }
+
+    protected function findInclude(string $include): ?Included
+    {
+        return $this->allowedIncludes
+            ->first(function (Included $included) use ($include) {
+                return $included->isForInclude($include);
             });
     }
 
     protected function guardAgainstUnknownIncludes()
     {
+        // TODO: fix this mess
+
         $includes = $this->request->includes();
 
-        $diff = $includes->diff($this->allowedIncludes->map->getName());
+        $allowedIncludeNames = $this->allowedIncludes->map->getName();
+
+        $diff = $includes->diff($allowedIncludeNames);
 
         if ($diff->count()) {
-            throw InvalidIncludeQuery::includesNotAllowed($diff, $this->allowedIncludes);
+            throw InvalidIncludeQuery::includesNotAllowed($diff, $allowedIncludeNames);
         }
 
         // TODO: Check for non-existing relationships?
-    }
-
-    protected function getIndividualRelationshipPathsFromInclude(string $include)
-    {
-        return collect(explode('.', $include))
-            ->reduce(function ($includes, $relationship) {
-                if ($includes->isEmpty()) {
-                    return $includes->push($relationship);
-                }
-
-                return $includes->push("{$includes->last()}.{$relationship}");
-            }, collect());
-    }
-
-    protected function addIncludedWithsToQuery(Collection $includes)
-    {
-        $includes
-            ->flatMap(function (string $include) {
-                $relatedTables = collect(explode('.', $include));
-
-                return $relatedTables
-                    ->mapWithKeys(function ($table, $key) use ($relatedTables) {
-                        $fields = $this->getRequestedFieldsForRelatedTable(Str::snake($table));
-
-                        $fullRelationName = $relatedTables->slice(0, $key + 1)->implode('.');
-
-                        if (empty($fields)) {
-                            return [$fullRelationName];
-                        }
-
-                        return [$fullRelationName => function ($query) use ($fields) {
-                            $query->select($fields);
-                        }];
-                    });
-            })
-            ->pipe(function (Collection $withs) {
-                $this->with($withs->all());
-            });
-    }
-
-    protected function addIncludedWithCountsToQuery(Collection $includes)
-    {
-        $counts = $includes->map(function (string $include) {
-            return Str::before($include, config('query-builder.count_suffix'));
-        });
-
-        $this->withCount($counts->toArray());
     }
 }
