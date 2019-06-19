@@ -6,7 +6,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 - removed request macros
 - sorts and field selects are not allowed by default
-- field aliases
+- requesting an include suffixed with `Count` will add the related models count using `$query->withCount()`
 
 ## 1.17.3 - 2019-04-16
 

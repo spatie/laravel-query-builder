@@ -63,7 +63,17 @@ class IncludeTest extends TestCase
         $model = $this
             ->createQueryFromIncludeRequest('related-models-count')
             ->allowedIncludes('relatedModelsCount')
-            ->withCount('relatedModels')
+            ->first();
+
+        $this->assertNotNull($model->related_models_count);
+    }
+
+    /** @test */
+    public function allowing_an_include_also_allows_the_include_count()
+    {
+        $model = $this
+            ->createQueryFromIncludeRequest('related-models-count')
+            ->allowedIncludes('relatedModels')
             ->first();
 
         $this->assertNotNull($model->related_models_count);
