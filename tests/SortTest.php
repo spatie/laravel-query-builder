@@ -216,8 +216,8 @@ class SortTest extends TestCase
         };
 
         $sortedModels = QueryBuilder::for(TestModel::class, new Request())
-            ->allowedSorts(Sort::custom('custom_name', get_class($sortClass)))
-            ->defaultSort(Sort::custom('custom_name', get_class($sortClass)))
+            ->allowedSorts(Sort::custom('custom_name', $sortClass))
+            ->defaultSort(Sort::custom('custom_name', $sortClass))
             ->get();
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
@@ -247,8 +247,8 @@ class SortTest extends TestCase
         };
 
         $sortedModels = QueryBuilder::for(TestModel::class, new Request())
-            ->allowedSorts(Sort::custom('custom_name', get_class($sortClass)), 'id')
-            ->defaultSort(Sort::custom('custom_name', get_class($sortClass)), '-id')
+            ->allowedSorts(Sort::custom('custom_name', $sortClass), 'id')
+            ->defaultSort(Sort::custom('custom_name', $sortClass), '-id')
             ->get();
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" asc, "id" desc');
@@ -306,7 +306,7 @@ class SortTest extends TestCase
 
         $sortedModels = $this
             ->createQueryFromSortRequest('custom_name')
-            ->allowedSorts(Sort::custom('custom_name', get_class($sortClass)))
+            ->allowedSorts(Sort::custom('custom_name', $sortClass))
             ->get();
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
@@ -316,7 +316,7 @@ class SortTest extends TestCase
     /** @test */
     public function it_can_take_an_argument_for_custom_column_name_resolution()
     {
-        $sort = Sort::custom('property_name', SortsField::class, 'property_column_name');
+        $sort = Sort::custom('property_name', new SortsField, 'property_column_name');
 
         $this->assertInstanceOf(Sort::class, $sort);
         $this->assertClassHasAttribute('columnName', get_class($sort));
@@ -325,7 +325,7 @@ class SortTest extends TestCase
     /** @test */
     public function it_sets_property_column_name_to_property_name_by_default()
     {
-        $sort = Sort::custom('property_name', SortsField::class);
+        $sort = Sort::custom('property_name', new SortsField);
 
         $this->assertEquals($sort->getProperty(), $sort->getColumnName());
     }
@@ -333,7 +333,7 @@ class SortTest extends TestCase
     /** @test */
     public function it_resolves_queries_using_property_column_name()
     {
-        $sort = Sort::custom('nickname', SortsField::class, 'name');
+        $sort = Sort::custom('nickname', new SortsField, 'name');
 
         $testModel = TestModel::create(['name' => 'zzzzzzzz']);
 
