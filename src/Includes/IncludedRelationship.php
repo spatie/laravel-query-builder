@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class IncludedRelationship implements Includable
+class IncludedRelationship implements IncludeInterface
 {
     public function __invoke(QueryBuilder $query, string $relationship)
     {

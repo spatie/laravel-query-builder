@@ -5,7 +5,7 @@ namespace Spatie\QueryBuilder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\QueryBuilder\Includes\Includable;
+use Spatie\QueryBuilder\Includes\IncludeInterface;
 use Spatie\QueryBuilder\Includes\IncludedCount;
 use Spatie\QueryBuilder\Includes\IncludedRelationship;
 
@@ -14,13 +14,13 @@ class AllowedInclude
     /** @var string */
     protected $name;
 
-    /** @var Includable */
+    /** @var IncludeInterface */
     protected $includeClass;
 
     /** @var string|null */
     protected $relationship;
 
-    public function __construct(string $name, Includable $includeClass, ?string $relationship = null)
+    public function __construct(string $name, IncludeInterface $includeClass, ?string $relationship = null)
     {
         $this->name = Str::camel($name);
         $this->includeClass = $includeClass;

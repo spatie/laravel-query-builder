@@ -5,7 +5,7 @@ namespace Spatie\QueryBuilder\Concerns;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedInclude;
-use Spatie\QueryBuilder\Includes\Includable;
+use Spatie\QueryBuilder\Includes\IncludeInterface;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 
 trait AddsIncludesToQuery
@@ -19,7 +19,7 @@ trait AddsIncludesToQuery
 
         $this->allowedIncludes = collect($includes)
             ->flatMap(function ($include): Collection {
-                if ($include instanceof Includable) {
+                if ($include instanceof IncludeInterface) {
                     return collect([$include]);
                 }
 
