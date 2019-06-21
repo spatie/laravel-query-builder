@@ -2,10 +2,9 @@
 
 namespace Spatie\QueryBuilder;
 
-use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Enums\SortDirection;
-use Spatie\QueryBuilder\Sorts\Sort as SortClass;
+use Spatie\QueryBuilder\Sorts\Sort;
 
 class AllowedSort
 {
@@ -21,7 +20,7 @@ class AllowedSort
     /** @var string */
     protected $columnName;
 
-    public function __construct(string $property, SortClass $sortClass, ?string $columnName = null)
+    public function __construct(string $property, Sort $sortClass, ?string $columnName = null)
     {
         $this->property = ltrim($property, '-');
 
@@ -49,7 +48,7 @@ class AllowedSort
         return new static($property, new SortsField, $columnName);
     }
 
-    public static function custom(string $property, SortClass $sortClass, ?string $columnName = null) : self
+    public static function custom(string $property, Sort $sortClass, ?string $columnName = null) : self
     {
         return new static($property, $sortClass, $columnName);
     }

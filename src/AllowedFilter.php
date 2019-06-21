@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\Filters\FiltersScope;
 use Spatie\QueryBuilder\Filters\FiltersPartial;
-use Spatie\QueryBuilder\Filters\Filter as FilterClass;
+use Spatie\QueryBuilder\Filters\Filter;
 
 class AllowedFilter
 {
@@ -23,7 +23,7 @@ class AllowedFilter
     /** @var Collection */
     protected $ignored;
 
-    public function __construct(string $property, FilterClass $filterClass, ?string $columnName = null)
+    public function __construct(string $property, Filter $filterClass, ?string $columnName = null)
     {
         $this->property = $property;
 
@@ -42,9 +42,7 @@ class AllowedFilter
             return;
         }
 
-        $filterClass = $this->resolveFilterClass();
-
-        ($filterClass)($query, $valueToFilter, $this->columnName);
+        ($this->filterClass)($query, $valueToFilter, $this->columnName);
     }
 
     public static function exact(string $property, ?string $columnName = null) : self
@@ -62,7 +60,7 @@ class AllowedFilter
         return new static($property, new FiltersScope(), $columnName);
     }
 
-    public static function custom(string $property, FilterClass $filterClass, $columnName = null) : self
+    public static function custom(string $property, Filter $filterClass, $columnName = null) : self
     {
         return new static($property, $filterClass, $columnName);
     }
@@ -94,15 +92,6 @@ class AllowedFilter
     public function getColumnName(): string
     {
         return $this->columnName;
-    }
-
-    protected function resolveFilterClass(): FilterClass
-    {
-        if ($this->filterClass instanceof FilterClass) {
-            return $this->filterClass;
-        }
-
-        return new $this->filterClass;
     }
 
     protected function resolveValueForFiltering($property)
