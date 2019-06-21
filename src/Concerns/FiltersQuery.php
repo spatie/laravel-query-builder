@@ -43,7 +43,7 @@ trait FiltersQuery
     {
         return $this->allowedFilters
             ->first(function (AllowedFilter $filter) use ($property) {
-                return $filter->isForProperty($property);
+                return $filter->isForFilter($property);
             });
     }
 
@@ -51,7 +51,9 @@ trait FiltersQuery
     {
         $filterNames = $this->request->filters()->keys();
 
-        $allowedFilterNames = $this->allowedFilters->map->getProperty();
+        $allowedFilterNames = $this->allowedFilters->map(function (AllowedFilter $allowedFilter) {
+            return $allowedFilter->getName();
+        });
 
         $diff = $filterNames->diff($allowedFilterNames);
 

@@ -15,23 +15,23 @@ class AllowedFilter
     protected $filterClass;
 
     /** @var string */
-    protected $property;
+    protected $name;
 
     /** @var string */
-    protected $columnName;
+    protected $internalName;
 
     /** @var Collection */
     protected $ignored;
 
-    public function __construct(string $property, Filter $filterClass, ?string $columnName = null)
+    public function __construct(string $name, Filter $filterClass, ?string $internalName = null)
     {
-        $this->property = $property;
+        $this->name = $name;
 
         $this->filterClass = $filterClass;
 
         $this->ignored = Collection::make();
 
-        $this->columnName = $columnName ?? $property;
+        $this->internalName = $internalName ?? $name;
     }
 
     public function filter(QueryBuilder $query, $value)
@@ -42,37 +42,37 @@ class AllowedFilter
             return;
         }
 
-        ($this->filterClass)($query, $valueToFilter, $this->columnName);
+        ($this->filterClass)($query, $valueToFilter, $this->internalName);
     }
 
-    public static function exact(string $property, ?string $columnName = null) : self
+    public static function exact(string $name, ?string $internalName = null) : self
     {
-        return new static($property, new FiltersExact(), $columnName);
+        return new static($name, new FiltersExact(), $internalName);
     }
 
-    public static function partial(string $property, $columnName = null) : self
+    public static function partial(string $name, $internalName = null) : self
     {
-        return new static($property, new FiltersPartial(), $columnName);
+        return new static($name, new FiltersPartial(), $internalName);
     }
 
-    public static function scope(string $property, $columnName = null) : self
+    public static function scope(string $name, $internalName = null) : self
     {
-        return new static($property, new FiltersScope(), $columnName);
+        return new static($name, new FiltersScope(), $internalName);
     }
 
-    public static function custom(string $property, Filter $filterClass, $columnName = null) : self
+    public static function custom(string $name, Filter $filterClass, $internalName = null) : self
     {
-        return new static($property, $filterClass, $columnName);
+        return new static($name, $filterClass, $internalName);
     }
 
-    public function getProperty(): string
+    public function getName(): string
     {
-        return $this->property;
+        return $this->name;
     }
 
-    public function isForProperty(string $property): bool
+    public function isForFilter(string $filterName): bool
     {
-        return $this->property === $property;
+        return $this->name === $filterName;
     }
 
     public function ignore(...$values): self
@@ -89,19 +89,19 @@ class AllowedFilter
         return $this->ignored->toArray();
     }
 
-    public function getColumnName(): string
+    public function getInternalName(): string
     {
-        return $this->columnName;
+        return $this->internalName;
     }
 
-    protected function resolveValueForFiltering($property)
+    protected function resolveValueForFiltering($value)
     {
-        if (is_array($property)) {
-            $remainingProperties = array_diff($property, $this->ignored->toArray());
+        if (is_array($value)) {
+            $remainingProperties = array_diff($value, $this->ignored->toArray());
 
             return ! empty($remainingProperties) ? $remainingProperties : null;
         }
 
-        return ! $this->ignored->contains($property) ? $property : null;
+        return ! $this->ignored->contains($value) ? $value : null;
     }
 }

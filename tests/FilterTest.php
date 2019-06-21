@@ -348,7 +348,7 @@ class FilterTest extends TestCase
         $filter = AllowedFilter::custom('property_name', new FiltersExact, 'property_column_name');
 
         $this->assertInstanceOf(AllowedFilter::class, $filter);
-        $this->assertClassHasAttribute('columnName', get_class($filter));
+        $this->assertClassHasAttribute('internalName', get_class($filter));
     }
 
     /** @test */
@@ -356,7 +356,7 @@ class FilterTest extends TestCase
     {
         $filter = AllowedFilter::custom('property_name', new FiltersExact);
 
-        $this->assertEquals($filter->getProperty(), $filter->getColumnName());
+        $this->assertEquals($filter->getName(), $filter->getInternalName());
     }
 
     /** @test */
