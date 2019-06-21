@@ -2,7 +2,7 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
@@ -16,11 +16,11 @@ trait FiltersQuery
         $filters = is_array($filters) ? $filters : func_get_args();
 
         $this->allowedFilters = collect($filters)->map(function ($filter) {
-            if ($filter instanceof Filter) {
+            if ($filter instanceof AllowedFilter) {
                 return $filter;
             }
 
-            return Filter::partial($filter);
+            return AllowedFilter::partial($filter);
         });
 
         $this->guardAgainstUnknownFilters();
@@ -39,10 +39,10 @@ trait FiltersQuery
         });
     }
 
-    protected function findFilter(string $property): ?Filter
+    protected function findFilter(string $property): ?AllowedFilter
     {
         return $this->allowedFilters
-            ->first(function (Filter $filter) use ($property) {
+            ->first(function (AllowedFilter $filter) use ($property) {
                 return $filter->isForProperty($property);
             });
     }

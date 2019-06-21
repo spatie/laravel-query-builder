@@ -3,7 +3,7 @@
 namespace Spatie\QueryBuilder\Concerns;
 
 use Illuminate\Support\Str;
-use Spatie\QueryBuilder\Included;
+use Spatie\QueryBuilder\AllowedInclude;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Includes\Includable;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
@@ -24,10 +24,10 @@ trait AddsIncludesToQuery
                 }
 
                 if (Str::endsWith($include, config('query-builder.count_suffix'))) {
-                    return Included::count($include);
+                    return AllowedInclude::count($include);
                 }
 
-                return Included::relationship($include);
+                return AllowedInclude::relationship($include);
             });
 
         $this->guardAgainstUnknownIncludes();
@@ -46,10 +46,10 @@ trait AddsIncludesToQuery
         });
     }
 
-    protected function findInclude(string $include): ?Included
+    protected function findInclude(string $include): ?AllowedInclude
     {
         return $this->allowedIncludes
-            ->first(function (Included $included) use ($include) {
+            ->first(function (AllowedInclude $included) use ($include) {
                 return $included->isForInclude($include);
             });
     }

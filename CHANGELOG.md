@@ -8,6 +8,9 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - sorts and field selects are not allowed by default
 - requesting an include suffixed with `Count` will add the related models count using `$query->withCount()`
 - custom sorts and filters now need to be passed as instances
+- renamed `Spatie\QueryBuilder\Sort` to `Spatie\QueryBuilder\AllowedSort`
+- renamed `Spatie\QueryBuilder\Included` to `Spatie\QueryBuilder\AllowedInclude`
+- renamed `Spatie\QueryBuilder\Filter` to `Spatie\QueryBuilder\AllowedFilter`
 
 ## 1.17.3 - 2019-04-16
 

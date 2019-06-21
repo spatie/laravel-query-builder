@@ -15,8 +15,6 @@ Filtering an API request: `/users?filter[name]=John`:
 ```php
 use Spatie\QueryBuilder\QueryBuilder;
 
-// ...
-
 $users = QueryBuilder::for(User::class)
     ->allowedFilters('name')
     ->get();

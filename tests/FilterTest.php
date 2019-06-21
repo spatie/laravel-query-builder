@@ -4,7 +4,7 @@ namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
@@ -107,7 +107,7 @@ class FilterTest extends TestCase
             ->createQueryFromFilterRequest([
                 'id' => '1,2',
             ])
-            ->allowedFilters(Filter::exact('id'))
+            ->allowedFilters(AllowedFilter::exact('id'))
             ->get();
 
         $this->assertCount(2, $results);
@@ -126,7 +126,7 @@ class FilterTest extends TestCase
             ->createQueryFromFilterRequest([
                 'id' => $testModel->id,
             ])
-            ->allowedFilters(Filter::exact('id'))
+            ->allowedFilters(AllowedFilter::exact('id'))
             ->get();
 
         $this->assertEquals($modelsResult, $models);
@@ -141,7 +141,7 @@ class FilterTest extends TestCase
             ->createQueryFromFilterRequest([
                 'name' => ' Testing ',
             ])
-            ->allowedFilters(Filter::exact('name'))
+            ->allowedFilters(AllowedFilter::exact('name'))
             ->get();
 
         $this->assertCount(0, $modelsResult);
@@ -154,7 +154,7 @@ class FilterTest extends TestCase
 
         $modelsResult = $this
             ->createQueryFromFilterRequest(['named' => 'John Testing Doe'])
-            ->allowedFilters(Filter::scope('named'))
+            ->allowedFilters(AllowedFilter::scope('named'))
             ->get();
 
         $this->assertCount(1, $modelsResult);
@@ -169,7 +169,7 @@ class FilterTest extends TestCase
 
         $modelsResult = $this
             ->createQueryFromFilterRequest(['created_between' => '2016-01-01,2017-01-01'])
-            ->allowedFilters(Filter::scope('created_between'))
+            ->allowedFilters(AllowedFilter::scope('created_between'))
             ->get();
 
         $this->assertCount(1, $modelsResult);
@@ -191,7 +191,7 @@ class FilterTest extends TestCase
             ->createQueryFromFilterRequest([
                 'custom_name' => $testModel->name,
             ])
-            ->allowedFilters(Filter::custom('custom_name', $filterClass))
+            ->allowedFilters(AllowedFilter::custom('custom_name', $filterClass))
             ->first();
 
         $this->assertEquals($testModel->id, $modelResult->id);
@@ -207,7 +207,7 @@ class FilterTest extends TestCase
             ->createQueryFromFilterRequest([
                 'name' => 'abc',
             ])
-            ->allowedFilters('name', Filter::exact('id'))
+            ->allowedFilters('name', AllowedFilter::exact('id'))
             ->get();
 
         $this->assertCount(2, $results);
@@ -224,7 +224,7 @@ class FilterTest extends TestCase
             ->createQueryFromFilterRequest([
                 'name' => 'abc',
             ])
-            ->allowedFilters(['name', Filter::exact('id')])
+            ->allowedFilters(['name', AllowedFilter::exact('id')])
             ->get();
 
         $this->assertCount(2, $results);
@@ -242,7 +242,7 @@ class FilterTest extends TestCase
                 'name' => 'abc',
                 'id' => "1,{$model1->id}",
             ])
-            ->allowedFilters('name', Filter::exact('id'))
+            ->allowedFilters('name', AllowedFilter::exact('id'))
             ->get();
 
         $this->assertCount(1, $results);
@@ -283,7 +283,7 @@ class FilterTest extends TestCase
             ->createQueryFromFilterRequest([
                 '*' => '*',
             ])
-            ->allowedFilters('name', Filter::custom('*', $customFilter))
+            ->allowedFilters('name', AllowedFilter::custom('*', $customFilter))
             ->get();
 
         $this->assertNotEmpty($results);
@@ -303,7 +303,7 @@ class FilterTest extends TestCase
     {
         $shouldBeIgnored = ['', '-1', null, 'ignored_string', 'another_ignored_string'];
 
-        $filter = Filter::exact('name')->ignore($shouldBeIgnored[0]);
+        $filter = AllowedFilter::exact('name')->ignore($shouldBeIgnored[0]);
         $filter
             ->ignore($shouldBeIgnored[1], $shouldBeIgnored[2])
             ->ignore([$shouldBeIgnored[3], $shouldBeIgnored[4]]);
@@ -320,7 +320,7 @@ class FilterTest extends TestCase
             ->createQueryFromFilterRequest([
                 'name' => '-1',
             ])
-            ->allowedFilters(Filter::exact('name')->ignore('-1'))
+            ->allowedFilters(AllowedFilter::exact('name')->ignore('-1'))
             ->get();
 
         $this->assertCount(TestModel::count(), $models);
@@ -336,7 +336,7 @@ class FilterTest extends TestCase
             ->createQueryFromFilterRequest([
                 'name' => 'John Deer,John Doe',
             ])
-            ->allowedFilters(Filter::exact('name')->ignore('John Deer'))
+            ->allowedFilters(AllowedFilter::exact('name')->ignore('John Deer'))
             ->get();
 
         $this->assertCount(1, $models);
@@ -345,16 +345,16 @@ class FilterTest extends TestCase
     /** @test */
     public function it_can_take_an_argument_for_custom_column_name_resolution()
     {
-        $filter = Filter::custom('property_name', new FiltersExact, 'property_column_name');
+        $filter = AllowedFilter::custom('property_name', new FiltersExact, 'property_column_name');
 
-        $this->assertInstanceOf(Filter::class, $filter);
+        $this->assertInstanceOf(AllowedFilter::class, $filter);
         $this->assertClassHasAttribute('columnName', get_class($filter));
     }
 
     /** @test */
     public function it_sets_property_column_name_to_property_name_by_default()
     {
-        $filter = Filter::custom('property_name', new FiltersExact);
+        $filter = AllowedFilter::custom('property_name', new FiltersExact);
 
         $this->assertEquals($filter->getProperty(), $filter->getColumnName());
     }
@@ -362,7 +362,7 @@ class FilterTest extends TestCase
     /** @test */
     public function it_resolves_queries_using_property_column_name()
     {
-        $filter = Filter::custom('nickname', new FiltersExact, 'name');
+        $filter = AllowedFilter::custom('nickname', new FiltersExact, 'name');
 
         TestModel::create(['name' => 'abcdef']);
 
@@ -380,7 +380,7 @@ class FilterTest extends TestCase
     public function it_can_filter_using_boolean_flags()
     {
         TestModel::query()->update(['is_visible' => true]);
-        $filter = Filter::exact('is_visible');
+        $filter = AllowedFilter::exact('is_visible');
 
         $models = $this
             ->createQueryFromFilterRequest(['is_visible' => 'false'])

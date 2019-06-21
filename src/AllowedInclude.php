@@ -9,7 +9,7 @@ use Spatie\QueryBuilder\Includes\Includable;
 use Spatie\QueryBuilder\Includes\IncludedCount;
 use Spatie\QueryBuilder\Includes\IncludedRelationship;
 
-class Included
+class AllowedInclude
 {
     /** @var string */
     protected $name;

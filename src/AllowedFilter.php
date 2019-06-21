@@ -9,7 +9,7 @@ use Spatie\QueryBuilder\Filters\FiltersScope;
 use Spatie\QueryBuilder\Filters\FiltersPartial;
 use Spatie\QueryBuilder\Filters\Filter as FilterClass;
 
-class Filter
+class AllowedFilter
 {
     /** @var \Spatie\QueryBuilder\Filters\Filter */
     protected $filterClass;

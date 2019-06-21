@@ -2,7 +2,7 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
-use Spatie\QueryBuilder\Sort;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 
 trait SortsQuery
@@ -21,11 +21,11 @@ trait SortsQuery
         $sorts = is_array($sorts) ? $sorts : func_get_args();
 
         $this->allowedSorts = collect($sorts)->map(function ($sort) {
-            if ($sort instanceof Sort) {
+            if ($sort instanceof AllowedSort) {
                 return $sort;
             }
 
-            return Sort::field(ltrim($sort, '-'));
+            return AllowedSort::field(ltrim($sort, '-'));
         });
 
         $this->guardAgainstUnknownSorts();
@@ -36,7 +36,7 @@ trait SortsQuery
     }
 
     /**
-     * @param array|string|\Spatie\QueryBuilder\Sort $sorts
+     * @param array|string|\Spatie\QueryBuilder\AllowedSort $sorts
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
      */
@@ -46,7 +46,7 @@ trait SortsQuery
     }
 
     /**
-     * @param array|string|\Spatie\QueryBuilder\Sort $sorts
+     * @param array|string|\Spatie\QueryBuilder\AllowedSort $sorts
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
      */
@@ -62,13 +62,13 @@ trait SortsQuery
 
         collect($sorts)
             ->map(function ($sort) {
-                if ($sort instanceof Sort) {
+                if ($sort instanceof AllowedSort) {
                     return $sort;
                 }
 
-                return Sort::field($sort);
+                return AllowedSort::field($sort);
             })
-            ->each(function (Sort $sort) {
+            ->each(function (AllowedSort $sort) {
                 $sort->sort($this);
             });
 
@@ -89,10 +89,10 @@ trait SortsQuery
             });
     }
 
-    protected function findSort(string $property): ?Sort
+    protected function findSort(string $property): ?AllowedSort
     {
         return $this->allowedSorts
-            ->first(function (Sort $sort) use ($property) {
+            ->first(function (AllowedSort $sort) use ($property) {
                 return $sort->isForProperty($property);
             });
     }
@@ -103,7 +103,7 @@ trait SortsQuery
             return ltrim($sort, '-');
         });
 
-        $allowedSortNames = $this->allowedSorts->map(function (Sort $sort) {
+        $allowedSortNames = $this->allowedSorts->map(function (AllowedSort $sort) {
             return $sort->getProperty();
         });
 

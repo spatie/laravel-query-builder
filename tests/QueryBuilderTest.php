@@ -155,13 +155,13 @@ class QueryBuilderTest extends TestCase
         ]);
 
         $usingSortFirst = QueryBuilder::for(TestModel::class, $req)
-            ->allowedSorts(\Spatie\QueryBuilder\Sort::custom('name', $customSort))
+            ->allowedSorts(\Spatie\QueryBuilder\AllowedSort::custom('name', $customSort))
             ->allowedFilters('name')
             ->toSql();
 
         $usingFilterFirst = QueryBuilder::for(TestModel::class, $req)
             ->allowedFilters('name')
-            ->allowedSorts(\Spatie\QueryBuilder\Sort::custom('name', $customSort))
+            ->allowedSorts(\Spatie\QueryBuilder\AllowedSort::custom('name', $customSort))
             ->toSql();
 
         $this->assertEquals($usingSortFirst, $usingFilterFirst);
