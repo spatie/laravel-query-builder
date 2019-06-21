@@ -3,8 +3,8 @@
 namespace Spatie\QueryBuilder\Concerns;
 
 use Illuminate\Support\Str;
-use Spatie\QueryBuilder\AllowedInclude;
 use Illuminate\Support\Collection;
+use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\Includes\Includable;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 

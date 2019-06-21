@@ -4,9 +4,9 @@ namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Spatie\QueryBuilder\AllowedFilter;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
