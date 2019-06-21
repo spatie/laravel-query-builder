@@ -12,59 +12,59 @@ class AllowedSort
     protected $sortClass;
 
     /** @var \Spatie\QueryBuilder\Sorts\Sort */
-    protected $property;
+    protected $name;
 
     /** @var string */
     protected $defaultDirection;
 
     /** @var string */
-    protected $columnName;
+    protected $internalName;
 
-    public function __construct(string $property, Sort $sortClass, ?string $columnName = null)
+    public function __construct(string $name, Sort $sortClass, ?string $internalName = null)
     {
-        $this->property = ltrim($property, '-');
+        $this->name = ltrim($name, '-');
 
         $this->sortClass = $sortClass;
 
-        $this->defaultDirection = static::parsePropertyDirection($property);
+        $this->defaultDirection = static::parseSortDirection($name);
 
-        $this->columnName = $columnName ?? $this->property;
+        $this->internalName = $internalName ?? $this->name;
     }
 
-    public static function parsePropertyDirection(string $property): string
+    public static function parseSortDirection(string $name): string
     {
-        return $property[0] === '-' ? SortDirection::DESCENDING : SortDirection::ASCENDING;
+        return $name[0] === '-' ? SortDirection::DESCENDING : SortDirection::ASCENDING;
     }
 
     public function sort(QueryBuilder $query, ?bool $descending = null)
     {
         $descending = $descending ?? ($this->defaultDirection === SortDirection::DESCENDING);
 
-        ($this->sortClass)($query, $descending, $this->columnName);
+        ($this->sortClass)($query, $descending, $this->internalName);
     }
 
-    public static function field(string $property, ?string $columnName = null) : self
+    public static function field(string $name, ?string $internalName = null) : self
     {
-        return new static($property, new SortsField, $columnName);
+        return new static($name, new SortsField, $internalName);
     }
 
-    public static function custom(string $property, Sort $sortClass, ?string $columnName = null) : self
+    public static function custom(string $name, Sort $sortClass, ?string $internalName = null) : self
     {
-        return new static($property, $sortClass, $columnName);
+        return new static($name, $sortClass, $internalName);
     }
 
-    public function getProperty(): string
+    public function getName(): string
     {
-        return $this->property;
+        return $this->name;
     }
 
-    public function isForProperty(string $property): bool
+    public function isSort(string $sortName): bool
     {
-        return $this->property === $property;
+        return $this->name === $sortName;
     }
 
-    public function getColumnName(): string
+    public function getInternalName(): string
     {
-        return $this->columnName;
+        return $this->internalName;
     }
 }

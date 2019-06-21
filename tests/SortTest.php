@@ -319,7 +319,7 @@ class SortTest extends TestCase
         $sort = AllowedSort::custom('property_name', new SortsField, 'property_column_name');
 
         $this->assertInstanceOf(AllowedSort::class, $sort);
-        $this->assertClassHasAttribute('columnName', get_class($sort));
+        $this->assertClassHasAttribute('internalName', get_class($sort));
     }
 
     /** @test */
@@ -327,7 +327,7 @@ class SortTest extends TestCase
     {
         $sort = AllowedSort::custom('property_name', new SortsField);
 
-        $this->assertEquals($sort->getProperty(), $sort->getColumnName());
+        $this->assertEquals($sort->getName(), $sort->getInternalName());
     }
 
     /** @test */

@@ -93,7 +93,7 @@ trait SortsQuery
     {
         return $this->allowedSorts
             ->first(function (AllowedSort $sort) use ($property) {
-                return $sort->isForProperty($property);
+                return $sort->isSort($property);
             });
     }
 
@@ -104,7 +104,7 @@ trait SortsQuery
         });
 
         $allowedSortNames = $this->allowedSorts->map(function (AllowedSort $sort) {
-            return $sort->getProperty();
+            return $sort->getName();
         });
 
         $unknownSorts = $requestedSortNames->diff($allowedSortNames);
