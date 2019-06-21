@@ -4,8 +4,8 @@ namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Tests\Models\TestModel;
 
 class RelationFilterTest extends TestCase
