@@ -277,7 +277,7 @@ use Spatie\QueryBuilder\Filter;
 
 // GET /users?filter[permission]=createPosts
 $users = QueryBuilder::for(User::class)
-    ->allowedFilters(Filter::custom('permission', FiltersUserPermission::class))
+    ->allowedFilters(Filter::custom('permission', new FiltersUserPermission))
     ->get();
 // $users will contain all users that have the `createPosts` permission
 ```

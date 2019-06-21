@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\Filters\FiltersScope;
 use Spatie\QueryBuilder\Filters\FiltersPartial;
-use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
+use Spatie\QueryBuilder\Filters\Filter as FilterClass;
 
 class Filter
 {
-    /** @var string|\Spatie\QueryBuilder\Filters\Filter */
+    /** @var \Spatie\QueryBuilder\Filters\Filter */
     protected $filterClass;
 
     /** @var string */
@@ -23,7 +23,7 @@ class Filter
     /** @var Collection */
     protected $ignored;
 
-    public function __construct(string $property, $filterClass, ?string $columnName = null)
+    public function __construct(string $property, FilterClass $filterClass, ?string $columnName = null)
     {
         $this->property = $property;
 
@@ -49,20 +49,20 @@ class Filter
 
     public static function exact(string $property, ?string $columnName = null) : self
     {
-        return new static($property, FiltersExact::class, $columnName);
+        return new static($property, new FiltersExact(), $columnName);
     }
 
     public static function partial(string $property, $columnName = null) : self
     {
-        return new static($property, FiltersPartial::class, $columnName);
+        return new static($property, new FiltersPartial(), $columnName);
     }
 
     public static function scope(string $property, $columnName = null) : self
     {
-        return new static($property, FiltersScope::class, $columnName);
+        return new static($property, new FiltersScope(), $columnName);
     }
 
-    public static function custom(string $property, $filterClass, $columnName = null) : self
+    public static function custom(string $property, FilterClass $filterClass, $columnName = null) : self
     {
         return new static($property, $filterClass, $columnName);
     }
@@ -96,9 +96,9 @@ class Filter
         return $this->columnName;
     }
 
-    protected function resolveFilterClass(): CustomFilter
+    protected function resolveFilterClass(): FilterClass
     {
-        if ($this->filterClass instanceof CustomFilter) {
+        if ($this->filterClass instanceof FilterClass) {
             return $this->filterClass;
         }
 

@@ -191,7 +191,7 @@ class FilterTest extends TestCase
             ->createQueryFromFilterRequest([
                 'custom_name' => $testModel->name,
             ])
-            ->allowedFilters(Filter::custom('custom_name', get_class($filterClass)))
+            ->allowedFilters(Filter::custom('custom_name', $filterClass))
             ->first();
 
         $this->assertEquals($testModel->id, $modelResult->id);
@@ -345,7 +345,7 @@ class FilterTest extends TestCase
     /** @test */
     public function it_can_take_an_argument_for_custom_column_name_resolution()
     {
-        $filter = Filter::custom('property_name', FiltersExact::class, 'property_column_name');
+        $filter = Filter::custom('property_name', new FiltersExact, 'property_column_name');
 
         $this->assertInstanceOf(Filter::class, $filter);
         $this->assertClassHasAttribute('columnName', get_class($filter));
@@ -354,7 +354,7 @@ class FilterTest extends TestCase
     /** @test */
     public function it_sets_property_column_name_to_property_name_by_default()
     {
-        $filter = Filter::custom('property_name', FiltersExact::class);
+        $filter = Filter::custom('property_name', new FiltersExact);
 
         $this->assertEquals($filter->getProperty(), $filter->getColumnName());
     }
@@ -362,7 +362,7 @@ class FilterTest extends TestCase
     /** @test */
     public function it_resolves_queries_using_property_column_name()
     {
-        $filter = Filter::custom('nickname', FiltersExact::class, 'name');
+        $filter = Filter::custom('nickname', new FiltersExact, 'name');
 
         TestModel::create(['name' => 'abcdef']);
 
