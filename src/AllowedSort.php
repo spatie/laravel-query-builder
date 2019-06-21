@@ -2,7 +2,6 @@
 
 namespace Spatie\QueryBuilder;
 
-use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Enums\SortDirection;
 use Spatie\QueryBuilder\Sorts\Sort as SortClass;

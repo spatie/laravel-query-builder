@@ -3,7 +3,6 @@
 namespace Spatie\QueryBuilder\Filters;
 
 use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\Database\Eloquent\Builder;
 
 interface Filter
 {
