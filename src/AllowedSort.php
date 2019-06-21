@@ -37,11 +37,11 @@ class AllowedSort
         return $property[0] === '-' ? SortDirection::DESCENDING : SortDirection::ASCENDING;
     }
 
-    public function sort(Builder $builder, ?bool $descending = null)
+    public function sort(QueryBuilder $query, ?bool $descending = null)
     {
         $descending = $descending ?? ($this->defaultDirection === SortDirection::DESCENDING);
 
-        ($this->sortClass)($builder, $descending, $this->columnName);
+        ($this->sortClass)($query, $descending, $this->columnName);
     }
 
     public static function field(string $property, ?string $columnName = null) : self

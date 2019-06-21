@@ -2,11 +2,12 @@
 
 namespace Spatie\QueryBuilder\Filters;
 
+use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 
 class FiltersPartial extends FiltersExact implements Filter
 {
-    public function __invoke(Builder $query, $value, string $property)
+    public function __invoke(QueryBuilder $query, $value, string $property)
     {
         if ($this->isRelationProperty($query, $property)) {
             $this->withRelationConstraint($query, $value, $property);
@@ -19,7 +20,7 @@ class FiltersPartial extends FiltersExact implements Filter
         $sql = "LOWER({$wrappedProperty}) LIKE ?";
 
         if (is_array($value)) {
-            return $query->where(function (Builder $query) use ($value, $sql) {
+            $query->where(function (Builder $query) use ($value, $sql) {
                 foreach ($value as $partialValue) {
                     $partialValue = mb_strtolower($partialValue, 'UTF8');
 

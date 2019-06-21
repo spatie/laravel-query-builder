@@ -34,7 +34,7 @@ class AllowedFilter
         $this->columnName = $columnName ?? $property;
     }
 
-    public function filter(Builder $builder, $value)
+    public function filter(QueryBuilder $query, $value)
     {
         $valueToFilter = $this->resolveValueForFiltering($value);
 
@@ -44,7 +44,7 @@ class AllowedFilter
 
         $filterClass = $this->resolveFilterClass();
 
-        ($filterClass)($builder, $valueToFilter, $this->columnName);
+        ($filterClass)($query, $valueToFilter, $this->columnName);
     }
 
     public static function exact(string $property, ?string $columnName = null) : self

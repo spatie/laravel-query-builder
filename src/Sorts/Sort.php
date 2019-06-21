@@ -2,9 +2,9 @@
 
 namespace Spatie\QueryBuilder\Sorts;
 
-use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\QueryBuilder;
 
 interface Sort
 {
-    public function __invoke(Builder $query, $descending, string $property);
+    public function __invoke(QueryBuilder $query, $descending, string $property);
 }
