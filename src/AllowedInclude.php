@@ -17,41 +17,40 @@ class AllowedInclude
     protected $includeClass;
 
     /** @var string|null */
-    protected $relationship;
+    protected $internalName;
 
-    public function __construct(string $name, IncludeInterface $includeClass, ?string $relationship = null)
+    public function __construct(string $name, IncludeInterface $includeClass, ?string $internalName = null)
     {
         $this->name = Str::camel($name);
         $this->includeClass = $includeClass;
-        $this->relationship = $relationship ?? $this->name;
+        $this->internalName = $internalName ?? $this->name;
     }
 
-    public static function relationship(string $relationship, ?string $include = null): Collection
+    public static function relationship(string $name, ?string $internalName = null): Collection
     {
-        return IncludedRelationship::getIndividualRelationshipPathsFromInclude($relationship)
-            ->flatMap(function (string $relationship) use ($include): Collection {
-                $includes = collect([
-                    new self($relationship, new IncludedRelationship(), $include),
-                ]);
+        $internalName = Str::camel($internalName ?? $name);
 
-                if (! Str::contains($relationship, '.')) {
-                    $includes = $includes->merge(self::count($relationship.'Count', $include ? $include.'Count' : null));
-                }
-
-                return $includes;
+        return IncludedRelationship::getIndividualRelationshipPathsFromInclude($internalName)
+            ->flatMap(function (string $relationship) use ($name, $internalName): Collection {
+                return collect([
+                    new self($relationship, new IncludedRelationship(), $relationship === $internalName ? $internalName : null),
+                ])
+                    ->when(! Str::contains($relationship, '.'), function (Collection $includes) use ($internalName, $relationship) {
+                        return $includes->merge(self::count("{$relationship}Count", $relationship === $internalName ? "{$internalName}Count" : null));
+                    });
             });
     }
 
-    public static function count(string $relationship, ?string $include = null): Collection
+    public static function count(string $name, ?string $internalName = null): Collection
     {
         return collect([
-            new self($relationship, new IncludedCount(), $include),
+            new self($name, new IncludedCount(), $internalName),
         ]);
     }
 
     public function include(QueryBuilder $query)
     {
-        ($this->includeClass)($query, $this->relationship);
+        ($this->includeClass)($query, $this->internalName);
     }
 
     public function getName(): string
@@ -59,8 +58,8 @@ class AllowedInclude
         return $this->name;
     }
 
-    public function isForInclude(string $include): bool
+    public function isForInclude(string $includeName): bool
     {
-        return $this->name === $include;
+        return $this->name === $includeName;
     }
 }

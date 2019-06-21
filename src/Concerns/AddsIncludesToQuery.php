@@ -60,7 +60,9 @@ trait AddsIncludesToQuery
 
         $includes = $this->request->includes();
 
-        $allowedIncludeNames = $this->allowedIncludes->map->getName();
+        $allowedIncludeNames = $this->allowedIncludes->map(function (AllowedInclude $allowedInclude) {
+            return $allowedInclude->getName();
+        });
 
         $diff = $includes->diff($allowedIncludeNames);
 
