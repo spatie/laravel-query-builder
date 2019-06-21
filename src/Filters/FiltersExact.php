@@ -4,14 +4,13 @@ namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
-use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 
 class FiltersExact implements Filter
 {
     protected $relationConstraints = [];
 
-    public function __invoke(QueryBuilder $query, $value, string $property)
+    public function __invoke(Builder $query, $value, string $property)
     {
         if ($this->isRelationProperty($query, $property)) {
             $this->withRelationConstraint($query, $value, $property);

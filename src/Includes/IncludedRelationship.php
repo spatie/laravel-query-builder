@@ -4,11 +4,11 @@ namespace Spatie\QueryBuilder\Includes;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
-use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 
 class IncludedRelationship implements IncludeInterface
 {
-    public function __invoke(QueryBuilder $query, string $relationship)
+    public function __invoke(Builder $query, string $relationship)
     {
         $relatedTables = collect(explode('.', $relationship));
 

@@ -4,11 +4,11 @@ namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 
 class FiltersScope implements Filter
 {
-    public function __invoke(QueryBuilder $query, $values, string $property)
+    public function __invoke(Builder $query, $values, string $property)
     {
         $scope = Str::camel($property);
 

@@ -2,12 +2,11 @@
 
 namespace Spatie\QueryBuilder\Filters;
 
-use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 
 class FiltersPartial extends FiltersExact implements Filter
 {
-    public function __invoke(QueryBuilder $query, $value, string $property)
+    public function __invoke(Builder $query, $value, string $property)
     {
         if ($this->isRelationProperty($query, $property)) {
             $this->withRelationConstraint($query, $value, $property);
@@ -27,6 +26,8 @@ class FiltersPartial extends FiltersExact implements Filter
                     $query->orWhereRaw($sql, ["%{$partialValue}%"]);
                 }
             });
+
+            return;
         }
 
         $value = mb_strtolower($value, 'UTF8');

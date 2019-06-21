@@ -2,9 +2,9 @@
 
 namespace Spatie\QueryBuilder\Includes;
 
-use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 
 interface IncludeInterface
 {
-    public function __invoke(QueryBuilder $query, string $include);
+    public function __invoke(Builder $query, string $include);
 }
