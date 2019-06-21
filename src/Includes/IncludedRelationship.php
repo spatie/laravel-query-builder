@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder\Includes;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class IncludedRelationship implements Includable
@@ -28,5 +29,17 @@ class IncludedRelationship implements Includable
             ->toArray();
 
         $query->with($withs);
+    }
+
+    public static function getIndividualRelationshipPathsFromInclude(string $include): Collection
+    {
+        return collect(explode('.', $include))
+            ->reduce(function ($includes, $relationship) {
+                if ($includes->isEmpty()) {
+                    return $includes->push($relationship);
+                }
+
+                return $includes->push("{$includes->last()}.{$relationship}");
+            }, collect());
     }
 }

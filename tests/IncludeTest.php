@@ -104,6 +104,31 @@ class IncludeTest extends TestCase
     }
 
     /** @test */
+    public function allowing_a_nested_include_only_allows_the_include_count_for_the_first_level()
+    {
+        $model = $this
+            ->createQueryFromIncludeRequest('related-models-count')
+            ->allowedIncludes('related-models.nested-related-models')
+            ->first();
+
+        $this->assertNotNull($model->related_models_count);
+
+        $this->expectException(InvalidIncludeQuery::class);
+
+        $this
+            ->createQueryFromIncludeRequest('nested-related-models-count')
+            ->allowedIncludes('related-models.nested-related-models')
+            ->first();
+
+        $this->expectException(InvalidIncludeQuery::class);
+
+        $this
+            ->createQueryFromIncludeRequest('releated-models.nested-related-models-count')
+            ->allowedIncludes('related-models.nested-related-models')
+            ->first();
+    }
+
+    /** @test */
     public function it_can_include_morph_model_relations()
     {
         $models = $this

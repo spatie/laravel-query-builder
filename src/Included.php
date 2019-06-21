@@ -29,7 +29,7 @@ class Included
 
     public static function relationship(string $relationship, ?string $include = null): Collection
     {
-        return static::getIndividualRelationshipPathsFromInclude($relationship)
+        return IncludedRelationship::getIndividualRelationshipPathsFromInclude($relationship)
             ->flatMap(function (string $relationship) use ($include): Collection {
                 $includes = collect([
                     new self($relationship, new IncludedRelationship(), $include),
@@ -63,17 +63,5 @@ class Included
     public function isForInclude(string $include): bool
     {
         return $this->name === $include;
-    }
-
-    protected static function getIndividualRelationshipPathsFromInclude(string $include): Collection
-    {
-        return collect(explode('.', $include))
-            ->reduce(function ($includes, $relationship) {
-                if ($includes->isEmpty()) {
-                    return $includes->push($relationship);
-                }
-
-                return $includes->push("{$includes->last()}.{$relationship}");
-            }, collect());
     }
 }
