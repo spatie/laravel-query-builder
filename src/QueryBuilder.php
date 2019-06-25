@@ -101,6 +101,13 @@ class QueryBuilder extends Builder
         return parent::simplePaginate($perPage, $columns, $pageName, $page);
     }
 
+    public function chunk($count, callable $callback)
+    {
+        $this->parseSorts();
+
+        return parent::chunk($count, $callback);
+    }
+
     /**
      * Add the model, scopes, eager loaded relationships, local macro's and onDelete callback
      * from the $builder to this query builder.

@@ -110,6 +110,18 @@ class SortTest extends TestCase
     }
 
     /** @test */
+    public function it_can_sort_a_chunk_query()
+    {
+        $this
+            ->createQueryFromSortRequest('-name')
+            ->chunk(100, function ($models) {
+                //
+            });
+
+        $this->assertQueryExecuted('select * from "test_models" order by "name" desc limit 100 offset 0');
+    }
+
+    /** @test */
     public function it_can_guard_against_sorts_that_are_not_allowed()
     {
         $sortedModels = $this
