@@ -115,6 +115,33 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_ignores_empty_values_in_an_array_partial_filter()
+    {
+        $results = $this
+            ->createQueryFromFilterRequest([
+                'id' => '2,',
+            ])
+            ->allowedFilters(AllowedFilter::partial('id'))
+            ->get();
+
+        $this->assertCount(1, $results);
+        $this->assertEquals([2], $results->pluck('id')->all());
+    }
+
+    /** @test */
+    public function it_ignores_an_empty_array_partial_filter()
+    {
+        $results = $this
+            ->createQueryFromFilterRequest([
+                'id' => ',,',
+            ])
+            ->allowedFilters(AllowedFilter::partial('id'))
+            ->get();
+
+        $this->assertCount(5, $results);
+    }
+
+    /** @test */
     public function it_can_filter_and_match_results_by_exact_property()
     {
         $testModel = TestModel::first();
