@@ -16,7 +16,11 @@ class FiltersPartial extends FiltersExact implements Filter
 
         $sql = "LOWER({$wrappedProperty}) LIKE ?";
 
-        if (is_array($value) && count(array_filter($value))) {
+        if (is_array($value)) {
+            if (count(array_filter($value)) === 0) {
+                return $query;
+            }
+
             return $query->where(function (Builder $query) use ($value, $sql) {
                 foreach (array_filter($value) as $partialValue) {
                     $partialValue = mb_strtolower($partialValue, 'UTF8');
