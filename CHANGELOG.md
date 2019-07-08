@@ -8,6 +8,11 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - sorts and field selects are not allowed by default
 - field aliases
 
+## 1.17.5 - 2019-07-08
+
+- bugfix: correctly parse sorts in `chunk`ed query (#299)
+- bugfix: don't parse empty values in arrays for partial filters (#285)
+
 ## 1.17.4 - 2019-06-03
 
 - bugfix: `orderByRaw` is no longer being rejected as a sorting option (#258)
