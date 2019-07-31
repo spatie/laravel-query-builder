@@ -22,6 +22,9 @@ class AllowedFilter
     /** @var Collection */
     protected $ignored;
 
+    /** @var mixed */
+    protected $default;
+
     public function __construct(string $name, Filter $filterClass, ?string $internalName = null)
     {
         $this->name = $name;
@@ -91,6 +94,23 @@ class AllowedFilter
     public function getInternalName(): string
     {
         return $this->internalName;
+    }
+
+    public function default($value): self
+    {
+        $this->default = $value;
+
+        return $this;
+    }
+
+    public function getDefault()
+    {
+        return $this->default;
+    }
+
+    public function hasDefault(): bool
+    {
+        return isset($this->default);
     }
 
     protected function resolveValueForFiltering($value)

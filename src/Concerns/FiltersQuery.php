@@ -25,17 +25,26 @@ trait FiltersQuery
 
         $this->guardAgainstUnknownFilters();
 
-        $this->addFiltersToQuery($this->request->filters());
+        $this->addFiltersToQuery();
 
         return $this;
     }
 
-    protected function addFiltersToQuery(Collection $filters)
+    protected function addFiltersToQuery()
     {
-        $filters->each(function ($value, $property) {
-            $filter = $this->findFilter($property);
+        $this->allowedFilters->each(function (AllowedFilter $filter) {
+            if ($this->isFilterRequested($filter)) {
+                $value = $this->request->filters()->get($filter->getName());
+                $filter->filter($this, $value);
 
-            $filter->filter($this, $value);
+                return;
+            }
+
+            if ($filter->hasDefault()) {
+                $filter->filter($this, $filter->getDefault());
+
+                return;
+            }
         });
     }
 
@@ -45,6 +54,11 @@ trait FiltersQuery
             ->first(function (AllowedFilter $filter) use ($property) {
                 return $filter->isForFilter($property);
             });
+    }
+
+    protected function isFilterRequested(AllowedFilter $allowedFilter): bool
+    {
+        return $this->request->filters()->has($allowedFilter->getName());
     }
 
     protected function guardAgainstUnknownFilters()

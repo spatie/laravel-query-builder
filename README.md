@@ -310,6 +310,15 @@ QueryBuilder::for(User::class)
 // Filter does not get applied
 ```
 
+### Default Filter Values
+
+ You can specify a default value for a filter if a value for the filter was not present on the request.
+```php
+QueryBuilder::for(User::class)
+    ->allowedFilters(Filter::exact('name')->default('Joe'))
+    ->get();
+```
+
 ### Sorting
 
 The `sort` query parameter is used to determine by which property the results collection will be ordered. Sorting is ascending by default. Adding a hyphen (`-`) to the start of the property name will reverse the results collection.

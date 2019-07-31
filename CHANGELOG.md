@@ -12,6 +12,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - renamed `Spatie\QueryBuilder\Included` to `Spatie\QueryBuilder\AllowedInclude`
 - renamed `Spatie\QueryBuilder\Filter` to `Spatie\QueryBuilder\AllowedFilter`
 - `Filter`, `Include` and `Sort` interfaces no longer need to return the `Builder` instance
+- filters can now have default values 
 
 ## 1.17.3 - 2019-04-16
 
