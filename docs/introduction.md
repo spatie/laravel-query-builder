@@ -7,7 +7,7 @@ This package allows you to filter, sort and include eloquent relations based on 
 
 ## Basic usage
 
-Filtering an API request: `/users?filter[name]=John`:
+### Filtering an API request: `/users?filter[name]=John`:
 
 ```php
 use Spatie\QueryBuilder\QueryBuilder;
@@ -18,7 +18,9 @@ $users = QueryBuilder::for(User::class)
 // all `User`s that contain the string "John" in their name
 ```
 
-Requesting relations from an API request: `/users?include=posts`:
+[Read more about filtering features like: partial filters, exact filters, scope filters, custom filters, ignored values, default filter values, ...]()
+
+### Requesting relations from an API request: `/users?include=posts`:
 
 ```php
 $users = QueryBuilder::for(User::class)
@@ -27,7 +29,20 @@ $users = QueryBuilder::for(User::class)
 // all `User`s with their `posts` loaded
 ```
 
-Works together nicely with existing queries:
+[Read more about include features like: custom includes, including nested relationships, including relationship count, ...]()
+
+### Sorting an API request based on user ID's: `/users?sort=id`:
+
+```php
+$users = QueryBuilder::for(User::class)
+    ->allowedSorts('id')
+    ->get();
+// all `User`s sorted by ascending id
+```
+
+[Read more about sorting features like: custom sorts, sort direction, ...]()
+
+### Works together nicely with existing queries:
 
 ```php
 $query = User::where('active', true);
@@ -38,14 +53,26 @@ $user = QueryBuilder::for($query)
     ->first();
 ```
 
-Sorting an API request: `/users?sort=name`:
+### Selecting fields for a query: `/users?fields=id,email`
 
 ```php
-$users = QueryBuilder::for(User::class)->get();
-// all `User`s sorted by name
+$users = QueryBuilder::for(User::class)
+    ->allowedFields(['id', 'email'])
+    ->get();
+// the fetched `User`s will only have their id & email set
 ```
 
-Have a look at the basic usage section on the left for advanced examples and features.
+### Appending attributes to a query: `/users?append=full_name`
+
+```php
+$users = QueryBuilder::for(User::class)
+    ->allowedAppends('full_name')
+    ->get()
+    ->toJson();
+// all `User`s will have the `getFullNameAttribute` accessor appended to them
+```
+
+Have a look at the basic usage section on the left for more examples and features.
 
 ## We have badges!
 
