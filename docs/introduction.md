@@ -3,42 +3,56 @@ title: Introduction
 weight: 1
 ---
 
-Medialibrary is a Laravel (5.6 and up) package that can associate all sorts of files with Eloquent models. It provides a simple, fluent API to work with.
+This package allows you to filter, sort and include eloquent relations based on a request. The `QueryBuilder` used in this package extends Laravel's default Eloquent builder. This means all your favorite methods and macros are still available. Query parameter names follow the [JSON API specification](http://jsonapi.org/) as closely as possible.
 
-Here are some quick code examples:
+## Basic usage
 
-```php
-$newsItem = News::find(1);
-$newsItem->addMedia($pathToFile)->toMediaCollection('images');
-```
-
-It can also directly handle your uploads:
+Filtering an API request: `/users?filter[name]=John`:
 
 ```php
-$newsItem->addMediaFromRequest('image')->toMediaCollection('images');
+use Spatie\QueryBuilder\QueryBuilder;
+
+$users = QueryBuilder::for(User::class)
+    ->allowedFilters('name')
+    ->get();
+// all `User`s that contain the string "John" in their name
 ```
 
-Want to store some large files on another filesystem? No problem:
+Requesting relations from an API request: `/users?include=posts`:
 
 ```php
-$newsItem->addMedia($smallFile)->toMediaCollection('downloads', 'local');
-$newsItem->addMedia($bigFile)->toMediaCollection('downloads', 's3');
+$users = QueryBuilder::for(User::class)
+    ->allowedIncludes('posts')
+    ->get();
+// all `User`s with their `posts` loaded
 ```
 
-The storage of the files is handled by [Laravel's Filesystem](http://laravel.com/docs/5.6/filesystem), so you can plug in any compatible filesystem.
-
-The package can also generate derived images such as thumbnails for images, video's and pdf's. Once you've [set up your model](/laravel-medialibrary/v7/basic-usage/preparing-your-model), they're easily accessible:
+Works together nicely with existing queries:
 
 ```php
-$newsItem->getMedia('images')->first()->getUrl('thumb');
+$query = User::where('active', true);
+
+$user = QueryBuilder::for($query)
+    ->allowedIncludes('posts', 'permissions')
+    ->where('score', '>', 42) // chain on any of Laravel's query builder methods
+    ->first();
 ```
+
+Sorting an API request: `/users?sort=name`:
+
+```php
+$users = QueryBuilder::for(User::class)->get();
+// all `User`s sorted by name
+```
+
+Have a look at the basic usage section on the left for advanced examples and features.
 
 ## We have badges!
 
-<section class="article_badges">
-    <a href="https://github.com/spatie/laravel-medialibrary/releases"><img src="https://img.shields.io/github/release/spatie/laravel-medialibrary.svg?style=flat-square" alt="Latest Version"></a>
-    <a href="https://github.com/spatie/laravel-medialibrary/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="Software License"></a>
-    <a href="https://travis-ci.org/spatie/laravel-medialibrary"><img src="https://img.shields.io/travis/spatie/laravel-medialibrary/master.svg?style=flat-square" alt="Build Status"></a>
-    <a href="https://scrutinizer-ci.com/g/spatie/laravel-medialibrary"><img src="https://img.shields.io/scrutinizer/g/spatie/laravel-medialibrary.svg?style=flat-square" alt="Quality Score"></a>
-    <a href="https://packagist.org/packages/spatie/laravel-medialibrary"><img src="https://img.shields.io/packagist/dt/spatie/laravel-medialibrary.svg?style=flat-square" alt="Total Downloads"></a>
-</section>
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
+[![Build Status](https://img.shields.io/circleci/project/github/spatie/laravel-query-builder/master.svg?style=flat-square)](https://circleci.com/gh/spatie/laravel-query-builder)
+[![StyleCI](https://styleci.io/repos/117567334/shield?branch=master)](https://styleci.io/repos/117567334)
+[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-query-builder.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-query-builder)
+[![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
+
+![https://imgflip.com/i/36x6d6](Look at all those badges)

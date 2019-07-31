@@ -8,47 +8,7 @@
 
 This package allows you to filter, sort and include eloquent relations based on a request. The `QueryBuilder` used in this package extends Laravel's default Eloquent builder. This means all your favorite methods and macros are still available. Query parameter names follow the [JSON API specification](http://jsonapi.org/) as closely as possible.
 
-## Basic usage
-
-Filtering an API request: `/users?filter[name]=John`:
-
-```php
-use Spatie\QueryBuilder\QueryBuilder;
-
-$users = QueryBuilder::for(User::class)
-    ->allowedFilters('name')
-    ->get();
-// all `User`s that contain the string "John" in their name
-```
-
-Requesting relations from an API request: `/users?include=posts`:
-
-```php
-$users = QueryBuilder::for(User::class)
-    ->allowedIncludes('posts')
-    ->get();
-// all `User`s with their `posts` loaded
-```
-
-Works together nicely with existing queries:
-
-```php
-$query = User::where('active', true);
-
-$user = QueryBuilder::for($query)
-    ->allowedIncludes('posts', 'permissions')
-    ->where('score', '>', 42) // chain on any of Laravel's query builder methods
-    ->first();
-```
-
-Sorting an API request: `/users?sort=name`:
-
-```php
-$users = QueryBuilder::for(User::class)->get();
-// all `User`s sorted by name
-```
-
-Have a look at the [usage section](#usage) below for advanced examples and features.
+TODO: Copy some basic examples from docs here.
 
 ## Installation & Documentation
 
