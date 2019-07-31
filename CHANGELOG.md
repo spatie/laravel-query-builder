@@ -13,6 +13,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - renamed `Spatie\QueryBuilder\Filter` to `Spatie\QueryBuilder\AllowedFilter`
 - `Filter`, `Include` and `Sort` interfaces no longer need to return the `Builder` instance
 - sorts and fields need to be explicitly allowed
+- `allowedFields` should be called before `allowedIncludes`
 - filters can now have default values
 - includes will be converted to camelcase before being parsed
 
