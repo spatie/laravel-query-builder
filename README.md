@@ -50,40 +50,13 @@ $users = QueryBuilder::for(User::class)->get();
 
 Have a look at the [usage section](#usage) below for advanced examples and features.
 
-## Installation
+## Installation & Documentation
 
-You can install the package via composer:
+You'll find the documentation on [https://docs.spatie.be/laravel-query-builder/v2](https://docs.spatie.be/laravel-query-builder/v2).
 
-```bash
-composer require spatie/laravel-query-builder
-```
+Find yourself stuck using the package? Found a bug? Do you have general questions or suggestions for improving the media library? Feel free to [create an issue on GitHub](https://github.com/spatie/laravel-query-builder/issues), we'll try to address it as soon as possible.
 
-You can optionally publish the config file with:
-```bash
-php artisan vendor:publish --provider="Spatie\QueryBuilder\QueryBuilderServiceProvider" --tag="config"
-```
-
-This is the contents of the published config file:
-```php
-return [
-
-    /*
-     * By default the package will use the `include`, `filter`, `sort` and `fields` query parameters.
-     *
-     * Here you can customize those names.
-     */
-    'parameters' => [
-        'include' => 'include',
-
-        'filter' => 'filter',
-
-        'sort' => 'sort',
-
-        'fields' => 'fields',
-    ],
-
-];
-```
+If you've found a bug regarding security please mail [freek@spatie.be](mailto:freek@spatie.be) instead of using the issue tracker.
 
 ## Usage
 

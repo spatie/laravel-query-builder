@@ -6,7 +6,7 @@ return [
      * By default the package will use the `include`, `filter`, `sort`
      * and `fields` query parameters as described in the readme.
      *
-     * You can customize those query string parameters here.
+     * You can customize these query string parameters here.
      */
     'parameters' => [
         'include' => 'include',
