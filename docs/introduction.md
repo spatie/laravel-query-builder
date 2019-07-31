@@ -55,4 +55,4 @@ Have a look at the basic usage section on the left for advanced examples and fea
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-query-builder.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-query-builder)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
 
-![Look at all those badges](https://imgflip.com/i/36x6d6)
+![Look at all those badges](https://i.imgflip.com/36x6d6.jpg)
