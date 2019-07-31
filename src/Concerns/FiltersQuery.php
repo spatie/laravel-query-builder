@@ -2,7 +2,6 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
-use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
