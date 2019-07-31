@@ -6,13 +6,15 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 - removed request macros
 - sorts and field selects are not allowed by default
-- requesting an include suffixed with `Count` will add the related models count using `$query->withCount()`
+- requesting an include suffixed with `Count` will add the related models' count using `$query->withCount()`
 - custom sorts and filters now need to be passed as instances
 - renamed `Spatie\QueryBuilder\Sort` to `Spatie\QueryBuilder\AllowedSort`
 - renamed `Spatie\QueryBuilder\Included` to `Spatie\QueryBuilder\AllowedInclude`
 - renamed `Spatie\QueryBuilder\Filter` to `Spatie\QueryBuilder\AllowedFilter`
 - `Filter`, `Include` and `Sort` interfaces no longer need to return the `Builder` instance
-- filters can now have default values 
+- sorts and fields need to be explicitly allowed
+- filters can now have default values
+- includes will be converted to camelcase before being parsed
 
 ## 1.17.3 - 2019-04-16
 
