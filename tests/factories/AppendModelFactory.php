@@ -1,7 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
-use Spatie\QueryBuilder\Tests\Models\AppendModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\AppendModel;
 
 $factory->define(AppendModel::class, function (Faker $faker) {
     return [

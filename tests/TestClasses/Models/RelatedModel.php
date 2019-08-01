@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\QueryBuilder\Tests\Models;
+namespace Spatie\QueryBuilder\Tests\TestClasses\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;

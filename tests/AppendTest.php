@@ -4,7 +4,7 @@ namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\Tests\Models\AppendModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\AppendModel;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 
 class AppendTest extends TestCase

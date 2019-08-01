@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 class RelationFilterTest extends TestCase
 {

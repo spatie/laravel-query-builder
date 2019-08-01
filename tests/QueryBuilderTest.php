@@ -8,9 +8,9 @@ use Spatie\QueryBuilder\Sorts\Sort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\QueryBuilderRequest;
-use Spatie\QueryBuilder\Tests\Models\TestModel;
-use Spatie\QueryBuilder\Tests\Models\ScopeModel;
-use Spatie\QueryBuilder\Tests\Models\SoftDeleteModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\ScopeModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\SoftDeleteModel;
 
 class QueryBuilderTest extends TestCase
 {
