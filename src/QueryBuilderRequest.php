@@ -30,9 +30,9 @@ class QueryBuilderRequest extends Request
 
     public function appends(): Collection
     {
-        $appendParameter = config('query-builder.parameters.append');
+        $appendParameterName = config('query-builder.parameters.append');
 
-        $appendParts = $this->query($appendParameter);
+        $appendParts = $this->query($appendParameterName);
 
         if (! is_array($appendParts)) {
             $appendParts = explode(',', strtolower($appendParts));
@@ -43,9 +43,9 @@ class QueryBuilderRequest extends Request
 
     public function filters(): Collection
     {
-        $filterParameter = config('query-builder.parameters.filter');
+        $filterParameterName = config('query-builder.parameters.filter');
 
-        $filterParts = $this->query($filterParameter, []);
+        $filterParts = $this->query($filterParameterName, []);
 
         if (is_string($filterParts)) {
             return collect();
@@ -60,9 +60,9 @@ class QueryBuilderRequest extends Request
 
     public function fields(): Collection
     {
-        $fieldsParameter = config('query-builder.parameters.fields');
+        $fieldsParameterName = config('query-builder.parameters.fields');
 
-        $fieldsPerTable = collect($this->query($fieldsParameter));
+        $fieldsPerTable = collect($this->query($fieldsParameterName));
 
         if ($fieldsPerTable->isEmpty()) {
             return collect();
@@ -75,9 +75,9 @@ class QueryBuilderRequest extends Request
 
     public function sorts(): Collection
     {
-        $sortParameter = config('query-builder.parameters.sort');
+        $sortParameterName = config('query-builder.parameters.sort');
 
-        $sortParts = $this->query($sortParameter);
+        $sortParts = $this->query($sortParameterName);
 
         if (is_string($sortParts)) {
             $sortParts = explode(',', $sortParts);
