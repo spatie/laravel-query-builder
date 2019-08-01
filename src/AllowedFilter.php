@@ -19,7 +19,7 @@ class AllowedFilter
     /** @var string */
     protected $internalName;
 
-    /** @var Collection */
+    /** @var \Illuminate\Support\Collection */
     protected $ignored;
 
     /** @var mixed */
