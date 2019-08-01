@@ -15,12 +15,12 @@ class QueryBuilderRequest extends Request
 
     public function includes(): Collection
     {
-        $parameter = config('query-builder.parameters.include');
+        $parameterName = config('query-builder.parameters.include');
 
-        $includeParts = $this->query($parameter);
+        $includeParts = $this->query($parameterName);
 
         if (! is_array($includeParts)) {
-            $includeParts = explode(',', strtolower($this->query($parameter)));
+            $includeParts = explode(',', strtolower($this->query($parameterName)));
         }
 
         return collect($includeParts)
