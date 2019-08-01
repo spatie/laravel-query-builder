@@ -26,7 +26,7 @@ trait AddsFieldsToQuery
                 return $this->prependField($fieldName);
             });
 
-        $this->guardAgainstUnknownFields();
+        $this->ensureAllFieldsExist();
 
         $this->addRequestedModelFieldsToQuery();
 
@@ -70,7 +70,7 @@ trait AddsFieldsToQuery
         return $fields;
     }
 
-    protected function guardAgainstUnknownFields()
+    protected function ensureAllFieldsExist()
     {
         $requestedFields = $this->request->fields()
             ->map(function ($fields, $model) {

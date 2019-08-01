@@ -22,7 +22,7 @@ trait FiltersQuery
             return AllowedFilter::partial($filter);
         });
 
-        $this->guardAgainstUnknownFilters();
+        $this->ensureAllFiltersExist();
 
         $this->addFiltersToQuery();
 
@@ -60,7 +60,7 @@ trait FiltersQuery
         return $this->request->filters()->has($allowedFilter->getName());
     }
 
-    protected function guardAgainstUnknownFilters()
+    protected function ensureAllFiltersExist()
     {
         $filterNames = $this->request->filters()->keys();
 

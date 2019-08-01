@@ -30,7 +30,7 @@ trait AddsIncludesToQuery
                 return AllowedInclude::relationship($include);
             });
 
-        $this->guardAgainstUnknownIncludes();
+        $this->ensureAllIncludesExist();
 
         $this->addIncludesToQuery($this->request->includes());
 
@@ -54,7 +54,7 @@ trait AddsIncludesToQuery
             });
     }
 
-    protected function guardAgainstUnknownIncludes()
+    protected function ensureAllIncludesExist()
     {
         // TODO: fix this mess
 

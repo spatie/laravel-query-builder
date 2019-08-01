@@ -17,7 +17,7 @@ trait AppendsAttributesToResults
 
         $this->allowedAppends = collect($appends);
 
-        $this->guardAgainstUnknownAppends();
+        $this->ensureAllAppendsExist();
 
         return $this;
     }
@@ -29,7 +29,7 @@ trait AppendsAttributesToResults
         });
     }
 
-    protected function guardAgainstUnknownAppends()
+    protected function ensureAllAppendsExist()
     {
         $appends = $this->request->appends();
 

@@ -28,7 +28,7 @@ trait SortsQuery
             return AllowedSort::field(ltrim($sort, '-'));
         });
 
-        $this->guardAgainstUnknownSorts();
+        $this->ensureAllSortsExist();
 
         $this->addRequestedSortsToQuery(); // allowed is known & request is known, add what we can, if there is no request, -wait
 
@@ -97,7 +97,7 @@ trait SortsQuery
             });
     }
 
-    protected function guardAgainstUnknownSorts(): void
+    protected function ensureAllSortsExist(): void
     {
         $requestedSortNames = $this->request->sorts()->map(function (string $sort) {
             return ltrim($sort, '-');
