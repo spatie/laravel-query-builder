@@ -9,7 +9,7 @@ use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Models\RelatedModel;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
-use Spatie\QueryBuilder\Exceptions\AllowedIncludesBeforeAllowedFields;
+use Spatie\QueryBuilder\Exceptions\AllowedFieldsMustBeCalledBeforeAllowedIncludes;
 
 class FieldsTest extends TestCase
 {
@@ -135,7 +135,7 @@ class FieldsTest extends TestCase
     /** @test */
     public function it_throws_an_exception_when_calling_allowed_includes_before_allowed_fields()
     {
-        $this->expectException(AllowedIncludesBeforeAllowedFields::class);
+        $this->expectException(AllowedFieldsMustBeCalledBeforeAllowedIncludes::class);
 
         $this->createQueryFromFieldRequest()
             ->allowedIncludes('related-models')

@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
-use Spatie\QueryBuilder\Exceptions\AllowedIncludesBeforeAllowedFields;
+use Spatie\QueryBuilder\Exceptions\AllowedFieldsMustBeCalledBeforeAllowedIncludes;
 
 trait AddsFieldsToQuery
 {
@@ -16,7 +16,7 @@ trait AddsFieldsToQuery
     public function allowedFields($fields): self
     {
         if ($this->allowedIncludes instanceof Collection) {
-            throw new AllowedIncludesBeforeAllowedFields();
+            throw new AllowedFieldsMustBeCalledBeforeAllowedIncludes();
         }
 
         $fields = is_array($fields) ? $fields : func_get_args();
