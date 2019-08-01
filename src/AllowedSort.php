@@ -36,7 +36,7 @@ class AllowedSort
         return strpos($name, '-') === 0 ? SortDirection::DESCENDING : SortDirection::ASCENDING;
     }
 
-    public function sort(QueryBuilder $query, ?bool $descending = null)
+    public function sort(QueryBuilder $query, ?bool $descending = null): void
     {
         $descending = $descending ?? ($this->defaultDirection === SortDirection::DESCENDING);
 

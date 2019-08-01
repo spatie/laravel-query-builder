@@ -48,7 +48,7 @@ class AllowedInclude
         ]);
     }
 
-    public function include(QueryBuilder $query)
+    public function include(QueryBuilder $query): void
     {
         ($this->includeClass)($query, $this->internalName);
     }
