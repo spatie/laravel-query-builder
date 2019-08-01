@@ -41,7 +41,8 @@ class QueryBuilder extends Builder
     public static function for($baseQuery, ?Request $request = null): self
     {
         if (is_string($baseQuery)) {
-            $baseQuery = ($baseQuery)::query();
+            /** @var Builder $baseQuery */
+            $baseQuery = $baseQuery::query();
         }
 
         return new static($baseQuery, $request ?? request());
@@ -69,7 +70,8 @@ class QueryBuilder extends Builder
      */
     protected function initializeFromBuilder(Builder $builder)
     {
-        $this->setModel($builder->getModel())
+        $this
+            ->setModel($builder->getModel())
             ->setEagerLoads($builder->getEagerLoads());
 
         $builder->macro('getProtected', function (Builder $builder, string $property) {

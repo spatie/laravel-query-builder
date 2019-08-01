@@ -33,7 +33,7 @@ class AllowedSort
 
     public static function parseSortDirection(string $name): string
     {
-        return $name[0] === '-' ? SortDirection::DESCENDING : SortDirection::ASCENDING;
+        return strpos($name, '-') === 0 ? SortDirection::DESCENDING : SortDirection::ASCENDING;
     }
 
     public function sort(QueryBuilder $query, ?bool $descending = null)
