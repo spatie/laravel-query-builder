@@ -44,7 +44,7 @@ class AllowedInclude
     public static function count(string $name, ?string $internalName = null): Collection
     {
         return collect([
-            new self($name, new IncludedCount(), $internalName),
+            new static($name, new IncludedCount(), $internalName),
         ]);
     }
 
