@@ -137,6 +137,7 @@ class SortTest extends TestCase
     {
         $this
             ->createQueryFromSortRequest('-name')
+            ->allowedSorts('name')
             ->chunk(100, function ($models) {
                 //
             });
@@ -434,13 +435,13 @@ class SortTest extends TestCase
     }
 
     /** @test */
-    public function it_deletes_default_sorts_generated_for_descending_aliased_sorts()
+    public function it_ignores_non_existing_sorts_before_adding_them_as_an_alias()
     {
         $query = $this->createQueryFromSortRequest('-alias');
 
-        $this->assertSame('select * from "test_models" order by "alias" desc', $query->toSql());
+        $this->assertSame('select * from "test_models"', $query->toSql());
 
-        $query->allowedSorts(Sort::field('alias', 'name'));
+        $query->allowedSorts(AllowedSort::field('alias', 'name'));
 
         $this->assertSame('select * from "test_models" order by "name" desc', $query->toSql());
     }

@@ -2,10 +2,12 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use Illuminate\Support\Arr;
 use ReflectionClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
@@ -220,9 +222,13 @@ class IncludeTest extends TestCase
         $property = (new ReflectionClass($query))->getProperty('allowedIncludes');
         $property->setAccessible(true);
 
-        $includes = $property->getValue($query);
+        $includes = $property->getValue($query)->map(function (AllowedInclude $allowedInclude) {
+            return $allowedInclude->getName();
+        });
 
-        $this->assertCount(2, $includes);
+        $this->assertTrue($includes->contains('relatedModels'));
+        $this->assertTrue($includes->contains('relatedModelsCount'));
+        $this->assertTrue($includes->contains('relatedModels.nestedRelatedModels'));
     }
 
     /** @test */
@@ -287,7 +293,7 @@ class IncludeTest extends TestCase
     {
         $hasModelWithoutRelationLoaded = $collection
             ->contains(function (Model $model) use ($relation) {
-                return ! $model->relationLoaded($relation);
+                return !$model->relationLoaded($relation);
             });
 
         $this->assertFalse($hasModelWithoutRelationLoaded, "The `{$relation}` relation was expected but not loaded.");

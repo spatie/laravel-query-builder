@@ -28,6 +28,9 @@ trait AddsIncludesToQuery
                 }
 
                 return AllowedInclude::relationship($include);
+            })
+            ->unique(function (AllowedInclude $allowedInclude) {
+                return $allowedInclude->getName();
             });
 
         $this->ensureAllIncludesExist();
