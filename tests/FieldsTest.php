@@ -5,10 +5,10 @@ namespace Spatie\QueryBuilder\Tests;
 use DB;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
-use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Exceptions\AllowedFieldsMustBeCalledBeforeAllowedIncludes;
 
 class FieldsTest extends TestCase
