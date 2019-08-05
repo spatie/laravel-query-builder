@@ -4,9 +4,9 @@ namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\Tests\Models\TestModel;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 class RelationFilterTest extends TestCase
 {
@@ -104,7 +104,7 @@ class RelationFilterTest extends TestCase
                     return $model->relatedModels->pluck('id');
                 })->flatten()->all(),
             ])
-            ->allowedFilters(Filter::exact('related-models.id'))
+            ->allowedFilters(AllowedFilter::exact('related-models.id'))
             ->get();
 
         $this->assertCount(2, $results);
@@ -120,7 +120,7 @@ class RelationFilterTest extends TestCase
             ->createQueryFromFilterRequest([
                 'related-models.nested-related-models.name' => ' test ',
             ])
-            ->allowedFilters(Filter::exact('related-models.nested-related-models.name'))
+            ->allowedFilters(AllowedFilter::exact('related-models.nested-related-models.name'))
             ->get();
 
         $this->assertCount(0, $modelsResult);

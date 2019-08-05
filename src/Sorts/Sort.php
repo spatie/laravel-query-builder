@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Builder;
 
 interface Sort
 {
-    public function __invoke(Builder $query, $descending, string $property) : Builder;
+    public function __invoke(Builder $query, $descending, string $property);
 }

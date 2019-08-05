@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\QueryBuilder\Tests\Models;
+namespace Spatie\QueryBuilder\Tests\TestClasses\Models;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;

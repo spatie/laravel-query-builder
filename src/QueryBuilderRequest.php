@@ -13,24 +13,26 @@ class QueryBuilderRequest extends Request
         return static::createFrom($request, new self());
     }
 
-    public function includes()
+    public function includes(): Collection
     {
-        $parameter = config('query-builder.parameters.include');
+        $includeParameterName = config('query-builder.parameters.include');
 
-        $includeParts = $this->query($parameter);
+        $includeParts = $this->query($includeParameterName);
 
         if (! is_array($includeParts)) {
-            $includeParts = explode(',', strtolower($this->query($parameter)));
+            $includeParts = explode(',', strtolower($this->query($includeParameterName)));
         }
 
-        return collect($includeParts)->filter();
+        return collect($includeParts)
+            ->filter()
+            ->map([Str::class, 'camel']);
     }
 
-    public function appends()
+    public function appends(): Collection
     {
-        $appendParameter = config('query-builder.parameters.append');
+        $appendParameterName = config('query-builder.parameters.append');
 
-        $appendParts = $this->query($appendParameter);
+        $appendParts = $this->query($appendParameterName);
 
         if (! is_array($appendParts)) {
             $appendParts = explode(',', strtolower($appendParts));
@@ -39,11 +41,11 @@ class QueryBuilderRequest extends Request
         return collect($appendParts)->filter();
     }
 
-    public function filters()
+    public function filters(): Collection
     {
-        $filterParameter = config('query-builder.parameters.filter');
+        $filterParameterName = config('query-builder.parameters.filter');
 
-        $filterParts = $this->query($filterParameter, []);
+        $filterParts = $this->query($filterParameterName, []);
 
         if (is_string($filterParts)) {
             return collect();
@@ -58,9 +60,9 @@ class QueryBuilderRequest extends Request
 
     public function fields(): Collection
     {
-        $fieldsParameter = config('query-builder.parameters.fields');
+        $fieldsParameterName = config('query-builder.parameters.fields');
 
-        $fieldsPerTable = collect($this->query($fieldsParameter));
+        $fieldsPerTable = collect($this->query($fieldsParameterName));
 
         if ($fieldsPerTable->isEmpty()) {
             return collect();
@@ -73,9 +75,9 @@ class QueryBuilderRequest extends Request
 
     public function sorts(): Collection
     {
-        $sortParameter = config('query-builder.parameters.sort');
+        $sortParameterName = config('query-builder.parameters.sort');
 
-        $sortParts = $this->query($sortParameter);
+        $sortParts = $this->query($sortParameterName);
 
         if (is_string($sortParts)) {
             $sortParts = explode(',', $sortParts);
@@ -84,6 +86,11 @@ class QueryBuilderRequest extends Request
         return collect($sortParts)->filter();
     }
 
+    /**
+     * @param $value
+     *
+     * @return array|bool
+     */
     protected function getFilterValue($value)
     {
         if (is_array($value)) {

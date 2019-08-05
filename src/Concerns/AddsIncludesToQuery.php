@@ -4,6 +4,8 @@ namespace Spatie\QueryBuilder\Concerns;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Spatie\QueryBuilder\AllowedInclude;
+use Spatie\QueryBuilder\Includes\IncludeInterface;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 
 trait AddsIncludesToQuery
@@ -16,18 +18,19 @@ trait AddsIncludesToQuery
         $includes = is_array($includes) ? $includes : func_get_args();
 
         $this->allowedIncludes = collect($includes)
-            ->flatMap(function ($include) {
-                return collect(explode('.', $include))
-                    ->reduce(function ($collection, $include) {
-                        if ($collection->isEmpty()) {
-                            return $collection->push($include);
-                        }
+            ->flatMap(function ($include): Collection {
+                if ($include instanceof IncludeInterface) {
+                    return collect([$include]);
+                }
 
-                        return $collection->push("{$collection->last()}.{$include}");
-                    }, collect());
-            })->unique();
+                if (Str::endsWith($include, config('query-builder.count_suffix'))) {
+                    return AllowedInclude::count($include);
+                }
 
-        $this->guardAgainstUnknownIncludes();
+                return AllowedInclude::relationship($include);
+            });
+
+        $this->ensureAllIncludesExist();
 
         $this->addIncludesToQuery($this->request->includes());
 
@@ -36,40 +39,37 @@ trait AddsIncludesToQuery
 
     protected function addIncludesToQuery(Collection $includes)
     {
-        $includes
-            ->map([Str::class, 'camel'])
-            ->map(function (string $include) {
-                return collect(explode('.', $include));
-            })
-            ->flatMap(function (Collection $relatedTables) {
-                return $relatedTables
-                    ->mapWithKeys(function ($table, $key) use ($relatedTables) {
-                        $fields = $this->getFieldsForRelatedTable(Str::snake($table));
+        $includes->each(function ($include) {
+            $include = $this->findInclude($include);
 
-                        $fullRelationName = $relatedTables->slice(0, $key + 1)->implode('.');
+            $include->include($this);
+        });
+    }
 
-                        if (empty($fields)) {
-                            return [$fullRelationName];
-                        }
-
-                        return [$fullRelationName => function ($query) use ($fields) {
-                            $query->select($fields);
-                        }];
-                    });
-            })
-            ->pipe(function (Collection $withs) {
-                $this->with($withs->all());
+    protected function findInclude(string $include): ?AllowedInclude
+    {
+        return $this->allowedIncludes
+            ->first(function (AllowedInclude $included) use ($include) {
+                return $included->isForInclude($include);
             });
     }
 
-    protected function guardAgainstUnknownIncludes()
+    protected function ensureAllIncludesExist()
     {
+        // TODO: fix this mess
+
         $includes = $this->request->includes();
 
-        $diff = $includes->diff($this->allowedIncludes);
+        $allowedIncludeNames = $this->allowedIncludes->map(function (AllowedInclude $allowedInclude) {
+            return $allowedInclude->getName();
+        });
+
+        $diff = $includes->diff($allowedIncludeNames);
 
         if ($diff->count()) {
-            throw InvalidIncludeQuery::includesNotAllowed($diff, $this->allowedIncludes);
+            throw InvalidIncludeQuery::includesNotAllowed($diff, $allowedIncludeNames);
         }
+
+        // TODO: Check for non-existing relationships?
     }
 }

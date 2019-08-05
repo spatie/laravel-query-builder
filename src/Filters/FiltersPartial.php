@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 
 class FiltersPartial extends FiltersExact implements Filter
 {
-    public function __invoke(Builder $query, $value, string $property): Builder
+    public function __invoke(Builder $query, $value, string $property)
     {
         if ($this->isRelationProperty($query, $property)) {
-            return $this->withRelationConstraint($query, $value, $property);
+            $this->withRelationConstraint($query, $value, $property);
+
+            return;
         }
 
         $wrappedProperty = $query->getQuery()->getGrammar()->wrap($property);
@@ -21,17 +23,19 @@ class FiltersPartial extends FiltersExact implements Filter
                 return $query;
             }
 
-            return $query->where(function (Builder $query) use ($value, $sql) {
+            $query->where(function (Builder $query) use ($value, $sql) {
                 foreach (array_filter($value) as $partialValue) {
                     $partialValue = mb_strtolower($partialValue, 'UTF8');
 
                     $query->orWhereRaw($sql, ["%{$partialValue}%"]);
                 }
             });
+
+            return;
         }
 
         $value = mb_strtolower($value, 'UTF8');
 
-        return $query->whereRaw($sql, ["%{$value}%"]);
+        $query->whereRaw($sql, ["%{$value}%"]);
     }
 }

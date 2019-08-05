@@ -10,17 +10,21 @@ class FiltersExact implements Filter
 {
     protected $relationConstraints = [];
 
-    public function __invoke(Builder $query, $value, string $property) : Builder
+    public function __invoke(Builder $query, $value, string $property)
     {
         if ($this->isRelationProperty($query, $property)) {
-            return $this->withRelationConstraint($query, $value, $property);
+            $this->withRelationConstraint($query, $value, $property);
+
+            return;
         }
 
         if (is_array($value)) {
-            return $query->whereIn($property, $value);
+            $query->whereIn($property, $value);
+
+            return;
         }
 
-        return $query->where($property, '=', $value);
+        $query->where($property, '=', $value);
     }
 
     protected function isRelationProperty(Builder $query, string $property) : bool
@@ -40,7 +44,7 @@ class FiltersExact implements Filter
         return true;
     }
 
-    protected function withRelationConstraint(Builder $query, $value, string $property) : Builder
+    protected function withRelationConstraint(Builder $query, $value, string $property)
     {
         [$relation, $property] = collect(explode('.', $property))
             ->pipe(function (Collection $parts) {
@@ -50,7 +54,7 @@ class FiltersExact implements Filter
                 ];
             });
 
-        return $query->whereHas($relation, function (Builder $query) use ($value, $relation, $property) {
+        $query->whereHas($relation, function (Builder $query) use ($value, $relation, $property) {
             $this->relationConstraints[] = $property = $query->getModel()->getTable().'.'.$property;
 
             $this->__invoke($query, $value, $property);

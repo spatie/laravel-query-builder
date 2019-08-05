@@ -5,14 +5,18 @@ namespace Spatie\QueryBuilder\Tests;
 use DB;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\Tests\Models\TestModel;
-use Spatie\QueryBuilder\Tests\Models\RelatedModel;
-use Spatie\QueryBuilder\Exceptions\InvalidColumnName;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
+use Spatie\QueryBuilder\Exceptions\AllowedFieldsMustBeCalledBeforeAllowedIncludes;
 
 class FieldsTest extends TestCase
 {
+    /** \Spatie\QueryBuilder\Tests\Models\TestModel */
     protected $model;
+
+    /** @var string */
     protected $modelTableName;
 
     public function setUp(): void
@@ -34,7 +38,7 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
-    public function it_fetches_all_columns_if_no_specific_columns_were_requested()
+    public function it_fetches_all_columns_if_no_field_was_requested_but_allowed_fields_were_specified()
     {
         $query = QueryBuilder::for(TestModel::class)->allowedFields('id', 'name')->toSql();
 
@@ -59,6 +63,16 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
+    public function it_wont_fetch_a_specific_column_if_its_not_allowed()
+    {
+        $query = $this->createQueryFromFieldRequest(['test_models' => 'random-column'])->toSql();
+
+        $expected = TestModel::query()->toSql();
+
+        $this->assertEquals($expected, $query);
+    }
+
+    /** @test */
     public function it_can_fetch_sketchy_columns_if_they_are_allowed_fields()
     {
         $query = $this
@@ -74,7 +88,7 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
-    public function it_guards_against_invalid_fields()
+    public function it_guards_against_not_allowed_fields()
     {
         $this->expectException(InvalidFieldQuery::class);
 
@@ -84,7 +98,7 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
-    public function it_guards_against_invalid_fields_from_an_included_resource()
+    public function it_guards_against_not_allowed_fields_from_an_included_resource()
     {
         $this->expectException(InvalidFieldQuery::class);
 
@@ -109,7 +123,9 @@ class FieldsTest extends TestCase
             'include' => ['related-models'],
         ]);
 
-        $queryBuilder = QueryBuilder::for(TestModel::class, $request)->allowedIncludes('related-models');
+        $queryBuilder = QueryBuilder::for(TestModel::class, $request)
+            ->allowedFields('related_models.name', 'id')
+            ->allowedIncludes('related-models');
 
         DB::enableQueryLog();
 
@@ -117,6 +133,51 @@ class FieldsTest extends TestCase
 
         $this->assertQueryLogContains('select "test_models"."id" from "test_models"');
         $this->assertQueryLogContains('select "name" from "related_models"');
+    }
+
+    /** @test */
+    public function it_throws_an_exception_when_calling_allowed_includes_before_allowed_fields()
+    {
+        $this->expectException(AllowedFieldsMustBeCalledBeforeAllowedIncludes::class);
+
+        $this->createQueryFromFieldRequest()
+            ->allowedIncludes('related-models')
+            ->allowedFields('name');
+    }
+
+    /** @test */
+    public function it_throws_an_exception_when_calling_allowed_includes_before_allowed_fields_but_with_requested_fields()
+    {
+        $request = new Request([
+            'fields' => [
+                'test_models' => 'id',
+                'related_models' => 'name',
+            ],
+            'include' => ['related-models'],
+        ]);
+
+        $this->expectException(UnknownIncludedFieldsQuery::class);
+
+        QueryBuilder::for(TestModel::class, $request)
+            ->allowedIncludes('related-models')
+            ->allowedFields('name');
+    }
+
+    /** @test */
+    public function it_throws_an_exception_when_requesting_fields_for_an_allowed_included_without_any_allowed_fields()
+    {
+        $request = new Request([
+            'fields' => [
+                'test_models' => 'id',
+                'related_models' => 'name',
+            ],
+            'include' => ['related-models'],
+        ]);
+
+        $this->expectException(UnknownIncludedFieldsQuery::class);
+
+        QueryBuilder::for(TestModel::class, $request)
+            ->allowedIncludes('related-models');
     }
 
     /** @test */
@@ -128,8 +189,8 @@ class FieldsTest extends TestCase
         ]);
 
         $queryBuilder = QueryBuilder::for(TestModel::class, $request)
-            ->allowedIncludes('related-models')
-            ->allowedFields(['related_models.id', 'related_models.name']);
+            ->allowedFields(['related_models.id', 'related_models.name'])
+            ->allowedIncludes('related-models');
 
         DB::enableQueryLog();
 
@@ -146,8 +207,6 @@ class FieldsTest extends TestCase
             'fields' => ['test_models' => 'id->"\')from test_models--injection'],
         ]);
 
-        $this->expectException(InvalidColumnName::class);
-
         DB::enableQueryLog();
 
         QueryBuilder::for(TestModel::class, $request)->get();
@@ -155,7 +214,7 @@ class FieldsTest extends TestCase
         $this->assertQueryLogDoesntContain('--injection');
     }
 
-    protected function createQueryFromFieldRequest(array $fields): QueryBuilder
+    protected function createQueryFromFieldRequest(array $fields = []): QueryBuilder
     {
         $request = new Request([
             'fields' => $fields,

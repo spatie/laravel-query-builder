@@ -3,7 +3,6 @@
 namespace Spatie\QueryBuilder;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Concerns\SortsQuery;
 use Spatie\QueryBuilder\Concerns\FiltersQuery;
@@ -42,21 +41,11 @@ class QueryBuilder extends Builder
     public static function for($baseQuery, ?Request $request = null): self
     {
         if (is_string($baseQuery)) {
-            $baseQuery = ($baseQuery)::query();
+            /** @var Builder $baseQuery */
+            $baseQuery = $baseQuery::query();
         }
 
         return new static($baseQuery, $request ?? request());
-    }
-
-    public function getQuery()
-    {
-        $this->parseSorts();
-
-        if (! $this->allowedFields instanceof Collection) {
-            $this->addAllRequestedFields();
-        }
-
-        return parent::getQuery();
     }
 
     /**
@@ -64,12 +53,6 @@ class QueryBuilder extends Builder
      */
     public function get($columns = ['*'])
     {
-        $this->parseSorts();
-
-        if (! $this->allowedFields instanceof Collection) {
-            $this->addAllRequestedFields();
-        }
-
         $results = parent::get($columns);
 
         if ($this->request->appends()->isNotEmpty()) {
@@ -77,35 +60,6 @@ class QueryBuilder extends Builder
         }
 
         return $results;
-    }
-
-    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-    {
-        $this->parseSorts();
-
-        if (! $this->allowedFields instanceof Collection) {
-            $this->addAllRequestedFields();
-        }
-
-        return parent::paginate($perPage, $columns, $pageName, $page);
-    }
-
-    public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-    {
-        $this->parseSorts();
-
-        if (! $this->allowedFields instanceof Collection) {
-            $this->addAllRequestedFields();
-        }
-
-        return parent::simplePaginate($perPage, $columns, $pageName, $page);
-    }
-
-    public function chunk($count, callable $callback)
-    {
-        $this->parseSorts();
-
-        return parent::chunk($count, $callback);
     }
 
     /**
@@ -116,7 +70,8 @@ class QueryBuilder extends Builder
      */
     protected function initializeFromBuilder(Builder $builder)
     {
-        $this->setModel($builder->getModel())
+        $this
+            ->setModel($builder->getModel())
             ->setEagerLoads($builder->getEagerLoads());
 
         $builder->macro('getProtected', function (Builder $builder, string $property) {

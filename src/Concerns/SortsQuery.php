@@ -2,53 +2,41 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
-use Spatie\QueryBuilder\Sort;
-use Illuminate\Support\Collection;
-use Spatie\QueryBuilder\ColumnNameSanitizer;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 
 trait SortsQuery
 {
     /** @var \Illuminate\Support\Collection */
-    protected $defaultSorts;
-
-    /** @var \Illuminate\Support\Collection */
     protected $allowedSorts;
-
-    /** @var bool */
-    protected $sortsWereParsed = false;
-
-    /**
-     * Per default, sorting is allowed on all columns if not specified otherwise.
-     * We keep track of those default sorts to purge them if, at a later point in time, allowed sorts are specified.
-     *
-     * @var array
-     */
-    protected $generatedDefaultSorts = [];
 
     public function allowedSorts($sorts): self
     {
-        $sorts = is_array($sorts) ? $sorts : func_get_args();
+        if ($this->request->sorts()->isEmpty()) {
+            // We haven't got any requested sorts. No need to parse allowed sorts.
 
-        if (! $this->request->sorts()) {
             return $this;
         }
 
+        $sorts = is_array($sorts) ? $sorts : func_get_args();
+
         $this->allowedSorts = collect($sorts)->map(function ($sort) {
-            if ($sort instanceof Sort) {
+            if ($sort instanceof AllowedSort) {
                 return $sort;
             }
 
-            return Sort::field(ltrim($sort, '-'));
+            return AllowedSort::field(ltrim($sort, '-'));
         });
 
-        $this->guardAgainstUnknownSorts();
+        $this->ensureAllSortsExist();
+
+        $this->addRequestedSortsToQuery(); // allowed is known & request is known, add what we can, if there is no request, -wait
 
         return $this;
     }
 
     /**
-     * @param array|string|\Spatie\QueryBuilder\Sort $sorts
+     * @param array|string|\Spatie\QueryBuilder\AllowedSort $sorts
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
      */
@@ -58,50 +46,38 @@ trait SortsQuery
     }
 
     /**
-     * @param array|string|\Spatie\QueryBuilder\Sort $sorts
+     * @param array|string|\Spatie\QueryBuilder\AllowedSort $sorts
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
      */
     public function defaultSorts($sorts): self
     {
+        if ($this->request->sorts()->isNotEmpty()) {
+            // We've got requested sorts. No need to parse defaults.
+
+            return $this;
+        }
+
         $sorts = is_array($sorts) ? $sorts : func_get_args();
 
-        $this->defaultSorts = collect($sorts)->map(function ($sort) {
-            if (is_string($sort)) {
-                return Sort::field($sort);
-            }
+        collect($sorts)
+            ->map(function ($sort) {
+                if ($sort instanceof AllowedSort) {
+                    return $sort;
+                }
 
-            return $sort;
-        });
+                return AllowedSort::field($sort);
+            })
+            ->each(function (AllowedSort $sort) {
+                $sort->sort($this);
+            });
 
         return $this;
     }
 
-    protected function parseSorts()
+    protected function addRequestedSortsToQuery()
     {
-        // Avoid repeated calls when used by e.g. 'paginate'
-        if ($this->sortsWereParsed) {
-            return;
-        }
-
-        $this->sortsWereParsed = true;
-
-        if (! $this->allowedSorts instanceof Collection) {
-            $this->addDefaultSorts();
-            $this->allowRepeatedParse();
-        } else {
-            $this->purgeGeneratedDefaultSorts();
-        }
-
-        $sorts = $this->request->sorts();
-
-        if ($sorts->isEmpty()) {
-            optional($this->defaultSorts)->each(function (Sort $sort) {
-                $sort->sort($this);
-            });
-        }
-
-        $sorts
+        $this->request->sorts()
             ->each(function (string $property) {
                 $descending = $property[0] === '-';
 
@@ -113,61 +89,28 @@ trait SortsQuery
             });
     }
 
-    protected function findSort(string $property): ?Sort
+    protected function findSort(string $property): ?AllowedSort
     {
         return $this->allowedSorts
-            ->merge($this->defaultSorts)
-            ->first(function (Sort $sort) use ($property) {
-                return $sort->isForProperty($property);
+            ->first(function (AllowedSort $sort) use ($property) {
+                return $sort->isSort($property);
             });
     }
 
-    protected function addDefaultSorts()
+    protected function ensureAllSortsExist(): void
     {
-        $sanitizedSortColumns = $this->request->sorts()->map(function ($sort) {
-            $sortColumn = ltrim($sort, '-');
-
-            // This is the only place where query string parameters are passed as
-            // sort columns directly. We need to sanitize these column names.
-            return ColumnNameSanitizer::sanitize($sortColumn);
-        });
-
-        $this->allowedSorts = $sanitizedSortColumns->map(function ($column) {
-            return Sort::field($column);
-        });
-
-        $this->generatedDefaultSorts = $sanitizedSortColumns->toArray();
-    }
-
-    protected function guardAgainstUnknownSorts()
-    {
-        $sortNames = $this->request->sorts()->map(function ($sort) {
+        $requestedSortNames = $this->request->sorts()->map(function (string $sort) {
             return ltrim($sort, '-');
         });
 
-        $allowedSortNames = $this->allowedSorts->map->getProperty();
+        $allowedSortNames = $this->allowedSorts->map(function (AllowedSort $sort) {
+            return $sort->getName();
+        });
 
-        $diff = $sortNames->diff($allowedSortNames);
+        $unknownSorts = $requestedSortNames->diff($allowedSortNames);
 
-        if ($diff->count()) {
-            throw InvalidSortQuery::sortsNotAllowed($diff, $allowedSortNames);
+        if ($unknownSorts->isNotEmpty()) {
+            throw InvalidSortQuery::sortsNotAllowed($unknownSorts, $allowedSortNames);
         }
-    }
-
-    protected function allowRepeatedParse(): void
-    {
-        $this->sortsWereParsed = false;
-    }
-
-    protected function purgeGeneratedDefaultSorts(): void
-    {
-        $this->query->orders = collect($this->query->orders)
-            ->reject(function ($order) {
-                if (! isset($order['column'])) {
-                    return false;
-                }
-
-                return in_array($order['column'], $this->generatedDefaultSorts);
-            })->values()->all();
     }
 }

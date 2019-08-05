@@ -2,8 +2,7 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
-use Spatie\QueryBuilder\Filter;
-use Illuminate\Support\Collection;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
 trait FiltersQuery
@@ -14,43 +13,60 @@ trait FiltersQuery
     public function allowedFilters($filters): self
     {
         $filters = is_array($filters) ? $filters : func_get_args();
+
         $this->allowedFilters = collect($filters)->map(function ($filter) {
-            if ($filter instanceof Filter) {
+            if ($filter instanceof AllowedFilter) {
                 return $filter;
             }
 
-            return Filter::partial($filter);
+            return AllowedFilter::partial($filter);
         });
 
-        $this->guardAgainstUnknownFilters();
+        $this->ensureAllFiltersExist();
 
-        $this->addFiltersToQuery($this->request->filters());
+        $this->addFiltersToQuery();
 
         return $this;
     }
 
-    protected function addFiltersToQuery(Collection $filters)
+    protected function addFiltersToQuery()
     {
-        $filters->each(function ($value, $property) {
-            $filter = $this->findFilter($property);
+        $this->allowedFilters->each(function (AllowedFilter $filter) {
+            if ($this->isFilterRequested($filter)) {
+                $value = $this->request->filters()->get($filter->getName());
+                $filter->filter($this, $value);
 
-            $filter->filter($this, $value);
+                return;
+            }
+
+            if ($filter->hasDefault()) {
+                $filter->filter($this, $filter->getDefault());
+
+                return;
+            }
         });
     }
 
-    protected function findFilter(string $property): ?Filter
+    protected function findFilter(string $property): ?AllowedFilter
     {
         return $this->allowedFilters
-            ->first(function (Filter $filter) use ($property) {
-                return $filter->isForProperty($property);
+            ->first(function (AllowedFilter $filter) use ($property) {
+                return $filter->isForFilter($property);
             });
     }
 
-    protected function guardAgainstUnknownFilters()
+    protected function isFilterRequested(AllowedFilter $allowedFilter): bool
+    {
+        return $this->request->filters()->has($allowedFilter->getName());
+    }
+
+    protected function ensureAllFiltersExist()
     {
         $filterNames = $this->request->filters()->keys();
 
-        $allowedFilterNames = $this->allowedFilters->map->getProperty();
+        $allowedFilterNames = $this->allowedFilters->map(function (AllowedFilter $allowedFilter) {
+            return $allowedFilter->getName();
+        });
 
         $diff = $filterNames->diff($allowedFilterNames);
 

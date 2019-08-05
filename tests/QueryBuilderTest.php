@@ -2,29 +2,18 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use ReflectionClass;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\Sorts\Sort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\QueryBuilder\Tests\Models\TestModel;
-use Spatie\QueryBuilder\Tests\Models\ScopeModel;
-use Spatie\QueryBuilder\Tests\Models\SoftDeleteModel;
+use Spatie\QueryBuilder\QueryBuilderRequest;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\ScopeModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\SoftDeleteModel;
 
 class QueryBuilderTest extends TestCase
 {
-    /** @test */
-    public function it_will_determine_the_request_when_its_not_given()
-    {
-        $this->getJson('/test-model?sort=name');
-
-        $builder = QueryBuilder::for(TestModel::class);
-
-        $this->assertEquals([
-            'direction' => 'asc',
-            'column' => 'name',
-        ], $builder->getQuery()->orders[0]);
-    }
-
     /** @test */
     public function it_can_be_given_a_custom_base_query_using_where()
     {
@@ -49,6 +38,21 @@ class QueryBuilderTest extends TestCase
             $eloquentBuilder->toSql(),
             $queryBuilder->toSql()
         );
+    }
+
+    /** @test */
+    public function it_will_determine_the_request_when_its_not_given()
+    {
+        $builderReflection = new ReflectionClass(QueryBuilder::class);
+        $requestProperty = $builderReflection->getProperty('request');
+        $requestProperty->setAccessible(true);
+
+        $this->getJson('/test-model?sort=name');
+
+        $builder = QueryBuilder::for(TestModel::class);
+
+        $this->assertInstanceOf(QueryBuilderRequest::class, $requestProperty->getValue($builder));
+        $this->assertEquals(['name'], $requestProperty->getValue($builder)->sorts()->toArray());
     }
 
     /** @test */
@@ -151,13 +155,13 @@ class QueryBuilderTest extends TestCase
         ]);
 
         $usingSortFirst = QueryBuilder::for(TestModel::class, $req)
-            ->allowedSorts(\Spatie\QueryBuilder\Sort::custom('name', $customSort))
+            ->allowedSorts(\Spatie\QueryBuilder\AllowedSort::custom('name', $customSort))
             ->allowedFilters('name')
             ->toSql();
 
         $usingFilterFirst = QueryBuilder::for(TestModel::class, $req)
             ->allowedFilters('name')
-            ->allowedSorts(\Spatie\QueryBuilder\Sort::custom('name', $customSort))
+            ->allowedSorts(\Spatie\QueryBuilder\AllowedSort::custom('name', $customSort))
             ->toSql();
 
         $this->assertEquals($usingSortFirst, $usingFilterFirst);

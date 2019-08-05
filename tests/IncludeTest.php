@@ -8,9 +8,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\QueryBuilder\Tests\Models\TestModel;
-use Spatie\QueryBuilder\Tests\Models\MorphModel;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\MorphModel;
 
 class IncludeTest extends TestCase
 {
@@ -59,6 +59,28 @@ class IncludeTest extends TestCase
     }
 
     /** @test */
+    public function it_can_include_an_includes_count()
+    {
+        $model = $this
+            ->createQueryFromIncludeRequest('related-models-count')
+            ->allowedIncludes('relatedModelsCount')
+            ->first();
+
+        $this->assertNotNull($model->related_models_count);
+    }
+
+    /** @test */
+    public function allowing_an_include_also_allows_the_include_count()
+    {
+        $model = $this
+            ->createQueryFromIncludeRequest('related-models-count')
+            ->allowedIncludes('relatedModels')
+            ->first();
+
+        $this->assertNotNull($model->related_models_count);
+    }
+
+    /** @test */
     public function it_can_include_nested_model_relations()
     {
         $models = $this
@@ -80,6 +102,31 @@ class IncludeTest extends TestCase
             ->get();
 
         $this->assertRelationLoaded($models, 'relatedModels');
+    }
+
+    /** @test */
+    public function allowing_a_nested_include_only_allows_the_include_count_for_the_first_level()
+    {
+        $model = $this
+            ->createQueryFromIncludeRequest('related-models-count')
+            ->allowedIncludes('related-models.nested-related-models')
+            ->first();
+
+        $this->assertNotNull($model->related_models_count);
+
+        $this->expectException(InvalidIncludeQuery::class);
+
+        $this
+            ->createQueryFromIncludeRequest('nested-related-models-count')
+            ->allowedIncludes('related-models.nested-related-models')
+            ->first();
+
+        $this->expectException(InvalidIncludeQuery::class);
+
+        $this
+            ->createQueryFromIncludeRequest('releated-models.nested-related-models-count')
+            ->allowedIncludes('related-models.nested-related-models')
+            ->first();
     }
 
     /** @test */

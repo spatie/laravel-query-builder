@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class SortsField implements Sort
 {
-    public function __invoke(Builder $query, $descending, string $property) : Builder
+    public function __invoke(Builder $query, $descending, string $property)
     {
-        return $query->orderBy($property, $descending ? 'desc' : 'asc');
+        $query->orderBy($property, $descending ? 'desc' : 'asc');
     }
 }

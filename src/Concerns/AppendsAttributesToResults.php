@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder\Concerns;
 
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 
 trait AppendsAttributesToResults
@@ -16,19 +17,19 @@ trait AppendsAttributesToResults
 
         $this->allowedAppends = collect($appends);
 
-        $this->guardAgainstUnknownAppends();
+        $this->ensureAllAppendsExist();
 
         return $this;
     }
 
     protected function addAppendsToResults(Collection $results)
     {
-        $appends = $this->request->appends();
-
-        return $results->each->append($appends->toArray());
+        return $results->each(function (Model $result) {
+            return $result->append($this->request->appends()->toArray());
+        });
     }
 
-    protected function guardAgainstUnknownAppends()
+    protected function ensureAllAppendsExist()
     {
         $appends = $this->request->appends();
 

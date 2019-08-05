@@ -3,15 +3,15 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\Sort;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Sorts\SortsField;
-use Spatie\QueryBuilder\Tests\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
-use Spatie\QueryBuilder\Exceptions\InvalidColumnName;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
 
 class SortTest extends TestCase
@@ -35,6 +35,7 @@ class SortTest extends TestCase
     {
         $sortedModels = $this
             ->createQueryFromSortRequest('name')
+            ->allowedSorts('name')
             ->get();
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
@@ -46,10 +47,31 @@ class SortTest extends TestCase
     {
         $sortedModels = $this
             ->createQueryFromSortRequest('-name')
+            ->allowedSorts('name')
             ->get();
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" desc');
         $this->assertSortedDescending($sortedModels, 'name');
+    }
+
+    /** @test */
+    public function it_wont_sort_by_columns_that_werent_allowed_first()
+    {
+        $this->createQueryFromSortRequest('name')->get();
+
+        $this->assertQueryLogDoesntContain('order by "name"');
+    }
+
+    /** @test */
+    public function it_can_allow_a_descending_sort_by_still_sort_ascending()
+    {
+        $sortedModels = $this
+            ->createQueryFromSortRequest('name')
+            ->allowedSorts('-name')
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
+        $this->assertSortedAscending($sortedModels, 'name');
     }
 
     /** @test */
@@ -62,6 +84,7 @@ class SortTest extends TestCase
 
         $sortedQuery = QueryBuilder::for(TestModel::class, $request)
             ->allowedIncludes('relatedModels')
+            ->allowedSorts('related_models.name')
             ->toSql();
 
         $this->assertEquals('select * from "test_models" order by "related_models"."name" asc', $sortedQuery);
@@ -87,7 +110,7 @@ class SortTest extends TestCase
     {
         $sortedModels = $this
             ->createQueryFromSortRequest('-sketchy<>sort')
-            ->allowedSorts(Sort::field('sketchy<>sort', 'name'))
+            ->allowedSorts(AllowedSort::field('sketchy<>sort', 'name'))
             ->get();
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" desc');
@@ -102,7 +125,7 @@ class SortTest extends TestCase
         ]);
 
         QueryBuilder::for(TestModel::select('id', 'name'), $request)
-            ->allowedSorts('-id', 'id')
+            ->allowedSorts('id')
             ->defaultSort('id')
             ->paginate(15);
 
@@ -166,8 +189,6 @@ class SortTest extends TestCase
     /** @test */
     public function it_wont_sort_sketchy_sort_requests()
     {
-        $this->expectException(InvalidColumnName::class);
-
         $this
             ->createQueryFromSortRequest('id->"\') asc --injection')
             ->get();
@@ -176,15 +197,25 @@ class SortTest extends TestCase
     }
 
     /** @test */
-    public function it_uses_default_sort_parameter()
+    public function it_uses_default_sort_parameter_when_no_sort_was_requested()
     {
         $sortedModels = QueryBuilder::for(TestModel::class, new Request())
-            ->allowedSorts('name')
             ->defaultSort('name')
             ->get();
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
         $this->assertSortedAscending($sortedModels, 'name');
+    }
+
+    /** @test */
+    public function it_doesnt_use_the_default_sort_parameter_when_a_sort_was_requested()
+    {
+        $this->createQueryFromSortRequest('id')
+            ->allowedSorts('id')
+            ->defaultSort('name')
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" order by "id" asc');
     }
 
     /** @test */
@@ -198,8 +229,8 @@ class SortTest extends TestCase
         };
 
         $sortedModels = QueryBuilder::for(TestModel::class, new Request())
-            ->allowedSorts(Sort::custom('custom_name', get_class($sortClass)))
-            ->defaultSort(Sort::custom('custom_name', get_class($sortClass)))
+            ->allowedSorts(AllowedSort::custom('custom_name', $sortClass))
+            ->defaultSort(AllowedSort::custom('custom_name', $sortClass))
             ->get();
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
@@ -229,8 +260,8 @@ class SortTest extends TestCase
         };
 
         $sortedModels = QueryBuilder::for(TestModel::class, new Request())
-            ->allowedSorts(Sort::custom('custom_name', get_class($sortClass)), 'id')
-            ->defaultSort(Sort::custom('custom_name', get_class($sortClass)), '-id')
+            ->allowedSorts(AllowedSort::custom('custom_name', $sortClass), 'id')
+            ->defaultSort(AllowedSort::custom('custom_name', $sortClass), '-id')
             ->get();
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" asc, "id" desc');
@@ -288,7 +319,7 @@ class SortTest extends TestCase
 
         $sortedModels = $this
             ->createQueryFromSortRequest('custom_name')
-            ->allowedSorts(Sort::custom('custom_name', get_class($sortClass)))
+            ->allowedSorts(AllowedSort::custom('custom_name', $sortClass))
             ->get();
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
@@ -298,24 +329,24 @@ class SortTest extends TestCase
     /** @test */
     public function it_can_take_an_argument_for_custom_column_name_resolution()
     {
-        $sort = Sort::custom('property_name', SortsField::class, 'property_column_name');
+        $sort = AllowedSort::custom('property_name', new SortsField, 'property_column_name');
 
-        $this->assertInstanceOf(Sort::class, $sort);
-        $this->assertClassHasAttribute('columnName', get_class($sort));
+        $this->assertInstanceOf(AllowedSort::class, $sort);
+        $this->assertClassHasAttribute('internalName', get_class($sort));
     }
 
     /** @test */
     public function it_sets_property_column_name_to_property_name_by_default()
     {
-        $sort = Sort::custom('property_name', SortsField::class);
+        $sort = AllowedSort::custom('property_name', new SortsField);
 
-        $this->assertEquals($sort->getProperty(), $sort->getColumnName());
+        $this->assertEquals($sort->getName(), $sort->getInternalName());
     }
 
     /** @test */
     public function it_resolves_queries_using_property_column_name()
     {
-        $sort = Sort::custom('nickname', SortsField::class, 'name');
+        $sort = AllowedSort::custom('nickname', new SortsField, 'name');
 
         $testModel = TestModel::create(['name' => 'zzzzzzzz']);
 
@@ -332,7 +363,7 @@ class SortTest extends TestCase
     public function it_can_sort_descending_with_an_alias()
     {
         $this->createQueryFromSortRequest('-exposed_property_name')
-            ->allowedSorts(Sort::field('exposed_property_name', 'name'))
+            ->allowedSorts(AllowedSort::field('exposed_property_name', 'name'))
             ->get();
 
         $this->assertQueryExecuted('select * from "test_models" order by "name" desc');
@@ -353,7 +384,7 @@ class SortTest extends TestCase
     {
         $sql = $this->createQueryFromSortRequest('-joined')
             ->defaultSort('name')
-            ->allowedSorts(Sort::field('joined', 'created_at'))
+            ->allowedSorts(AllowedSort::field('joined', 'created_at'))
             ->toSql();
 
         $this->assertSame('select * from "test_models" order by "created_at" desc', $sql);
@@ -364,11 +395,42 @@ class SortTest extends TestCase
     {
         $query = $this->createQueryFromSortRequest('created_at');
 
-        $this->assertSame('select * from "test_models" order by "created_at" asc', $query->toSql());
+        $this->assertSame('select * from "test_models"', $query->toSql());
 
         $this->expectException(InvalidSortQuery::class);
 
-        $query->allowedSorts(Sort::field('name-alias', 'name'));
+        $query->allowedSorts(AllowedSort::field('name-alias', 'name'));
+    }
+
+    /** @test */
+    public function it_can_sort_and_use_scoped_filters_at_the_same_time()
+    {
+        $sortClass = new class implements SortInterface {
+            public function __invoke(Builder $query, $descending, string $property) : Builder
+            {
+                return $query->orderBy('name', $descending ? 'desc' : 'asc');
+            }
+        };
+
+        $sortedModels = QueryBuilder::for(TestModel::class, new Request([
+            'filter' => [
+                'name' => 'foo',
+                'between' => '2016-01-01,2017-01-01',
+            ],
+            'sort' => '-custom',
+        ]))
+            ->allowedFilters([
+                AllowedFilter::scope('name', 'named'),
+                AllowedFilter::scope('between', 'createdBetween'),
+            ])
+            ->allowedSorts([
+                AllowedSort::custom('custom', $sortClass),
+            ])
+            ->defaultSort('foo')
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" where "name" = ? and "created_at" between ? and ? order by "name" desc');
+        $this->assertSortedAscending($sortedModels, 'name');
     }
 
     /** @test */
