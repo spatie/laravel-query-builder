@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
@@ -387,6 +388,37 @@ class SortTest extends TestCase
         $this->expectException(InvalidSortQuery::class);
 
         $query->allowedSorts(AllowedSort::field('name-alias', 'name'));
+    }
+
+    /** @test */
+    public function it_can_sort_and_use_scoped_filters_at_the_same_time()
+    {
+        $sortClass = new class implements SortInterface {
+            public function __invoke(Builder $query, $descending, string $property) : Builder
+            {
+                return $query->orderBy('name', $descending ? 'desc' : 'asc');
+            }
+        };
+
+        $sortedModels = QueryBuilder::for(TestModel::class, new Request([
+            'filter' => [
+                'name' => 'foo',
+                'between' => '2016-01-01,2017-01-01',
+            ],
+            'sort' => '-custom'
+        ]))
+            ->allowedFilters([
+                AllowedFilter::scope('name', 'named'),
+                AllowedFilter::scope('between', 'createdBetween'),
+            ])
+            ->allowedSorts([
+                AllowedSort::custom('custom', $sortClass)
+            ])
+            ->defaultSort('foo')
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" where "name" = ? and "created_at" between ? and ? order by "name" desc');
+        $this->assertSortedAscending($sortedModels, 'name');
     }
 
     protected function createQueryFromSortRequest(string $sort): QueryBuilder
