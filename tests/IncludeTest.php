@@ -2,14 +2,13 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use Illuminate\Support\Arr;
 use ReflectionClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\MorphModel;
@@ -293,7 +292,7 @@ class IncludeTest extends TestCase
     {
         $hasModelWithoutRelationLoaded = $collection
             ->contains(function (Model $model) use ($relation) {
-                return !$model->relationLoaded($relation);
+                return ! $model->relationLoaded($relation);
             });
 
         $this->assertFalse($hasModelWithoutRelationLoaded, "The `{$relation}` relation was expected but not loaded.");
