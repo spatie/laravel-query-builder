@@ -7,9 +7,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\MorphModel;
-use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 
 class IncludeTest extends TestCase
 {

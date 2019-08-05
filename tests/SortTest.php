@@ -4,14 +4,14 @@ namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Sorts\SortsField;
-use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
 
 class SortTest extends TestCase
@@ -405,14 +405,14 @@ class SortTest extends TestCase
                 'name' => 'foo',
                 'between' => '2016-01-01,2017-01-01',
             ],
-            'sort' => '-custom'
+            'sort' => '-custom',
         ]))
             ->allowedFilters([
                 AllowedFilter::scope('name', 'named'),
                 AllowedFilter::scope('between', 'createdBetween'),
             ])
             ->allowedSorts([
-                AllowedSort::custom('custom', $sortClass)
+                AllowedSort::custom('custom', $sortClass),
             ])
             ->defaultSort('foo')
             ->get();
