@@ -6,7 +6,7 @@ weight: 3
 The `include` query parameter will load any Eloquent relation or relation count on the resulting models.
 All includes must be explicitly allowed using `allowedIncludes()`. This method takes an array of relationship names or `AllowedInclude` instances.
 
-For more advanced use cases, custom includes can be used using `AllowedInclude::custom()`.
+## Basic usage
 
 ```php
 // GET /users?include=posts
@@ -28,6 +28,8 @@ $users = QueryBuilder::for(User::class)
 
 // $users will contain all users with their posts and permissions loaded
 ```
+
+## Disallowed includes
 
 When trying to include relationships that have not been allowed using `allowedIncludes()` an `InvalidIncludeQuery` exception will be thrown. Its exception message contains the allowed includes for reference.
 
@@ -62,16 +64,11 @@ $users = QueryBuilder::for(User::class)
 // every user in $users will contain a `posts_count` and `friends_count` property
 ```
 
-## Custom includes
-
-
-
 ## Selecting included fields
 
 You can select only some fields to be included using the [`allowedFields` method on the query builder](https://docs.spatie.be/laravel-query-builder/v2/features/selecting-fields/).
 
 ⚠️ `allowedFields` must be called before `allowedIncludes`. Otherwise the query builder wont know what fields to include for the requested includes and an exception will be thrown.
-
 
 ## Include casing
 

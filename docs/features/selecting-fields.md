@@ -3,7 +3,11 @@ title: Selecting fields
 weight: 4
 ---
 
-Sometimes you'll want to fetch only a couple fields to reduce the overall size of your SQL query. This can be done by specifying some fields using the `allowedFields` method and using the `fields` request query parameter. The following example fetches only the users' `id` and `name`:
+Sometimes you'll want to fetch only a couple fields to reduce the overall size of your SQL query. This can be done by specifying some fields using the `allowedFields` method and using the `fields` request query parameter. 
+
+## Basic usage
+
+The following example fetches only the users' `id` and `name`:
 
 ```
 GET /users?fields[users]=id,name
@@ -20,6 +24,8 @@ SELECT "id", "name" FROM "users"
 ```
 
 When not allowing any fields explicitly, Eloquent's default behaviour of selecting all fields will be used. 
+
+## Disallowed fields/selects
 
 When trying to select a column that's not specified in `allowedFields()` an `InvalidFieldQuery` exception will be thrown:
 

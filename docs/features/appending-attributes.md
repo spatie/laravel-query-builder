@@ -5,6 +5,8 @@ weight: 5
 
 When serializing a model to JSON, Laravel can add custom attributes using the [`append` method or `appends` property on the model](https://laravel.com/docs/master/eloquent-serialization#appending-values-to-json). The query builder also supports this using the `allowedAppends` method and `append` query parameter.
 
+## Basic usage
+
 Consider the following custom attribute accessor. It wont be included in the model's JSON by default:
 
 ```php

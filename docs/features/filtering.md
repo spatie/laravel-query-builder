@@ -7,6 +7,8 @@ The `filter` query parameters can be used to add where clauses to your Eloquent 
 
 By default, all filters have to be explicitly allowed using `allowedFilters()`. This method takes an array of strings or `AllowedFilter` instances. An allowed filter can be partial, exact, scope or custom. By default, any string values passed to `allowedFilters()` will automatically be converted to `AllowedFilter::partial()` filters.
 
+## Basic usage
+
 ```php
 // GET /users?filter[name]=john&filter[email]=gmail
 
@@ -28,6 +30,8 @@ $users = QueryBuilder::for(User::class)
 
 // $users will contain all users that contain "seb" OR "freek" in their name
 ```
+
+## Disallowed filters
 
 Finally, when trying to filter on properties that have not been allowed using `allowedFilters()` an `InvalidFilterQuery` exception will be thrown. It's exception message contains a list of allowed filters.
 
@@ -65,7 +69,7 @@ $users = QueryBuilder::for(User::class)
 // $users will contain all admin users with id 1, 2, 3, 4 or 5
 ```
 
-### Scope filters
+## Scope filters
 
 Sometimes more advanced filtering options are necessary. This is where scope filters and custom filters come in handy.
 
@@ -112,9 +116,9 @@ QueryBuilder::for(User::class)
     ])
 ```
 
-### Custom filters
+## Custom filters
 
-You can specify custom filters using the `AllowedFilter::custom()` method. Custom filters are invokable classes that implement the `\Spatie\QueryBuilder\Filters\Filter` interface. The `__invoke` method will receive the current query builder instance and the filter name/value. This way you can build any query your heart desires.
+You can specify custom filters using the `AllowedFilter::custom()` method. Custom filters are instances of invokable classes that implement the `\Spatie\QueryBuilder\Filters\Filter` interface. The `__invoke` method will receive the current query builder instance and the filter name/value. This way you can build any query your heart desires.
 
 For example:
 
