@@ -7,7 +7,7 @@ The `filter` query parameters can be used to add where clauses to your Eloquent 
 
 By default, all filters have to be explicitly allowed using `allowedFilters()`. This method takes an array of strings or `AllowedFilter` instances. An allowed filter can be partial, exact, scope or custom. By default, any string values passed to `allowedFilters()` will automatically be converted to `AllowedFilter::partial()` filters.
 
-``` php
+```php
 // GET /users?filter[name]=john&filter[email]=gmail
 
 $users = QueryBuilder::for(User::class)
@@ -19,7 +19,7 @@ $users = QueryBuilder::for(User::class)
 
 You can specify multiple matching filter values by passing a comma separated list of values:
 
-``` php
+```php
 // GET /users?filter[name]=seb,freek
 
 $users = QueryBuilder::for(User::class)
@@ -37,7 +37,7 @@ When filtering IDs, boolean values or a literal string, you'll want to use exact
 
 Exact filters can be added using `Spatie\QueryBuilder\AllowedFilter::exact('property_name')` in the `allowedFilters()` method.
 
-``` php
+```php
 use Spatie\QueryBuilder\AllowedFilter;
 
 // GET /users?filter[name]=John%20Doe
@@ -50,7 +50,7 @@ $users = QueryBuilder::for(User::class)
 
 The query builder will automatically map `1`, `0`, 'true'`, and `'false'` as boolean values and a comma separated list of values as an array:
 
-``` php
+```php
 use Spatie\QueryBuilder\AllowedFilter;
 
 // GET /users?filter[id]=1,2,3,4,5&filter[admin]=true
@@ -118,7 +118,7 @@ You can specify custom filters using the `AllowedFilter::custom()` method. Custo
 
 For example:
 
-``` php
+```php
 use Spatie\QueryBuilder\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 

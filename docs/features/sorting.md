@@ -5,7 +5,7 @@ weight: 2
 
 The `sort` query parameter is used to determine by which property the results collection will be ordered. Sorting is ascending by default. Adding a hyphen (`-`) to the start of the property name will reverse the results collection.
 
-``` php
+```php
 // GET /users?sort=-name
 $users = QueryBuilder::for(User::class)->get();
 
@@ -16,7 +16,7 @@ By default, all model properties can be used to sort the results. However, you c
 
 When trying to sort by a property that's not specified in `allowedSorts()` an `InvalidSortQuery` exception will be thrown.
 
-``` php
+```php
 // GET /users?sort=password
 $users = QueryBuilder::for(User::class)
     ->allowedSorts('name')
@@ -27,7 +27,7 @@ $users = QueryBuilder::for(User::class)
 
 To define a default sort parameter that should be applied without explicitly adding it to the request, you can use the `defaultSort` method.
 
-``` php
+```php
 // GET /users
 $users = QueryBuilder::for(User::class)
     ->defaultSort('name')
@@ -39,7 +39,7 @@ $users = QueryBuilder::for(User::class)
 
 You can use `-` if you want to have the default order sorted descendingly.
 
-``` php
+```php
 // GET /users
 $users = QueryBuilder::for(User::class)
     ->defaultSort('-name')
@@ -51,7 +51,7 @@ $users = QueryBuilder::for(User::class)
 
 You can also pass in an array of sorts to the `allowedSorts()` method.
 
-``` php
+```php
 // GET /users?sort=name
 $users = QueryBuilder::for(User::class)
     ->allowedSorts(['name', 'street'])
@@ -62,7 +62,7 @@ $users = QueryBuilder::for(User::class)
 
 You can sort by multiple properties by separating them with a comma:
 
-``` php
+```php
 // GET /users?sort=name,-street
 $users = QueryBuilder::for(User::class)
     ->allowedSorts('name', 'street')
@@ -79,7 +79,7 @@ Similar to using [an alias when filtering](#property-column-alias) you can do th
 
 The column name can be passed as optional parameter and defaults to the property string.
 
- ``` php
+```php
  // GET /users?sort=-street
  $users = QueryBuilder::for(User::class)
     ->allowedSorts(Sort::field('street', 'actual_column_street')

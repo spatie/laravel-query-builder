@@ -6,7 +6,7 @@ weight: 3
 The `include` query parameter will load any Eloquent relation on the results collection.
 By default, no includes are allowed. All includes must be specified using `allowedIncludes()`.
 
-``` php
+```php
 // GET /users?include=posts
 $users = QueryBuilder::for(User::class)
     ->allowedIncludes('posts')
@@ -17,7 +17,7 @@ $users = QueryBuilder::for(User::class)
 
 You can load multiple relationship by separating them with a comma:
 
-``` php
+```php
 // GET /users?include=posts,permissions
 $users = QueryBuilder::for(User::class)
     ->allowedIncludes('posts', 'permissions')
@@ -28,7 +28,7 @@ $users = QueryBuilder::for(User::class)
 
 You can also pass in an array of includes to the `allowedIncludes()` method.
 
-``` php
+```php
 // GET /users?include=posts,permissions
 $users = QueryBuilder::for(User::class)
     ->allowedIncludes(['posts', 'permissions'])
@@ -39,7 +39,7 @@ $users = QueryBuilder::for(User::class)
 
 You can load nested relationships using `.`:
 
-``` php
+```php
 // GET /users?include=posts.comments,permissions
 $users = QueryBuilder::for(User::class)
     ->allowedIncludes('posts.comments', 'permissions')
