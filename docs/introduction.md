@@ -7,7 +7,7 @@ This package allows you to filter, sort and include eloquent relations based on 
 
 ## Basic usage
 
-### Filtering an API request: `/users?filter[name]=John`:
+### Filter a query based on a request: `/users?filter[name]=John`:
 
 ```php
 use Spatie\QueryBuilder\QueryBuilder;
@@ -18,9 +18,9 @@ $users = QueryBuilder::for(User::class)
 // all `User`s that contain the string "John" in their name
 ```
 
-[Read more about filtering features like: partial filters, exact filters, scope filters, custom filters, ignored values, default filter values, ...]()
+[Read more about filtering features like: partial filters, exact filters, scope filters, custom filters, ignored values, default filter values, ...](https://docs.spatie.be/laravel-query-builder/v2/features/filtering/)
 
-### Requesting relations from an API request: `/users?include=posts`:
+### Including relations based on a request: `/users?include=posts`:
 
 ```php
 $users = QueryBuilder::for(User::class)
@@ -29,9 +29,9 @@ $users = QueryBuilder::for(User::class)
 // all `User`s with their `posts` loaded
 ```
 
-[Read more about include features like: custom includes, including nested relationships, including relationship count, ...]()
+[Read more about include features like: custom includes, including nested relationships, including relationship count, ...](https://docs.spatie.be/laravel-query-builder/v2/features/including-relationships/)
 
-### Sorting an API request based on user ID's: `/users?sort=id`:
+### Sorting a query based on a request: `/users?sort=id`:
 
 ```php
 $users = QueryBuilder::for(User::class)
@@ -40,7 +40,7 @@ $users = QueryBuilder::for(User::class)
 // all `User`s sorted by ascending id
 ```
 
-[Read more about sorting features like: custom sorts, sort direction, ...]()
+[Read more about sorting features like: custom sorts, sort direction, ...](https://docs.spatie.be/laravel-query-builder/v2/features/sorting/)
 
 ### Works together nicely with existing queries:
 
@@ -48,6 +48,7 @@ $users = QueryBuilder::for(User::class)
 $query = User::where('active', true);
 
 $user = QueryBuilder::for($query)
+    ->withTrashed() // use your existing scopes
     ->allowedIncludes('posts', 'permissions')
     ->where('score', '>', 42) // chain on any of Laravel's query builder methods
     ->first();
@@ -62,6 +63,8 @@ $users = QueryBuilder::for(User::class)
 // the fetched `User`s will only have their id & email set
 ```
 
+[Read more about selecting fields.](https://docs.spatie.be/laravel-query-builder/v2/features/selecting-fields/)
+
 ### Appending attributes to a query: `/users?append=full_name`
 
 ```php
@@ -69,10 +72,10 @@ $users = QueryBuilder::for(User::class)
     ->allowedAppends('full_name')
     ->get()
     ->toJson();
-// all `User`s will have the `getFullNameAttribute` accessor appended to them
+// the resulting JSON will have the `getFullNameAttribute` attributes included
 ```
 
-Have a look at the basic usage section on the left for more examples and features.
+[Read more about appending attributes.](https://docs.spatie.be/laravel-query-builder/v2/features/appending-attributes/)
 
 ## We have badges!
 
