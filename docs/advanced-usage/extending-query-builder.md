@@ -7,7 +7,7 @@ As the `QueryBuilder` extends Laravel's default Eloquent query builder you can u
 
 ```php
 QueryBuilder::for(User::where('id', 42)) // base query instead of model
-    ->allowedIncludes('posts')
+    ->allowedIncludes(['posts'])
     ->where('activated', true) // chain on any of Laravel's query methods
     ->first(); // we only need one specific user
 ```
