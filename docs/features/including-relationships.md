@@ -4,9 +4,9 @@ weight: 3
 ---
 
 The `include` query parameter will load any Eloquent relation or relation count on the resulting models.
-By default, no includes are allowed. All includes must be explicitly specified using `allowedIncludes()`.
+All includes must be explicitly allowed using `allowedIncludes()`. This method takes an array of relationship names or `AllowedInclude` instances.
 
-For more advanced use cases, custom includes can be used.
+For more advanced use cases, custom includes can be used using `AllowedInclude::custom()`.
 
 ```php
 // GET /users?include=posts
@@ -47,7 +47,24 @@ $users = QueryBuilder::for(User::class)
 
 ## Including related model count
 
+Every allowed include will automatically allow requesting its related model count using a `Count` suffix. On top of that it's also possible to specifically allow requesting and querying the related model count (and not include the entire relationship).
+
+Under the hood this uses Laravel's `withCount method`. [Read more about the `withCount` method here](https://laravel.com/docs/master/eloquent-relationships#counting-related-models).
+
+```php
+// GET /users?include=postsCount,friendsCount
+
+$users = QueryBuilder::for(User::class)
+    ->allowedIncludes([
+        'posts', // allows including `posts` or `postsCount`
+        AllowedInclude::count('friendsCount'), // only allows include the number of `friends()` related models
+    ]); 
+// every user in $users will contain a `posts_count` and `friends_count` property
+```
+
 ## Custom includes
+
+
 
 ## Selecting included fields
 
@@ -58,7 +75,7 @@ You can select only some fields to be included using the [`allowedFields` method
 
 ## Include casing
 
-Relation/include names will be converted to camelCase when looking for the corresponding relationship on the model. This means `/users?include=blog-posts` and  `/users?include=blogPosts` will both try to load the `blogPosts()` relationship.
+Relation/include names will be converted to camelCase when looking for the corresponding relationship on the model. This means `/users?include=blog-posts` and `/users?include=blogPosts` will both try to load the `blogPosts()` relationship.
 
 ## Eloquent API resources
 
