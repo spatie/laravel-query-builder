@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 2.0.1 - 2019-08-12
+
+- update doc block for `QueryBuilder::for()`
+- add missing typehint in `SortsField`
+
 ## 2.0.0 - 2019-08-12
 
 - removed request macros
