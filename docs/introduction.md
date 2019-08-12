@@ -15,6 +15,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 $users = QueryBuilder::for(User::class)
     ->allowedFilters('name')
     ->get();
+
 // all `User`s that contain the string "John" in their name
 ```
 
@@ -26,6 +27,7 @@ $users = QueryBuilder::for(User::class)
 $users = QueryBuilder::for(User::class)
     ->allowedIncludes('posts')
     ->get();
+
 // all `User`s with their `posts` loaded
 ```
 
@@ -37,6 +39,7 @@ $users = QueryBuilder::for(User::class)
 $users = QueryBuilder::for(User::class)
     ->allowedSorts('id')
     ->get();
+
 // all `User`s sorted by ascending id
 ```
 
@@ -47,11 +50,10 @@ $users = QueryBuilder::for(User::class)
 ```php
 $query = User::where('active', true);
 
-$user = QueryBuilder::for($query)
+$userQuery = QueryBuilder::for($query) // start from an existing Builder instance
     ->withTrashed() // use your existing scopes
     ->allowedIncludes('posts', 'permissions')
-    ->where('score', '>', 42) // chain on any of Laravel's query builder methods
-    ->first();
+    ->where('score', '>', 42); // chain on any of Laravel's query builder methods
 ```
 
 ### Selecting fields for a query: `/users?fields=id,email`
@@ -60,6 +62,7 @@ $user = QueryBuilder::for($query)
 $users = QueryBuilder::for(User::class)
     ->allowedFields(['id', 'email'])
     ->get();
+
 // the fetched `User`s will only have their id & email set
 ```
 
@@ -72,6 +75,7 @@ $users = QueryBuilder::for(User::class)
     ->allowedAppends('full_name')
     ->get()
     ->toJson();
+
 // the resulting JSON will have the `getFullNameAttribute` attributes included
 ```
 
