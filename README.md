@@ -102,6 +102,10 @@ Find yourself stuck using the package? Found a bug? Do you have general question
 
 If you've found a bug regarding security please mail [freek@spatie.be](mailto:freek@spatie.be) instead of using the issue tracker.
 
+### Upgrading from v1 to v2
+
+Please see [UPGRADING.md](UPGRADING.md) for details.
+
 ### Testing
 
 ```bash
