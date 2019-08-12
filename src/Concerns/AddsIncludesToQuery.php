@@ -59,8 +59,6 @@ trait AddsIncludesToQuery
 
     protected function ensureAllIncludesExist()
     {
-        // TODO: fix this mess
-
         $includes = $this->request->includes();
 
         $allowedIncludeNames = $this->allowedIncludes->map(function (AllowedInclude $allowedInclude) {
