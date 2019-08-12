@@ -33,7 +33,7 @@ class QueryBuilder extends Builder
     /**
      * Create a new QueryBuilder for a request and model.
      *
-     * @param string|\Illuminate\Database\Query\Builder $baseQuery Model class or base query builder
+     * @param string|\Illuminate\Database\Eloquent\Builder $baseQuery Model class or base query builder
      * @param \Illuminate\Http\Request                  $request
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
