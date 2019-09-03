@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 2.1.0 - 2019-09-03
+
+- add support for Laravel 6
+
 ## 2.0.1 - 2019-08-12
 
 - update doc block for `QueryBuilder::for()`
