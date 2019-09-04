@@ -39,6 +39,12 @@ workflows:
             - php72-laravel58-prefer-lowest
             - php73-laravel58
             - php73-laravel58-prefer-lowest
+            - php71-laravel60
+            - php71-laravel60-prefer-lowest
+            - php72-laravel60
+            - php72-laravel60-prefer-lowest
+            - php73-laravel60
+            - php73-laravel60-prefer-lowest
 
 jobs:
     php71-laravel56-prefer-lowest:
@@ -158,3 +164,42 @@ jobs:
         steps:
             - install_and_test:
                   laravel: 5.8.*
+    php71-laravel60-prefer-lowest:
+        docker:
+            - image: circleci/php:7.1
+        steps:
+            - install_and_test:
+                  laravel: 6.0.*
+                  composer_flags: --prefer-lowest
+    php71-laravel60:
+        docker:
+            - image: circleci/php:7.1
+        steps:
+            - install_and_test:
+                  laravel: 6.0.*
+    php72-laravel60-prefer-lowest:
+        docker:
+            - image: circleci/php:7.2
+        steps:
+            - install_and_test:
+                  laravel: 6.0.*
+                  composer_flags: --prefer-lowest
+    php72-laravel60:
+        docker:
+            - image: circleci/php:7.2
+        steps:
+            - install_and_test:
+                  laravel: 6.0.*
+    php73-laravel60-prefer-lowest:
+        docker:
+            - image: circleci/php:7.3
+        steps:
+            - install_and_test:
+                  laravel: 6.0.*
+                  composer_flags: --prefer-lowest
+    php73-laravel60:
+        docker:
+            - image: circleci/php:7.3
+        steps:
+            - install_and_test:
+                  laravel: 6.0.*
