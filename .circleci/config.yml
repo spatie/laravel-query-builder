@@ -49,14 +49,14 @@ workflows:
 jobs:
     php71-laravel56-prefer-lowest:
         docker:
-            - image: circleci/php:7.1
+            - image: circleci/php:7.1.13
         steps:
             - install_and_test:
                   laravel: 5.6.*
                   composer_flags: --prefer-lowest
     php71-laravel56:
         docker:
-            - image: circleci/php:7.1
+            - image: circleci/php:7.1.13
         steps:
             - install_and_test:
                   laravel: 5.6.*
@@ -88,14 +88,14 @@ jobs:
                   laravel: 5.6.*
     php71-laravel57-prefer-lowest:
         docker:
-            - image: circleci/php:7.1
+            - image: circleci/php:7.1.13
         steps:
             - install_and_test:
                   laravel: 5.7.*
                   composer_flags: --prefer-lowest
     php71-laravel57:
         docker:
-            - image: circleci/php:7.1
+            - image: circleci/php:7.1.13
         steps:
             - install_and_test:
                   laravel: 5.7.*
@@ -127,14 +127,14 @@ jobs:
                   laravel: 5.7.*
     php71-laravel58-prefer-lowest:
         docker:
-            - image: circleci/php:7.1
+            - image: circleci/php:7.1.13
         steps:
             - install_and_test:
                   laravel: 5.8.*
                   composer_flags: --prefer-lowest
     php71-laravel58:
         docker:
-            - image: circleci/php:7.1
+            - image: circleci/php:7.1.13
         steps:
             - install_and_test:
                   laravel: 5.8.*
@@ -166,14 +166,14 @@ jobs:
                   laravel: 5.8.*
     php71-laravel60-prefer-lowest:
         docker:
-            - image: circleci/php:7.1
+            - image: circleci/php:7.1.13
         steps:
             - install_and_test:
                   laravel: 6.0.*
                   composer_flags: --prefer-lowest
     php71-laravel60:
         docker:
-            - image: circleci/php:7.1
+            - image: circleci/php:7.1.13
         steps:
             - install_and_test:
                   laravel: 6.0.*
