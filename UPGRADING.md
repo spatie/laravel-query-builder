@@ -9,12 +9,13 @@ There are a lot of renamed methods and classes in this release. An advanced IDE 
 - rename `Spatie\QueryBuilder\Sort` to `Spatie\QueryBuilder\AllowedSort`
 - rename `Spatie\QueryBuilder\Included` to `Spatie\QueryBuilder\AllowedInclude`
 - rename `Spatie\QueryBuilder\Filter` to `Spatie\QueryBuilder\AllowedFilter`
-- replace request macro's like `request()->filters()`, `request()->includes()`, etc... with their related methods on the `QueryBuilderRequest` class that can be resolved from the container:
-    * `request()->includes()` -> `app(QueryBuilderRequest::class)->includes()`
-    * `request()->filters()` -> `app(QueryBuilderRequest::class)->filters()`
-    * `request()->sorts()` -> `app(QueryBuilderRequest::class)->sorts()`
-    * `request()->fields()` -> `app(QueryBuilderRequest::class)->fields()`
-    * `request()->appends()` -> `app(QueryBuilderRequest::class)->appends()`
+- replace request macro's like `request()->filters()`, `request()->includes()`, etc... with their related methods on the `QueryBuilderRequest` class. This class needs to be instantiated with a request object, (more info here: https://github.com/spatie/laravel-query-builder/issues/328):
+    * `request()->includes()` -> `QueryBuilderRequest::fromRequest($request)->includes()`
+    * `request()->filters()` -> `QueryBuilderRequest::fromRequest($request)->filters()`
+    * `request()->sorts()` -> `QueryBuilderRequest::fromRequest($request)->sorts()`
+    * `request()->fields()` -> `QueryBuilderRequest::fromRequest($request)->fields()`
+    * `request()->appends()` -> `QueryBuilderRequest::fromRequest($request)->appends()`
+- please note that the above methods on `QueryBuilderRequest` do not take any arguments. You can use the `contains` to check for a certain filter/include/sort/...
 - make sure the second argument for `AllowedSort::custom()` is an instance of a sort class, not a classname
     * `AllowedSort::custom('name', MySort::class)` -> `AllowedSort::custom('name', new MySort())`
 - make sure the second argument for `AllowedFilter::custom()` is an instance of a filter class, not a classname
