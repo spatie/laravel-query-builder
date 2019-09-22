@@ -62,6 +62,10 @@ trait FiltersQuery
 
     protected function ensureAllFiltersExist()
     {
+        if (!$this->exceptionInvalidFilter) {
+            return;
+        }
+
         $filterNames = $this->request->filters()->keys();
 
         $allowedFilterNames = $this->allowedFilters->map(function (AllowedFilter $allowedFilter) {

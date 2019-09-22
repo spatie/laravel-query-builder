@@ -12,6 +12,14 @@ use Spatie\QueryBuilder\Concerns\AppendsAttributesToResults;
 
 class QueryBuilder extends Builder
 {
+    /**
+     * Allow ignore invalid fields without throwing an exception
+     * if is false
+     *
+     * @var bool
+     */
+    protected $exceptionInvalidFilter = true;
+
     use FiltersQuery,
         SortsQuery,
         AddsIncludesToQuery,
@@ -83,5 +91,17 @@ class QueryBuilder extends Builder
         $this->localMacros = $builder->getProtected('localMacros');
 
         $this->onDelete = $builder->getProtected('onDelete');
+    }
+
+    /**
+     * Allow ignore invalid fields without throwing an exception
+     *
+     * @param bool $value
+     */
+    public function setExceptionInvalidFilter(bool $value = true)
+    {
+        $this->exceptionInvalidFilter = $value;
+
+        return $this;
     }
 }
