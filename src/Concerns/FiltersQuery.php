@@ -62,7 +62,7 @@ trait FiltersQuery
 
     protected function ensureAllFiltersExist()
     {
-        if (!$this->exceptionInvalidFilter) {
+        if (! $this->exceptionInvalidFilter) {
             return;
         }
 

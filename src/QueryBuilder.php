@@ -14,7 +14,7 @@ class QueryBuilder extends Builder
 {
     /**
      * Allow ignore invalid fields without throwing an exception
-     * if is false
+     * if is false.
      *
      * @var bool
      */
@@ -94,7 +94,7 @@ class QueryBuilder extends Builder
     }
 
     /**
-     * Allow ignore invalid fields without throwing an exception
+     * Allow ignore invalid fields without throwing an exception.
      *
      * @param bool $value
      */
