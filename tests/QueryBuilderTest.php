@@ -2,12 +2,15 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use Illuminate\Support\Facades\DB;
+use PHPUnit\Util\Test;
 use ReflectionClass;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\Sorts\Sort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\QueryBuilderRequest;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedThroughPivotModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\ScopeModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\SoftDeleteModel;
@@ -165,5 +168,42 @@ class QueryBuilderTest extends TestCase
             ->toSql();
 
         $this->assertEquals($usingSortFirst, $usingFilterFirst);
+    }
+
+    /** @test */
+    public function it_can_get_a_query_from_a_relationship()
+    {
+        $testModel = TestModel::create(['id' => 321, 'name' => 'John Doe']);
+        $relatedThroughPivotModel = RelatedThroughPivotModel::create(['id' => 789, 'name' => 'The related model']);
+
+        $testModel->relatedThroughPivotModels()->attach($relatedThroughPivotModel);
+
+        // Passes
+        $this->assertEquals(
+            $relatedThroughPivotModel->id,
+            $testModel->relatedThroughPivotModels()->first()->id
+        );
+
+        // Fails
+        $this->assertEquals(
+            $relatedThroughPivotModel->id,
+            $testModel->relatedThroughPivotModels()->getQuery()->first()->id
+        );
+    }
+
+    /** @test */
+    public function it_queries_the_correct_data_for_a_relationship_query()
+    {
+        $testModel = TestModel::create(['id' => 321, 'name' => 'John Doe']);
+        $relatedThroughPivotModel = RelatedThroughPivotModel::create(['id' => 789, 'name' => 'The related model']);
+
+        $testModel->relatedThroughPivotModels()->attach($relatedThroughPivotModel);
+
+        $baseQuery = $testModel->relatedThroughPivotModels()->getQuery();
+
+        $queryBuilderResult = QueryBuilder::for($baseQuery)->first();
+
+        $this->assertEquals(789, $queryBuilderResult->id);
+        $this->assertEquals(123, $queryBuilderResult->testModel->id);
     }
 }

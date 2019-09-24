@@ -139,6 +139,21 @@ class RelationFilterTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    /** @test */
+    public function it_can_disable_filtering_based_on_related_model_properties()
+    {
+        $addRelationConstraint = false;
+
+        $sql = $this
+            ->createQueryFromFilterRequest([
+                'related-models.name' => $this->models->first()->name,
+            ])
+            ->allowedFilters(AllowedFilter::exact('related-models.name', null, $addRelationConstraint))
+            ->toSql();
+
+        $this->assertStringContainsString('"related-models"."name" = ', $sql);
+    }
+
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder
     {
         $request = new Request([

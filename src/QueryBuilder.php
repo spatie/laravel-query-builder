@@ -21,7 +21,13 @@ class QueryBuilder extends Builder
     /** @var \Spatie\QueryBuilder\QueryBuilderRequest */
     protected $request;
 
-    public function __construct(Builder $builder, ? Request $request = null)
+    /**
+     * QueryBuilder constructor.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $builder
+     * @param null|\Illuminate\Http\Request $request
+     */
+    public function __construct($builder, ? Request $request = null)
     {
         parent::__construct(clone $builder->getQuery());
 
@@ -33,8 +39,8 @@ class QueryBuilder extends Builder
     /**
      * Create a new QueryBuilder for a request and model.
      *
-     * @param string|\Illuminate\Database\Eloquent\Builder $baseQuery Model class or base query builder
-     * @param \Illuminate\Http\Request                  $request
+     * @param string|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $baseQuery Model class or base query builder
+     * @param \Illuminate\Http\Request $request
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
      */

@@ -10,12 +10,22 @@ class FiltersExact implements Filter
 {
     protected $relationConstraints = [];
 
+    /** @var boolean */
+    protected $addRelationConstraint = true;
+
+    public function __construct(bool $addRelationConstraint = true)
+    {
+        $this->addRelationConstraint = $addRelationConstraint;
+    }
+
     public function __invoke(Builder $query, $value, string $property)
     {
-        if ($this->isRelationProperty($query, $property)) {
-            $this->withRelationConstraint($query, $value, $property);
+        if ($this->addRelationConstraint) {
+            if ($this->isRelationProperty($query, $property)) {
+                $this->withRelationConstraint($query, $value, $property);
 
-            return;
+                return;
+            }
         }
 
         if (is_array($value)) {

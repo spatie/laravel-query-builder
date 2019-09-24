@@ -8,10 +8,12 @@ class FiltersPartial extends FiltersExact implements Filter
 {
     public function __invoke(Builder $query, $value, string $property)
     {
-        if ($this->isRelationProperty($query, $property)) {
-            $this->withRelationConstraint($query, $value, $property);
+        if ($this->addRelationConstraint) {
+            if ($this->isRelationProperty($query, $property)) {
+                $this->withRelationConstraint($query, $value, $property);
 
-            return;
+                return;
+            }
         }
 
         $wrappedProperty = $query->getQuery()->getGrammar()->wrap($property);

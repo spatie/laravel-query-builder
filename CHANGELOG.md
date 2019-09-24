@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 2.2.0 - 2019-09-24
+
+- Add option to disable parsing relationship constraints when filtering related model properties in the exact and partial filters (#262)
+
 ## 2.1.0 - 2019-09-03
 
 - add support for Laravel 6

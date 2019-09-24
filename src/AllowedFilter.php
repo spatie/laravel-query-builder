@@ -47,22 +47,28 @@ class AllowedFilter
         ($this->filterClass)($query, $valueToFilter, $this->internalName);
     }
 
-    public static function exact(string $name, ?string $internalName = null) : self
-    {
-        return new static($name, new FiltersExact(), $internalName);
+    public static function exact(
+        string $name,
+        ?string $internalName = null,
+        bool $addRelationConstraint = true
+    ): self {
+        return new static($name, new FiltersExact($addRelationConstraint), $internalName);
     }
 
-    public static function partial(string $name, $internalName = null) : self
-    {
-        return new static($name, new FiltersPartial(), $internalName);
+    public static function partial(
+        string $name,
+        $internalName = null,
+        bool $addRelationConstraint = true
+    ): self {
+        return new static($name, new FiltersPartial($addRelationConstraint), $internalName);
     }
 
-    public static function scope(string $name, $internalName = null) : self
+    public static function scope(string $name, $internalName = null): self
     {
         return new static($name, new FiltersScope(), $internalName);
     }
 
-    public static function custom(string $name, Filter $filterClass, $internalName = null) : self
+    public static function custom(string $name, Filter $filterClass, $internalName = null): self
     {
         return new static($name, $filterClass, $internalName);
     }
@@ -118,9 +124,9 @@ class AllowedFilter
         if (is_array($value)) {
             $remainingProperties = array_diff($value, $this->ignored->toArray());
 
-            return ! empty($remainingProperties) ? $remainingProperties : null;
+            return !empty($remainingProperties) ? $remainingProperties : null;
         }
 
-        return ! $this->ignored->contains($value) ? $value : null;
+        return !$this->ignored->contains($value) ? $value : null;
     }
 }

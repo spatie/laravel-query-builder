@@ -69,6 +69,20 @@ $users = QueryBuilder::for(User::class)
 // $users will contain all admin users with id 1, 2, 3, 4 or 5
 ```
 
+## Exact or partial filters for related properties
+
+You can filter also add filters for a relationship's property using the dot-notation: `AllowedFilter::exact('posts.title')`. This works for exact and partials filters. Under the hood we'll add a `whereHas` statement for the `posts` that filters for the given `title` property as well.
+
+In some cases you'll want to disable this behaviour and just pass the raw filter-property value to the query. For example, when using a joined table's value for filtering. By passing `false` as the third parameter to `AllowedFilter::exact()` or `AllowedFilter::partial()` this behaviour can be disabled:
+
+```php
+$addRelationConstraint = false;
+
+QueryBuilder::for(User::class)
+    ->join('posts', 'posts.user_id', 'users.id')
+    ->allowedFilters(AllowedFilter::exact('posts.title', null, $addRelationConstraint));
+```
+
 ## Scope filters
 
 Sometimes more advanced filtering options are necessary. This is where scope filters and custom filters come in handy.
