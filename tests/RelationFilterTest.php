@@ -140,7 +140,7 @@ class RelationFilterTest extends TestCase
     }
 
     /** @test */
-    public function it_can_disable_filtering_based_on_related_model_properties()
+    public function it_can_disable_exact_filtering_based_on_related_model_properties()
     {
         $addRelationConstraint = false;
 
@@ -152,6 +152,21 @@ class RelationFilterTest extends TestCase
             ->toSql();
 
         $this->assertStringContainsString('"related-models"."name" = ', $sql);
+    }
+
+    /** @test */
+    public function it_can_disable_partial_filtering_based_on_related_model_properties()
+    {
+        $addRelationConstraint = false;
+
+        $sql = $this
+            ->createQueryFromFilterRequest([
+                'related-models.name' => $this->models->first()->name,
+            ])
+            ->allowedFilters(AllowedFilter::partial('related-models.name', null, $addRelationConstraint))
+            ->toSql();
+
+        $this->assertStringContainsString('LOWER("related-models"."name") LIKE ?', $sql);
     }
 
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder
