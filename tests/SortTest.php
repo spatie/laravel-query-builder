@@ -54,7 +54,6 @@ class SortTest extends TestCase
         $this->assertSortedDescending($sortedModels, 'name');
     }
 
-
     /** @test */
     public function it_can_sort_a_query_by_alias()
     {
