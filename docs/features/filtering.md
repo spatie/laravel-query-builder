@@ -125,9 +125,9 @@ Scopes are usually not named with query filters in mind. Use [filter aliases](#f
 ```php
 QueryBuilder::for(User::class)
     ->allowedFilters([
-        AllowedFilter::scope('whereHasUnconfirmedEmail', 'unconfirmed'), 
+        AllowedFilter::scope('unconfirmed', 'whereHasUnconfirmedEmail'),
         // `?filter[unconfirmed]=1` will now add the `scopeWhereHasUnconfirmedEmail` to your query
-    ])
+    ]);
 ```
 
 ## Custom filters
