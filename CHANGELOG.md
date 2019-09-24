@@ -4,7 +4,8 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 ## 2.2.0 - 2019-09-24
 
-- Add option to disable parsing relationship constraints when filtering related model properties in the exact and partial filters (#262)
+- add option to disable parsing relationship constraints when filtering related model properties in the exact and partial filters (#262)
+- fix selecting fields from included relationships that are multiple levels deep (#317)
 
 ## 2.1.0 - 2019-09-03
 

@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder\Tests;
 
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
@@ -133,6 +134,32 @@ class FieldsTest extends TestCase
 
         $this->assertQueryLogContains('select "test_models"."id" from "test_models"');
         $this->assertQueryLogContains('select "name" from "related_models"');
+    }
+
+    /** @test */
+    public function it_can_fetch_requested_columns_from_included_models_up_to_two_levels_deep()
+    {
+        RelatedModel::create([
+            'test_model_id' => $this->model->id,
+            'name' => 'related',
+        ]);
+
+        $request = new Request([
+            'fields' => [
+                'test_models' => 'id,name',
+                'related_models.test_model' => 'id',
+            ],
+            'include' => ['related-models.test_model'],
+        ]);
+
+        $result = QueryBuilder::for(TestModel::class, $request)
+            ->allowedFields('related_models.test_model.id', 'id', 'name')
+            ->allowedIncludes('related-models.test_model')
+            ->first();
+
+        $this->assertArrayHasKey('name', $result);
+
+        $this->assertEquals(['id' => $this->model->id], $result->relatedModels->first()->testModel->toArray());
     }
 
     /** @test */

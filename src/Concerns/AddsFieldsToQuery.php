@@ -50,7 +50,9 @@ trait AddsFieldsToQuery
 
     public function getRequestedFieldsForRelatedTable(string $relation): array
     {
-        $fields = $this->request->fields()->get($relation);
+        $fields = $this->request->fields()->mapWithKeys(function ($fields, $relation) {
+            return [Str::camel($relation) => $fields];
+        })->get($relation);
 
         if (! $fields) {
             return [];

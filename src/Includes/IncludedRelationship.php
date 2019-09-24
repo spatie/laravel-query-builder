@@ -14,9 +14,9 @@ class IncludedRelationship implements IncludeInterface
 
         $withs = $relatedTables
             ->mapWithKeys(function ($table, $key) use ($query, $relatedTables) {
-                $fields = $query->getRequestedFieldsForRelatedTable(Str::snake($table));
-
                 $fullRelationName = $relatedTables->slice(0, $key + 1)->implode('.');
+
+                $fields = $query->getRequestedFieldsForRelatedTable($fullRelationName);
 
                 if (empty($fields)) {
                     return [$fullRelationName];
