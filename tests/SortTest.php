@@ -54,6 +54,19 @@ class SortTest extends TestCase
         $this->assertSortedDescending($sortedModels, 'name');
     }
 
+
+    /** @test */
+    public function it_can_sort_a_query_by_alias()
+    {
+        $sortedModels = $this
+            ->createQueryFromSortRequest('name-alias')
+            ->allowedSorts([AllowedSort::field('name-alias', 'name')])
+            ->get();
+
+        $this->assertQueryExecuted('select * from "test_models" order by "name" asc');
+        $this->assertSortedAscending($sortedModels, 'name');
+    }
+
     /** @test */
     public function it_wont_sort_by_columns_that_werent_allowed_first()
     {
