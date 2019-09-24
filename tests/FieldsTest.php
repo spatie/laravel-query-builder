@@ -4,7 +4,6 @@ namespace Spatie\QueryBuilder\Tests;
 
 use DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
