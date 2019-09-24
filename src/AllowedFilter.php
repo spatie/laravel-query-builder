@@ -124,9 +124,9 @@ class AllowedFilter
         if (is_array($value)) {
             $remainingProperties = array_diff($value, $this->ignored->toArray());
 
-            return !empty($remainingProperties) ? $remainingProperties : null;
+            return ! empty($remainingProperties) ? $remainingProperties : null;
         }
 
-        return !$this->ignored->contains($value) ? $value : null;
+        return ! $this->ignored->contains($value) ? $value : null;
     }
 }

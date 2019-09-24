@@ -2,18 +2,17 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use Illuminate\Support\Facades\DB;
-use PHPUnit\Util\Test;
 use ReflectionClass;
+use PHPUnit\Util\Test;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\Sorts\Sort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\QueryBuilderRequest;
-use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedThroughPivotModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\ScopeModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\SoftDeleteModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedThroughPivotModel;
 
 class QueryBuilderTest extends TestCase
 {

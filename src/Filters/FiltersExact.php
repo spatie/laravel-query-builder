@@ -10,7 +10,7 @@ class FiltersExact implements Filter
 {
     protected $relationConstraints = [];
 
-    /** @var boolean */
+    /** @var bool */
     protected $addRelationConstraint = true;
 
     public function __construct(bool $addRelationConstraint = true)
