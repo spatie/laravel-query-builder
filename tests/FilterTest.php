@@ -459,14 +459,14 @@ class FilterTest extends TestCase
         $filterClass = new class implements FilterInterface {
             public function __invoke(Builder $query, $value, string $property) : Builder
             {
-                 return $query->whereHas('relatedThroughPivotModels', function(Builder $query) use ($value) {
-                     $query->where(function(Builder $query) use ($value) {
-                         foreach ($value as $id => $names) {
-                             $query->orWhere(function (Builder $query) use ($id, $names) {
-                                 $query->where('related_through_pivot_models.id', $id)->whereIn('pivot_models.name', $names);
-                             });
-                         }
-                     });
+                return $query->whereHas('relatedThroughPivotModels', function (Builder $query) use ($value) {
+                    $query->where(function (Builder $query) use ($value) {
+                        foreach ($value as $id => $names) {
+                            $query->orWhere(function (Builder $query) use ($id, $names) {
+                                $query->where('related_through_pivot_models.id', $id)->whereIn('pivot_models.name', $names);
+                            });
+                        }
+                    });
                 });
             }
         };
@@ -474,7 +474,7 @@ class FilterTest extends TestCase
         $modelResult = $this
             ->createQueryFromFilterRequest([
                 'related' => [
-                    $relatedTestModel->id => 'John,Jane'
+                    $relatedTestModel->id => 'John,Jane',
                 ],
             ])
             ->allowedFilters(AllowedFilter::custom('related', $filterClass))
@@ -496,7 +496,7 @@ class FilterTest extends TestCase
         $models = $this
             ->createQueryFromFilterRequest([
                 'related' => [
-                    'abc' => 'John,Jane'
+                    'abc' => 'John,Jane',
                 ],
             ])
             ->allowedFilters(AllowedFilter::custom('related', $filterClass)->ignore('abc'))
