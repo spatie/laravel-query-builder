@@ -13,6 +13,7 @@ use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedThroughPivotModel;
 
 class FilterTest extends TestCase
 {
@@ -446,6 +447,62 @@ class FilterTest extends TestCase
             ->get();
 
         $this->assertEquals(1, $models->count());
+    }
+
+    /** @test */
+    public function it_can_take_nested_arrays_as_filter_value()
+    {
+        $testModel = $this->models->first();
+        $relatedTestModel = RelatedThroughPivotModel::create(['name' => 'abcdef']);
+        $testModel->relatedThroughPivotModels()->sync([$relatedTestModel->id => ['name' => 'John']]);
+
+        $filterClass = new class implements FilterInterface {
+            public function __invoke(Builder $query, $value, string $property) : Builder
+            {
+                 return $query->whereHas('relatedThroughPivotModels', function(Builder $query) use ($value) {
+                     $query->where(function(Builder $query) use ($value) {
+                         foreach ($value as $id => $names) {
+                             $query->orWhere(function (Builder $query) use ($id, $names) {
+                                 $query->where('related_through_pivot_models.id', $id)->whereIn('pivot_models.name', $names);
+                             });
+                         }
+                     });
+                });
+            }
+        };
+
+        $modelResult = $this
+            ->createQueryFromFilterRequest([
+                'related' => [
+                    $relatedTestModel->id => 'John,Jane'
+                ],
+            ])
+            ->allowedFilters(AllowedFilter::custom('related', $filterClass))
+            ->first();
+
+        $this->assertEquals($testModel->id, $modelResult->id);
+    }
+
+    /** @test */
+    public function it_should_not_apply_a_filter_if_the_supplied_key_of_nested_array_is_ignored()
+    {
+        $filterClass = new class implements FilterInterface {
+            public function __invoke(Builder $query, $value, string $property) : Builder
+            {
+                return $query->where('id', -1);
+            }
+        };
+
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'related' => [
+                    'abc' => 'John,Jane'
+                ],
+            ])
+            ->allowedFilters(AllowedFilter::custom('related', $filterClass)->ignore('abc'))
+            ->get();
+
+        $this->assertCount(TestModel::count(), $models);
     }
 
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder

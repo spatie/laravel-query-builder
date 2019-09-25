@@ -62,6 +62,7 @@ class TestCase extends Orchestra
             $table->increments('id');
             $table->string('test_model_id');
             $table->integer('related_through_pivot_model_id');
+            $table->string('name')->nullable();
         });
 
         $app['db']->connection()->getSchemaBuilder()->create('related_through_pivot_models', function (Blueprint $table) {
