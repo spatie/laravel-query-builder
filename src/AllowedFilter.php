@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Filters\Filter;
 use Spatie\QueryBuilder\Filters\FiltersExact;
@@ -122,7 +123,11 @@ class AllowedFilter
     protected function resolveValueForFiltering($value)
     {
         if (is_array($value)) {
-            $remainingProperties = array_diff($value, $this->ignored->toArray());
+            $isMultidimensional = count($value) !== count($value, COUNT_RECURSIVE);
+
+            $remainingProperties = $isMultidimensional
+                ? Arr::except($value, $this->ignored->toArray())
+                : array_diff($value, $this->ignored->toArray());
 
             return ! empty($remainingProperties) ? $remainingProperties : null;
         }
