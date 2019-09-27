@@ -100,7 +100,7 @@ class QueryBuilderRequest extends Request
         }
 
         if (Str::contains($value, ',')) {
-            return explode(',', $value);
+            return $this->explodeIgnoringWhitespace(',', $value);
         }
 
         if ($value === 'true') {
@@ -112,5 +112,21 @@ class QueryBuilderRequest extends Request
         }
 
         return $value;
+    }
+
+    /**
+     * @param string $delimiter The boundary string.
+     * @param string $string The input string
+     *
+     * @return array The values between the delimiters in the given string, ignoring any spaced delimiters inside values
+     */
+    private function explodeIgnoringWhitespace(string $delimiter, string $string): array
+    {
+        return preg_split(
+            '/' . preg_quote($delimiter) . '(?=\S)/',
+            trim($string, $delimiter),
+            null,
+            PREG_SPLIT_NO_EMPTY
+        );
     }
 }

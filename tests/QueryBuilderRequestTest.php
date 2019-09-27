@@ -262,6 +262,20 @@ class QueryBuilderRequestTest extends TestCase
     }
 
     /** @test */
+    public function it_will_map_comma_separated_values_containing_commas_as_arrays()
+    {
+        $request = new QueryBuilderRequest([
+            'filter' => [
+                'foo' => 'bar, baz,qux',
+            ],
+        ]);
+
+        $expected = ['foo' => ['bar, baz', 'qux']];
+
+        $this->assertEquals($expected, $request->filters()->toArray());
+    }
+
+    /** @test */
     public function it_can_get_the_include_query_params_from_the_request()
     {
         $request = new QueryBuilderRequest([
