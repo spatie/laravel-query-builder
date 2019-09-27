@@ -123,7 +123,7 @@ class QueryBuilderRequest extends Request
     private function explodeIgnoringWhitespace(string $delimiter, string $string): array
     {
         return preg_split(
-            '/' . preg_quote($delimiter) . '(?=\S)/',
+            '/'.preg_quote($delimiter).'(?=\S)/',
             trim($string, $delimiter),
             null,
             PREG_SPLIT_NO_EMPTY
