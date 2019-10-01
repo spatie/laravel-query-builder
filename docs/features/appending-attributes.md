@@ -7,7 +7,7 @@ When serializing a model to JSON, Laravel can add custom attributes using the [`
 
 ## Basic usage
 
-Consider the following custom attribute accessor. It wont be included in the model's JSON by default:
+Consider the following custom attribute accessor. It won't be included in the model's JSON by default:
 
 ```php
 class User extends Model
