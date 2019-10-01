@@ -3,7 +3,7 @@ title: Filtering
 weight: 1
 ---
 
-The `filter` query parameters can be used to add where clauses to your Eloquent query. Out of the box we support filtering results by partial attribute value, exact attribute value or even if an attribute value exists in a given array of values. For anything more advanced, custom filters can be used.
+The `filter` query parameters can be used to add `where` clauses to your Eloquent query. Out of the box we support filtering results by partial attribute value, exact attribute value or even if an attribute value exists in a given array of values. For anything more advanced, custom filters can be used.
 
 By default, all filters have to be explicitly allowed using `allowedFilters()`. This method takes an array of strings or `AllowedFilter` instances. An allowed filter can be partial, exact, scope or custom. By default, any string values passed to `allowedFilters()` will automatically be converted to `AllowedFilter::partial()` filters.
 
@@ -33,7 +33,7 @@ $users = QueryBuilder::for(User::class)
 
 ## Disallowed filters
 
-Finally, when trying to filter on properties that have not been allowed using `allowedFilters()` an `InvalidFilterQuery` exception will be thrown. It's exception message contains a list of allowed filters.
+Finally, when trying to filter on properties that have not been allowed using `allowedFilters()` an `InvalidFilterQuery` exception will be thrown along with a list of allowed filters.
 
 ## Exact filters
 
@@ -71,7 +71,7 @@ $users = QueryBuilder::for(User::class)
 
 ## Exact or partial filters for related properties
 
-You can filter also add filters for a relationship's property using the dot-notation: `AllowedFilter::exact('posts.title')`. This works for exact and partials filters. Under the hood we'll add a `whereHas` statement for the `posts` that filters for the given `title` property as well.
+You can also add filters for a relationship property using the dot-notation: `AllowedFilter::exact('posts.title')`. This works for exact and partial filters. Under the hood we'll add a `whereHas` statement for the `posts` that filters for the given `title` property as well.
 
 In some cases you'll want to disable this behaviour and just pass the raw filter-property value to the query. For example, when using a joined table's value for filtering. By passing `false` as the third parameter to `AllowedFilter::exact()` or `AllowedFilter::partial()` this behaviour can be disabled:
 
