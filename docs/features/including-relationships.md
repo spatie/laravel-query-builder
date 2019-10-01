@@ -18,7 +18,7 @@ $users = QueryBuilder::for(User::class)
 // $users will have all their their `posts()` related models loaded
 ```
 
-You can load multiple relationship by separating them with a comma:
+You can load multiple relationships by separating them with a comma:
 
 ```php
 // GET /users?include=posts,permissions
