@@ -53,5 +53,5 @@ QueryBuilder::for(Post::class)
 
 ⚠️ Keep in mind that the fields query will completely override the `SELECT` part of the query. This means that you'll need to manually specify any columns required for Eloquent relationships to work, in the above example `author.id`. See issue #175 as well.
 
-⚠️ `allowedFields` must be called before `allowedIncludes`. Otherwise the query builder wont know what fields to include for the requested includes and an exception will be thrown.
+⚠️ `allowedFields` must be called before `allowedIncludes`. Otherwise the query builder won't know what fields to include for the requested includes and an exception will be thrown.
 
