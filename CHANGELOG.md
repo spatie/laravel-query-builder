@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 2.2.1 - 2019-10-03
+
+- fix issue when passing camel-cased includes (#336)
+
 ## 2.2.0 - 2019-09-24
 
 - add option to disable parsing relationship constraints when filtering related model properties in the exact and partial filters (#262)
