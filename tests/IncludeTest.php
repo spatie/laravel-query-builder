@@ -156,10 +156,10 @@ class IncludeTest extends TestCase
     }
 
     /** @test */
-    public function it_can_include_case_insensitive()
+    public function it_can_include_camel_case_includes()
     {
         $models = $this
-            ->createQueryFromIncludeRequest('RelaTed-Models')
+            ->createQueryFromIncludeRequest('relatedModels')
             ->allowedIncludes('related-models')
             ->get();
 

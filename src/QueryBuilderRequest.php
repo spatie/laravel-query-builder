@@ -20,7 +20,7 @@ class QueryBuilderRequest extends Request
         $includeParts = $this->query($includeParameterName);
 
         if (! is_array($includeParts)) {
-            $includeParts = explode(',', strtolower($this->query($includeParameterName)));
+            $includeParts = explode(',', $this->query($includeParameterName));
         }
 
         return collect($includeParts)
