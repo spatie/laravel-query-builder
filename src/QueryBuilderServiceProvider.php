@@ -16,4 +16,11 @@ class QueryBuilderServiceProvider extends ServiceProvider
 
         $this->mergeConfigFrom(__DIR__.'/../config/query-builder.php', 'query-builder');
     }
+
+    public function register()
+    {
+        $this->app->bind(QueryBuilderRequest::class, function ($app) {
+            return QueryBuilderRequest::fromRequest($app['request']);
+        });
+    }
 }

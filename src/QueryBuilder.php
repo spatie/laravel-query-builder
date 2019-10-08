@@ -33,7 +33,9 @@ class QueryBuilder extends Builder
 
         $this->initializeFromBuilder($builder);
 
-        $this->request = QueryBuilderRequest::fromRequest($request ?? request());
+        $this->request = $request
+            ? QueryBuilderRequest::fromRequest($request)
+            : app(QueryBuilderRequest::class);
     }
 
     /**

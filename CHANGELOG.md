@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 2.3.0 - 2019-10-08
+
+- resolve `QueryBuilderRequest` from service container
+
 ## 2.2.1 - 2019-10-03
 
 - fix issue when passing camel-cased includes (#336)
