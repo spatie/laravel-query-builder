@@ -144,7 +144,7 @@ class FiltersUserPermission implements Filter
 {
     public function __invoke(Builder $query, $value, string $property) : Builder
     {
-        $query->whereHas('permissions', function (Builder $query) use ($value) {
+        return $query->whereHas('permissions', function (Builder $query) use ($value) {
             $query->where('name', $value);
         });
     }
