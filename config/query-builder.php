@@ -3,7 +3,7 @@
 return [
 
     /*
-     * By default the package will use the `include`, `filter`, `sort`
+     * By default the package will use the `page`, `per-page`, `include`, `filter`, `sort`
      * and `fields` query parameters as described in the readme.
      *
      * You can customize these query string parameters here.
@@ -18,6 +18,10 @@ return [
         'fields' => 'fields',
 
         'append' => 'append',
+
+        'page' => 'page',
+
+        'per-page' => 'per-page',
     ],
 
     /*
@@ -26,4 +30,14 @@ return [
      */
     'count_suffix' => 'Count',
 
+    /*
+     * Pagination default settings
+     */
+    'pagination' => [
+        'per-page' => [
+            'default' => 15,
+            'min' => 1,
+            'max' => 50,
+        ],
+    ],
 ];
