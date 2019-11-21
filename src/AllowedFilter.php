@@ -6,8 +6,8 @@ use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Filters\Filter;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\Filters\FiltersScope;
-use Spatie\QueryBuilder\Filters\FiltersPartial;
 use Spatie\QueryBuilder\Filters\FilterTrashed;
+use Spatie\QueryBuilder\Filters\FiltersPartial;
 
 class AllowedFilter
 {
