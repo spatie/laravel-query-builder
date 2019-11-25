@@ -7,7 +7,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\SoftDeleteModel;
 
-class FilterTrashedTest extends TestCase
+class FiltersTrashedTest extends TestCase
 {
     /** @var \Illuminate\Support\Collection */
     protected $models;

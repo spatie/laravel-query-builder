@@ -5,7 +5,7 @@ namespace Spatie\QueryBuilder\Filters;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * FilterTrashed provides filter for soft deleted (trashed) records.
+ * FiltersTrashed provides filter for soft deleted (trashed) records.
  *
  * This filter responds to particular values:
  *
@@ -13,10 +13,20 @@ use Illuminate\Database\Eloquent\Builder;
  * - 'only' - return only 'trashed' records at the result set.
  * - any other - return only records without 'trashed' at the result set.
  *
+ * Usage example:
+ *
+ * ```php
+ * QueryBuilder::for(Item::class)
+ *     ->allowedFilters([
+ *         AllowedFilter::trashed(),
+ *         // ...
+ *     ]);
+ * ```
+ *
  * @see \Illuminate\Database\Eloquent\SoftDeletes
  * @see \Spatie\QueryBuilder\AllowedFilter::trashed()
  */
-class FilterTrashed implements Filter
+class FiltersTrashed implements Filter
 {
     /** {@inheritdoc} */
     public function __invoke(Builder $query, $value, string $property)
