@@ -2,13 +2,13 @@
 
 namespace Spatie\QueryBuilder;
 
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\QueryBuilder\Concerns\SortsQuery;
-use Spatie\QueryBuilder\Concerns\FiltersQuery;
+use Illuminate\Http\Request;
 use Spatie\QueryBuilder\Concerns\AddsFieldsToQuery;
 use Spatie\QueryBuilder\Concerns\AddsIncludesToQuery;
 use Spatie\QueryBuilder\Concerns\AppendsAttributesToResults;
+use Spatie\QueryBuilder\Concerns\FiltersQuery;
+use Spatie\QueryBuilder\Concerns\SortsQuery;
 
 class QueryBuilder extends Builder
 {

@@ -2,17 +2,17 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\AllowedSort;
-use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Illuminate\Database\Eloquent\Builder;
-use Spatie\QueryBuilder\Sorts\SortsField;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
+use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
-use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 class SortTest extends TestCase
 {

@@ -2,8 +2,8 @@
 
 namespace Spatie\QueryBuilder\Includes;
 
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class IncludedRelationship implements IncludeInterface
 {

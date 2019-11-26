@@ -2,11 +2,11 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedInclude;
-use Spatie\QueryBuilder\Includes\IncludeInterface;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
+use Spatie\QueryBuilder\Includes\IncludeInterface;
 
 trait AddsIncludesToQuery
 {

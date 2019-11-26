@@ -2,10 +2,10 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 class RelationFilterTest extends TestCase

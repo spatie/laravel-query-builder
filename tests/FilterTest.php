@@ -2,16 +2,16 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Illuminate\Database\Eloquent\Builder;
-use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
+use Spatie\QueryBuilder\Filters\FiltersExact;
+use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 class FilterTest extends TestCase
