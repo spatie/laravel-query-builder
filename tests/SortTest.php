@@ -235,7 +235,7 @@ class SortTest extends TestCase
     public function it_allows_default_custom_sort_class_parameter()
     {
         $sortClass = new class implements SortInterface {
-            public function __invoke(Builder $query, $descending, string $property) : Builder
+            public function __invoke(Builder $query, bool $descending, string $property) : Builder
             {
                 return $query->orderBy('name', $descending ? 'desc' : 'asc');
             }
