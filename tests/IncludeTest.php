@@ -2,16 +2,16 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use ReflectionClass;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\Database\Eloquent\Model;
+use ReflectionClass;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
-use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\MorphModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 class IncludeTest extends TestCase
 {

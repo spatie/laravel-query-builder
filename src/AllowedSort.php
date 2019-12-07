@@ -2,9 +2,9 @@
 
 namespace Spatie\QueryBuilder;
 
+use Spatie\QueryBuilder\Enums\SortDirection;
 use Spatie\QueryBuilder\Sorts\Sort;
 use Spatie\QueryBuilder\Sorts\SortsField;
-use Spatie\QueryBuilder\Enums\SortDirection;
 
 class AllowedSort
 {

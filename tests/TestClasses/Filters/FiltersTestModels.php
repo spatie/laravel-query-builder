@@ -2,8 +2,8 @@
 
 namespace Spatie\QueryBuilder\Tests\TestClasses\Filters;
 
-use Spatie\QueryBuilder\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\Filters\Filter;
 
 class FiltersTestModels implements Filter
 {

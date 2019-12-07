@@ -2,9 +2,9 @@
 
 namespace Spatie\QueryBuilder\Filters;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class FiltersExact implements Filter
 {

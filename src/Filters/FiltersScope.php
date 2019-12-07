@@ -2,9 +2,9 @@
 
 namespace Spatie\QueryBuilder\Filters;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Builder;
 
 class FiltersScope implements Filter
 {
