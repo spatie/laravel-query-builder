@@ -49,6 +49,20 @@ class IncludeTest extends TestCase
     }
 
     /** @test */
+    public function it_can_handle_empty_includes()
+    {
+        $models = QueryBuilder::for(TestModel::class, new Request())
+            ->allowedIncludes([
+                null,
+                [],
+                ''
+            ])
+            ->get();
+
+        $this->assertCount(TestModel::count(), $models);
+    }
+    
+    /** @test */
     public function it_can_include_model_relations()
     {
         $models = $this
