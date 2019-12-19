@@ -5,6 +5,10 @@ weight: 1
 
 This package allows you to filter, sort and include eloquent relations based on a request. The `QueryBuilder` used in this package extends Laravel's default Eloquent builder. This means all your favorite methods and macros are still available. Query parameter names follow the [JSON API specification](http://jsonapi.org/) as closely as possible.
 
+Here's how we use the package ourselves in [Mailcoach](https://mailcoach.app)
+
+<iframe src="https://player.vimeo.com/video/380520777" width="640" height="360" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+
 ## Basic usage
 
 ### Filter a query based on a request: `/users?filter[name]=John`:
