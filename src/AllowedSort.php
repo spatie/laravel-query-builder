@@ -8,10 +8,10 @@ use Spatie\QueryBuilder\Sorts\SortsField;
 
 class AllowedSort
 {
-    /** @var string */
+    /** @var \Spatie\QueryBuilder\Sorts\Sort */
     protected $sortClass;
 
-    /** @var \Spatie\QueryBuilder\Sorts\Sort */
+    /** @var string */
     protected $name;
 
     /** @var string */
