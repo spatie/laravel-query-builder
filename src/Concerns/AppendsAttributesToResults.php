@@ -23,11 +23,34 @@ trait AppendsAttributesToResults
     }
 
     protected function addAppendsToResults(Collection $results)
-    {
-        return $results->each(function (Model $result) {
-            return $result->append($this->request->appends()->toArray());
-        });
-    }
+	{
+	    $appends = $this->request->appends();
+	    return $results->each(function($item) use($appends)
+	    {
+	        $appends->each(function($append) use($item)
+	        {
+	            if(strpos($append, '.'))
+	            {
+	                $parts = explode('.', $append);
+	                $relation = $parts[0];
+	                $appending = $parts[1];
+	                if($item->$relation !== null)
+	                {
+	                    if($item->$relation instanceof \Illuminate\Database\Eloquent\Collection)
+	                    {
+	                        $item->$relation()->get()->each->append($appending);
+	                    } else
+	                    {
+	                        $item->$relation->append($appending);
+	                    }
+	                }
+	            } else
+	            {
+	                $item->append($append);
+	            }
+	        });
+	    });
+	}
 
     protected function ensureAllAppendsExist()
     {
