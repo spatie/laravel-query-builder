@@ -39,12 +39,12 @@ class TestModel extends Model
         return $this->morphMany(MorphModel::class, 'parent');
     }
 
-    public function scopeNamed(Builder $query, string $name) : Builder
+    public function scopeNamed(Builder $query, string $name): Builder
     {
         return $query->where('name', $name);
     }
 
-    public function scopeCreatedBetween(Builder $query, $from, $to) : Builder
+    public function scopeCreatedBetween(Builder $query, $from, $to): Builder
     {
         return $query->whereBetween('created_at', [
             Carbon::parse($from), Carbon::parse($to),

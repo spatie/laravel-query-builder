@@ -37,7 +37,7 @@ class FiltersExact implements Filter
         $query->where($property, '=', $value);
     }
 
-    protected function isRelationProperty(Builder $query, string $property) : bool
+    protected function isRelationProperty(Builder $query, string $property): bool
     {
         if (! Str::contains($property, '.')) {
             return false;

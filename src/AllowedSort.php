@@ -43,12 +43,12 @@ class AllowedSort
         ($this->sortClass)($query, $descending, $this->internalName);
     }
 
-    public static function field(string $name, ?string $internalName = null) : self
+    public static function field(string $name, ?string $internalName = null): self
     {
         return new static($name, new SortsField, $internalName);
     }
 
-    public static function custom(string $name, Sort $sortClass, ?string $internalName = null) : self
+    public static function custom(string $name, Sort $sortClass, ?string $internalName = null): self
     {
         return new static($name, $sortClass, $internalName);
     }

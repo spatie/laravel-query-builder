@@ -235,7 +235,7 @@ class SortTest extends TestCase
     public function it_allows_default_custom_sort_class_parameter()
     {
         $sortClass = new class implements SortInterface {
-            public function __invoke(Builder $query, bool $descending, string $property) : Builder
+            public function __invoke(Builder $query, bool $descending, string $property): Builder
             {
                 return $query->orderBy('name', $descending ? 'desc' : 'asc');
             }
@@ -266,7 +266,7 @@ class SortTest extends TestCase
     public function it_allows_multiple_default_sort_parameters()
     {
         $sortClass = new class implements SortInterface {
-            public function __invoke(Builder $query, $descending, string $property) : Builder
+            public function __invoke(Builder $query, $descending, string $property): Builder
             {
                 return $query->orderBy('name', $descending ? 'desc' : 'asc');
             }
@@ -324,7 +324,7 @@ class SortTest extends TestCase
     public function it_can_sort_by_a_custom_sort_class()
     {
         $sortClass = new class implements SortInterface {
-            public function __invoke(Builder $query, $descending, string $property) : Builder
+            public function __invoke(Builder $query, $descending, string $property): Builder
             {
                 return $query->orderBy('name', $descending ? 'desc' : 'asc');
             }
@@ -419,7 +419,7 @@ class SortTest extends TestCase
     public function it_can_sort_and_use_scoped_filters_at_the_same_time()
     {
         $sortClass = new class implements SortInterface {
-            public function __invoke(Builder $query, $descending, string $property) : Builder
+            public function __invoke(Builder $query, $descending, string $property): Builder
             {
                 return $query->orderBy('name', $descending ? 'desc' : 'asc');
             }
