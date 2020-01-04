@@ -208,7 +208,7 @@ class FilterTest extends TestCase
         $testModel = $this->models->first();
 
         $filterClass = new class implements FilterInterface {
-            public function __invoke(Builder $query, $value, string $property) : Builder
+            public function __invoke(Builder $query, $value, string $property): Builder
             {
                 return $query->where('name', $value);
             }
