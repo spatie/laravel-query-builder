@@ -1,15 +1,19 @@
 name: run-tests
 
-on: [push]
+on:
+    push:
+    schedule:
+        - cron: '0 0 * * *'
 
 jobs:
     test:
-        runs-on: ubuntu-latest
+        runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 php: [7.4, 7.3, 7.2]
                 laravel: [6.*, 5.8.*, 5.7.*, 5.6.*]
                 dependency-version: [prefer-lowest, prefer-stable]
+                os: [ubuntu-latest, windows-latest]
                 include:
                     - laravel: 6.*
                       testbench: 4.*
@@ -20,7 +24,7 @@ jobs:
                     - laravel: 5.6.*
                       testbench: 3.6.*
 
-        name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
+        name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
         steps:
             - name: Checkout code
