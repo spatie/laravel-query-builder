@@ -254,7 +254,8 @@ class IncludeTest extends TestCase
 
         // Based on the following query: TestModel::with('relatedThroughPivotModels')->get();
         // Without where-clause as that differs per Laravel version
-        $this->assertQueryLogContains('select "related_through_pivot_models".*, "pivot_models"."test_model_id" as "pivot_test_model_id", "pivot_models"."related_through_pivot_model_id" as "pivot_related_through_pivot_model_id" from "related_through_pivot_models" inner join "pivot_models" on "related_through_pivot_models"."id" = "pivot_models"."related_through_pivot_model_id"');
+        //dump(DB::getQueryLog());
+        $this->assertQueryLogContains('select `related_through_pivot_models`.*, `pivot_models`.`test_model_id` as `pivot_test_model_id`, `pivot_models`.`related_through_pivot_model_id` as `pivot_related_through_pivot_model_id` from `related_through_pivot_models` inner join `pivot_models` on `related_through_pivot_models`.`id` = `pivot_models`.`related_through_pivot_model_id` where `pivot_models`.`test_model_id` in (1, 2, 3, 4, 5)');
     }
 
     /** @test */

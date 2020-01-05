@@ -94,7 +94,7 @@ class FilterTest extends TestCase
             ->toSql();
 
         $expectedSql = TestModel::select('id', 'name')
-            ->where(DB::raw('LOWER("name")'), 'LIKE', 'john')
+            ->where(DB::raw('LOWER(`name`)'), 'LIKE', 'john')
             ->toSql();
 
         $this->assertEquals($expectedSql, $queryBuilderSql);

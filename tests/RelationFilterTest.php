@@ -151,7 +151,7 @@ class RelationFilterTest extends TestCase
             ->allowedFilters(AllowedFilter::exact('related-models.name', null, $addRelationConstraint))
             ->toSql();
 
-        $this->assertStringContainsString('"related-models"."name" = ', $sql);
+        $this->assertStringContainsString('`related-models`.`name` = ', $sql);
     }
 
     /** @test */
@@ -166,7 +166,7 @@ class RelationFilterTest extends TestCase
             ->allowedFilters(AllowedFilter::partial('related-models.name', null, $addRelationConstraint))
             ->toSql();
 
-        $this->assertStringContainsString('LOWER("related-models"."name") LIKE ?', $sql);
+        $this->assertStringContainsString('LOWER(`related-models`.`name`) LIKE ?', $sql);
     }
 
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder
