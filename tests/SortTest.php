@@ -105,6 +105,7 @@ class SortTest extends TestCase
     /** @test */
     public function it_can_sort_by_json_property_if_its_an_allowed_sort()
     {
+        dd(config('database'));
         TestModel::query()->update(['name' => json_encode(['first' => 'abc'])]);
 
         $this
