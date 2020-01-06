@@ -26,7 +26,7 @@ jobs:
             mysql:
                 image: mysql:5.7
                 env:
-                    MYSQL_ALLOW_EMPTY_PASSWORD: yes
+                    MYSQL_ROOT_PASSWORD: root
                     MYSQL_DATABASE: laravel_query_builder
                 ports:
                     - 3306
@@ -63,6 +63,7 @@ jobs:
                   DB_DATABASE: laravel_query_builder
                   DB_HOST: 127.0.0.1
                   DB_PORT: 3306
+                  DB_PASSWORD: root
 
             - name: Send Slack notification
               uses: 8398a7/action-slack@v2
