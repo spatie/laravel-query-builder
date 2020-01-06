@@ -31,25 +31,39 @@ trait AppendsAttributesToResults
 	        {
 	            if(strpos($append, '.'))
 	            {
-	                $parts = explode('.', $append);
-	                $relation = $parts[0];
-	                $appending = $parts[1];
-	                if($item->$relation !== null)
-	                {
-	                    if($item->$relation instanceof \Illuminate\Database\Eloquent\Collection)
-	                    {
-	                        $item->$relation()->get()->each->append($appending);
-	                    } else
-	                    {
-	                        $item->$relation->append($appending);
-	                    }
-	                }
+		        	$subs = collect(explode('.', $append));
+		        	$relation = $subs->shift();
+
+		        	$item = $this->appendLoop($item, $relation, $subs);
 	            } else
 	            {
 	                $item->append($append);
 	            }
 	        });
 	    });
+	}
+
+	private function appendLoop($item, $relation, $subs)
+	{
+		if($item->$relation !== null)
+	    {
+	    	if($subs->count() === 1)
+	    	{
+	    		$sub = $subs->first();
+		        if($item->$relation instanceof \Illuminate\Database\Eloquent\Collection)
+		        {
+		            $item->$relation()->get()->each->append($sub);
+		        } else
+		        {
+		            $item->$relation->append($sub);
+	       		}
+	    	} else
+	    	{
+	    		$sub = $subs->shift();
+	    		$item->$relation = $this->appendLoop($item->$relation, $sub, $subs);
+	    	}
+	    }
+	    return $item;
 	}
 
     protected function ensureAllAppendsExist()
