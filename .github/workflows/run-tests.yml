@@ -62,7 +62,7 @@ jobs:
                   DB_USERNAME: root
                   DB_DATABASE: laravel_query_builder
                   DB_HOST: 127.0.0.1
-                  DB_PORT: 3306
+                  DB_PORT: ${{ job.services.mysql.ports[3306] }}
                   DB_PASSWORD: root
 
             - name: Send Slack notification
