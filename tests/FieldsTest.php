@@ -131,8 +131,8 @@ class FieldsTest extends TestCase
 
         $queryBuilder->first()->relatedModels;
 
-        $this->assertQueryLogContains('select "test_models"."id" from "test_models"');
-        $this->assertQueryLogContains('select "name" from "related_models"');
+        $this->assertQueryLogContains('select `test_models`.`id` from `test_models`');
+        $this->assertQueryLogContains('select `name` from `related_models`');
     }
 
     /** @test */
@@ -222,8 +222,8 @@ class FieldsTest extends TestCase
 
         $queryBuilder->first()->relatedModels;
 
-        $this->assertQueryLogContains('select * from "test_models"');
-        $this->assertQueryLogContains('select "id", "name" from "related_models"');
+        $this->assertQueryLogContains('select * from `test_models`');
+        $this->assertQueryLogContains('select `id`, `name` from `related_models`');
     }
 
     /** @test */

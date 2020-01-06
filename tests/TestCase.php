@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -11,6 +12,8 @@ use Spatie\QueryBuilder\QueryBuilderServiceProvider;
 
 class TestCase extends Orchestra
 {
+    use DatabaseMigrations;
+
     protected function setUp(): void
     {
         parent::setUp();

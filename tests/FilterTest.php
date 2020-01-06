@@ -94,7 +94,7 @@ class FilterTest extends TestCase
             ->toSql();
 
         $expectedSql = TestModel::select('id', 'name')
-            ->where(DB::raw('LOWER("name")'), 'LIKE', 'john')
+            ->where(DB::raw('LOWER(`name`)'), 'LIKE', 'john')
             ->toSql();
 
         $this->assertEquals($expectedSql, $queryBuilderSql);
@@ -208,7 +208,7 @@ class FilterTest extends TestCase
         $testModel = $this->models->first();
 
         $filterClass = new class implements FilterInterface {
-            public function __invoke(Builder $query, $value, string $property) : Builder
+            public function __invoke(Builder $query, $value, string $property): Builder
             {
                 return $query->where('name', $value);
             }

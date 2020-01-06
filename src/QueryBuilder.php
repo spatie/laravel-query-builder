@@ -27,7 +27,7 @@ class QueryBuilder extends Builder
      * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $builder
      * @param null|\Illuminate\Http\Request $request
      */
-    public function __construct($builder, ? Request $request = null)
+    public function __construct($builder, ?Request $request = null)
     {
         parent::__construct(clone $builder->getQuery());
 
