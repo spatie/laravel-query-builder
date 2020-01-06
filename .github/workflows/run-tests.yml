@@ -57,6 +57,12 @@ jobs:
 
             - name: Execute tests
               run: vendor/bin/phpunit
+              env:
+                  DB_CONNECTION: mysql
+                  DB_USERNAME: root
+                  DB_DATABASE: laravel_query_builder
+                  DB_HOST: 127.0.0.1
+                  DB_PORT: 3306
 
             - name: Send Slack notification
               uses: 8398a7/action-slack@v2
