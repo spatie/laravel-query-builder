@@ -35,7 +35,7 @@ class QueryBuilderRequest extends Request
         $appendParts = $this->query($appendParameterName);
 
         if (! is_array($appendParts)) {
-            $appendParts = explode(',', strtolower($appendParts));
+            $appendParts = explode(',', $appendParts);
         }
 
         return collect($appendParts)->filter();
