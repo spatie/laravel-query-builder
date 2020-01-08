@@ -52,7 +52,10 @@ trait AppendsAttributesToResults
 	    		$sub = $subs->first();
 		        if($item->$relation instanceof \Illuminate\Database\Eloquent\Collection)
 		        {
-		            $item->$relation()->get()->each->append($sub);
+		            $item->$relation->each(function($model) use($sub)
+		            	{
+		            		$model->append($sub);
+		            	});
 		        } else
 		        {
 		            $item->$relation->append($sub);
