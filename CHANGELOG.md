@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 2.5.0 - 2020-01-09
+
+- add `defaultDirection`
+
 ## 2.4.0 - 2020-01-04
 
 - add support for a custom filter delimiter (#369)
