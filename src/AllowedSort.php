@@ -72,8 +72,8 @@ class AllowedSort
     public function defaultDirection(string $defaultDirection)
     {
         if (! in_array($defaultDirection, [
-           SortDirection::ASCENDING,
-           SortDirection::DESCENDING,
+            SortDirection::ASCENDING,
+            SortDirection::DESCENDING,
         ])) {
             throw InvalidDirection::make($defaultDirection);
         }
