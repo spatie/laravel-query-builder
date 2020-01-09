@@ -435,14 +435,14 @@ class FilterTest extends TestCase
     /** @test */
     public function it_does_not_apply_default_filter_when_filter_exists_and_default_is_set()
     {
-        TestModel::create(['name' => 'John Doe']);
-        TestModel::create(['name' => 'John Deer']);
+        TestModel::create(['name' => 'UniqueJohn UniqueDoe']);
+        TestModel::create(['name' => 'UniqueJohn Deer']);
 
         $models = $this
             ->createQueryFromFilterRequest([
-                'name' => 'Doe',
+                'name' => 'UniqueDoe',
             ])
-            ->allowedFilters(AllowedFilter::partial('name')->default('John'))
+            ->allowedFilters(AllowedFilter::partial('name')->default('UniqueJohn'))
             ->get();
 
         $this->assertEquals(1, $models->count());
