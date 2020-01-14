@@ -19,6 +19,10 @@ trait AddsIncludesToQuery
 
         $this->allowedIncludes = collect($includes)
             ->flatMap(function ($include): Collection {
+                if ($include instanceof Collection) {
+                    return $include;
+                }
+
                 if ($include instanceof IncludeInterface) {
                     return collect([$include]);
                 }

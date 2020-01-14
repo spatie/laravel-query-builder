@@ -280,6 +280,26 @@ class IncludeTest extends TestCase
         $this->assertEquals(['allowed include'], $exception->allowedIncludes->all());
     }
 
+    /** @test */
+    public function it_can_alias_multiple_allowed_includes()
+    {
+        $request = new Request([
+            'include' => 'relatedModelsCount,relationShipAlias',
+        ]);
+
+        $models = QueryBuilder::for(TestModel::class, $request)
+            ->allowedIncludes([
+                AllowedInclude::count('relatedModelsCount'),
+                AllowedInclude::relationship('relationShipAlias', 'otherRelatedModels'),
+            ])
+            ->get();
+
+        $this->assertRelationLoaded($models, 'otherRelatedModels');
+        $models->each(function ($model) {
+            $this->assertNotNull($model->related_models_count);
+        });
+    }
+
     protected function createQueryFromIncludeRequest(string $includes): QueryBuilder
     {
         $request = new Request([
