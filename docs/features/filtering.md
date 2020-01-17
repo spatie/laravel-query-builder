@@ -120,6 +120,17 @@ You can even pass multiple parameters to the scope by passing a comma separated 
 GET /events?filter[starts_between]=2018-01-01,2018-12-31
 ```
 
+When using scopes, for more convenient you can also use type hint parameters to automatically inject the model instances into your scope:
+
+```php
+public function scopeEvent(Builder $query, Event $event): Builder
+{
+    return $query->where('id', '=', $event->id);
+}
+
+// GET /events?filter[event]=1
+```
+
 Scopes are usually not named with query filters in mind. Use [filter aliases](#filter-aliases) to alias them to something more appropriate:
 
 ```php
