@@ -188,6 +188,19 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_can_filter_results_by_type_hinted_scope()
+    {
+        TestModel::create(['name' => 'John Testing Doe']);
+
+        $modelsResult = $this
+            ->createQueryFromFilterRequest(['user' => 1])
+            ->allowedFilters(AllowedFilter::scope('user'))
+            ->get();
+
+        $this->assertCount(1, $modelsResult);
+    }
+
+    /** @test */
     public function it_can_filter_results_by_scope_with_multiple_parameters()
     {
         Carbon::setTestNow(Carbon::parse('2016-05-05'));
