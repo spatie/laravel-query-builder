@@ -55,8 +55,8 @@ class IncludeTest extends TestCase
             ->allowedIncludes([
                 null,
                 [],
-                ''
-            ]),
+                '',
+            ])
             ->get();
 
         $this->assertCount(TestModel::count(), $models);
