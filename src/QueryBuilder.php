@@ -21,8 +21,6 @@ class QueryBuilder extends Builder
     /** @var \Spatie\QueryBuilder\QueryBuilderRequest */
     protected $request;
 
-    protected $throwInvalidQueryExceptions = true;
-
     /**
      * QueryBuilder constructor.
      *
@@ -93,12 +91,5 @@ class QueryBuilder extends Builder
         $this->localMacros = $builder->getProtected('localMacros');
 
         $this->onDelete = $builder->getProtected('onDelete');
-    }
-
-    public function throwInvalidQueryExceptions(bool $throwInvalidQueryExceptions = true): self
-    {
-        $this->throwInvalidQueryExceptions = $throwInvalidQueryExceptions;
-
-        return $this;
     }
 }

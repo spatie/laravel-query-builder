@@ -62,10 +62,6 @@ trait AddsIncludesToQuery
 
     protected function ensureAllIncludesExist()
     {
-        if (! $this->throwInvalidQueryExceptions) {
-            return;
-        }
-
         $includes = $this->request->includes();
 
         $allowedIncludeNames = $this->allowedIncludes->map(function (AllowedInclude $allowedInclude) {

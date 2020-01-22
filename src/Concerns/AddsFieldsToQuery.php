@@ -69,10 +69,6 @@ trait AddsFieldsToQuery
 
     protected function ensureAllFieldsExist()
     {
-        if (! $this->throwInvalidQueryExceptions) {
-            return;
-        }
-
         $requestedFields = $this->request->fields()
             ->map(function ($fields, $model) {
                 $tableName = Str::snake(preg_replace('/-/', '_', $model));
