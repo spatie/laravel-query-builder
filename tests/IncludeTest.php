@@ -203,7 +203,6 @@ class IncludeTest extends TestCase
             ->allowedIncludes('related-models');
     }
 
-
     /** @test */
     public function it_can_guard_against_invalid_includes_without_throwing_an_exception()
     {

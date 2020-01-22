@@ -202,8 +202,7 @@ class FieldsTest extends TestCase
 
     /** @test */
     public function it_throws_an_exception_when_calling_allowed_includes_before_allowed_fields_but_with_requested_fields(
-    )
-    {
+    ) {
         $request = new Request([
             'fields' => [
                 'test_models' => 'id',

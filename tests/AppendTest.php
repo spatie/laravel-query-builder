@@ -68,7 +68,6 @@ class AppendTest extends TestCase
             ->first();
 
         $this->assertAttributeNotLoaded($model, 'fullname');
-
     }
 
     /** @test */
