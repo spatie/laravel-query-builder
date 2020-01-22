@@ -203,6 +203,21 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_can_filter_results_by_scope_with_multiple_parameters_in_an_associative_array()
+    {
+        Carbon::setTestNow(Carbon::parse('2016-05-05'));
+
+        $testModel = TestModel::create(['name' => 'John Testing Doe']);
+
+        $modelsResult = $this
+            ->createQueryFromFilterRequest(['created_between' => ['start' => '2016-01-01', 'end' => '2017-01-01']])
+            ->allowedFilters(AllowedFilter::scope('created_between'))
+            ->get();
+
+        $this->assertCount(1, $modelsResult);
+    }
+
+    /** @test */
     public function it_can_filter_results_by_a_custom_filter_class()
     {
         $testModel = $this->models->first();
