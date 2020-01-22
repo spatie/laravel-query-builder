@@ -31,6 +31,10 @@ trait AppendsAttributesToResults
 
     protected function ensureAllAppendsExist()
     {
+        if (! $this->throwInvalidQueryExceptions) {
+            return;
+        }
+
         $appends = $this->request->appends();
 
         $diff = $appends->diff($this->allowedAppends);

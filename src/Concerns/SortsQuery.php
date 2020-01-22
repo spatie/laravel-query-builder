@@ -99,6 +99,10 @@ trait SortsQuery
 
     protected function ensureAllSortsExist(): void
     {
+        if (! $this->throwInvalidQueryExceptions) {
+            return;
+        }
+
         $requestedSortNames = $this->request->sorts()->map(function (string $sort) {
             return ltrim($sort, '-');
         });

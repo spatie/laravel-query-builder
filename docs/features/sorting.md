@@ -70,6 +70,8 @@ $users = QueryBuilder::for(User::class)
 // Will throw an `InvalidSortQuery` exception as `password` is not an allowed sorting property
 ```
 
+You can prevent this exception from being thrown by setting `throwInvalidQueryExceptions` to false using `$queryBuilder->throwInvalidQueryExceptions(false)`. This will disable throwing exceptions for any type of invalid query (including invalid filters, sorts, includes, appends and fields).
+
 ## Custom sorts
 
 You can specify custom sorting methods using the `AllowedSort::custom()` method. Custom sorts are instances of invokable classes that implement the `\Spatie\QueryBuilder\Sorts\Sort` interface. The `__invoke` method will receive the current query builder instance, the direction to sort in and the sort's name. This way you can build any sorting query your heart desires.
