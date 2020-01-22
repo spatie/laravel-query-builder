@@ -35,7 +35,7 @@ $users = QueryBuilder::for(User::class)
 
 Finally, when trying to filter on properties that have not been allowed using `allowedFilters()` an `InvalidFilterQuery` exception will be thrown along with a list of allowed filters.
 
-You can prevent this exception from being thrown by setting `throwInvalidQueryExceptions` to false using `$queryBuilder->disableInvalidQueryExceptions()`. This will disable throwing exceptions for any type of invalid query (including invalid filters, sorts, includes, appends and fields).
+You can prevent this exception from being thrown by setting `throwInvalidQueryExceptions` to false using `$queryBuilder->throwInvalidQueryExceptions(false)`. This will disable throwing exceptions for any type of invalid query (including invalid filters, sorts, includes, appends and fields).
 
 ## Exact filters
 

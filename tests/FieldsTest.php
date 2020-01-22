@@ -98,20 +98,6 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_guards_against_not_allowed_fields_without_throwing_an_exception()
-    {
-        $query = $this
-            ->createQueryFromFieldRequest(['test_models' => 'random-column'])
-            ->disableInvalidQueryExceptions()
-            ->allowedFields('name')
-            ->toSql();
-
-        $expected = TestModel::query()->toSql();
-
-        $this->assertEquals($expected, $query);
-    }
-
-    /** @test */
     public function it_guards_against_not_allowed_fields_from_an_included_resource()
     {
         $this->expectException(InvalidFieldQuery::class);
@@ -119,21 +105,6 @@ class FieldsTest extends TestCase
         $this
             ->createQueryFromFieldRequest(['related_models' => 'random_column'])
             ->allowedFields('related_models.name');
-    }
-
-    /** @test */
-    public function it_can_guard_against_not_allowed_fields_from_an_included_resource_without_throwing_an_exception()
-    {
-        DB::enableQueryLog();
-
-        $this
-            ->createQueryFromFieldRequest(['related_models' => 'random_column'])
-            ->disableInvalidQueryExceptions()
-            ->allowedFields('related_models.name')
-            ->first()->relatedModels;
-
-        $this->assertQueryLogContains('select * from `related_models`');
-        $this->assertQueryLogDoesntContain('random_column');
     }
 
     /** @test */
@@ -201,8 +172,7 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_when_calling_allowed_includes_before_allowed_fields_but_with_requested_fields(
-    )
+    public function it_throws_an_exception_when_calling_allowed_includes_before_allowed_fields_but_with_requested_fields()
     {
         $request = new Request([
             'fields' => [

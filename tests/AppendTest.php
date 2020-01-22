@@ -59,19 +59,6 @@ class AppendTest extends TestCase
     }
 
     /** @test */
-    public function it_can_guard_against_invalid_appends_without_throwing_an_exception()
-    {
-        $model = $this
-            ->createQueryFromAppendRequest('fullname')
-            ->disableInvalidQueryExceptions()
-            ->allowedAppends('attribute-to-append')
-            ->first();
-
-        $this->assertAttributeNotLoaded($model, 'fullname');
-
-    }
-
-    /** @test */
     public function it_can_allow_multiple_appends()
     {
         $model = $this
@@ -126,10 +113,5 @@ class AppendTest extends TestCase
     protected function assertAttributeLoaded(AppendModel $model, string $attribute)
     {
         $this->assertTrue(array_key_exists($attribute, $model->toArray()));
-    }
-
-    protected function assertAttributeNotLoaded(AppendModel $model, string $attribute)
-    {
-        $this->assertFalse(array_key_exists($attribute, $model->toArray()));
     }
 }

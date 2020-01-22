@@ -95,15 +95,10 @@ class QueryBuilder extends Builder
         $this->onDelete = $builder->getProtected('onDelete');
     }
 
-    public function setThrowInvalidQueryExceptions(bool $throwInvalidQueryExceptions = true): self
+    public function throwInvalidQueryExceptions(bool $throwInvalidQueryExceptions = true): self
     {
         $this->throwInvalidQueryExceptions = $throwInvalidQueryExceptions;
 
         return $this;
-    }
-
-    public function disableInvalidQueryExceptions(): self
-    {
-        return $this->setThrowInvalidQueryExceptions(false);
     }
 }

@@ -37,7 +37,7 @@ $users = QueryBuilder::for(User::class)
 // GET /users?fields[users]=email will throw an `InvalidFieldQuery` exception as `email` is not an allowed field.
 ```
 
-You can prevent this exception from being thrown by setting `throwInvalidQueryExceptions` to false using `$queryBuilder->disableInvalidQueryExceptions()`. This will disable throwing exceptions for any type of invalid query (including invalid filters, sorts, includes, appends and fields).
+You can prevent this exception from being thrown by setting `throwInvalidQueryExceptions` to false using `$queryBuilder->throwInvalidQueryExceptions(false)`. This will disable throwing exceptions for any type of invalid query (including invalid filters, sorts, includes, appends and fields).
 
 ## Selecting fields for included relations
 

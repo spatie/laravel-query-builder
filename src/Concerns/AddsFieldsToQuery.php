@@ -26,9 +26,9 @@ trait AddsFieldsToQuery
                 return $this->prependField($fieldName);
             });
 
-        if ($this->ensureAllFieldsExist()) {
-            $this->addRequestedModelFieldsToQuery();
-        }
+        $this->ensureAllFieldsExist();
+
+        $this->addRequestedModelFieldsToQuery();
 
         return $this;
     }
@@ -64,15 +64,15 @@ trait AddsFieldsToQuery
             throw new UnknownIncludedFieldsQuery($fields);
         }
 
-        if (! $this->ensureAllFieldsExist()) {
-            return [];
-        }
-
         return $fields;
     }
 
-    protected function ensureAllFieldsExist(): bool
+    protected function ensureAllFieldsExist()
     {
+        if (! $this->throwInvalidQueryExceptions) {
+            return;
+        }
+
         $requestedFields = $this->request->fields()
             ->map(function ($fields, $model) {
                 $tableName = Str::snake(preg_replace('/-/', '_', $model));
@@ -87,14 +87,8 @@ trait AddsFieldsToQuery
         $unknownFields = $requestedFields->diff($this->allowedFields);
 
         if ($unknownFields->isNotEmpty()) {
-            if ($this->throwInvalidQueryExceptions) {
-                throw InvalidFieldQuery::fieldsNotAllowed($unknownFields, $this->allowedFields);
-            } else {
-                return false;
-            }
+            throw InvalidFieldQuery::fieldsNotAllowed($unknownFields, $this->allowedFields);
         }
-
-        return true;
     }
 
     protected function prependFieldsWithTableName(array $fields, string $tableName): array
