@@ -56,12 +56,12 @@ class IncludeTest extends TestCase
                 null,
                 [],
                 ''
-            ])
+            ]),
             ->get();
 
         $this->assertCount(TestModel::count(), $models);
     }
-    
+
     /** @test */
     public function it_can_include_model_relations()
     {
