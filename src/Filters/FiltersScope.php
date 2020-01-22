@@ -14,6 +14,6 @@ class FiltersScope implements Filter
 
         $values = Arr::wrap($values);
 
-        $query->$scope(...$values);
+        $query->$scope(...array_values($values));
     }
 }
