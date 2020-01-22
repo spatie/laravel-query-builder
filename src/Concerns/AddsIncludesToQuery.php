@@ -36,9 +36,9 @@ trait AddsIncludesToQuery
                 return $allowedInclude->getName();
             });
 
-        $this->ensureAllIncludesExist();
-
-        $this->addIncludesToQuery($this->request->includes());
+        if ($this->ensureAllIncludesExist()) {
+            $this->addIncludesToQuery($this->request->includes());
+        }
 
         return $this;
     }
@@ -60,12 +60,8 @@ trait AddsIncludesToQuery
             });
     }
 
-    protected function ensureAllIncludesExist()
+    protected function ensureAllIncludesExist(): bool
     {
-        if (! $this->throwInvalidQueryExceptions) {
-            return;
-        }
-
         $includes = $this->request->includes();
 
         $allowedIncludeNames = $this->allowedIncludes->map(function (AllowedInclude $allowedInclude) {
@@ -75,9 +71,15 @@ trait AddsIncludesToQuery
         $diff = $includes->diff($allowedIncludeNames);
 
         if ($diff->count()) {
-            throw InvalidIncludeQuery::includesNotAllowed($diff, $allowedIncludeNames);
+            if ($this->throwInvalidQueryExceptions) {
+                throw InvalidIncludeQuery::includesNotAllowed($diff, $allowedIncludeNames);
+            } else {
+                return false;
+            }
         }
 
         // TODO: Check for non-existing relationships?
+
+        return true;
     }
 }

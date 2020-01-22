@@ -70,7 +70,7 @@ $users = QueryBuilder::for(User::class)
 // Will throw an `InvalidSortQuery` exception as `password` is not an allowed sorting property
 ```
 
-You can prevent this exception from being thrown by setting `throwInvalidQueryExceptions` to false using `$queryBuilder->throwInvalidQueryExceptions(false)`. This will disable throwing exceptions for any type of invalid query (including invalid filters, sorts, includes, appends and fields).
+You can prevent this exception from being thrown by setting `throwInvalidQueryExceptions` to false using `$queryBuilder->disableInvalidQueryExceptions()`. This will disable throwing exceptions for any type of invalid query (including invalid filters, sorts, includes, appends and fields).
 
 ## Custom sorts
 

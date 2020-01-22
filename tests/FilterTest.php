@@ -302,6 +302,18 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_can_guard_against_invalid_filters_without_throwing_an_exception()
+    {
+        $results = $this
+            ->createQueryFromFilterRequest(['name' => 'John'])
+            ->disableInvalidQueryExceptions()
+            ->allowedFilters('id')
+            ->get();
+
+        $this->assertCount(5, $results);
+    }
+
+    /** @test */
     public function it_can_create_a_custom_filter_with_an_instantiated_filter()
     {
         $customFilter = new class('test1') implements CustomFilter {
@@ -387,7 +399,7 @@ class FilterTest extends TestCase
     /** @test */
     public function it_can_take_an_argument_for_custom_column_name_resolution()
     {
-        $filter = AllowedFilter::custom('property_name', new FiltersExact, 'property_column_name');
+        $filter = AllowedFilter::custom('property_name', new FiltersExact(), 'property_column_name');
 
         $this->assertInstanceOf(AllowedFilter::class, $filter);
         $this->assertClassHasAttribute('internalName', get_class($filter));
@@ -396,7 +408,7 @@ class FilterTest extends TestCase
     /** @test */
     public function it_sets_property_column_name_to_property_name_by_default()
     {
-        $filter = AllowedFilter::custom('property_name', new FiltersExact);
+        $filter = AllowedFilter::custom('property_name', new FiltersExact());
 
         $this->assertEquals($filter->getName(), $filter->getInternalName());
     }
@@ -404,7 +416,7 @@ class FilterTest extends TestCase
     /** @test */
     public function it_resolves_queries_using_property_column_name()
     {
-        $filter = AllowedFilter::custom('nickname', new FiltersExact, 'name');
+        $filter = AllowedFilter::custom('nickname', new FiltersExact(), 'name');
 
         TestModel::create(['name' => 'abcdef']);
 

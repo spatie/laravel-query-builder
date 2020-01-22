@@ -203,6 +203,18 @@ class IncludeTest extends TestCase
             ->allowedIncludes('related-models');
     }
 
+
+    /** @test */
+    public function it_can_guard_against_invalid_includes_without_throwing_an_exception()
+    {
+        $models = $this
+            ->createQueryFromIncludeRequest('related-models')
+            ->disableInvalidQueryExceptions()
+            ->get();
+
+        $this->assertRelationNotLoaded($models, 'relatedModels');
+    }
+
     /** @test */
     public function it_can_allow_multiple_includes()
     {
@@ -311,5 +323,15 @@ class IncludeTest extends TestCase
             });
 
         $this->assertFalse($hasModelWithoutRelationLoaded, "The `{$relation}` relation was expected but not loaded.");
+    }
+
+    protected function assertRelationNotLoaded(Collection $collection, string $relation)
+    {
+        $hasModelWithRelationLoaded = $collection
+            ->contains(function (Model $model) use ($relation) {
+                return $model->relationLoaded($relation);
+            });
+
+        $this->assertFalse($hasModelWithRelationLoaded, "The `{$relation}` relation was expected but not loaded.");
     }
 }

@@ -22,9 +22,9 @@ trait FiltersQuery
             return AllowedFilter::partial($filter);
         });
 
-        $this->ensureAllFiltersExist();
-
-        $this->addFiltersToQuery();
+        if ($this->ensureAllFiltersExist()) {
+            $this->addFiltersToQuery();
+        }
 
         return $this;
     }
@@ -60,12 +60,8 @@ trait FiltersQuery
         return $this->request->filters()->has($allowedFilter->getName());
     }
 
-    protected function ensureAllFiltersExist()
+    protected function ensureAllFiltersExist(): bool
     {
-        if (! $this->throwInvalidQueryExceptions) {
-            return;
-        }
-
         $filterNames = $this->request->filters()->keys();
 
         $allowedFilterNames = $this->allowedFilters->map(function (AllowedFilter $allowedFilter) {
@@ -75,7 +71,13 @@ trait FiltersQuery
         $diff = $filterNames->diff($allowedFilterNames);
 
         if ($diff->count()) {
-            throw InvalidFilterQuery::filtersNotAllowed($diff, $allowedFilterNames);
+            if ($this->throwInvalidQueryExceptions) {
+                throw InvalidFilterQuery::filtersNotAllowed($diff, $allowedFilterNames);
+            } else {
+                return false;
+            }
         }
+
+        return true;
     }
 }

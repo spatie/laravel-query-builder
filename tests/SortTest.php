@@ -180,6 +180,17 @@ class SortTest extends TestCase
     }
 
     /** @test */
+    public function it_can_guard_against_invalid_sort_properties_without_throwing_an_exception()
+    {
+        $models = $this
+            ->createQueryFromSortRequest('name')
+            ->disableInvalidQueryExceptions()
+            ->allowedSorts('id');
+
+        $this->assertNotEmpty($models);
+    }
+
+    /** @test */
     public function an_invalid_sort_query_exception_contains_the_unknown_and_allowed_sorts()
     {
         $exception = InvalidSortQuery::sortsNotAllowed(collect(['unknown sort']), collect(['allowed sort']));

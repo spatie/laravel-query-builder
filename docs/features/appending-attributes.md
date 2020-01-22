@@ -39,4 +39,4 @@ Of course you can pass a list of attributes in the request to be appended:
 
 Finally, when trying to append data that has not been allowed using `allowedAppends()` an `InvalidAppendQuery` exception will be thrown along with a list of allowed appends.
 
-You can prevent this exception from being thrown by setting `throwInvalidQueryExceptions` to false using `$queryBuilder->throwInvalidQueryExceptions(false)`. This will disable throwing exceptions for any type of invalid query (including invalid filters, sorts, includes, appends and fields).
+You can prevent this exception from being thrown by setting `throwInvalidQueryExceptions` to false using `$queryBuilder->disableInvalidQueryExceptions()`. This will disable throwing exceptions for any type of invalid query (including invalid filters, sorts, includes, appends and fields).

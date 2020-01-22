@@ -24,23 +24,29 @@ trait AppendsAttributesToResults
 
     protected function addAppendsToResults(Collection $results)
     {
+        if (! $this->ensureAllAppendsExist()) {
+            return $results;
+        }
+
         return $results->each(function (Model $result) {
             return $result->append($this->request->appends()->toArray());
         });
     }
 
-    protected function ensureAllAppendsExist()
+    protected function ensureAllAppendsExist(): bool
     {
-        if (! $this->throwInvalidQueryExceptions) {
-            return;
-        }
-
         $appends = $this->request->appends();
 
         $diff = $appends->diff($this->allowedAppends);
 
         if ($diff->count()) {
-            throw InvalidAppendQuery::appendsNotAllowed($diff, $this->allowedAppends);
+            if ($this->throwInvalidQueryExceptions) {
+                throw InvalidAppendQuery::appendsNotAllowed($diff, $this->allowedAppends);
+            } else {
+                return false;
+            }
         }
+
+        return true;
     }
 }

@@ -28,9 +28,9 @@ trait SortsQuery
             return AllowedSort::field(ltrim($sort, '-'));
         });
 
-        $this->ensureAllSortsExist();
-
-        $this->addRequestedSortsToQuery(); // allowed is known & request is known, add what we can, if there is no request, -wait
+        if ($this->ensureAllSortsExist()) {
+            $this->addRequestedSortsToQuery(); // allowed is known & request is known, add what we can, if there is no request, -wait
+        }
 
         return $this;
     }
@@ -97,12 +97,8 @@ trait SortsQuery
             });
     }
 
-    protected function ensureAllSortsExist(): void
+    protected function ensureAllSortsExist(): bool
     {
-        if (! $this->throwInvalidQueryExceptions) {
-            return;
-        }
-
         $requestedSortNames = $this->request->sorts()->map(function (string $sort) {
             return ltrim($sort, '-');
         });
@@ -114,7 +110,13 @@ trait SortsQuery
         $unknownSorts = $requestedSortNames->diff($allowedSortNames);
 
         if ($unknownSorts->isNotEmpty()) {
-            throw InvalidSortQuery::sortsNotAllowed($unknownSorts, $allowedSortNames);
+            if ($this->throwInvalidQueryExceptions) {
+                throw InvalidSortQuery::sortsNotAllowed($unknownSorts, $allowedSortNames);
+            } else {
+                return false;
+            }
         }
+
+        return true;
     }
 }
