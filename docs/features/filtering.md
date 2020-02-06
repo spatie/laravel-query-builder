@@ -52,7 +52,7 @@ $users = QueryBuilder::for(User::class)
 // only users with the exact name "John Doe"
 ```
 
-The query builder will automatically map `1`, `0`, 'true'`, and `'false'` as boolean values and a comma separated list of values as an array:
+The query builder will automatically map `1`, `0`, `'true'`, and `'false'` as boolean values and a comma separated list of values as an array:
 
 ```php
 use Spatie\QueryBuilder\AllowedFilter;
