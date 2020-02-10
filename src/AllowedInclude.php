@@ -2,11 +2,11 @@
 
 namespace Spatie\QueryBuilder;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\Includes\IncludedCount;
-use Spatie\QueryBuilder\Includes\IncludeInterface;
 use Spatie\QueryBuilder\Includes\IncludedRelationship;
+use Spatie\QueryBuilder\Includes\IncludeInterface;
 
 class AllowedInclude
 {

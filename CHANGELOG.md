@@ -2,6 +2,19 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 2.5.1 - 2020-01-22
+
+- fix dealing with empty or `null` includes (#395)
+- fix passing an associative array of scope filter values (#387)
+
+## 2.5.0 - 2020-01-09
+
+- add `defaultDirection`
+
+## 2.4.0 - 2020-01-04
+
+- add support for a custom filter delimiter (#369)
+
 ## 2.3.0 - 2019-10-08
 
 - resolve `QueryBuilderRequest` from service container

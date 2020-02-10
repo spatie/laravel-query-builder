@@ -5,9 +5,10 @@ namespace Spatie\QueryBuilder;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Filters\Filter;
 use Spatie\QueryBuilder\Filters\FiltersExact;
-use Spatie\QueryBuilder\Filters\FiltersScope;
 use Spatie\QueryBuilder\Filters\FiltersPartial;
 use Spatie\QueryBuilder\Filters\FiltersCallback;
+use Spatie\QueryBuilder\Filters\FiltersScope;
+use Spatie\QueryBuilder\Filters\FiltersTrashed;
 
 class AllowedFilter
 {
@@ -72,6 +73,11 @@ class AllowedFilter
     public static function callback(string $name, $callback, $internalName = null): self
     {
         return new static($name, new FiltersCallback($callback), $internalName);
+    }
+  
+    public static function trashed(string $name = 'trashed', $internalName = null): self
+    {
+        return new static($name, new FiltersTrashed(), $internalName);
     }
 
     public static function custom(string $name, Filter $filterClass, $internalName = null): self

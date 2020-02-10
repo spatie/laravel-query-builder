@@ -2,16 +2,17 @@
 
 namespace Spatie\QueryBuilder;
 
+use Spatie\QueryBuilder\Enums\SortDirection;
+use Spatie\QueryBuilder\Exceptions\InvalidDirection;
 use Spatie\QueryBuilder\Sorts\Sort;
 use Spatie\QueryBuilder\Sorts\SortsField;
-use Spatie\QueryBuilder\Enums\SortDirection;
 
 class AllowedSort
 {
-    /** @var string */
+    /** @var \Spatie\QueryBuilder\Sorts\Sort */
     protected $sortClass;
 
-    /** @var \Spatie\QueryBuilder\Sorts\Sort */
+    /** @var string */
     protected $name;
 
     /** @var string */
@@ -43,12 +44,12 @@ class AllowedSort
         ($this->sortClass)($query, $descending, $this->internalName);
     }
 
-    public static function field(string $name, ?string $internalName = null) : self
+    public static function field(string $name, ?string $internalName = null): self
     {
         return new static($name, new SortsField, $internalName);
     }
 
-    public static function custom(string $name, Sort $sortClass, ?string $internalName = null) : self
+    public static function custom(string $name, Sort $sortClass, ?string $internalName = null): self
     {
         return new static($name, $sortClass, $internalName);
     }
@@ -66,5 +67,19 @@ class AllowedSort
     public function getInternalName(): string
     {
         return $this->internalName;
+    }
+
+    public function defaultDirection(string $defaultDirection)
+    {
+        if (! in_array($defaultDirection, [
+            SortDirection::ASCENDING,
+            SortDirection::DESCENDING,
+        ])) {
+            throw InvalidDirection::make($defaultDirection);
+        }
+
+        $this->defaultDirection = $defaultDirection;
+
+        return $this;
     }
 }

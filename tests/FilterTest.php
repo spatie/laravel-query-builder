@@ -2,16 +2,16 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Illuminate\Database\Eloquent\Builder;
-use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
+use Spatie\QueryBuilder\Filters\FiltersExact;
+use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 class FilterTest extends TestCase
@@ -94,7 +94,7 @@ class FilterTest extends TestCase
             ->toSql();
 
         $expectedSql = TestModel::select('id', 'name')
-            ->where(DB::raw('LOWER("name")'), 'LIKE', 'john')
+            ->where(DB::raw('LOWER(`name`)'), 'LIKE', 'john')
             ->toSql();
 
         $this->assertEquals($expectedSql, $queryBuilderSql);
@@ -203,12 +203,27 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_can_filter_results_by_scope_with_multiple_parameters_in_an_associative_array()
+    {
+        Carbon::setTestNow(Carbon::parse('2016-05-05'));
+
+        $testModel = TestModel::create(['name' => 'John Testing Doe']);
+
+        $modelsResult = $this
+            ->createQueryFromFilterRequest(['created_between' => ['start' => '2016-01-01', 'end' => '2017-01-01']])
+            ->allowedFilters(AllowedFilter::scope('created_between'))
+            ->get();
+
+        $this->assertCount(1, $modelsResult);
+    }
+
+    /** @test */
     public function it_can_filter_results_by_a_custom_filter_class()
     {
         $testModel = $this->models->first();
 
         $filterClass = new class implements FilterInterface {
-            public function __invoke(Builder $query, $value, string $property) : Builder
+            public function __invoke(Builder $query, $value, string $property): Builder
             {
                 return $query->where('name', $value);
             }
@@ -421,12 +436,12 @@ class FilterTest extends TestCase
     /** @test */
     public function it_should_apply_a_default_filter_value_if_nothing_in_request()
     {
-        TestModel::create(['name' => 'John Doe']);
-        TestModel::create(['name' => 'John Deer']);
+        TestModel::create(['name' => 'UniqueJohn Doe']);
+        TestModel::create(['name' => 'UniqueJohn Deer']);
 
         $models = $this
             ->createQueryFromFilterRequest([])
-            ->allowedFilters(AllowedFilter::partial('name')->default('John'))
+            ->allowedFilters(AllowedFilter::partial('name')->default('UniqueJohn'))
             ->get();
 
         $this->assertEquals(2, $models->count());
@@ -435,14 +450,14 @@ class FilterTest extends TestCase
     /** @test */
     public function it_does_not_apply_default_filter_when_filter_exists_and_default_is_set()
     {
-        TestModel::create(['name' => 'John Doe']);
-        TestModel::create(['name' => 'John Deer']);
+        TestModel::create(['name' => 'UniqueJohn UniqueDoe']);
+        TestModel::create(['name' => 'UniqueJohn Deer']);
 
         $models = $this
             ->createQueryFromFilterRequest([
-                'name' => 'Doe',
+                'name' => 'UniqueDoe',
             ])
-            ->allowedFilters(AllowedFilter::partial('name')->default('John'))
+            ->allowedFilters(AllowedFilter::partial('name')->default('UniqueJohn'))
             ->get();
 
         $this->assertEquals(1, $models->count());

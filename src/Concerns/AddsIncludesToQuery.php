@@ -2,11 +2,11 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedInclude;
-use Spatie\QueryBuilder\Includes\IncludeInterface;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
+use Spatie\QueryBuilder\Includes\IncludeInterface;
 
 trait AddsIncludesToQuery
 {
@@ -18,6 +18,9 @@ trait AddsIncludesToQuery
         $includes = is_array($includes) ? $includes : func_get_args();
 
         $this->allowedIncludes = collect($includes)
+            ->reject(function ($include) {
+                return empty($include);
+            })
             ->flatMap(function ($include): Collection {
                 if ($include instanceof IncludeInterface) {
                     return collect([$include]);

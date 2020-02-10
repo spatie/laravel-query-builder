@@ -2,13 +2,13 @@
 
 namespace Spatie\QueryBuilder;
 
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\QueryBuilder\Concerns\SortsQuery;
-use Spatie\QueryBuilder\Concerns\FiltersQuery;
+use Illuminate\Http\Request;
 use Spatie\QueryBuilder\Concerns\AddsFieldsToQuery;
 use Spatie\QueryBuilder\Concerns\AddsIncludesToQuery;
 use Spatie\QueryBuilder\Concerns\AppendsAttributesToResults;
+use Spatie\QueryBuilder\Concerns\FiltersQuery;
+use Spatie\QueryBuilder\Concerns\SortsQuery;
 
 class QueryBuilder extends Builder
 {
@@ -27,7 +27,7 @@ class QueryBuilder extends Builder
      * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $builder
      * @param null|\Illuminate\Http\Request $request
      */
-    public function __construct($builder, ? Request $request = null)
+    public function __construct($builder, ?Request $request = null)
     {
         parent::__construct(clone $builder->getQuery());
 

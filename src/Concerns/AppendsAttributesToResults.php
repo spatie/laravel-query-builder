@@ -2,8 +2,8 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 
 trait AppendsAttributesToResults

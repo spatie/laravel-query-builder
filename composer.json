@@ -7,6 +7,10 @@
     ],
     "homepage": "https://github.com/spatie/laravel-query-builder",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/spatie/laravel-query-builder/issues",
+        "source": "https://github.com/spatie/laravel-query-builder"
+    },
     "authors": [
         {
             "name": "Alex Vanderbist",
