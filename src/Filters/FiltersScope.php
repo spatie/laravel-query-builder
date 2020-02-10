@@ -15,24 +15,24 @@ class FiltersScope implements Filter
         $scope = Str::camel($property);
 
         $values = Arr::wrap($values);
-        $values = $this->resolveTypeHintedParameters($query, $values, $scope);
+        $values = $this->resolveParameters($query, $values, $scope);
 
         return $query->$scope(...$values);
     }
 
-    protected function resolveTypeHintedParameters(Builder $query, $values, string $scope): array
+    protected function resolveParameters(Builder $query, $values, string $scope): array
     {
-        $scopeParameters = (new ReflectionObject($query->getModel()))
+        $parameters = (new ReflectionObject($query->getModel()))
             ->getMethod('scope' . ucfirst($scope))
             ->getParameters();
 
-        foreach ($scopeParameters as $scopeParameter) {
-            if (! optional($scopeParameter->getClass())->isSubclassOf(Model::class)) {
+        foreach ($parameters as $parameter) {
+            if (! optional($parameter->getClass())->isSubclassOf(Model::class)) {
                 continue;
             }
 
-            $model = $scopeParameter->getClass()->newInstance();
-            $index = $scopeParameter->getPosition() - 1;
+            $model = $parameter->getClass()->newInstance();
+            $index = $parameter->getPosition() - 1;
             $value = $values[$index];
 
             if (is_numeric($value)) {
