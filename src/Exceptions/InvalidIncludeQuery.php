@@ -19,8 +19,15 @@ class InvalidIncludeQuery extends InvalidQuery
         $this->allowedIncludes = $allowedIncludes;
 
         $unknownIncludes = $unknownIncludes->implode(', ');
-        $allowedIncludes = $allowedIncludes->implode(', ');
-        $message = "Requested include(s) `{$unknownIncludes}` are not allowed. Allowed include(s) are `{$allowedIncludes}`.";
+
+        $message = "Requested include(s) `{$unknownIncludes}` are not allowed. ";
+
+        if ($allowedIncludes->count()) {
+            $allowedIncludes = $allowedIncludes->implode(', ');
+            $message .= "Allowed include(s) are `{$allowedIncludes}`.";
+        } else {
+            $message .= 'There are no allowed includes.';
+        }
 
         parent::__construct(Response::HTTP_BAD_REQUEST, $message);
     }
