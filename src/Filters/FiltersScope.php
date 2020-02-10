@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Filters;
 
+use Spatie\QueryBuilder\Exceptions\InvalidFilterValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -23,7 +24,7 @@ class FiltersScope implements Filter
     protected function resolveParameters(Builder $query, $values, string $scope): array
     {
         $parameters = (new ReflectionObject($query->getModel()))
-            ->getMethod('scope' . ucfirst($scope))
+            ->getMethod('scope'.ucfirst($scope))
             ->getParameters();
 
         foreach ($parameters as $parameter) {
@@ -36,7 +37,13 @@ class FiltersScope implements Filter
             $value = $values[$index];
 
             if (is_numeric($value)) {
-                $values[$index] = $model::findOrFail($value);
+                $result = $model::find($value);
+
+                if ($result === null) {
+                    throw InvalidFilterValue::make($value);
+                }
+
+                $values[$index] = $result;
             }
         }
 
