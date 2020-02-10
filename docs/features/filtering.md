@@ -151,6 +151,32 @@ QueryBuilder::for(Booking::class)
 // GET /bookings?filter[trashed]=only will only return soft deleted models
 ```
 
+## Callback filters
+
+If you want to define a tiny custom filter, you can use a callback filter. Using `AllowedFilter::callback(string $name, callable $filter)` you can specify a callable that will executed when the filter is requested. 
+
+The filter callback will receive the following parameters: `Builder $query, mixed $value, string $name`. You can modify the `Builder` object to add your own query constraints.
+
+For example:
+
+```php
+QueryBuilder::for(User::class)
+    ->allowedFilters([
+        AllowedFilter::callback('has_posts', function (Builder $query, $value) {
+            $query->whereHas('posts');
+        }),
+    ]);
+```
+
+Using PHP 7.4 this example becomes a lot shorter:
+
+```php
+QueryBuilder::for(User::class)
+    ->allowedFilters([
+        AllowedFilter::callback('has_posts', fn (Builder $query) => $query->whereHas('posts')),
+    ]);
+```
+
 ## Custom filters
 
 You can specify custom filters using the `AllowedFilter::custom()` method. Custom filters are instances of invokable classes that implement the `\Spatie\QueryBuilder\Filters\Filter` interface. The `__invoke` method will receive the current query builder instance and the filter name/value. This way you can build any query your heart desires.

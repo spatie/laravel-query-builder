@@ -4,7 +4,8 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 ## 2.6.0 - 2020-02-10
 
-- add `FilterTrashed` for filtering soft-deleted models
+- add `FiltersTrashed` for filtering soft-deleted models
+- add `FiltersCallback` for filtering using a callback
 
 ## 2.5.1 - 2020-01-22
 
