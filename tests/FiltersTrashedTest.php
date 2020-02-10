@@ -3,8 +3,8 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\SoftDeleteModel;
 
 class FiltersTrashedTest extends TestCase
