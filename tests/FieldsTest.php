@@ -4,12 +4,12 @@ namespace Spatie\QueryBuilder\Tests;
 
 use DB;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
-use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
-use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
-use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Exceptions\AllowedFieldsMustBeCalledBeforeAllowedIncludes;
+use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
+use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 class FieldsTest extends TestCase
 {
@@ -131,8 +131,8 @@ class FieldsTest extends TestCase
 
         $queryBuilder->first()->relatedModels;
 
-        $this->assertQueryLogContains('select "test_models"."id" from "test_models"');
-        $this->assertQueryLogContains('select "name" from "related_models"');
+        $this->assertQueryLogContains('select `test_models`.`id` from `test_models`');
+        $this->assertQueryLogContains('select `name` from `related_models`');
     }
 
     /** @test */
@@ -222,8 +222,8 @@ class FieldsTest extends TestCase
 
         $queryBuilder->first()->relatedModels;
 
-        $this->assertQueryLogContains('select * from "test_models"');
-        $this->assertQueryLogContains('select "id", "name" from "related_models"');
+        $this->assertQueryLogContains('select * from `test_models`');
+        $this->assertQueryLogContains('select `id`, `name` from `related_models`');
     }
 
     /** @test */

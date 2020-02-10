@@ -2,8 +2,8 @@
 
 namespace Spatie\QueryBuilder\Includes;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class IncludedCount implements IncludeInterface
 {

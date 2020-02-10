@@ -2,12 +2,24 @@
 
 namespace Spatie\QueryBuilder;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class QueryBuilderRequest extends Request
 {
+    private static $arrayValueDelimiter = ',';
+
+    public static function setArrayValueDelimiter(string $delimiter): void
+    {
+        static::$arrayValueDelimiter = $delimiter;
+    }
+
+    public static function getArrayValueDelimiter(): string
+    {
+        return static::$arrayValueDelimiter;
+    }
+
     public static function fromRequest(Request $request): self
     {
         return static::createFrom($request, new self());
@@ -20,7 +32,7 @@ class QueryBuilderRequest extends Request
         $includeParts = $this->query($includeParameterName);
 
         if (! is_array($includeParts)) {
-            $includeParts = explode(',', $this->query($includeParameterName));
+            $includeParts = explode(static::getArrayValueDelimiter(), $this->query($includeParameterName));
         }
 
         return collect($includeParts)
@@ -35,7 +47,7 @@ class QueryBuilderRequest extends Request
         $appendParts = $this->query($appendParameterName);
 
         if (! is_array($appendParts)) {
-            $appendParts = explode(',', strtolower($appendParts));
+            $appendParts = explode(static::getArrayValueDelimiter(), strtolower($appendParts));
         }
 
         return collect($appendParts)->filter();
@@ -69,7 +81,7 @@ class QueryBuilderRequest extends Request
         }
 
         return $fieldsPerTable->map(function ($fields) {
-            return explode(',', $fields);
+            return explode(static::getArrayValueDelimiter(), $fields);
         });
     }
 
@@ -80,7 +92,7 @@ class QueryBuilderRequest extends Request
         $sortParts = $this->query($sortParameterName);
 
         if (is_string($sortParts)) {
-            $sortParts = explode(',', $sortParts);
+            $sortParts = explode(static::getArrayValueDelimiter(), $sortParts);
         }
 
         return collect($sortParts)->filter();
@@ -99,8 +111,8 @@ class QueryBuilderRequest extends Request
             })->all();
         }
 
-        if (Str::contains($value, ',')) {
-            return explode(',', $value);
+        if (Str::contains($value, static::getArrayValueDelimiter())) {
+            return explode(static::getArrayValueDelimiter(), $value);
         }
 
         if ($value === 'true') {

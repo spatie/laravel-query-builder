@@ -2,9 +2,9 @@
 
 namespace Spatie\QueryBuilder\Filters;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class FiltersExact implements Filter
 {
@@ -37,7 +37,7 @@ class FiltersExact implements Filter
         $query->where($property, '=', $value);
     }
 
-    protected function isRelationProperty(Builder $query, string $property) : bool
+    protected function isRelationProperty(Builder $query, string $property): bool
     {
         if (! Str::contains($property, '.')) {
             return false;

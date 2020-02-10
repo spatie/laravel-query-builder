@@ -2,9 +2,9 @@
 
 namespace Spatie\QueryBuilder\Filters;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Builder;
 
 class FiltersScope implements Filter
 {
@@ -14,6 +14,6 @@ class FiltersScope implements Filter
 
         $values = Arr::wrap($values);
 
-        $query->$scope(...$values);
+        $query->$scope(...array_values($values));
     }
 }
