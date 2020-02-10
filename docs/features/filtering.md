@@ -130,6 +130,27 @@ QueryBuilder::for(User::class)
     ]);
 ```
 
+## Trashed filters
+
+When using Laravel's [soft delete feature](https://laravel.com/docs/master/eloquent#querying-soft-deleted-models) you can use the `AllowedFilters::trashed()` filter to query these models. 
+
+The `FiltersTrashed` filter responds to particular values:
+
+- `with`: include soft-deleted records to the result set
+- `only`: return only 'trashed' records at the result set
+- any other value: return only records without that are not soft-deleted in the result set
+
+For example:
+
+```php
+QueryBuilder::for(Booking::class)
+    ->allowedFilters([
+        AllowedFilter::trashed(),
+    ]);
+
+// GET /bookings?filter[trashed]=only will only return soft deleted models
+```
+
 ## Custom filters
 
 You can specify custom filters using the `AllowedFilter::custom()` method. Custom filters are instances of invokable classes that implement the `\Spatie\QueryBuilder\Filters\Filter` interface. The `__invoke` method will receive the current query builder instance and the filter name/value. This way you can build any query your heart desires.
