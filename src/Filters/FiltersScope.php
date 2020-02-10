@@ -14,7 +14,7 @@ class FiltersScope implements Filter
     {
         $scope = Str::camel($property);
 
-        $values = Arr::wrap($values);
+        $values = array_values(Arr::wrap($values));
         $values = $this->resolveParameters($query, $values, $scope);
 
         return $query->$scope(...$values);
