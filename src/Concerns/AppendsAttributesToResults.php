@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 
 trait AppendsAttributesToResults
@@ -29,12 +30,12 @@ trait AppendsAttributesToResults
 	    {
 	        $appends->each(function($append) use($item)
 	        {
-	            if(strpos($append, '.'))
+	        	if(Str::contains($append, '.'))
 	            {
-		        	$subs = collect(explode('.', $append));
-		        	$relation = $subs->shift();
+		        	$nestedAppends = collect(explode('.', $append));
+		        	$relation = $nestedAppends->shift();
 
-		        	$item = $this->appendLoop($item, $relation, $subs);
+		        	$this->appendLoop($item, $relation, $nestedAppends);
 	            } else
 	            {
 	                $item->append($append);
@@ -43,13 +44,13 @@ trait AppendsAttributesToResults
 	    });
 	}
 
-	private function appendLoop($item, $relation, $subs)
+	private function appendLoop($item, string $relation, Collection $nestedAppends)
 	{
-		if($item->$relation !== null)
+		if($item->relationLoaded($relation))
 	    {
-	    	if($subs->count() === 1)
+	    	if($nestedAppends->count() === 1)
 	    	{
-	    		$sub = $subs->first();
+	    		$sub = $nestedAppends->first();
 		        if($item->$relation instanceof \Illuminate\Database\Eloquent\Collection)
 		        {
 		            $item->$relation->each(function($model) use($sub)
@@ -62,11 +63,10 @@ trait AppendsAttributesToResults
 	       		}
 	    	} else
 	    	{
-	    		$sub = $subs->shift();
-	    		$item->$relation = $this->appendLoop($item->$relation, $sub, $subs);
+	    		$sub = $nestedAppends->shift();
+	    		$this->appendLoop($item->$relation, $sub, $nestedAppends);
 	    	}
 	    }
-	    return $item;
 	}
 
     protected function ensureAllAppendsExist()
