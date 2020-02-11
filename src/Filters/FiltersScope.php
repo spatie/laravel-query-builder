@@ -32,20 +32,17 @@ class FiltersScope implements Filter
                 continue;
             }
 
-            $model   = $parameter->getClass()->newInstance();
-            $keyType = $model->getKeyType();
-            $index   = $parameter->getPosition() - 1;
-            $value   = $values[$index];
+            $model = $parameter->getClass()->newInstance();
+            $index = $parameter->getPosition() - 1;
+            $value = $values[$index];
 
-            if ($keyType === 'string' || ($keyType === 'int' && is_numeric($value))) {
-                $result = $model::find($value);
+            $result = $model->resolveRouteBinding($value);
 
-                if ($result === null) {
-                    throw InvalidFilterValue::make($value);
-                }
-
-                $values[$index] = $result;
+            if ($result === null) {
+                throw InvalidFilterValue::make($value);
             }
+
+            $values[$index] = $result;
         }
 
         return $values;
