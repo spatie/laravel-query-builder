@@ -22,6 +22,10 @@ trait AddsIncludesToQuery
                 return empty($include);
             })
             ->flatMap(function ($include): Collection {
+                if ($include instanceof Collection) {
+                    return $include;
+                }
+
                 if ($include instanceof IncludeInterface) {
                     return collect([$include]);
                 }

@@ -33,7 +33,7 @@ class IncludedRelationship implements IncludeInterface
     public static function getIndividualRelationshipPathsFromInclude(string $include): Collection
     {
         return collect(explode('.', $include))
-            ->reduce(function ($includes, $relationship) {
+            ->reduce(function (Collection $includes, string $relationship) {
                 if ($includes->isEmpty()) {
                     return $includes->push($relationship);
                 }
