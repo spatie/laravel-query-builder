@@ -2,12 +2,12 @@
 
 namespace Spatie\QueryBuilder\Filters;
 
-use Spatie\QueryBuilder\Exceptions\InvalidFilterValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use ReflectionObject;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterValue;
 
 class FiltersScope implements Filter
 {
@@ -32,11 +32,12 @@ class FiltersScope implements Filter
                 continue;
             }
 
-            $model = $parameter->getClass()->newInstance();
-            $index = $parameter->getPosition() - 1;
-            $value = $values[$index];
+            $model   = $parameter->getClass()->newInstance();
+            $keyType = $model->getKeyType();
+            $index   = $parameter->getPosition() - 1;
+            $value   = $values[$index];
 
-            if (is_numeric($value)) {
+            if ($keyType === 'string' || ($keyType === 'int' && is_numeric($value))) {
                 $result = $model::find($value);
 
                 if ($result === null) {
