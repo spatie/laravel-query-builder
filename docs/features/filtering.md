@@ -85,7 +85,7 @@ QueryBuilder::for(User::class)
 
 ## Scope filters
 
-Sometimes more advanced filtering options are necessary. This is where scope filters and custom filters come in handy.
+Sometimes more advanced filtering options are necessary. This is where scope filters, callback filters and custom filters come in handy.
 
 Scope filters allow you to add [local scopes](https://laravel.com/docs/5.6/eloquent#local-scopes) to your query by adding filters to the URL.
 
@@ -120,15 +120,15 @@ You can even pass multiple parameters to the scope by passing a comma separated 
 GET /events?filter[starts_between]=2018-01-01,2018-12-31
 ```
 
-When using scopes, for more convenient you can also use type hint parameters to automatically inject the model instances into your scope:
+When using scopes that require model instances in the parameters, we'll automatically try to inject the model instances into your scope. This works the same way as route model binding does for injecting Eloquent models into controllers. For example:
 
 ```php
-public function scopeEvent(Builder $query, Event $event): Builder
+public function scopeEvent(Builder $query, \App\Models\Event $event): Builder
 {
-    return $query->where('id', '=', $event->id);
+    return $query->where('id', $event->id);
 }
 
-// GET /events?filter[event]=1
+// GET /events?filter[event]=1 - the event with ID 1 will automatically be resolved and passed to the scoped filter
 ```
 
 Scopes are usually not named with query filters in mind. Use [filter aliases](#filter-aliases) to alias them to something more appropriate:
