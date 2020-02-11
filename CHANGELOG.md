@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 2.6.1 - 2020-02-11
+
+- fix alias for multiple allowed includes (#414)
+
 ## 2.6.0 - 2020-02-10
 
 - add `FiltersTrashed` for filtering soft-deleted models
