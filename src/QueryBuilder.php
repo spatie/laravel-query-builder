@@ -53,7 +53,7 @@ class QueryBuilder extends Builder
             $baseQuery = $baseQuery::query();
         }
 
-        return new static($baseQuery, $request ?? request());
+        return new static($baseQuery, $request ?? app(Request::class));
     }
 
     /**
