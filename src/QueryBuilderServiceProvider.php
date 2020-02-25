@@ -8,7 +8,7 @@ class QueryBuilderServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        if ($this->app->runningInConsole()) {
+        if ($this->app->runningInConsole() && function_exists('config_path')) {
             $this->publishes([
                 __DIR__.'/../config/query-builder.php' => config_path('query-builder.php'),
             ], 'config');
