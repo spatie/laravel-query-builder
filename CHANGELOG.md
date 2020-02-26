@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 2.7.2 - 2020-02-26
+
+- small fix for lumen (#436)
+
 ## 2.7.1 - 2020-02-26
 
 - small fix for lumen in service provider
