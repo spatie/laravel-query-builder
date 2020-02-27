@@ -87,7 +87,7 @@ QueryBuilder::for(User::class)
 
 Sometimes more advanced filtering options are necessary. This is where scope filters, callback filters and custom filters come in handy.
 
-Scope filters allow you to add [local scopes](https://laravel.com/docs/5.6/eloquent#local-scopes) to your query by adding filters to the URL.
+Scope filters allow you to add [local scopes](https://laravel.com/docs/master/eloquent#local-scopes) to your query by adding filters to the URL.
 
 Consider the following scope on your model:
 
