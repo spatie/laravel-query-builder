@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 2.8.0 - 2020-03-02
+
+- add support for Laravel 7
+
 ## 2.7.2 - 2020-02-26
 
 - small fix for lumen (#436)
