@@ -2,11 +2,16 @@
 
 namespace Spatie\QueryBuilder\Includes;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class IncludedRelationship implements IncludeInterface
 {
+    /** @var Closure|null */
+    public $getRequestedFieldsForRelatedTable;
+
     public function __invoke(Builder $query, string $relationship)
     {
         $relatedTables = collect(explode('.', $relationship));
@@ -15,7 +20,9 @@ class IncludedRelationship implements IncludeInterface
             ->mapWithKeys(function ($table, $key) use ($query, $relatedTables) {
                 $fullRelationName = $relatedTables->slice(0, $key + 1)->implode('.');
 
-                $fields = $query->getRequestedFieldsForRelatedTable($fullRelationName);
+                if ($this->getRequestedFieldsForRelatedTable) {
+                    $fields = ($this->getRequestedFieldsForRelatedTable)($fullRelationName);
+                }
 
                 if (empty($fields)) {
                     return [$fullRelationName];

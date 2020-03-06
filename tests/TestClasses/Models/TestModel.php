@@ -34,6 +34,12 @@ class TestModel extends Model
         return $this->belongsToMany(RelatedThroughPivotModel::class, 'pivot_models');
     }
 
+    public function relatedThroughPivotModelsWithPivot(): BelongsToMany
+    {
+        return $this->belongsToMany(RelatedThroughPivotModel::class, 'pivot_models')
+            ->withPivot(['location']);
+    }
+
     public function morphModels(): MorphMany
     {
         return $this->morphMany(MorphModel::class, 'parent');

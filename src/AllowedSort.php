@@ -41,7 +41,7 @@ class AllowedSort
     {
         $descending = $descending ?? ($this->defaultDirection === SortDirection::DESCENDING);
 
-        ($this->sortClass)($query, $descending, $this->internalName);
+        ($this->sortClass)($query->getEloquentBuilder(), $descending, $this->internalName);
     }
 
     public static function field(string $name, ?string $internalName = null): self
