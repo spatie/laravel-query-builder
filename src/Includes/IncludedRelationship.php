@@ -5,7 +5,6 @@ namespace Spatie\QueryBuilder\Includes;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class IncludedRelationship implements IncludeInterface
 {

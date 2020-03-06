@@ -279,6 +279,5 @@ class QueryBuilderTest extends TestCase
             'Wood Cottage',
             $foundTestModel->pivot->location
         );
-
     }
 }
