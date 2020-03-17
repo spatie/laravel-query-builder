@@ -36,3 +36,18 @@ public function handle($request, $next) {
     return $next($request);
 }
 ```
+
+You can also set the delimiter for each feature individually:
+```php
+QueryBuilderRequest::setIncludesArrayValueDelimiter(';'); // Includes
+QueryBuilderRequest::setAppendsArrayValueDelimiter(';');  // Appends
+QueryBuilderRequest::setFieldsArrayValueDelimiter(';');   // Fields
+QueryBuilderRequest::setSortsArrayValueDelimiter(';');    // Sorts
+QueryBuilderRequest::setFilterArrayValueDelimiter(';');   // Filter
+```
+
+You can override the default delimiter for single filters:
+```php
+// GET /api/endpoint?filter[id]=h4S4MG3(+>azv4z/I<o>,>XZII/Q1On
+AllowedFilter::exact('id', 'ref_id', true, ';');
+```

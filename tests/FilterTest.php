@@ -497,4 +497,19 @@ class FilterTest extends TestCase
 
         return QueryBuilder::for(TestModel::class, $request);
     }
+
+    /** @test */
+    public function it_can_override_the_array_value_delimiter_for_single_filters()
+    {
+        TestModel::create(['ref_id' => 'h4S4MG3(+>azv4z/I<o>,>XZII/Q1On']);
+
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'id' => 'h4S4MG3(+>azv4z/I<o>,>XZII/Q1On',
+            ])
+            ->allowedFilters(AllowedFilter::exact('id', 'ref_id', true, '|'))
+            ->get();
+
+        $this->assertEquals(1, $models->count());
+    }
 }

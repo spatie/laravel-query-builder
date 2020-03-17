@@ -49,29 +49,34 @@ class AllowedFilter
         ($this->filterClass)($query, $valueToFilter, $this->internalName);
     }
 
-    public static function exact(
-        string $name,
-        ?string $internalName = null,
-        bool $addRelationConstraint = true
-    ): self {
+    public static function setFilterArrayValueDelimiter(string $delimiter): void
+    {
+        if (isset($delimiter)) {
+            QueryBuilderRequest::setFilterArrayValueDelimiter($delimiter);
+        }
+    }
+
+    public static function exact(string $name, ?string $internalName = null, bool $addRelationConstraint = true, string $arrayValueDelimiter = null): self
+    {
+        static::setFilterArrayValueDelimiter($arrayValueDelimiter);
         return new static($name, new FiltersExact($addRelationConstraint), $internalName);
     }
 
-    public static function partial(
-        string $name,
-        $internalName = null,
-        bool $addRelationConstraint = true
-    ): self {
+    public static function partial(string $name, $internalName = null, bool $addRelationConstraint = true, string $arrayValueDelimiter = null): self
+    {
+        static::setFilterArrayValueDelimiter($arrayValueDelimiter);
         return new static($name, new FiltersPartial($addRelationConstraint), $internalName);
     }
 
-    public static function scope(string $name, $internalName = null): self
+    public static function scope(string $name, $internalName = null, string $arrayValueDelimiter = null): self
     {
+        static::setFilterArrayValueDelimiter($arrayValueDelimiter);
         return new static($name, new FiltersScope(), $internalName);
     }
 
-    public static function callback(string $name, $callback, $internalName = null): self
+    public static function callback(string $name, $callback, $internalName = null, string $arrayValueDelimiter = null): self
     {
+        static::setFilterArrayValueDelimiter($arrayValueDelimiter);
         return new static($name, new FiltersCallback($callback), $internalName);
     }
 
@@ -80,8 +85,9 @@ class AllowedFilter
         return new static($name, new FiltersTrashed(), $internalName);
     }
 
-    public static function custom(string $name, Filter $filterClass, $internalName = null): self
+    public static function custom(string $name, Filter $filterClass, $internalName = null, string $arrayValueDelimiter = null): self
     {
+        static::setFilterArrayValueDelimiter($arrayValueDelimiter);
         return new static($name, $filterClass, $internalName);
     }
 
@@ -136,9 +142,9 @@ class AllowedFilter
         if (is_array($value)) {
             $remainingProperties = array_diff($value, $this->ignored->toArray());
 
-            return ! empty($remainingProperties) ? $remainingProperties : null;
+            return !empty($remainingProperties) ? $remainingProperties : null;
         }
 
-        return ! $this->ignored->contains($value) ? $value : null;
+        return !$this->ignored->contains($value) ? $value : null;
     }
 }
