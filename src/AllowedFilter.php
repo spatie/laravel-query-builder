@@ -49,7 +49,7 @@ class AllowedFilter
         ($this->filterClass)($query, $valueToFilter, $this->internalName);
     }
 
-    public static function setFilterArrayValueDelimiter(string $delimiter): void
+    public static function setFilterArrayValueDelimiter(string $delimiter = null): void
     {
         if (isset($delimiter)) {
             QueryBuilderRequest::setFilterArrayValueDelimiter($delimiter);
