@@ -5,7 +5,7 @@ namespace Spatie\QueryBuilder;
 use Illuminate\Support\ServiceProvider;
 
 class QueryBuilderServiceProvider extends ServiceProvider
-
+{
     public function boot()
     {
         if ($this->app->runningInConsole() && function_exists('config_path')) {
