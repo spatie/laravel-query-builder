@@ -3,8 +3,9 @@
 namespace Spatie\QueryBuilder;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Support\DeferrableProvider;
 
-class QueryBuilderServiceProvider extends ServiceProvider
+class QueryBuilderServiceProvider extends ServiceProvider implements DeferrableProvider
 {
     public function boot()
     {
@@ -22,5 +23,12 @@ class QueryBuilderServiceProvider extends ServiceProvider
         $this->app->bind(QueryBuilderRequest::class, function ($app) {
             return QueryBuilderRequest::fromRequest($app['request']);
         });
+    }
+
+    public function provides()
+    {
+        return [
+            QueryBuilderRequest::class,
+        ];
     }
 }
