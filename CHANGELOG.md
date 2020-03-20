@@ -2,6 +2,44 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 2.8.0 - 2020-03-02
+
+- add support for Laravel 7
+
+## 2.7.2 - 2020-02-26
+
+- small fix for lumen (#436)
+
+## 2.7.1 - 2020-02-26
+
+- small fix for lumen in service provider
+
+## 2.7.0 - 2020-02-12
+
+- add support for model binding in scope filter parameters (#415)
+
+## 2.6.1 - 2020-02-11
+
+- fix alias for multiple allowed includes (#414)
+
+## 2.6.0 - 2020-02-10
+
+- add `FiltersTrashed` for filtering soft-deleted models
+- add `FiltersCallback` for filtering using a callback
+
+## 2.5.1 - 2020-01-22
+
+- fix dealing with empty or `null` includes (#395)
+- fix passing an associative array of scope filter values (#387)
+
+## 2.5.0 - 2020-01-09
+
+- add `defaultDirection`
+
+## 2.4.0 - 2020-01-04
+
+- add support for a custom filter delimiter (#369)
+
 ## 2.3.0 - 2019-10-08
 
 - resolve `QueryBuilderRequest` from service container

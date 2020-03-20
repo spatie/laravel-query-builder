@@ -362,4 +362,20 @@ class QueryBuilderRequestTest extends TestCase
 
         $this->assertEquals($expected, $request->appends());
     }
+
+    /** @test */
+    public function it_takes_custom_delimiters_for_splitting_request_parameters()
+    {
+        $request = new QueryBuilderRequest([
+            'filter' => [
+                'foo' => 'values, contain, commas|and are split on vertical| lines',
+            ],
+        ]);
+
+        QueryBuilderRequest::setArrayValueDelimiter('|');
+
+        $expected = ['foo' => ['values, contain, commas', 'and are split on vertical', ' lines']];
+
+        $this->assertEquals($expected, $request->filters()->toArray());
+    }
 }

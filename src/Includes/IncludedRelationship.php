@@ -2,8 +2,8 @@
 
 namespace Spatie\QueryBuilder\Includes;
 
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class IncludedRelationship implements IncludeInterface
 {
@@ -33,7 +33,7 @@ class IncludedRelationship implements IncludeInterface
     public static function getIndividualRelationshipPathsFromInclude(string $include): Collection
     {
         return collect(explode('.', $include))
-            ->reduce(function ($includes, $relationship) {
+            ->reduce(function (Collection $includes, string $relationship) {
                 if ($includes->isEmpty()) {
                     return $includes->push($relationship);
                 }

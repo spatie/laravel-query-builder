@@ -102,6 +102,17 @@ $users = QueryBuilder::for(User::class)
 // The requested `name-length` sort alias will invoke `StringLengthSort` with the `name` column name. 
 ```
 
+To change the default direction of the a sort you can use `defaultDirection` :
+
+```php
+$customSort = AllowedSort::custom('custom-sort', new SentSort())->defaultDirection('desc');
+
+$users = QueryBuilder::for(User::class)
+            ->allowedSorts($customSort)
+            ->defaultSort($customSort)->defaultDirection(SortDirection::DESCENDING)
+            ->get();
+```
+
 ## Using an alias for sorting
 
 There may be occasions where it is not appropriate to expose the column name to the user.
