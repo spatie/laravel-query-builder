@@ -3,10 +3,9 @@
 namespace Spatie\QueryBuilder;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Support\DeferrableProvider;
 
-class QueryBuilderServiceProvider extends ServiceProvider implements DeferrableProvider
-{
+class QueryBuilderServiceProvider extends ServiceProvider
+
     public function boot()
     {
         if ($this->app->runningInConsole() && function_exists('config_path')) {
@@ -27,6 +26,8 @@ class QueryBuilderServiceProvider extends ServiceProvider implements DeferrableP
 
     public function provides()
     {
+        // TODO: implement DeferrableProvider when Laravel 5.7 support is dropped.
+
         return [
             QueryBuilderRequest::class,
         ];
