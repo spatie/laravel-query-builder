@@ -46,7 +46,7 @@ class AllowedFilter
             return;
         }
 
-        ($this->filterClass)($query, $valueToFilter, $this->internalName);
+        ($this->filterClass)($query->getEloquentBuilder(), $valueToFilter, $this->internalName);
     }
 
     public static function exact(
