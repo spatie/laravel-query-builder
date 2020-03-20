@@ -2,8 +2,8 @@
 
 namespace Spatie\QueryBuilder;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Support\ServiceProvider;
 
 class QueryBuilderServiceProvider extends ServiceProvider implements DeferrableProvider
 {
