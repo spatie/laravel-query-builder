@@ -78,6 +78,16 @@ trait AddsIncludesToQuery
             throw InvalidIncludeQuery::includesNotAllowed($diff, $allowedIncludeNames);
         }
 
-        // TODO: Check for non-existing relationships?
+        $methods = get_class_methods($this->getModel());
+
+        $methods = collect($methods)->reject(function ($method) {
+            return method_exists('Illuminate\Database\Eloquent\Model', $method);
+        });
+
+        $diff = $includes->diff($methods);
+
+        if ($diff->count()) {
+            // throw InvalidIncludeQuery::nonExistingRelationship($diff);
+        }
     }
 }
