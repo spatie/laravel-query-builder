@@ -92,6 +92,7 @@ class AppendTest extends TestCase
         $this->assertAttributeLoaded($model, 'reversename');
     }
 
+
     /** @test */
     public function an_invalid_append_query_exception_contains_the_not_allowed_and_allowed_appends()
     {
@@ -99,6 +100,19 @@ class AppendTest extends TestCase
 
         $this->assertEquals(['not allowed append'], $exception->appendsNotAllowed->all());
         $this->assertEquals(['allowed append'], $exception->allowedAppends->all());
+    }
+
+    /** @test */
+    public function it_can_append_attributes_to_paginator()
+    {
+        $paginator = $this
+            ->createQueryFromAppendRequest('fullname')
+            ->allowedAppends('fullname')
+            ->paginate(10);
+
+        collect($paginator->items())->each(function ($model) {
+            $this->assertAttributeLoaded($model, 'fullname');
+        });
     }
 
     protected function createQueryFromAppendRequest(string $appends): QueryBuilder
@@ -112,6 +126,6 @@ class AppendTest extends TestCase
 
     protected function assertAttributeLoaded(AppendModel $model, string $attribute)
     {
-        $this->assertTrue(array_key_exists($attribute, $model->toArray()));
+        $this->assertArrayHasKey($attribute, $model->toArray());
     }
 }
