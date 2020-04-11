@@ -92,7 +92,6 @@ class AppendTest extends TestCase
         $this->assertAttributeLoaded($model, 'reversename');
     }
 
-
     /** @test */
     public function an_invalid_append_query_exception_contains_the_not_allowed_and_allowed_appends()
     {
