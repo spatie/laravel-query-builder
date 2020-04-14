@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedInclude;
@@ -78,6 +79,34 @@ trait AddsIncludesToQuery
             throw InvalidIncludeQuery::includesNotAllowed($diff, $allowedIncludeNames);
         }
 
-        // TODO: Check for non-existing relationships?
+        $this->ensureRelationshipsExist($this->getModel(), $includes, $allowedIncludeNames);
+    }
+
+    protected function ensureRelationshipsExist($model, $includes, $allowedIncludeNames)
+    {
+        $includes->map(function ($include) {
+            return [$this->getInternalName($include), $include];
+        })->eachSpread(function ($relationships, $include) use ($model, $allowedIncludeNames) {
+            $relationships = explode('.', Str::of($relationships)->before('Count'), 2);
+
+            if (count($relationships) > 1) {
+                $this->ensureRelationshipsExist($model->{$relationships[0]}()->getRelated(), collect($relationships[1]), $allowedIncludeNames);
+            }
+
+            $availableRelationships = collect(get_class_methods($model))->reject(function ($method) {
+                return method_exists(Model::class, $method);
+            });
+
+            if (! $availableRelationships->contains($relationships[0])) {
+                throw InvalidIncludeQuery::includesNotAllowed(collect($include), $allowedIncludeNames);
+            }
+        });
+    }
+
+    protected function getInternalName($include)
+    {
+        return optional($this->allowedIncludes->first(function (AllowedInclude $allowedInclude) use ($include) {
+            return $allowedInclude->getName() === $include;
+        }))->getInterlName() ?? $include;
     }
 }

@@ -204,6 +204,16 @@ class IncludeTest extends TestCase
     }
 
     /** @test */
+    public function it_guards_against_non_existing_relationships()
+    {
+        $this->expectException(InvalidIncludeQuery::class);
+
+        $this
+            ->createQueryFromIncludeRequest('random-model')
+            ->allowedIncludes('random-model');
+    }
+
+    /** @test */
     public function it_can_allow_multiple_includes()
     {
         $models = $this
@@ -298,6 +308,7 @@ class IncludeTest extends TestCase
     public function it_can_alias_multiple_allowed_includes()
     {
         $request = new Request([
+            // 'include' => 'relatedModelsCount',
             'include' => 'relatedModelsCount,relationShipAlias',
         ]);
 

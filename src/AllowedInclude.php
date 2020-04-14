@@ -69,6 +69,11 @@ class AllowedInclude
         return $this->name;
     }
 
+    public function getInterlName(): string
+    {
+        return $this->internalName ?? $this->name;
+    }
+
     public function isForInclude(string $includeName): bool
     {
         return $this->name === $includeName;
