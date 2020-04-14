@@ -308,7 +308,6 @@ class IncludeTest extends TestCase
     public function it_can_alias_multiple_allowed_includes()
     {
         $request = new Request([
-            // 'include' => 'relatedModelsCount',
             'include' => 'relatedModelsCount,relationShipAlias',
         ]);
 
