@@ -69,7 +69,7 @@ class AllowedInclude
         return $this->name;
     }
 
-    public function getInterlName(): string
+    public function getInternalName(): string
     {
         return $this->internalName ?? $this->name;
     }

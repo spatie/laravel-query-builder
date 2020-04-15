@@ -107,6 +107,6 @@ trait AddsIncludesToQuery
     {
         return optional($this->allowedIncludes->first(function (AllowedInclude $allowedInclude) use ($include) {
             return $allowedInclude->getName() === $include;
-        }))->getInterlName() ?? $include;
+        }))->getInternalName() ?? $include;
     }
 }
