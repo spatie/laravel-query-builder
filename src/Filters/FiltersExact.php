@@ -20,7 +20,6 @@ class FiltersExact implements Filter
 
     public function __invoke(Builder $query, $value, string $property)
     {
-
         if ($this->addRelationConstraint) {
             if ($this->isRelationProperty($query, $property)) {
                 $this->withRelationConstraint($query, $value, $property);
