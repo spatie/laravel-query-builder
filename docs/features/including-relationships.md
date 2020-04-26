@@ -76,4 +76,4 @@ Relation/include names will be converted to camelCase when looking for the corre
 
 ## Eloquent API resources
 
-Once the relationships are included, we'd recommend including them in your response by using [Eloquent API resources and conditional relationships](https://laravel.com/docs/5.5/eloquent-resources#conditional-relationships).
+Once the relationships are included, we'd recommend including them in your response by using [Eloquent API resources and conditional relationships](https://laravel.com/docs/master/eloquent-resources#conditional-relationships).

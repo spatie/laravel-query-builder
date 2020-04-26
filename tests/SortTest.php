@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\Enums\SortDirection;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
@@ -466,6 +467,25 @@ class SortTest extends TestCase
             ->allowedSorts('name');
 
         $this->assertSame('select * from `test_models` order by RANDOM(), `name` desc', $query->toSql());
+    }
+
+    /** @test */
+    public function the_default_direction_of_an_allow_sort_can_be_set()
+    {
+        $sortClass = new class implements SortInterface {
+            public function __invoke(Builder $query, bool $descending, string $property): Builder
+            {
+                return $query->orderBy('name', $descending ? 'desc' : 'asc');
+            }
+        };
+
+        $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+            ->allowedSorts(AllowedSort::custom('custom_name', $sortClass))
+            ->defaultSort(AllowedSort::custom('custom_name', $sortClass)->defaultDirection(SortDirection::DESCENDING))
+            ->get();
+
+        $this->assertQueryExecuted('select * from `test_models` order by `name` desc');
+        $this->assertSortedDescending($sortedModels, 'name');
     }
 
     protected function createQueryFromSortRequest(string $sort): QueryBuilder

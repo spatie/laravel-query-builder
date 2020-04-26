@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder;
 
 use Spatie\QueryBuilder\Enums\SortDirection;
+use Spatie\QueryBuilder\Exceptions\InvalidDirection;
 use Spatie\QueryBuilder\Sorts\Sort;
 use Spatie\QueryBuilder\Sorts\SortsField;
 
@@ -66,5 +67,19 @@ class AllowedSort
     public function getInternalName(): string
     {
         return $this->internalName;
+    }
+
+    public function defaultDirection(string $defaultDirection)
+    {
+        if (! in_array($defaultDirection, [
+            SortDirection::ASCENDING,
+            SortDirection::DESCENDING,
+        ])) {
+            throw InvalidDirection::make($defaultDirection);
+        }
+
+        $this->defaultDirection = $defaultDirection;
+
+        return $this;
     }
 }

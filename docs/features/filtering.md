@@ -52,7 +52,7 @@ $users = QueryBuilder::for(User::class)
 // only users with the exact name "John Doe"
 ```
 
-The query builder will automatically map `1`, `0`, 'true'`, and `'false'` as boolean values and a comma separated list of values as an array:
+The query builder will automatically map `1`, `0`, `'true'`, and `'false'` as boolean values and a comma separated list of values as an array:
 
 ```php
 use Spatie\QueryBuilder\AllowedFilter;
@@ -85,9 +85,9 @@ QueryBuilder::for(User::class)
 
 ## Scope filters
 
-Sometimes more advanced filtering options are necessary. This is where scope filters and custom filters come in handy.
+Sometimes more advanced filtering options are necessary. This is where scope filters, callback filters and custom filters come in handy.
 
-Scope filters allow you to add [local scopes](https://laravel.com/docs/5.6/eloquent#local-scopes) to your query by adding filters to the URL.
+Scope filters allow you to add [local scopes](https://laravel.com/docs/master/eloquent#local-scopes) to your query by adding filters to the URL.
 
 Consider the following scope on your model:
 
@@ -120,6 +120,17 @@ You can even pass multiple parameters to the scope by passing a comma separated 
 GET /events?filter[starts_between]=2018-01-01,2018-12-31
 ```
 
+When using scopes that require model instances in the parameters, we'll automatically try to inject the model instances into your scope. This works the same way as route model binding does for injecting Eloquent models into controllers. For example:
+
+```php
+public function scopeEvent(Builder $query, \App\Models\Event $event): Builder
+{
+    return $query->where('id', $event->id);
+}
+
+// GET /events?filter[event]=1 - the event with ID 1 will automatically be resolved and passed to the scoped filter
+```
+
 Scopes are usually not named with query filters in mind. Use [filter aliases](#filter-aliases) to alias them to something more appropriate:
 
 ```php
@@ -127,6 +138,53 @@ QueryBuilder::for(User::class)
     ->allowedFilters([
         AllowedFilter::scope('unconfirmed', 'whereHasUnconfirmedEmail'),
         // `?filter[unconfirmed]=1` will now add the `scopeWhereHasUnconfirmedEmail` to your query
+    ]);
+```
+
+## Trashed filters
+
+When using Laravel's [soft delete feature](https://laravel.com/docs/master/eloquent#querying-soft-deleted-models) you can use the `AllowedFilters::trashed()` filter to query these models. 
+
+The `FiltersTrashed` filter responds to particular values:
+
+- `with`: include soft-deleted records to the result set
+- `only`: return only 'trashed' records at the result set
+- any other value: return only records without that are not soft-deleted in the result set
+
+For example:
+
+```php
+QueryBuilder::for(Booking::class)
+    ->allowedFilters([
+        AllowedFilter::trashed(),
+    ]);
+
+// GET /bookings?filter[trashed]=only will only return soft deleted models
+```
+
+## Callback filters
+
+If you want to define a tiny custom filter, you can use a callback filter. Using `AllowedFilter::callback(string $name, callable $filter)` you can specify a callable that will executed when the filter is requested. 
+
+The filter callback will receive the following parameters: `Builder $query, mixed $value, string $name`. You can modify the `Builder` object to add your own query constraints.
+
+For example:
+
+```php
+QueryBuilder::for(User::class)
+    ->allowedFilters([
+        AllowedFilter::callback('has_posts', function (Builder $query, $value) {
+            $query->whereHas('posts');
+        }),
+    ]);
+```
+
+Using PHP 7.4 this example becomes a lot shorter:
+
+```php
+QueryBuilder::for(User::class)
+    ->allowedFilters([
+        AllowedFilter::callback('has_posts', fn (Builder $query) => $query->whereHas('posts')),
     ]);
 ```
 
@@ -228,35 +286,3 @@ QueryBuilder::for(User::class)
     ])
     ->get();
 ```
-
-## Array value delimiter
-
-Sometimes values to filter for could include commas. This is why you can specify the delimiter symbol using the `QueryBuilderRequest` to overwrite the default behvaiour.
-
-```php
-// GET /api/endpoint?filter=12,4V|4,7V|2,1V
-
-QueryBuilderRequest::setArrayValueDelimiter('|');
-
-QueryBuilder::for(Model::class)
-    ->allowedFilters(AllowedFilter::exact('voltage'))
-    ->get();
-
-// filters: [ 'voltage' => [ '12,4V', '4,7V', '2,1V' ]]
-```
-
-There are multiple opportunities where the delimter can be set.
-
-You can define it in a `ServiceProvider` to apply it globally, or define a middleware that can be applied only on certain `Controllers`.
-````php
-// YourServiceProvider.php
-public function boot() {
-    QueryBuilderRequest::setArrayDelimiter(';');
-}
-
-// ApplySemicolonDelimiterMiddleware.php
-public function handle($request, $next) {
-    QueryBuilderRequest::setArrayDelimiter(';');
-    return $next($request);
-}
-````

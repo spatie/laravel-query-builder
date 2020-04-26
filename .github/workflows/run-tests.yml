@@ -11,10 +11,12 @@ jobs:
         strategy:
             matrix:
                 php: [7.4, 7.3, 7.2]
-                laravel: [6.*, 5.8.*]
+                laravel: [7.*, 6.*, 5.8.*]
                 dependency-version: [prefer-lowest, prefer-stable]
                 os: [ubuntu-latest]
                 include:
+                    - laravel: 7.*
+                      testbench: 5.*
                     - laravel: 6.*
                       testbench: 4.*
                     - laravel: 5.8.*
@@ -47,7 +49,7 @@ jobs:
               uses: shivammathur/setup-php@v1
               with:
                   php-version: ${{ matrix.php }}
-                  extension-csv: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, mysql, mysqli, pdo_mysql, bcmath, soap, intl, gd, exif, iconv, imagick
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, mysql, mysqli, pdo_mysql, bcmath, soap, intl, gd, exif, iconv, imagick
                   coverage: none
 
             - name: Install dependencies

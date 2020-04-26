@@ -8,7 +8,7 @@ class QueryBuilderServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        if ($this->app->runningInConsole()) {
+        if ($this->app->runningInConsole() && function_exists('config_path')) {
             $this->publishes([
                 __DIR__.'/../config/query-builder.php' => config_path('query-builder.php'),
             ], 'config');
@@ -22,5 +22,14 @@ class QueryBuilderServiceProvider extends ServiceProvider
         $this->app->bind(QueryBuilderRequest::class, function ($app) {
             return QueryBuilderRequest::fromRequest($app['request']);
         });
+    }
+
+    public function provides()
+    {
+        // TODO: implement DeferrableProvider when Laravel 5.7 support is dropped.
+
+        return [
+            QueryBuilderRequest::class,
+        ];
     }
 }

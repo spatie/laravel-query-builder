@@ -18,7 +18,14 @@ trait AddsIncludesToQuery
         $includes = is_array($includes) ? $includes : func_get_args();
 
         $this->allowedIncludes = collect($includes)
+            ->reject(function ($include) {
+                return empty($include);
+            })
             ->flatMap(function ($include): Collection {
+                if ($include instanceof Collection) {
+                    return $include;
+                }
+
                 if ($include instanceof IncludeInterface) {
                     return collect([$include]);
                 }
