@@ -26,51 +26,39 @@ trait AppendsAttributesToResults
     protected function addAppendsToResults(Collection $results)
     {
         $appends = $this->request->appends();
-        return $results->each(function($item) use($appends)
-        {
-            $appends->each(function($append) use($item)
-            {
-                if(Str::contains($append, '.'))
-                {
+        return $results->each(function($item) use($appends) {
+            $appends->each(function($append) use($item) {
+                if(Str::contains($append, '.')) {
                     $nestedAppends = collect(explode('.', $append));
                     $relation = $nestedAppends->shift();
 
                     $this->appendLoop($item, $relation, $nestedAppends);
-                } else
-                {
+                } else {
                     $item->append($append);
                 }
             });
         });
     }
 
-    private function appendLoop($item, string $relation, Collection $nestedAppends)
-    {
-        if($item->relationLoaded($relation))
-        {
-            if($nestedAppends->count() === 1)
-            {
+    private function appendLoop($item, string $relation, Collection $nestedAppends) {
+        if($item->relationLoaded($relation)) {
+            if($nestedAppends->count() === 1) {
                 $sub = $nestedAppends->first();
-                if($item->$relation instanceof \Illuminate\Database\Eloquent\Collection)
-                {
-                    $item->$relation->each(function($model) use($sub)
-                        {
-                            $model->append($sub);
-                        });
-                } else
-                {
+                if($item->$relation instanceof \Illuminate\Database\Eloquent\Collection) {
+                    $item->$relation->each(function($model) use($sub) {
+                        $model->append($sub);
+                    });
+                } else {
                     $item->$relation->append($sub);
                 }
-            } else
-            {
+            } else {
                 $sub = $nestedAppends->shift();
                 $this->appendLoop($item->$relation, $sub, $nestedAppends);
             }
         }
     }
 
-    protected function ensureAllAppendsExist()
-    {
+    protected function ensureAllAppendsExist() {
         $appends = $this->request->appends();
 
         $diff = $appends->diff($this->allowedAppends);
