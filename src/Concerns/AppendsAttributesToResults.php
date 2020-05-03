@@ -25,7 +25,7 @@ trait AppendsAttributesToResults
     protected function addAppendsToResults(Collection $results)
     {
         $appends = $this->request->appends();
-        
+
         return $results->each(function ($item) use ($appends) {
             $appends->each(function ($append) use ($item) {
                 if (Str::contains($append, '.')) {
