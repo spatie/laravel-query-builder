@@ -2,7 +2,6 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
@@ -26,9 +25,9 @@ trait AppendsAttributesToResults
     protected function addAppendsToResults(Collection $results)
     {
         $appends = $this->request->appends();
-        return $results->each(function($item) use($appends) {
-            $appends->each(function($append) use($item) {
-                if(Str::contains($append, '.')) {
+        return $results->each(function ($item) use ($appends) {
+            $appends->each(function ($append) use ($item) {
+                if (Str::contains($append, '.')) {
                     $nestedAppends = collect(explode('.', $append));
                     $relation = $nestedAppends->shift();
 
@@ -40,12 +39,13 @@ trait AppendsAttributesToResults
         });
     }
 
-    private function appendLoop($item, string $relation, Collection $nestedAppends) {
-        if($item->relationLoaded($relation)) {
-            if($nestedAppends->count() === 1) {
+    private function appendLoop($item, string $relation, Collection $nestedAppends)
+    {
+        if ($item->relationLoaded($relation)) {
+            if ($nestedAppends->count() === 1) {
                 $sub = $nestedAppends->first();
-                if($item->$relation instanceof \Illuminate\Database\Eloquent\Collection) {
-                    $item->$relation->each(function($model) use($sub) {
+                if ($item->$relation instanceof \Illuminate\Database\Eloquent\Collection) {
+                    $item->$relation->each(function ($model) use ($sub) {
                         $model->append($sub);
                     });
                 } else {
@@ -58,7 +58,8 @@ trait AppendsAttributesToResults
         }
     }
 
-    protected function ensureAllAppendsExist() {
+    protected function ensureAllAppendsExist()
+    {
         $appends = $this->request->appends();
 
         $diff = $appends->diff($this->allowedAppends);
