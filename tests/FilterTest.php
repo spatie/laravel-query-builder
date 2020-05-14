@@ -395,6 +395,220 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_test_collection()
+    {
+        //value
+        $collection = collect([null]);
+        $value = true;
+        $this->assertFalse($collection->contains($value)); //Not contains
+
+        $collection = collect([null]);
+        $value = false;
+        $this->assertTrue($collection->contains($value)); //Contains?
+
+        //Strict
+        $collection = collect([null]);
+        $value = true;
+        $this->assertFalse($collection->containsStrict($value)); //Not contains
+
+        $collection = collect([null]);
+        $value = false;
+        $this->assertFalse($collection->containsStrict($value)); //Not Contains FIXED!
+
+        //Array values
+        $collection = collect([null]);
+        $value = [true];
+        $remainingProperties = array_diff($value, $collection->toArray());
+        $this->assertFalse(empty($remainingProperties)); //Not contains
+
+        $collection = collect([null]);
+        $value = [false];
+        $remainingProperties = array_diff($value, $collection->toArray());
+        $this->assertTrue(empty($remainingProperties)); //Contains?
+
+        //Strict
+        $collection = collect([null]);
+        $values = collect([true]);
+        $remainingProperties = $values->filter(function ($v) use ($collection) {
+            return !$collection->containsStrict($v);
+        });
+        $this->assertFalse($remainingProperties->isEmpty());
+
+        $collection = collect([null]);
+        $values = collect([false]);
+        $remainingProperties = $values->filter(function ($v) use ($collection) {
+            return !$collection->containsStrict($v);
+        });
+        $this->assertFalse($remainingProperties->isEmpty());
+    }
+
+    /** @test */
+    public function it_should_apply_a_filter_if_the_supplied_value_is_not_ignored_true()
+    {
+        TestModel::query()->update(['is_visible' => false]);
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'is_visible' => true,
+            ])
+            ->allowedFilters(AllowedFilter::exact('is_visible'))
+            ->get();
+
+        $this->assertCount(0, $models);
+    }
+
+    /** @test */
+    public function it_should_apply_a_filter_if_the_supplied_value_is_not_ignored_false()
+    {
+        TestModel::query()->update(['is_visible' => true]);
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'is_visible' => false,
+            ])
+            ->allowedFilters(AllowedFilter::exact('is_visible'))
+            ->get();
+
+        $this->assertCount(0, $models);
+    }
+
+    /** @test */
+    public function it_should_apply_a_filter_if_the_supplied_value_is_not_ignored_true_vs_null()
+    {
+        TestModel::query()->update(['is_visible' => false]);
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'is_visible' => true,
+            ])
+            ->allowedFilters(AllowedFilter::exact('is_visible')->ignore(null))
+            ->get();
+
+        $this->assertCount(0, $models);
+    }
+
+    /** @test */
+    public function it_should_apply_a_filter_if_the_supplied_value_is_not_ignored_true_vs_null_array()
+    {
+        TestModel::query()->update(['is_visible' => false]);
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'is_visible' => true,
+            ])
+            ->allowedFilters(AllowedFilter::exact('is_visible')->ignore([null, '']))
+            ->get();
+
+        $this->assertCount(0, $models);
+    }
+
+    /** @test */
+    public function it_does_not_should_apply_a_filter_if_the_supplied_value_is_ignored_null_vs_null()
+    {
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'is_visible' => null,
+            ])
+            ->allowedFilters(AllowedFilter::exact('is_visible')->ignore(null))
+            ->get();
+
+        $this->assertCount(TestModel::count(), $models);
+    }
+
+    /** @test */
+    public function it_does_not_should_apply_a_filter_if_the_supplied_value_is_ignored_null_vs_null_array()
+    {
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'is_visible' => null,
+            ])
+            ->allowedFilters(AllowedFilter::exact('is_visible')->ignore([null, '']))
+            ->get();
+
+        $this->assertCount(TestModel::count(), $models);
+    }
+
+    /** @test */
+    public function it_should_apply_a_filter_if_the_supplied_value_is_not_ignored_false_vs_null()
+    {
+        TestModel::query()->update(['is_visible' => true]);
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'is_visible' => false,
+            ])
+            ->allowedFilters(AllowedFilter::exact('is_visible')->ignore(null))
+            ->get();
+
+        $this->assertCount(0, $models);
+    }
+
+    /** @test */
+    public function it_should_apply_a_filter_if_the_supplied_value_is_not_ignored_false_vs_null_array()
+    {
+        TestModel::query()->update(['is_visible' => true]);
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'is_visible' => false,
+            ])
+            ->allowedFilters(AllowedFilter::exact('is_visible')->ignore([null, '']))
+            ->get();
+
+        $this->assertCount(0, $models);
+    }
+
+    /** @test */
+    public function it_should_apply_a_filter_if_the_supplied_value_is_not_ignored_array_true_vs_null()
+    {
+        TestModel::query()->update(['is_visible' => true]);
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'is_visible' => [true, false],
+            ])
+            ->allowedFilters(AllowedFilter::exact('is_visible')->ignore(null))
+            ->get();
+
+        $this->assertCount(TestModel::count(), $models);
+    }
+
+    /** @test */
+    public function it_should_apply_a_filter_if_the_supplied_value_is_not_ignored_array_false_vs_null()
+    {
+        TestModel::query()->update(['is_visible' => false]);
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'is_visible' => [true, false],
+            ])
+            ->allowedFilters(AllowedFilter::exact('is_visible')->ignore(null))
+            ->get();
+
+        $this->assertCount(TestModel::count(), $models);
+    }
+
+    /** @test */
+    public function it_should_apply_a_filter_if_the_supplied_value_is_not_ignored_array_true_vs_null_array()
+    {
+        TestModel::query()->update(['is_visible' => true]);
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'is_visible' => [true, false],
+            ])
+            ->allowedFilters(AllowedFilter::exact('is_visible')->ignore([null, '']))
+            ->get();
+
+        $this->assertCount(TestModel::count(), $models);
+    }
+
+    /** @test */
+    public function it_should_apply_a_filter_if_the_supplied_value_is_not_ignored_array_false_vs_null_array()
+    {
+        TestModel::query()->update(['is_visible' => false]);
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'is_visible' => [true, false],
+            ])
+            ->allowedFilters(AllowedFilter::exact('is_visible')->ignore([null, '']))
+            ->get();
+
+        $this->assertCount(TestModel::count(), $models);
+    }
+
+    /** @test */
     public function it_should_apply_the_filter_on_the_subset_of_allowed_values()
     {
         TestModel::create(['name' => 'John Doe']);
