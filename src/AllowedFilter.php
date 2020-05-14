@@ -138,9 +138,9 @@ class AllowedFilter
             $ignored = $this->ignored;
             $remainingProperties = $values->filter(function ($v) use ($ignored) {
                 if ($v === false || $v === null) {
-                    return !$ignored->containsStrict($v);
+                    return ! $ignored->containsStrict($v);
                 } else {
-                    return !$ignored->contains($v);
+                    return ! $ignored->contains($v);
                 }
             });
 

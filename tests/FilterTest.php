@@ -430,14 +430,14 @@ class FilterTest extends TestCase
         $collection = collect([null]);
         $values = collect([true]);
         $remainingProperties = $values->filter(function ($v) use ($collection) {
-            return !$collection->containsStrict($v);
+            return ! $collection->containsStrict($v);
         });
         $this->assertFalse($remainingProperties->isEmpty());
 
         $collection = collect([null]);
         $values = collect([false]);
         $remainingProperties = $values->filter(function ($v) use ($collection) {
-            return !$collection->containsStrict($v);
+            return ! $collection->containsStrict($v);
         });
         $this->assertFalse($remainingProperties->isEmpty());
     }
