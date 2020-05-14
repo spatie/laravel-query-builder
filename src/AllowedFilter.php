@@ -134,11 +134,23 @@ class AllowedFilter
     protected function resolveValueForFiltering($value)
     {
         if (is_array($value)) {
-            $remainingProperties = array_diff($value, $this->ignored->toArray());
+            $values = collect($value);
+            $ignored = $this->ignored;
+            $remainingProperties = $values->filter(function ($v) use ($ignored) {
+                if ($v === false || $v === null) {
+                    return !$ignored->containsStrict($v);
+                } else {
+                    return !$ignored->contains($v);
+                }
+            });
 
-            return ! empty($remainingProperties) ? $remainingProperties : null;
+            return ! $remainingProperties->isEmpty() ? $remainingProperties->toArray() : null;
         }
 
-        return ! $this->ignored->contains($value) ? $value : null;
+        if ($value === false || $value === null) {
+            return ! $this->ignored->containsStrict($value) ? $value : null;
+        } else {
+            return ! $this->ignored->contains($value) ? $value : null;
+        }
     }
 }
