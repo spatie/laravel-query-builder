@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 2.8.2 - 2020-05-25
+
+- fix scope filters that are added via macros (e.g. `onlyTrashed`) (#469)
+
 ## 2.8.1 - 2020-03-20
 
 - make service provider deferrable (#381)
