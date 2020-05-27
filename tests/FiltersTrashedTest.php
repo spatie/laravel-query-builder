@@ -51,7 +51,7 @@ class FiltersTrashedTest extends TestCase
     {
         $models = $this
             ->createQueryFromFilterRequest([
-                'only_trashed' => true
+                'only_trashed' => true,
             ])
             ->allowedFilters(AllowedFilter::scope('only_trashed'))
             ->get();
