@@ -59,24 +59,28 @@ class AllowedFilter
     public static function exact(string $name, ?string $internalName = null, bool $addRelationConstraint = true, string $arrayValueDelimiter = null): self
     {
         static::setFilterArrayValueDelimiter($arrayValueDelimiter);
+
         return new static($name, new FiltersExact($addRelationConstraint), $internalName);
     }
 
     public static function partial(string $name, $internalName = null, bool $addRelationConstraint = true, string $arrayValueDelimiter = null): self
     {
         static::setFilterArrayValueDelimiter($arrayValueDelimiter);
+
         return new static($name, new FiltersPartial($addRelationConstraint), $internalName);
     }
 
     public static function scope(string $name, $internalName = null, string $arrayValueDelimiter = null): self
     {
         static::setFilterArrayValueDelimiter($arrayValueDelimiter);
+
         return new static($name, new FiltersScope(), $internalName);
     }
 
     public static function callback(string $name, $callback, $internalName = null, string $arrayValueDelimiter = null): self
     {
         static::setFilterArrayValueDelimiter($arrayValueDelimiter);
+
         return new static($name, new FiltersCallback($callback), $internalName);
     }
 
@@ -88,6 +92,7 @@ class AllowedFilter
     public static function custom(string $name, Filter $filterClass, $internalName = null, string $arrayValueDelimiter = null): self
     {
         static::setFilterArrayValueDelimiter($arrayValueDelimiter);
+        
         return new static($name, $filterClass, $internalName);
     }
 
