@@ -530,6 +530,5 @@ class FilterTest extends TestCase
             ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true, '|'))
             ->get();
         $this->assertEquals(0, $models->count());
-
     }
 }

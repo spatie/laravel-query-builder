@@ -34,7 +34,7 @@ class QueryBuilderRequest extends Request
 
         $includeParts = $this->query($includeParameterName);
 
-        if (!is_array($includeParts)) {
+        if (! is_array($includeParts)) {
             $includeParts = explode(static::getIncludesArrayValueDelimiter(), $this->query($includeParameterName));
         }
 
@@ -49,7 +49,7 @@ class QueryBuilderRequest extends Request
 
         $appendParts = $this->query($appendParameterName);
 
-        if (!is_array($appendParts)) {
+        if (! is_array($appendParts)) {
             $appendParts = explode(static::getAppendsArrayValueDelimiter(), strtolower($appendParts));
         }
 
