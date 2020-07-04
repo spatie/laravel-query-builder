@@ -92,7 +92,7 @@ class AllowedFilter
     public static function custom(string $name, Filter $filterClass, $internalName = null, string $arrayValueDelimiter = null): self
     {
         static::setFilterArrayValueDelimiter($arrayValueDelimiter);
-        
+
         return new static($name, $filterClass, $internalName);
     }
 
