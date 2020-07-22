@@ -172,31 +172,20 @@ class QueryBuilderTest extends TestCase
     /** @test */
     public function it_can_get_a_query_from_a_relationship()
     {
-        $this->markTestIncomplete('This test proves that there\'s something wrong with Eloquent\'s getQuery()');
-
         $testModel = TestModel::create(['id' => 321, 'name' => 'John Doe']);
         $relatedThroughPivotModel = RelatedThroughPivotModel::create(['id' => 789, 'name' => 'The related model']);
 
         $testModel->relatedThroughPivotModels()->attach($relatedThroughPivotModel);
 
-        // Passes
-        $this->assertEquals(
-            $relatedThroughPivotModel->id,
-            $testModel->relatedThroughPivotModels()->first()->id
-        );
+        $queryBuilderResult = QueryBuilder::for($testModel->relatedThroughPivotModels())->first();
 
-        // Fails
-        $this->assertEquals(
-            $relatedThroughPivotModel->id,
-            $testModel->relatedThroughPivotModels()->getQuery()->first()->id
-        );
+        $this->assertEquals(789, $queryBuilderResult->related_through_pivot_model_id);
+        $this->assertEquals(321, $queryBuilderResult->test_model_id);
     }
 
     /** @test */
     public function it_queries_the_correct_data_for_a_relationship_query()
     {
-        $this->markTestIncomplete('Currently broken due to Eloquent. See the above test.');
-
         $testModel = TestModel::create(['id' => 321, 'name' => 'John Doe']);
         $relatedThroughPivotModel = RelatedThroughPivotModel::create(['id' => 789, 'name' => 'The related model']);
 
@@ -206,7 +195,7 @@ class QueryBuilderTest extends TestCase
 
         $queryBuilderResult = QueryBuilder::for($baseQuery)->first();
 
-        $this->assertEquals(789, $queryBuilderResult->id);
-        $this->assertEquals(123, $queryBuilderResult->testModel->id);
+        $this->assertEquals(789, $queryBuilderResult->related_through_pivot_model_id);
+        $this->assertEquals(321, $queryBuilderResult->test_model_id);
     }
 }
