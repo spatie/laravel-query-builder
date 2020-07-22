@@ -29,6 +29,10 @@ class QueryBuilder extends Builder
      */
     public function __construct($builder, ?Request $request = null)
     {
+        if ($builder instanceof \Illuminate\Database\Eloquent\Relations\Relation) {
+            $builder = $builder->getQuery();
+        }
+
         parent::__construct(clone $builder->getQuery());
 
         $this->initializeFromBuilder($builder);
