@@ -155,10 +155,10 @@ class QueryBuilderTest extends TestCase
             return $builder->where('name', 'Foo');
         });
 
-        $queryBuilder = QueryBuilder::for($baseQuery);
+        $queryBuilder = QueryBuilder::for(clone $baseQuery);
 
         $this->assertEquals(
-            'select * from `test_models` where `name` = ?',
+            $baseQuery->customMacro()->toSql(),
             $queryBuilder->customMacro()->toSql()
         );
     }
