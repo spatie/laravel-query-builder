@@ -2,94 +2,143 @@
 
 namespace Spatie\QueryBuilder;
 
-use Illuminate\Database\Eloquent\Builder;
+use ArrayAccess;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Traits\ForwardsCalls;
 use Spatie\QueryBuilder\Concerns\AddsFieldsToQuery;
 use Spatie\QueryBuilder\Concerns\AddsIncludesToQuery;
 use Spatie\QueryBuilder\Concerns\AppendsAttributesToResults;
 use Spatie\QueryBuilder\Concerns\FiltersQuery;
 use Spatie\QueryBuilder\Concerns\SortsQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidSubject;
 
-class QueryBuilder extends Builder
+/**
+ * @mixin EloquentBuilder
+ */
+class QueryBuilder implements ArrayAccess
 {
     use FiltersQuery,
         SortsQuery,
         AddsIncludesToQuery,
         AddsFieldsToQuery,
-        AppendsAttributesToResults;
+        AppendsAttributesToResults,
+        ForwardsCalls;
 
-    /** @var \Spatie\QueryBuilder\QueryBuilderRequest */
+    /** @var QueryBuilderRequest */
     protected $request;
 
-    /**
-     * QueryBuilder constructor.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $builder
-     * @param null|\Illuminate\Http\Request $request
-     */
-    public function __construct($builder, ?Request $request = null)
+    /** @var EloquentBuilder|Relation */
+    protected $subject;
+
+    public function __construct($subject, ?Request $request = null)
     {
-        parent::__construct(clone $builder->getQuery());
+        $this->initializeSubject($subject)
+            ->initializeRequest($request ?? app(Request::class));
+    }
 
-        $this->initializeFromBuilder($builder);
+    protected function initializeSubject($subject): self
+    {
+        throw_unless(
+            $subject instanceof EloquentBuilder || $subject instanceof Relation,
+            InvalidSubject::make($subject)
+        );
 
+        $this->subject = $subject;
+
+        return $this;
+    }
+
+    protected function initializeRequest(?Request $request = null): self
+    {
         $this->request = $request
             ? QueryBuilderRequest::fromRequest($request)
             : app(QueryBuilderRequest::class);
+
+        return $this;
     }
 
-    /**
-     * Create a new QueryBuilder for a request and model.
-     *
-     * @param string|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $baseQuery Model class or base query builder
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Spatie\QueryBuilder\QueryBuilder
-     */
-    public static function for($baseQuery, ?Request $request = null): self
+    public function getEloquentBuilder(): EloquentBuilder
     {
-        if (is_string($baseQuery)) {
-            /** @var Builder $baseQuery */
-            $baseQuery = $baseQuery::query();
+        if ($this->subject instanceof EloquentBuilder) {
+            return $this->subject;
         }
 
-        return new static($baseQuery, $request ?? app(Request::class));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function get($columns = ['*'])
-    {
-        $results = parent::get($columns);
-
-        if ($this->request->appends()->isNotEmpty()) {
-            $results = $this->addAppendsToResults($results);
+        if ($this->subject instanceof Relation) {
+            return $this->subject->getQuery();
         }
 
-        return $results;
+        throw InvalidSubject::make($this->subject);
+    }
+
+    public function getSubject()
+    {
+        return $this->subject;
     }
 
     /**
-     * Add the model, scopes, eager loaded relationships, local macro's and onDelete callback
-     * from the $builder to this query builder.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
+     * @param EloquentBuilder|Relation|string $subject
+     * @param Request|null $request
+     * @return static
      */
-    protected function initializeFromBuilder(Builder $builder)
+    public static function for($subject, ?Request $request = null): self
     {
-        $this
-            ->setModel($builder->getModel())
-            ->setEagerLoads($builder->getEagerLoads());
+        if (is_subclass_of($subject, Model::class)) {
+            $subject = $subject::query();
+        }
 
-        $builder->macro('getProtected', function (Builder $builder, string $property) {
-            return $builder->{$property};
-        });
+        return new static($subject, $request);
+    }
 
-        $this->scopes = $builder->getProtected('scopes');
+    public function __call($name, $arguments)
+    {
+        $result = $this->forwardCallTo($this->subject, $name, $arguments);
 
-        $this->localMacros = $builder->getProtected('localMacros');
+        if ($result === $this->subject) {
+            return $this;
+        }
 
-        $this->onDelete = $builder->getProtected('onDelete');
+        if ($result instanceof Model) {
+            $this->addAppendsToResults(collect([$result]));
+        }
+
+        if ($result instanceof Collection) {
+            $this->addAppendsToResults($result);
+        }
+
+        return $result;
+    }
+
+    public function __get($name)
+    {
+        return $this->subject->{$name};
+    }
+
+    public function __set($name, $value)
+    {
+        $this->subject->{$name} = $value;
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->subject[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->subject[$offset];
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->subject[$offset] = $value;
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->subject[$offset]);
     }
 }

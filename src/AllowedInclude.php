@@ -61,7 +61,13 @@ class AllowedInclude
 
     public function include(QueryBuilder $query): void
     {
-        ($this->includeClass)($query, $this->internalName);
+        if (property_exists($this->includeClass, 'getRequestedFieldsForRelatedTable')) {
+            $this->includeClass->getRequestedFieldsForRelatedTable = function (...$args) use ($query) {
+                return $query->getRequestedFieldsForRelatedTable(...$args);
+            };
+        }
+
+        ($this->includeClass)($query->getEloquentBuilder(), $this->internalName);
     }
 
     public function getName(): string
