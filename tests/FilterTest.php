@@ -40,6 +40,19 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_can_filter_models_by_an_array_as_filter_value()
+    {
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'name' => ['first' => $this->models->first()->name],
+            ])
+            ->allowedFilters('name')
+            ->get();
+
+        $this->assertCount(1, $models);
+    }
+
+    /** @test */
     public function it_can_filter_partially_and_case_insensitive()
     {
         $models = $this
