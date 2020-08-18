@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.0.0 - 2020-08-18
+
+New major version. Please read the [UPGRADING](UPGRADING.md) guide _before_ upgrading.
+
+- `Spatie\QueryBuilder\QueryBuilder` class no longer extends Laravel's `Illuminate\Database\Eloquent\Builder`
+
 ## 2.8.2 - 2020-05-25
 
 - fix scope filters that are added via macros (e.g. `onlyTrashed`) (#469)

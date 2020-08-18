@@ -86,7 +86,7 @@ $users = QueryBuilder::for(User::class)
 
 ## ⚠ Possible breaking changes from v2 to v3
 
-Please check the [CHANGELOG](CHANGELOG.md) for some notes regarding upgrading from v2 to v3.
+Please check the [UPGRADING](UPGRADING.md) for some notes regarding upgrading from v2 to v3.
 
 ## Support us
 
