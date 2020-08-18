@@ -84,6 +84,10 @@ $users = QueryBuilder::for(User::class)
 
 [Read more about appending attributes.](https://docs.spatie.be/laravel-query-builder/v2/features/appending-attributes/)
 
+## ⚠ Possible breaking changes from v2 to v3
+
+Please check the [CHANGELOG](CHANGELOG.md) for some notes regarding upgrading from v2 to v3.
+
 ## Support us
 
 Learn how to create a package like this one, by watching our premium video course:

@@ -2,6 +2,14 @@
 
 Because there are many breaking changes an upgrade is not that easy. There are many edge cases this guide does not cover. We accept PRs to improve this guide.
 
+## From v2 to v3
+
+Possible changes in this version due to internal changes.
+
+The package's `Spatie\QueryBuilder\QueryBuilder` class no longer extends Laravel's `Illuminate\Database\Eloquent\Builder`. This means you can no longer pass a `QueryBuilder` instance where a `Illuminate\Database\Eloquent\Builder` instance is expected. However, all Eloquent method calls get forwarded to the internal `Illuminate\Database\Eloquent\Builder`.
+
+Using `$queryBuilder->getEloquentBuilder()` you can access the internal `Illuminate\Database\Eloquent\Builder`.
+
 ## From v1 to v2
 
 There are a lot of renamed methods and classes in this release. An advanced IDE like PhpStorm is recommended to rename these methods and classes in your code base. Use the refactor -> rename functionality instead of find & replace.
