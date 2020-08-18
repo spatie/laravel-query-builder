@@ -97,6 +97,10 @@ class QueryBuilder implements ArrayAccess
     {
         $result = $this->forwardCallTo($this->subject, $name, $arguments);
 
+        /*
+         * If the forwarded method call is part of a chain we can return $this
+         * instead of the actual $result to keep the chain going.
+         */
         if ($result === $this->subject) {
             return $this;
         }
