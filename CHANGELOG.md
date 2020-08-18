@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.1.0 - 2020-08-18
+
+- add individual array delimiters for includes, filters, appends and sorts
+- ensure relations queried using the exact filter are actual relations on the model
+
 ## 3.0.0 - 2020-08-18
 
 New major version. Please read the [UPGRADING](UPGRADING.md) guide _before_ upgrading.
