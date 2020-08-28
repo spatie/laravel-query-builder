@@ -38,14 +38,14 @@ class AppendTest extends TestCase
     }
 
     /** @test */
-    public function it_can_append_case_insensitive()
+    public function it_can_append_case_sensitive()
     {
         $model = $this
-            ->createQueryFromAppendRequest('FullName')
-            ->allowedAppends('fullname')
+            ->createQueryFromAppendRequest('AllNames')
+            ->allowedAppends('AllNames')
             ->first();
 
-        $this->assertAttributeLoaded($model, 'fullname');
+        $this->assertAttributeLoaded($model, 'AllNames');
     }
 
     /** @test */
