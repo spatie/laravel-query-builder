@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use ReflectionException;
 use ReflectionObject;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterValue;
 
@@ -23,9 +24,13 @@ class FiltersScope implements Filter
 
     protected function resolveParameters(Builder $query, $values, string $scope): array
     {
-        $parameters = (new ReflectionObject($query->getModel()))
-            ->getMethod('scope'.ucfirst($scope))
-            ->getParameters();
+        try {
+            $parameters = (new ReflectionObject($query->getModel()))
+                ->getMethod('scope'.ucfirst($scope))
+                ->getParameters();
+        } catch (ReflectionException $e) {
+            return $values;
+        }
 
         foreach ($parameters as $parameter) {
             if (! optional($parameter->getClass())->isSubclassOf(Model::class)) {

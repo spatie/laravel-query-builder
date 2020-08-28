@@ -96,11 +96,11 @@ class RelationFilterTest extends TestCase
     /** @test */
     public function it_can_filter_results_based_on_the_existence_of_a_property_in_an_array()
     {
-        $testModel = TestModel::whereIn('id', [1, 2])->get();
+        $testModels = TestModel::whereIn('id', [1, 2])->get();
 
         $results = $this
             ->createQueryFromFilterRequest([
-                'related-models.id' => $testModel->map(function ($model) {
+                'related-models.id' => $testModels->map(function ($model) {
                     return $model->relatedModels->pluck('id');
                 })->flatten()->all(),
             ])

@@ -47,6 +47,19 @@ class FiltersTrashedTest extends TestCase
     }
 
     /** @test */
+    public function it_can_filter_only_trashed_by_scope_directly()
+    {
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'only_trashed' => true,
+            ])
+            ->allowedFilters(AllowedFilter::scope('only_trashed'))
+            ->get();
+
+        $this->assertCount(1, $models);
+    }
+
+    /** @test */
     public function it_can_filter_with_trashed()
     {
         $models = $this

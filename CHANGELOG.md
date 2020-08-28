@@ -2,6 +2,21 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.1.0 - 2020-08-18
+
+- add individual array delimiters for includes, filters, appends and sorts
+- ensure relations queried using the exact filter are actual relations on the model
+
+## 3.0.0 - 2020-08-18
+
+New major version. Please read the [UPGRADING](UPGRADING.md) guide _before_ upgrading.
+
+- `Spatie\QueryBuilder\QueryBuilder` class no longer extends Laravel's `Illuminate\Database\Eloquent\Builder`
+
+## 2.8.2 - 2020-05-25
+
+- fix scope filters that are added via macros (e.g. `onlyTrashed`) (#469)
+
 ## 2.8.1 - 2020-03-20
 
 - make service provider deferrable (#381)

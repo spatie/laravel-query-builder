@@ -40,6 +40,19 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_can_filter_models_by_an_array_as_filter_value()
+    {
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'name' => ['first' => $this->models->first()->name],
+            ])
+            ->allowedFilters('name')
+            ->get();
+
+        $this->assertCount(1, $models);
+    }
+
+    /** @test */
     public function it_can_filter_partially_and_case_insensitive()
     {
         $models = $this
@@ -496,5 +509,39 @@ class FilterTest extends TestCase
         ]);
 
         return QueryBuilder::for(TestModel::class, $request);
+    }
+
+    /** @test */
+    public function it_can_override_the_array_value_delimiter_for_single_filters()
+    {
+        TestModel::create(['name' => '>XZII/Q1On']);
+        TestModel::create(['name' => 'h4S4MG3(+>azv4z/I<o>']);
+
+        // First use default delimiter
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'ref_id' => 'h4S4MG3(+>azv4z/I<o>,>XZII/Q1On',
+            ])
+            ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true))
+            ->get();
+        $this->assertEquals(2, $models->count());
+
+        // Custom delimiter
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'ref_id' => 'h4S4MG3(+>azv4z/I<o>|>XZII/Q1On',
+            ])
+            ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true, '|'))
+            ->get();
+        $this->assertEquals(2, $models->count());
+
+        // Custom delimiter, but default in request
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'ref_id' => 'h4S4MG3(+>azv4z/I<o>,>XZII/Q1On',
+            ])
+            ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true, '|'))
+            ->get();
+        $this->assertEquals(0, $models->count());
     }
 }

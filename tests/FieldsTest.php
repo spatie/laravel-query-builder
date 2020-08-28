@@ -48,6 +48,23 @@ class FieldsTest extends TestCase
     }
 
     /** @test */
+    public function it_replaces_selected_columns_on_the_query()
+    {
+        $query = $this
+            ->createQueryFromFieldRequest(['test_models' => 'name,id'])
+            ->select(['id', 'is_visible'])
+            ->allowedFields(['name', 'id'])
+            ->toSql();
+
+        $expected = TestModel::query()
+            ->select("{$this->modelTableName}.name", "{$this->modelTableName}.id")
+            ->toSql();
+
+        $this->assertEquals($expected, $query);
+        $this->assertStringNotContainsString('is_visible', $expected);
+    }
+
+    /** @test */
     public function it_can_fetch_specific_columns()
     {
         $query = $this
