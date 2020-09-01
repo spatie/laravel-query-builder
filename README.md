@@ -59,7 +59,7 @@ $userQuery = QueryBuilder::for($query) // start from an existing Builder instanc
     ->where('score', '>', 42); // chain on any of Laravel's query builder methods
 ```
 
-### Selecting fields for a query: `/users?fields=id,email`
+### Selecting fields for a query: `/users?fields[users]=id,email`
 
 ```php
 $users = QueryBuilder::for(User::class)
