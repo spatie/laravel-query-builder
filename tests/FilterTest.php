@@ -201,6 +201,21 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_can_filter_results_by_nested_relation_scope()
+    {
+        $testModel = TestModel::create(['name' => 'John Testing Doe']);
+
+        $testModel->relatedModels()->create(['name' => 'John\'s Post']);
+
+        $modelsResult = $this
+            ->createQueryFromFilterRequest(['relatedModels.named' => 'John\'s Post'])
+            ->allowedFilters(AllowedFilter::scope('relatedModels.named'))
+            ->get();
+
+        $this->assertCount(1, $modelsResult);
+    }
+
+    /** @test */
     public function it_can_filter_results_by_type_hinted_scope()
     {
         TestModel::create(['name' => 'John Testing Doe']);
