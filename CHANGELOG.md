@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.2.0 - 2020-09-08
+
+- add support for Laravel 8
+
 ## 3.1.0 - 2020-08-18
 
 - add individual array delimiters for includes, filters, appends and sorts
