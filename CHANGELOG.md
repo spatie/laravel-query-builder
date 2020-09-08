@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 2.8.3 - 2020-09-08
+
+- add support for Laravel 8
+
 ## 2.8.2 - 2020-05-25
 
 - fix scope filters that are added via macros (e.g. `onlyTrashed`) (#469)
