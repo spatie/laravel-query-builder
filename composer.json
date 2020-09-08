@@ -20,16 +20,17 @@
         }
     ],
     "require": {
-        "php": "^7.1",
-        "illuminate/database": "~5.6.34|~5.7.0|~5.8.0|^6.0|^7.0|^8.0",
-        "illuminate/http": "~5.6.34|~5.7.0|~5.8.0|^6.0|^7.0|^8.0",
-        "illuminate/support": "~5.6.34|~5.7.0|~5.8.0|^6.0|^7.0|^8.0"
+        "php": "^7.3",
+        "illuminate/database": "^6.0|^7.0|^8.0",
+        "illuminate/http": "^6.0|^7.0|^8.0",
+        "illuminate/support": "^6.0|^7.0|^8.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.0|^8.0|^9.0",
-        "orchestra/testbench": "~3.6.0|~3.7.0|~3.8.0|^4.0|^5.0|^6.0",
-
-        "ext-json": "*"
+        "ext-json": "*",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "laravel/legacy-factories": "^1.0",
+        "orchestra/testbench": "^4.0|^5.0|^6.0",
+        "phpunit/phpunit": "^9.0"
     },
     "autoload": {
         "psr-4": {
@@ -43,7 +44,8 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
-        "test-coverage": "phpunit --coverage-html coverage"
+        "test-coverage": "phpunit --coverage-html coverage",
+        "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes"
     },
     "config": {
         "sort-packages": true

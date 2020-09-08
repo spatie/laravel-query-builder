@@ -10,8 +10,8 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                php: [7.4, 7.3, 7.2]
-                laravel: [8.*, 7.*, 6.*, 5.8.*]
+                php: [7.4, 7.3]
+                laravel: [8.*, 7.*, 6.*]
                 dependency-version: [prefer-lowest, prefer-stable]
                 os: [ubuntu-latest]
                 include:
@@ -21,8 +21,6 @@ jobs:
                       testbench: 5.*
                     - laravel: 6.*
                       testbench: 4.*
-                    - laravel: 5.8.*
-                      testbench: 3.8.*
 
         name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 

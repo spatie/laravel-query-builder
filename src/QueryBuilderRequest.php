@@ -9,9 +9,13 @@ use Illuminate\Support\Str;
 class QueryBuilderRequest extends Request
 {
     private static $includesArrayValueDelimiter = ',';
+
     private static $appendsArrayValueDelimiter = ',';
+
     private static $fieldsArrayValueDelimiter = ',';
+
     private static $sortsArrayValueDelimiter = ',';
+
     private static $filterArrayValueDelimiter = ',';
 
     public static function setArrayValueDelimiter(string $delimiter): void

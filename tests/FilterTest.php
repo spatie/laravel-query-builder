@@ -216,7 +216,7 @@ class FilterTest extends TestCase
     /** @test */
     public function it_can_filter_results_by_regular_and_type_hinted_scope()
     {
-        TestModel::create(['id'=> 1000, 'name' => 'John Testing Doe']);
+        TestModel::create(['id' => 1000, 'name' => 'John Testing Doe']);
 
         $modelsResult = $this
             ->createQueryFromFilterRequest(['user_info' => ['id' => '1000', 'name' => 'John Testing Doe']])
