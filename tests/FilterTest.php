@@ -341,6 +341,18 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_does_not_throw_invalid_filter_exception_when_disable_in_config()
+    {
+        config(['query_builder.disable_invalid_filter_query_exception' => true]);
+
+        $this
+            ->createQueryFromFilterRequest(['name' => 'John'])
+            ->allowedFilters('id');
+
+        $this->assertTrue(true);
+    }
+
+    /** @test */
     public function it_can_create_a_custom_filter_with_an_instantiated_filter()
     {
         $customFilter = new class('test1') implements CustomFilter {

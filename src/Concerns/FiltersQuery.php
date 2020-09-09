@@ -70,7 +70,7 @@ trait FiltersQuery
 
         $diff = $filterNames->diff($allowedFilterNames);
 
-        if ($diff->count()) {
+        if ($diff->count() && ! config('query_builder.disable_invalid_filter_query_exception')) {
             throw InvalidFilterQuery::filtersNotAllowed($diff, $allowedFilterNames);
         }
     }

@@ -29,4 +29,10 @@ return [
      */
     'count_suffix' => 'Count',
 
+    /*
+     * By default the package will throw a InvalidFilterQuery exception when a filter in url is not set in
+     * allowedFilters method
+     */
+    'disable_invalid_filter_query_exception' => false,
+
 ];
