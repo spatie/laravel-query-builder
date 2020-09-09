@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.2.2 - 2020-09-09
+
+- Revert changes from v3.2.1 to `AllowedFilter::filter()`
+
 ## 3.2.1 - 2020-09-09
 
 - Fix filtering associative arrays (#488)
