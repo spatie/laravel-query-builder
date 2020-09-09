@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.2.1 - 2020-09-09
+
+- Fix filtering associative arrays (#488)
+- AllowedFilter::filter() takes a `Illuminate\Database\Eloquent\Builder` instead of a QueryBuilder instance
+
 ## 3.2.0 - 2020-09-08
 
 - add support for Laravel 8
