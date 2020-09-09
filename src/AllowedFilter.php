@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Filters\Filter;
 use Spatie\QueryBuilder\Filters\FiltersCallback;
@@ -38,7 +39,7 @@ class AllowedFilter
         $this->internalName = $internalName ?? $name;
     }
 
-    public function filter(QueryBuilder $query, $value)
+    public function filter(Builder $query, $value)
     {
         $valueToFilter = $this->resolveValueForFiltering($value);
 
