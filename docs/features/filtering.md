@@ -35,6 +35,17 @@ $users = QueryBuilder::for(User::class)
 
 Finally, when trying to filter on properties that have not been allowed using `allowedFilters()` an `InvalidFilterQuery` exception will be thrown along with a list of allowed filters.
 
+
+## Disable InvalidFilterQuery exception
+
+You can set in configuration file to not throw an InvalidFilterQuery exception when a filter is not set in allowedFilter method.
+
+```php
+'disable_invalid_filter_query_exception' => true
+```
+
+By default the option is set false.
+
 ## Exact filters
 
 When filtering IDs, boolean values or a literal string, you'll want to use exact filters. This way `/users?filter[id]=1` won't match all users having the digit `1` in their ID.
