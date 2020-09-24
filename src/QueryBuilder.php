@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\ForwardsCalls;
 use Spatie\QueryBuilder\Concerns\AddsFieldsToQuery;
@@ -111,6 +112,10 @@ class QueryBuilder implements ArrayAccess
 
         if ($result instanceof Collection) {
             $this->addAppendsToResults($result);
+        }
+
+        if ($result instanceof LengthAwarePaginator) {
+            $this->addAppendsToResults(collect($result->items()));
         }
 
         return $result;
