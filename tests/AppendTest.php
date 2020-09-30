@@ -2,7 +2,10 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\AppendModel;
@@ -46,6 +49,28 @@ class AppendTest extends TestCase
             ->first();
 
         $this->assertAttributeLoaded($model, 'fullname');
+    }
+
+    /** @test */
+    public function it_can_append_collections()
+    {
+        $models = $this
+            ->createQueryFromAppendRequest('FullName')
+            ->allowedAppends('fullname')
+            ->get();
+
+        $this->assertCollectionAttributeLoaded($models, 'fullname');
+    }
+
+    /** @test */
+    public function it_can_append_paginates()
+    {
+        $models = $this
+            ->createQueryFromAppendRequest('FullName')
+            ->allowedAppends('fullname')
+            ->paginate();
+
+        $this->assertPaginateAttributeLoaded($models, 'fullname');
     }
 
     /** @test */
@@ -113,5 +138,25 @@ class AppendTest extends TestCase
     protected function assertAttributeLoaded(AppendModel $model, string $attribute)
     {
         $this->assertTrue(array_key_exists($attribute, $model->toArray()));
+    }
+
+    protected function assertCollectionAttributeLoaded(Collection $collection, string $attribute)
+    {
+        $hasModelWithoutAttributeLoaded = $collection
+            ->contains(function (Model $model) use ($attribute) {
+                return ! array_key_exists($attribute, $model->toArray());
+            });
+
+        $this->assertFalse($hasModelWithoutAttributeLoaded, "The `{$attribute}` attribute was expected but not loaded.");
+    }
+
+    protected function assertPaginateAttributeLoaded(LengthAwarePaginator $collection, string $attribute)
+    {
+        $hasModelWithoutAttributeLoaded = $collection
+            ->contains(function (Model $model) use ($attribute) {
+                return ! array_key_exists($attribute, $model->toArray());
+            });
+
+        $this->assertFalse($hasModelWithoutAttributeLoaded, "The `{$attribute}` attribute was expected but not loaded.");
     }
 }
