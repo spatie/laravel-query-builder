@@ -49,6 +49,28 @@ class AppendTest extends TestCase
     }
 
     /** @test */
+    public function it_can_append_collections()
+    {
+        $model = $this
+            ->createQueryFromAppendRequest('FullName')
+            ->allowedAppends('fullname')
+            ->get();
+
+        $this->assertAttributeLoaded($model, 'fullname');
+    }
+
+    /** @test */
+    public function it_can_append_paginates()
+    {
+        $model = $this
+            ->createQueryFromAppendRequest('FullName')
+            ->allowedAppends('fullname')
+            ->paginate();
+
+        $this->assertAttributeLoaded($model, 'fullname');
+    }
+
+    /** @test */
     public function it_guards_against_invalid_appends()
     {
         $this->expectException(InvalidAppendQuery::class);
