@@ -155,6 +155,21 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function falsy_values_are_not_ignored_when_applying_a_partial_filter()
+    {
+        DB::enableQueryLog();
+
+        $this
+            ->createQueryFromFilterRequest([
+                'id' => [0],
+            ])
+            ->allowedFilters(AllowedFilter::partial('id'))
+            ->get();
+
+        $this->assertQueryLogContains("select * from `test_models` where (LOWER(`id`) LIKE ?)");
+    }
+
+    /** @test */
     public function it_can_filter_and_match_results_by_exact_property()
     {
         $testModel = TestModel::first();
