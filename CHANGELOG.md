@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.2.4 - 2020-10-01
+
+- update what defines an ignored filter value (#533)
+
 ## 3.2.3 - 2020-09-30
 
 - add LengthAwarePaginator to QueryBuilder (#532)
