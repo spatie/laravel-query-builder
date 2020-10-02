@@ -73,8 +73,6 @@ trait AddsFieldsToQuery
             ->map(function ($fields, $model) {
                 $tableName = Str::snake(preg_replace('/-/', '_', $model));
 
-                $fields = array_map([Str::class, 'snake'], $fields);
-
                 return $this->prependFieldsWithTableName($fields, $tableName);
             })
             ->flatten()
