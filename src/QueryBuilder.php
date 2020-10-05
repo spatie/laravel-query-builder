@@ -29,10 +29,10 @@ class QueryBuilder implements ArrayAccess
         AppendsAttributesToResults,
         ForwardsCalls;
 
-    /** @var QueryBuilderRequest */
+    /** @var \Spatie\QueryBuilder\QueryBuilderRequest */
     protected $request;
 
-    /** @var EloquentBuilder|Relation */
+    /** @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation */
     protected $subject;
 
     /**
