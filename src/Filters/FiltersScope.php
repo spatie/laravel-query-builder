@@ -14,10 +14,20 @@ class FiltersScope implements Filter
 {
     public function __invoke(Builder $query, $values, string $property): Builder
     {
-        $scope = Str::camel($property);
+        $propertyParts = Str::of($property)->explode('.');
+
+        $scope = Str::camel($propertyParts->pop());
 
         $values = array_values(Arr::wrap($values));
         $values = $this->resolveParameters($query, $values, $scope);
+
+        $relation = $propertyParts->implode('.');
+
+        if ($relation) {
+            return $query->whereHas($relation, function (Builder $query) use ($scope, $values) {
+                return $query->$scope(...$values);
+            });
+        }
 
         return $query->$scope(...$values);
     }
