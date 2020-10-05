@@ -62,6 +62,10 @@ trait FiltersQuery
 
     protected function ensureAllFiltersExist()
     {
+        if (config('query_builder.disable_invalid_filter_query_exception')) {
+            return;
+        }
+
         $filterNames = $this->request->filters()->keys();
 
         $allowedFilterNames = $this->allowedFilters->map(function (AllowedFilter $allowedFilter) {
@@ -70,7 +74,7 @@ trait FiltersQuery
 
         $diff = $filterNames->diff($allowedFilterNames);
 
-        if ($diff->count() && ! config('query_builder.disable_invalid_filter_query_exception')) {
+        if ($diff->count()) {
             throw InvalidFilterQuery::filtersNotAllowed($diff, $allowedFilterNames);
         }
     }
