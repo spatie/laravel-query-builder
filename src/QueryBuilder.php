@@ -35,12 +35,21 @@ class QueryBuilder implements ArrayAccess
     /** @var EloquentBuilder|Relation */
     protected $subject;
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $subject
+     * @param null|\Illuminate\Http\Request $request
+     */
     public function __construct($subject, ?Request $request = null)
     {
         $this->initializeSubject($subject)
             ->initializeRequest($request ?? app(Request::class));
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $subject
+     *
+     * @return $this
+     */
     protected function initializeSubject($subject): self
     {
         throw_unless(
@@ -83,6 +92,7 @@ class QueryBuilder implements ArrayAccess
     /**
      * @param EloquentBuilder|Relation|string $subject
      * @param Request|null $request
+     *
      * @return static
      */
     public static function for($subject, ?Request $request = null): self
