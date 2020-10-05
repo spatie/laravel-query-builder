@@ -44,6 +44,19 @@ class QueryBuilderTest extends TestCase
     }
 
     /** @test */
+    public function it_can_be_given_a_belongs_to_many_relation_query()
+    {
+        $testModel = TestModel::create(['id' => 321, 'name' => 'John Doe']);
+        $relatedThroughPivotModel = RelatedThroughPivotModel::create(['id' => 789, 'name' => 'The related model']);
+
+        $testModel->relatedThroughPivotModels()->attach($relatedThroughPivotModel);
+
+        $queryBuilderResult = QueryBuilder::for($testModel->relatedThroughPivotModels())->first();
+
+        $this->assertEquals(789, $queryBuilderResult->id);
+    }
+
+    /** @test */
     public function it_can_be_given_a_belongs_to_many_relation_query_with_pivot()
     {
         /** @var TestModel $testModel */
