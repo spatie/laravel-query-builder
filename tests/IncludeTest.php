@@ -74,6 +74,17 @@ class IncludeTest extends TestCase
     }
 
     /** @test */
+    public function it_can_include_model_relations_by_alias()
+    {
+        $models = $this
+            ->createQueryFromIncludeRequest('include-alias')
+            ->allowedIncludes(AllowedInclude::relationship('include-alias', 'related-models'))
+            ->get();
+
+        $this->assertRelationLoaded($models, 'relatedModels');
+    }
+
+    /** @test */
     public function it_can_include_an_includes_count()
     {
         $model = $this
@@ -101,6 +112,23 @@ class IncludeTest extends TestCase
         $models = $this
             ->createQueryFromIncludeRequest('related-models.nested-related-models')
             ->allowedIncludes('related-models.nested-related-models')
+            ->get();
+
+        $models->each(function (Model $model) {
+            $this->assertRelationLoaded($model->relatedModels, 'nestedRelatedModels');
+        });
+    }
+
+    /** @test */
+    public function it_can_include_nested_model_relations_by_alias()
+    {
+        $this->markTestSkipped('See #522');
+
+        $models = $this
+            ->createQueryFromIncludeRequest('nested-alias')
+            ->allowedIncludes(
+                AllowedInclude::relationship('nested-alias', 'related-models.nested-related-models')
+            )
             ->get();
 
         $models->each(function (Model $model) {
