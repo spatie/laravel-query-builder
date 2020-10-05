@@ -5,6 +5,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 ## 3.3.0 - 2020-10-05
 
 - add ability to filter by nested relationship scopes (#519)
+- add config key to disable `InvalidFilterQuery` exception (#525)
 
 ## 3.2.4 - 2020-10-01
 
