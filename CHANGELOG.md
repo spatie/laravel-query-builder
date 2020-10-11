@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.3.1 - 2020-10-11
+
+- make nested scope compatible with older Laravel (#542)
+
 ## 3.3.0 - 2020-10-05
 
 - add ability to filter by nested relationship scopes (#519)
