@@ -14,7 +14,7 @@ class FiltersScope implements Filter
 {
     public function __invoke(Builder $query, $values, string $property): Builder
     {
-        $propertyParts = Str::of($property)->explode('.');
+        $propertyParts = collect(explode('.', $property));
 
         $scope = Str::camel($propertyParts->pop());
 
