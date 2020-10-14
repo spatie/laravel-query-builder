@@ -42,9 +42,22 @@ trait AddsIncludesToQuery
 
         $this->ensureAllIncludesExist();
 
+        $this->addDefaultIncludesToQuery();
+
         $this->addIncludesToQuery($this->request->includes());
 
         return $this;
+    }
+
+    protected function addDefaultIncludesToQuery()
+    {
+        $this->allowedIncludes->each(function($include) {
+            if ($include->isDefault()) {
+                $include = $this->findInclude($include->getName());
+
+                $include->include($this);
+            }
+        });
     }
 
     protected function addIncludesToQuery(Collection $includes)

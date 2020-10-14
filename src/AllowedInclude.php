@@ -26,17 +26,17 @@ class AllowedInclude
         $this->internalName = $internalName ?? $this->name;
     }
 
-    public static function relationship(string $name, ?string $internalName = null): Collection
+    public static function relationship(string $name, ?string $internalName = null, bool $default = false): Collection
     {
         $internalName = Str::camel($internalName ?? $name);
 
         return IncludedRelationship::getIndividualRelationshipPathsFromInclude($internalName)
             ->zip(IncludedRelationship::getIndividualRelationshipPathsFromInclude($name))
-            ->flatMap(function ($args): Collection {
+            ->flatMap(function ($args) use ($default): Collection {
                 [$relationship, $alias] = $args;
 
                 $includes = collect([
-                    new self($alias, new IncludedRelationship, $relationship),
+                    (new self($alias, new IncludedRelationship, $relationship))->setDefault($default),
                 ]);
 
                 if (! Str::contains($relationship, '.')) {
@@ -44,7 +44,8 @@ class AllowedInclude
 
                     $includes = $includes->merge(self::count(
                         $alias.$suffix,
-                        $relationship.$suffix
+                        $relationship.$suffix,
+                        $default
                     ));
                 }
 
@@ -52,10 +53,10 @@ class AllowedInclude
             });
     }
 
-    public static function count(string $name, ?string $internalName = null): Collection
+    public static function count(string $name, ?string $internalName = null, bool $default = false): Collection
     {
         return collect([
-            new static($name, new IncludedCount(), $internalName),
+            (new static($name, new IncludedCount(), $internalName))->setDefault($default),
         ]);
     }
 
@@ -78,5 +79,17 @@ class AllowedInclude
     public function isForInclude(string $includeName): bool
     {
         return $this->name === $includeName;
+    }
+
+    public function setDefault(bool $value): self
+    {
+        $this->default = $value;
+
+        return $this;
+    }
+
+    public function isDefault(): bool
+    {
+        return $this->default === true;
     }
 }

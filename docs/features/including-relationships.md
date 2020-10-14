@@ -29,6 +29,17 @@ $users = QueryBuilder::for(User::class)
 // $users will contain all users with their posts and permissions loaded
 ```
 
+You can load relatinships by default using:
+
+```php
+// GET /users?include=posts,permissions
+$users = QueryBuilder::for(User::class)
+    ->allowedIncludes([AllowedInclude::relationship('posts', null, true)])
+    ->get();
+
+// $users will contain all users with their posts and post counts
+```
+
 ## Disallowed includes
 
 When trying to include relationships that have not been allowed using `allowedIncludes()` an `InvalidIncludeQuery` exception will be thrown. Its exception message contains the allowed includes for reference.
