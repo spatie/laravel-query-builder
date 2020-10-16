@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\ForwardsCalls;
 use Spatie\QueryBuilder\Concerns\AddsFieldsToQuery;
@@ -28,18 +29,27 @@ class QueryBuilder implements ArrayAccess
         AppendsAttributesToResults,
         ForwardsCalls;
 
-    /** @var QueryBuilderRequest */
+    /** @var \Spatie\QueryBuilder\QueryBuilderRequest */
     protected $request;
 
-    /** @var EloquentBuilder|Relation */
+    /** @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation */
     protected $subject;
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $subject
+     * @param null|\Illuminate\Http\Request $request
+     */
     public function __construct($subject, ?Request $request = null)
     {
         $this->initializeSubject($subject)
             ->initializeRequest($request ?? app(Request::class));
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $subject
+     *
+     * @return $this
+     */
     protected function initializeSubject($subject): self
     {
         throw_unless(
@@ -82,6 +92,7 @@ class QueryBuilder implements ArrayAccess
     /**
      * @param EloquentBuilder|Relation|string $subject
      * @param Request|null $request
+     *
      * @return static
      */
     public static function for($subject, ?Request $request = null): self
@@ -111,6 +122,10 @@ class QueryBuilder implements ArrayAccess
 
         if ($result instanceof Collection) {
             $this->addAppendsToResults($result);
+        }
+
+        if ($result instanceof LengthAwarePaginator) {
+            $this->addAppendsToResults(collect($result->items()));
         }
 
         return $result;

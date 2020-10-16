@@ -35,6 +35,17 @@ $users = QueryBuilder::for(User::class)
 
 Finally, when trying to filter on properties that have not been allowed using `allowedFilters()` an `InvalidFilterQuery` exception will be thrown along with a list of allowed filters.
 
+
+## Disable InvalidFilterQuery exception
+
+You can set in configuration file to not throw an InvalidFilterQuery exception when a filter is not set in allowedFilter method.
+
+```php
+'disable_invalid_filter_query_exception' => true
+```
+
+By default the option is set false.
+
 ## Exact filters
 
 When filtering IDs, boolean values or a literal string, you'll want to use exact filters. This way `/users?filter[id]=1` won't match all users having the digit `1` in their ID.
@@ -87,7 +98,7 @@ QueryBuilder::for(User::class)
 
 Sometimes more advanced filtering options are necessary. This is where scope filters, callback filters and custom filters come in handy.
 
-Scope filters allow you to add [local scopes](https://laravel.com/docs/master/eloquent#local-scopes) to your query by adding filters to the URL.
+Scope filters allow you to add [local scopes](https://laravel.com/docs/master/eloquent#local-scopes) to your query by adding filters to the URL. This works for scopes on the queried model or its relationships using dot-notation.
 
 Consider the following scope on your model:
 
@@ -114,10 +125,10 @@ The following filter will now add the `startsBefore` scope to the underlying que
 GET /events?filter[starts_before]=2018-01-01
 ```
 
-You can even pass multiple parameters to the scope by passing a comma separated list to the filter:
+You can even pass multiple parameters to the scope by passing a comma separated list to the filter and use dot-notation for querying scopes on a relationship:
 
 ```
-GET /events?filter[starts_between]=2018-01-01,2018-12-31
+GET /events?filter[schedule.starts_between]=2018-01-01,2018-12-31
 ```
 
 When using scopes that require model instances in the parameters, we'll automatically try to inject the model instances into your scope. This works the same way as route model binding does for injecting Eloquent models into controllers. For example:

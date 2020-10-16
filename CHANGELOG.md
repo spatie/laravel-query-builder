@@ -2,6 +2,23 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.3.1 - 2020-10-11
+
+- make nested scope compatible with older Laravel (#542)
+
+## 3.3.0 - 2020-10-05
+
+- add ability to filter by nested relationship scopes (#519)
+- add config key to disable `InvalidFilterQuery` exception (#525)
+
+## 3.2.4 - 2020-10-01
+
+- update what defines an ignored filter value (#533)
+
+## 3.2.3 - 2020-09-30
+
+- add LengthAwarePaginator to QueryBuilder (#532)
+
 ## 3.2.2 - 2020-09-09
 
 - Revert changes from v3.2.1 to `AllowedFilter::filter()`
