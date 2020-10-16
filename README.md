@@ -21,7 +21,7 @@ $users = QueryBuilder::for(User::class)
 // all `User`s that contain the string "John" in their name
 ```
 
-[Read more about filtering features like: partial filters, exact filters, scope filters, custom filters, ignored values, default filter values, ...](https://docs.spatie.be/laravel-query-builder/v2/features/filtering/)
+[Read more about filtering features like: partial filters, exact filters, scope filters, custom filters, ignored values, default filter values, ...](https://docs.spatie.be/laravel-query-builder/v3/features/filtering/)
 
 ### Including relations based on a request: `/users?include=posts`:
 
@@ -33,7 +33,7 @@ $users = QueryBuilder::for(User::class)
 // all `User`s with their `posts` loaded
 ```
 
-[Read more about include features like: including nested relationships, including relationship count, ...](https://docs.spatie.be/laravel-query-builder/v2/features/including-relationships/)
+[Read more about include features like: including nested relationships, including relationship count, ...](https://docs.spatie.be/laravel-query-builder/v3/features/including-relationships/)
 
 ### Sorting a query based on a request: `/users?sort=id`:
 
@@ -45,7 +45,7 @@ $users = QueryBuilder::for(User::class)
 // all `User`s sorted by ascending id
 ```
 
-[Read more about sorting features like: custom sorts, sort direction, ...](https://docs.spatie.be/laravel-query-builder/v2/features/sorting/)
+[Read more about sorting features like: custom sorts, sort direction, ...](https://docs.spatie.be/laravel-query-builder/v3/features/sorting/)
 
 ### Works together nicely with existing queries:
 
@@ -68,7 +68,7 @@ $users = QueryBuilder::for(User::class)
 // the fetched `User`s will only have their id & email set
 ```
 
-[Read more about selecting fields.](https://docs.spatie.be/laravel-query-builder/v2/features/selecting-fields/)
+[Read more about selecting fields.](https://docs.spatie.be/laravel-query-builder/v3/features/selecting-fields/)
 
 ### Appending attributes to a query: `/users?append=full_name`
 
@@ -81,17 +81,11 @@ $users = QueryBuilder::for(User::class)
 // the resulting JSON will have the `getFullNameAttribute` attributes included
 ```
 
-[Read more about appending attributes.](https://docs.spatie.be/laravel-query-builder/v2/features/appending-attributes/)
-
-## ⚠ Possible breaking changes from v2 to v3
-
-Please check the [UPGRADING](UPGRADING.md) for some notes regarding upgrading from v2 to v3.
+[Read more about appending attributes.](https://docs.spatie.be/laravel-query-builder/v3/features/appending-attributes/)
 
 ## Support us
 
-Learn how to create a package like this one, by watching our premium video course:
-
-[![Laravel Package training](https://spatie.be/github/package-training.jpg)](https://laravelpackage.training)
+[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laravel-query-builder.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laravel-query-builder)
 
 We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
 
@@ -105,17 +99,17 @@ You can install the package via composer:
 composer require spatie/laravel-query-builder
 ```
 
-Read the installation notes on the docs site: [https://docs.spatie.be/laravel-query-builder/v2/installation-setup](https://docs.spatie.be/laravel-query-builder/v2/installation-setup/).
+Read the installation notes on the docs site: [https://docs.spatie.be/laravel-query-builder/v3/installation-setup](https://docs.spatie.be/laravel-query-builder/v3/installation-setup/).
 
 ## Documentation
 
-You can find the documentation on [https://docs.spatie.be/laravel-query-builder/v2](https://docs.spatie.be/laravel-query-builder/v2).
+You can find the documentation on [https://docs.spatie.be/laravel-query-builder/v3](https://docs.spatie.be/laravel-query-builder/v3).
 
 Find yourself stuck using the package? Found a bug? Do you have general questions or suggestions for improving the media library? Feel free to [create an issue on GitHub](https://github.com/spatie/laravel-query-builder/issues), we'll try to address it as soon as possible.
 
 If you've found a bug regarding security please mail [freek@spatie.be](mailto:freek@spatie.be) instead of using the issue tracker.
 
-### Upgrading from v1 to v2
+### Upgrading
 
 Please see [UPGRADING.md](UPGRADING.md) for details.
 

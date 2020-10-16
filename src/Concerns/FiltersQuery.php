@@ -62,6 +62,10 @@ trait FiltersQuery
 
     protected function ensureAllFiltersExist()
     {
+        if (config('query_builder.disable_invalid_filter_query_exception')) {
+            return;
+        }
+
         $filterNames = $this->request->filters()->keys();
 
         $allowedFilterNames = $this->allowedFilters->map(function (AllowedFilter $allowedFilter) {

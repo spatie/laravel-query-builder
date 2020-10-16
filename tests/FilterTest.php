@@ -155,6 +155,21 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function falsy_values_are_not_ignored_when_applying_a_partial_filter()
+    {
+        DB::enableQueryLog();
+
+        $this
+            ->createQueryFromFilterRequest([
+                'id' => [0],
+            ])
+            ->allowedFilters(AllowedFilter::partial('id'))
+            ->get();
+
+        $this->assertQueryLogContains("select * from `test_models` where (LOWER(`id`) LIKE ?)");
+    }
+
+    /** @test */
     public function it_can_filter_and_match_results_by_exact_property()
     {
         $testModel = TestModel::first();
@@ -195,6 +210,21 @@ class FilterTest extends TestCase
         $modelsResult = $this
             ->createQueryFromFilterRequest(['named' => 'John Testing Doe'])
             ->allowedFilters(AllowedFilter::scope('named'))
+            ->get();
+
+        $this->assertCount(1, $modelsResult);
+    }
+
+    /** @test */
+    public function it_can_filter_results_by_nested_relation_scope()
+    {
+        $testModel = TestModel::create(['name' => 'John Testing Doe']);
+
+        $testModel->relatedModels()->create(['name' => 'John\'s Post']);
+
+        $modelsResult = $this
+            ->createQueryFromFilterRequest(['relatedModels.named' => 'John\'s Post'])
+            ->allowedFilters(AllowedFilter::scope('relatedModels.named'))
             ->get();
 
         $this->assertCount(1, $modelsResult);
