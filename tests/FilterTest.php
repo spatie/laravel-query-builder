@@ -361,6 +361,24 @@ class FilterTest extends TestCase
     }
 
     /** @test */
+    public function it_can_filter_by_scope_multiple_times()
+    {
+        Carbon::setTestNow(Carbon::parse('2016-05-05'));
+
+        $testModel = TestModel::create(['name' => 'John Testing Doe']);
+
+        $modelsResult = $this
+            ->createQueryFromFilterRequest(['created_between' => [
+                ['2016-01-01', '2017-01-01'],
+                ['2015-01-01', '2018-01-01'],
+            ]])
+            ->allowedFilters(AllowedFilter::scope('created_between'))
+            ->get();
+
+        $this->assertCount(1, $modelsResult);
+    }
+
+    /** @test */
     public function it_guards_against_invalid_filters()
     {
         $this->expectException(InvalidFilterQuery::class);

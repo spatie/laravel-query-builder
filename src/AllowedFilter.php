@@ -40,13 +40,19 @@ class AllowedFilter
 
     public function filter(QueryBuilder $query, $value)
     {
-        $valueToFilter = $this->resolveValueForFiltering($value);
+        $valuesToFilter = $this->resolveValueForFiltering($value);
 
-        if (is_null($valueToFilter)) {
+        if (is_null($valuesToFilter)) {
             return;
         }
 
-        ($this->filterClass)($query->getEloquentBuilder(), $valueToFilter, $this->internalName);
+        if (!isset($valuesToFilter[0]) || !is_array($valuesToFilter[0])) {
+            $valuesToFilter = [$valuesToFilter];
+        }
+
+        foreach ($valuesToFilter as $key => $valueToFilter) {
+            ($this->filterClass)($query->getEloquentBuilder(), $valueToFilter, $this->internalName);
+        }
     }
 
     public static function setFilterArrayValueDelimiter(string $delimiter = null): void
@@ -145,7 +151,19 @@ class AllowedFilter
     protected function resolveValueForFiltering($value)
     {
         if (is_array($value)) {
-            $remainingProperties = array_diff_assoc($value, $this->ignored->toArray());
+            $remainingProperties = [];
+            $multidimensional = false;
+            foreach ($value as $val) {
+                if (!is_array($val)) {
+                    continue;
+                }
+                $remainingProperties[] = $this->resolveValueForFiltering($val);
+                $multidimensional = true;
+            }
+
+            if (!$multidimensional) {
+                $remainingProperties = array_diff_assoc($value, $this->ignored->toArray());
+            }
 
             return ! empty($remainingProperties) ? $remainingProperties : null;
         }
