@@ -314,6 +314,15 @@ class IncludeTest extends TestCase
         });
     }
 
+    /** @test */
+    public function it_supports_default_includes()
+    {
+        $models = QueryBuilder::for(TestModel::class, new Request())
+            ->allowedIncludes(AllowedInclude::relationship('related-models', null, true))
+            ->get();
+        $this->assertRelationLoaded($models, 'relatedModels');
+    }
+
     protected function createQueryFromIncludeRequest(string $includes): QueryBuilder
     {
         $request = new Request([
