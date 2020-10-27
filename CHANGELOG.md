@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.3.3 - 2020-10-27
+
+- prepend table name to `WHERE` clause for ambiguous exact filters (#467)
+
 ## 3.3.2 - 2020-10-27
 
 - fix config key to disable `InvalidFilterQuery` exception
