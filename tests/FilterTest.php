@@ -373,7 +373,7 @@ class FilterTest extends TestCase
     /** @test */
     public function it_does_not_throw_invalid_filter_exception_when_disable_in_config()
     {
-        config(['query_builder.disable_invalid_filter_query_exception' => true]);
+        config(['query-builder.disable_invalid_filter_query_exception' => true]);
 
         $this
             ->createQueryFromFilterRequest(['name' => 'John'])
