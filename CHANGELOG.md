@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.3.2 - 2020-10-27
+
+- fix config key to disable `InvalidFilterQuery` exception
+
 ## 3.3.1 - 2020-10-11
 
 - make nested scope compatible with older Laravel (#542)
