@@ -30,12 +30,12 @@ class FiltersExact implements Filter
         }
 
         if (is_array($value)) {
-            $query->whereIn($property, $value);
+               $query->whereIn($query->qualifyColumn($property), $value);
 
             return;
         }
 
-        $query->where($property, '=', $value);
+        $query->where($query->qualifyColumn($property), '=', $value);
     }
 
     protected function isRelationProperty(Builder $query, string $property): bool
