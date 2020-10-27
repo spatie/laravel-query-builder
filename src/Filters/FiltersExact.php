@@ -30,7 +30,7 @@ class FiltersExact implements Filter
         }
 
         if (is_array($value)) {
-               $query->whereIn($query->qualifyColumn($property), $value);
+            $query->whereIn($query->qualifyColumn($property), $value);
 
             return;
         }
