@@ -16,7 +16,7 @@ class FiltersPartial extends FiltersExact implements Filter
             }
         }
 
-        $wrappedProperty = $query->getQuery()->getGrammar()->wrap($property);
+        $wrappedProperty = $query->getQuery()->getGrammar()->wrap($query->qualifyColumn($property));
 
         $sql = "LOWER({$wrappedProperty}) LIKE ?";
 
