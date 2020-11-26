@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
+use ReflectionParameter;
+use ReflectionUnionType;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterValue;
 
 class FiltersScope implements Filter
@@ -24,7 +27,10 @@ class FiltersScope implements Filter
         $relation = $propertyParts->implode('.');
 
         if ($relation) {
-            return $query->whereHas($relation, function (Builder $query) use ($scope, $values) {
+            return $query->whereHas($relation, function (Builder $query) use (
+                $scope,
+                $values
+            ) {
                 return $query->$scope(...$values);
             });
         }
@@ -36,18 +42,18 @@ class FiltersScope implements Filter
     {
         try {
             $parameters = (new ReflectionObject($query->getModel()))
-                ->getMethod('scope'.ucfirst($scope))
+                ->getMethod('scope' . ucfirst($scope))
                 ->getParameters();
         } catch (ReflectionException $e) {
             return $values;
         }
 
         foreach ($parameters as $parameter) {
-            if (! optional($parameter->getClass())->isSubclassOf(Model::class)) {
+            if (!optional($this->getClass($parameter))->isSubclassOf(Model::class)) {
                 continue;
             }
 
-            $model = $parameter->getClass()->newInstance();
+            $model = $this->getClass($parameter)->newInstance();
             $index = $parameter->getPosition() - 1;
             $value = $values[$index];
 
@@ -61,5 +67,32 @@ class FiltersScope implements Filter
         }
 
         return $values;
+    }
+
+    protected function getClass(ReflectionParameter $parameter): ?ReflectionClass
+    {
+        if (version_compare(PHP_VERSION, '8.0', '<')) {
+            return $parameter->getClass();
+        }
+
+        $type = $parameter->getType();
+
+        if (is_null($type)) {
+            return null;
+        }
+
+        if ($type instanceof ReflectionUnionType) {
+            return null;
+        }
+
+        if ($type->isBuiltin()) {
+            return null;
+        }
+
+        if ($type->getName() === 'self') {
+            return $parameter->getDeclaringClass();
+        }
+
+        return new ReflectionClass($type->getName());
     }
 }
