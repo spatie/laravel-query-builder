@@ -16,11 +16,11 @@ jobs:
                 os: [ubuntu-latest]
                 include:
                     - laravel: 8.*
-                      testbench: 6.*
+                      testbench: ^6.3
                     - laravel: 7.*
-                      testbench: 5.*
+                      testbench: ^5.8
                     - laravel: 6.*
-                      testbench: 4.*
+                      testbench: ^4.9
 
         name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
