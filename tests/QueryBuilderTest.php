@@ -10,6 +10,7 @@ use Spatie\QueryBuilder\Exceptions\InvalidSubject;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\QueryBuilderRequest;
 use Spatie\QueryBuilder\Sorts\Sort;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\NestedRelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedThroughPivotModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\ScopeModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\SoftDeleteModel;
@@ -231,6 +232,34 @@ class QueryBuilderTest extends TestCase
             ->toSql();
 
         $this->assertEquals($usingSortFirst, $usingFilterFirst);
+    }
+
+    /** @test */
+    public function it_can_filter_when_sorting_by_joining_a_related_model_which_contains_the_same_field_name()
+    {
+        $customSort = new class implements Sort {
+            public function __invoke(Builder $query, $descending, string $property): Builder
+            {
+                return $query->join(
+                    'related_models',
+                    'nested_related_models.related_model_id',
+                    '=',
+                    'related_models.id'
+                )->orderBy('related_models.name', $descending ? 'desc' : 'asc');
+            }
+        };
+
+        $req = new Request([
+            'filter' => ['name' => 'test'],
+            'sort' => 'name',
+        ]);
+
+        QueryBuilder::for(NestedRelatedModel::class, $req)
+            ->allowedSorts(\Spatie\QueryBuilder\AllowedSort::custom('name', $customSort))
+            ->allowedFilters('name')
+            ->get();
+
+        $this->assertTrue(true);
     }
 
     /** @test */
