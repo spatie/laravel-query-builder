@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.3.4 - 2020-11-26
+
+- prepend table name to `WHERE` clause for ambiguous partial filters (#567)
+
 ## 3.3.3 - 2020-10-27
 
 - prepend table name to `WHERE` clause for ambiguous exact filters (#467)
