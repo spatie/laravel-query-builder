@@ -27,7 +27,6 @@
     },
     "require-dev": {
         "ext-json": "*",
-        "friendsofphp/php-cs-fixer": "^2.16",
         "laravel/legacy-factories": "^1.0.4",
         "orchestra/testbench": "^4.0|^5.0|^6.0",
         "phpunit/phpunit": "^9.0"
@@ -44,8 +43,7 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
-        "test-coverage": "phpunit --coverage-html coverage",
-        "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes"
+        "test-coverage": "phpunit --coverage-html coverage"
     },
     "config": {
         "sort-packages": true
