@@ -28,7 +28,7 @@
     "require-dev": {
         "ext-json": "*",
         "laravel/legacy-factories": "^1.0.4",
-        "orchestra/testbench": "^4.0|^5.0|^6.0",
+        "orchestra/testbench": "^4.9|^5.8|^6.3",
         "phpunit/phpunit": "^9.0"
     },
     "autoload": {
