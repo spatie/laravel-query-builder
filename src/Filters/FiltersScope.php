@@ -49,7 +49,7 @@ class FiltersScope implements Filter
         }
 
         foreach ($parameters as $parameter) {
-            if (!optional($this->getClass($parameter))->isSubclassOf(Model::class)) {
+            if (! optional($this->getClass($parameter))->isSubclassOf(Model::class)) {
                 continue;
             }
 
