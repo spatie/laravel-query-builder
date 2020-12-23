@@ -19,9 +19,9 @@ class AllowedInclude
     /** @var string|null */
     protected $internalName;
 
-    public function __construct(string $name, IncludeInterface $includeClass, ?string $internalName = null)
+    public function __construct(string $name, IncludeInterface $includeClass, ?string $internalName = null, bool $camelCase = true)
     {
-        $this->name = Str::camel($name);
+        $this->name = $camelCase ? Str::camel($name) : $name;
         $this->includeClass = $includeClass;
         $this->internalName = $internalName ?? $this->name;
     }
