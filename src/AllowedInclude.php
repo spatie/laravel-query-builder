@@ -26,9 +26,9 @@ class AllowedInclude
         $this->internalName = $internalName ?? $this->name;
     }
 
-    public static function relationship(string $name, ?string $internalName = null): Collection
+    public static function relationship(string $name, ?string $internalName = null, bool $camelCase = true): Collection
     {
-        $internalName = Str::camel($internalName ?? $name);
+        $internalName = $camelCase ? Str::camel($internalName ?? $name) : ($internalName ?? $name);
 
         return IncludedRelationship::getIndividualRelationshipPathsFromInclude($internalName)
             ->zip(IncludedRelationship::getIndividualRelationshipPathsFromInclude($name))
