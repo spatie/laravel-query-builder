@@ -29,6 +29,18 @@ $users = QueryBuilder::for(User::class)
 // $users will contain all users with their posts and permissions loaded
 ```
 
+## Default includes
+
+There is no way to include relationships by default in this package. Default relationships are built-in to Laravel itself using the `with()` method on a query:
+
+```php
+$users = QueryBuilder::for(User::class)
+    ->allowedIncludes(['friends'])
+    ->with('posts') // posts will always by included, friends can be requested
+    ->withCount('posts')
+    ->get();
+```
+
 ## Disallowed includes
 
 When trying to include relationships that have not been allowed using `allowedIncludes()` an `InvalidIncludeQuery` exception will be thrown. Its exception message contains the allowed includes for reference.
