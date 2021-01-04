@@ -109,7 +109,7 @@ $customSort = AllowedSort::custom('custom-sort', new SentSort())->defaultDirecti
 
 $users = QueryBuilder::for(User::class)
             ->allowedSorts($customSort)
-            ->defaultSort($customSort)->defaultDirection(SortDirection::DESCENDING)
+            ->defaultSort($customSort->defaultDirection(SortDirection::DESCENDING))
             ->get();
 ```
 
