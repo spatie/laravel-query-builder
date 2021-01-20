@@ -35,4 +35,9 @@ return [
      */
     'disable_invalid_filter_query_exception' => false,
 
+    /*
+     * By default the package inspects query string of request - $request->query().
+     * You can change this behavior to $request->input() by setting this value to `true`.
+     */
+    'inspect_input_instead_of_query' => false,
 ];

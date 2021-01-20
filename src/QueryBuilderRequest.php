@@ -36,10 +36,10 @@ class QueryBuilderRequest extends Request
     {
         $includeParameterName = config('query-builder.parameters.include');
 
-        $includeParts = $this->query($includeParameterName);
+        $includeParts = $this->getInput($includeParameterName);
 
         if (! is_array($includeParts)) {
-            $includeParts = explode(static::getIncludesArrayValueDelimiter(), $this->query($includeParameterName));
+            $includeParts = explode(static::getIncludesArrayValueDelimiter(), $this->getInput($includeParameterName));
         }
 
         return collect($includeParts)
@@ -51,7 +51,7 @@ class QueryBuilderRequest extends Request
     {
         $appendParameterName = config('query-builder.parameters.append');
 
-        $appendParts = $this->query($appendParameterName);
+        $appendParts = $this->getInput($appendParameterName);
 
         if (! is_array($appendParts)) {
             $appendParts = explode(static::getAppendsArrayValueDelimiter(), strtolower($appendParts));
@@ -64,7 +64,7 @@ class QueryBuilderRequest extends Request
     {
         $fieldsParameterName = config('query-builder.parameters.fields');
 
-        $fieldsPerTable = collect($this->query($fieldsParameterName));
+        $fieldsPerTable = collect($this->getInput($fieldsParameterName));
 
         if ($fieldsPerTable->isEmpty()) {
             return collect();
@@ -79,7 +79,7 @@ class QueryBuilderRequest extends Request
     {
         $sortParameterName = config('query-builder.parameters.sort');
 
-        $sortParts = $this->query($sortParameterName);
+        $sortParts = $this->getInput($sortParameterName);
 
         if (is_string($sortParts)) {
             $sortParts = explode(static::getSortsArrayValueDelimiter(), $sortParts);
@@ -92,7 +92,7 @@ class QueryBuilderRequest extends Request
     {
         $filterParameterName = config('query-builder.parameters.filter');
 
-        $filterParts = $this->query($filterParameterName, []);
+        $filterParts = $this->getInput($filterParameterName, []);
 
         if (is_string($filterParts)) {
             return collect();
@@ -131,6 +131,11 @@ class QueryBuilderRequest extends Request
         }
 
         return $value;
+    }
+
+    protected function getInput(?string $key = null, $default = null)
+    {
+        return config('query-builder.inspect_input_instead_of_query') ? $this->input($key, $default) : $this->query($key, $default);
     }
 
     public static function setIncludesArrayValueDelimiter(string $includesArrayValueDelimiter): void
