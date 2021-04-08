@@ -131,6 +131,11 @@ class QueryBuilder implements ArrayAccess
         return $result;
     }
     
+    public function clone()
+    {
+        return clone $this;
+    }
+    
     public function __clone()
     {
         $this->subject = clone $this->subject;
