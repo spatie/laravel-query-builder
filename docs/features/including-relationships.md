@@ -110,7 +110,7 @@ class AggregateInclude implements IncludeInterface
 // GET /posts?include=comments_sum_votes
 
 $posts = QueryBuilder::for(Post::class)
-    ->allowedFilters([
+    ->allowedIncludes([
         AllowedInclude::custom('comments_sum_votes', new AggregateInclude('votes', 'sum'), 'comments'),
     ])
     ->get();
