@@ -76,6 +76,48 @@ $users = QueryBuilder::for(User::class)
 // every user in $users will contain a `posts_count` and `friends_count` property
 ```
 
+## Custom includes
+
+You can specify custom includes using the `AllowedInclude::custom()` method. Custom includes are instances of invokable classes that implement the `\Spatie\QueryBuilder\Includes\IncludeInterface` interface. The `__invoke` method will receive the current query builder instance and the include name. This way you can build any query your heart desires.
+
+For example:
+
+```php
+use Spatie\QueryBuilder\Includes\IncludeInterface;
+use Illuminate\Database\Eloquent\Builder;
+use App\Models\Post;
+
+class AggregateInclude implements IncludeInterface
+{
+    protected string $column;
+
+    protected string $function;
+
+    public function __construct(string $column, string $function)
+    {
+        $this->column = $column;
+
+        $this->function = $function;
+    }
+
+    public function __invoke(Builder $query, string $relations)
+    {
+        $query->withAggregate($relations, $this->column, $this->function);
+    }
+}
+
+// In your controller for the following request:
+// GET /posts?include=comments_sum_votes
+
+$posts = QueryBuilder::for(Post::class)
+    ->allowedFilters([
+        AllowedInclude::custom('comments_sum_votes', new AggregateInclude('votes', 'sum'), 'comments'),
+    ])
+    ->get();
+
+// every post in $posts will contain a `comments_sum_votes` property
+```
+
 ## Selecting included fields
 
 You can select only some fields to be included using the [`allowedFields` method on the query builder](https://docs.spatie.be/laravel-query-builder/v2/features/selecting-fields/).
