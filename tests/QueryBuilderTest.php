@@ -297,4 +297,33 @@ class QueryBuilderTest extends TestCase
             $foundTestModel->pivot->location
         );
     }
+    
+    
+    /** @test */
+    public function it_clones_the_subject_upon_cloning()
+    {
+        $queryBuilder = QueryBuilder::for(TestModel::class);
+        
+        $queryBuilder1 = (clone $queryBuilder)->where('id', 1);
+        $queryBuilder2 = (clone $queryBuilder)->where('name', 'John Doe');
+
+        $this->assertNotSame(
+            $queryBuilder1->toSql(),
+            $queryBuilder2->toSql()
+        );
+    }
+    
+    /** @test */
+    public function it_supports_clone_as_method()
+    {
+        $queryBuilder = QueryBuilder::for(TestModel::class);
+        
+        $queryBuilder1 = $queryBuilder->clone()->where('id', 1);
+        $queryBuilder2 = $queryBuilder->clone()->where('name', 'John Doe');
+
+        $this->assertNotSame(
+            $queryBuilder1->toSql(),
+            $queryBuilder2->toSql()
+        );
+    }
 }
