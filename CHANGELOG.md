@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.4.0 - 2021-05-20
+
+- add support for custom includes (#623)
+
 ## 3.3.4 - 2020-11-26
 
 - prepend table name to `WHERE` clause for ambiguous partial filters (#567)
