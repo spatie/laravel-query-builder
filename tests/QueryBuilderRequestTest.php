@@ -87,6 +87,18 @@ class QueryBuilderRequestTest extends TestCase
     }
 
     /** @test */
+    public function it_can_get_the_sort_query_param_from_the_request_body()
+    {
+        config(['query-builder.inspect_input_instead_of_query' => true]);
+
+        $request = new QueryBuilderRequest([], [
+            'sort' => 'foobar',
+        ], [], [], [], ['REQUEST_METHOD' => 'POST']);
+
+        $this->assertEquals(['foobar'], $request->sorts()->toArray());
+    }
+
+    /** @test */
     public function it_can_get_different_sort_query_parameter_name()
     {
         config(['query-builder.parameters.sort' => 'sorts']);
@@ -145,6 +157,26 @@ class QueryBuilderRequestTest extends TestCase
 
         $this->assertEquals($expected, $request->filters());
     }
+
+        /** @test */
+        public function it_can_get_the_filter_query_params_from_the_request_body()
+        {
+            config(['query-builder.inspect_input_instead_of_query' => true]);
+
+            $request = new QueryBuilderRequest([], [
+                'filter' => [
+                    'foo' => 'bar',
+                    'baz' => 'qux',
+                ],
+            ], [], [], [], ['REQUEST_METHOD' => 'POST']);
+
+            $expected = collect([
+                'foo' => 'bar',
+                'baz' => 'qux',
+            ]);
+
+            $this->assertEquals($expected, $request->filters());
+        }
 
     /** @test */
     public function it_can_get_different_filter_query_parameter_name()
@@ -274,6 +306,20 @@ class QueryBuilderRequestTest extends TestCase
     }
 
     /** @test */
+    public function it_can_get_the_include_from_the_request_body()
+    {
+        config(['query-builder.inspect_input_instead_of_query' => true]);
+
+        $request = new QueryBuilderRequest([], [
+            'include' => 'foo,bar',
+        ], [], [], [], ['REQUEST_METHOD' => 'POST']);
+
+        $expected = collect(['foo', 'bar']);
+
+        $this->assertEquals($expected, $request->includes());
+    }
+
+    /** @test */
     public function it_can_get_different_include_query_parameter_name()
     {
         config(['query-builder.parameters.include' => 'includes']);
@@ -305,6 +351,22 @@ class QueryBuilderRequestTest extends TestCase
                 'table' => 'name,email',
             ],
         ]);
+
+        $expected = collect(['table' => ['name', 'email']]);
+
+        $this->assertEquals($expected, $request->fields());
+    }
+
+    /** @test */
+    public function it_can_get_requested_fields_from_the_request_body()
+    {
+        config(['query-builder.inspect_input_instead_of_query' => true]);
+
+        $request = new QueryBuilderRequest([], [
+            'fields' => [
+                'table' => 'name,email',
+            ],
+        ], [], [], [], ['REQUEST_METHOD' => 'POST']);
 
         $expected = collect(['table' => ['name', 'email']]);
 
@@ -359,6 +421,20 @@ class QueryBuilderRequestTest extends TestCase
         $request = new QueryBuilderRequest();
 
         $expected = collect();
+
+        $this->assertEquals($expected, $request->appends());
+    }
+
+    /** @test */
+    public function it_can_get_the_append_query_params_from_the_request_body()
+    {
+        config(['query-builder.inspect_input_instead_of_query' => true]);
+
+        $request = new QueryBuilderRequest([], [
+            'append' => 'foo,bar',
+        ], [], [], [], ['REQUEST_METHOD' => 'POST']);
+
+        $expected = collect(['foo', 'bar']);
 
         $this->assertEquals($expected, $request->appends());
     }
