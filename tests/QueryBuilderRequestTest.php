@@ -89,7 +89,7 @@ class QueryBuilderRequestTest extends TestCase
     /** @test */
     public function it_can_get_the_sort_query_param_from_the_request_body()
     {
-        config(['query-builder.inspect_input_instead_of_query' => true]);
+        config(['query-builder.request_data_source' => 'body']);
 
         $request = new QueryBuilderRequest([], [
             'sort' => 'foobar',
@@ -161,7 +161,7 @@ class QueryBuilderRequestTest extends TestCase
         /** @test */
         public function it_can_get_the_filter_query_params_from_the_request_body()
         {
-            config(['query-builder.inspect_input_instead_of_query' => true]);
+            config(['query-builder.request_data_source' => 'body']);
 
             $request = new QueryBuilderRequest([], [
                 'filter' => [
@@ -308,7 +308,7 @@ class QueryBuilderRequestTest extends TestCase
     /** @test */
     public function it_can_get_the_include_from_the_request_body()
     {
-        config(['query-builder.inspect_input_instead_of_query' => true]);
+        config(['query-builder.request_data_source' => 'body']);
 
         $request = new QueryBuilderRequest([], [
             'include' => 'foo,bar',
@@ -360,7 +360,7 @@ class QueryBuilderRequestTest extends TestCase
     /** @test */
     public function it_can_get_requested_fields_from_the_request_body()
     {
-        config(['query-builder.inspect_input_instead_of_query' => true]);
+        config(['query-builder.request_data_source' => 'body']);
 
         $request = new QueryBuilderRequest([], [
             'fields' => [
@@ -428,7 +428,7 @@ class QueryBuilderRequestTest extends TestCase
     /** @test */
     public function it_can_get_the_append_query_params_from_the_request_body()
     {
-        config(['query-builder.inspect_input_instead_of_query' => true]);
+        config(['query-builder.request_data_source' => 'body']);
 
         $request = new QueryBuilderRequest([], [
             'append' => 'foo,bar',

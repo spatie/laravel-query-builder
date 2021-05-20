@@ -5,6 +5,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 ## 3.4.0 - 2021-05-20
 
 - add support for custom includes (#623)
+- add support for getting request data from the request body (#589)
 
 ## 3.3.4 - 2020-11-26
 
