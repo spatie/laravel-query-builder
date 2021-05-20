@@ -6,6 +6,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 - add support for custom includes (#623)
 - add support for getting request data from the request body (#589)
+- fix issues when cloning `QueryBuilder` (#621)
 
 ## 3.3.4 - 2020-11-26
 
