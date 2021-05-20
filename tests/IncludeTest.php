@@ -12,6 +12,9 @@ use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\MorphModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+use Spatie\QueryBuilder\Includes\IncludeInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\Includes\IncludedCount;
 
 class IncludeTest extends TestCase
 {
@@ -340,6 +343,72 @@ class IncludeTest extends TestCase
         $models->each(function ($model) {
             $this->assertNotNull($model->related_models_count);
         });
+    }
+
+    /** @test */
+    public function it_can_include_custom_include_class()
+    {
+        $includeClass = new class implements IncludeInterface {
+            public function __invoke(Builder $query, string $include): Builder
+            {
+                // TODO:
+                // when drop laravel 6 and 7
+                // use withAggregate instead withCount
+                return $query->withCount($include);
+            }
+        };
+
+        $modelResult = $this
+            ->createQueryFromIncludeRequest('related-models')
+            ->allowedIncludes(AllowedInclude::custom('related-models', $includeClass))
+            ->first();
+
+        $this->assertNotNull($modelResult->related_models_count);
+    }
+
+    /** @test */
+    public function it_can_include_custom_include_class_by_alias()
+    {
+        $includeClass = new class implements IncludeInterface {
+            public function __invoke(Builder $query, string $include): Builder
+            {
+                // TODO:
+                // when drop laravel 6 and 7
+                // use withAggregate instead withCount
+                return $query->withCount($include);
+            }
+        };
+
+        $modelResult = $this
+            ->createQueryFromIncludeRequest('related-models-count')
+            ->allowedIncludes(AllowedInclude::custom('related-models-count', $includeClass, 'relatedModels'))
+            ->first();
+
+        $this->assertNotNull($modelResult->related_models_count);
+    }
+
+    /** @test */
+    public function it_can_take_an_argument_for_custom_column_name_resolution()
+    {
+        $include = AllowedInclude::custom('property_name', new IncludedCount, 'property_column_name');
+
+        $this->assertInstanceOf(Collection::class, $include);
+        $this->assertInstanceOf(AllowedInclude::class, $include->first());
+        $this->assertClassHasAttribute('internalName', get_class($include->first()));
+    }
+
+    /** @test */
+    public function it_can_include_a_custom_base_query_with_select()
+    {
+        $request = new Request([
+            'include' => 'related-models-count',
+        ]);
+
+        $modelResult = QueryBuilder::for(TestModel::select('id', 'name'), $request)
+            ->allowedIncludes(AllowedInclude::custom('related-models-count', new IncludedCount, 'relatedModels'))
+            ->first();
+
+        $this->assertNotNull($modelResult->related_models_count);
     }
 
     protected function createQueryFromIncludeRequest(string $includes): QueryBuilder

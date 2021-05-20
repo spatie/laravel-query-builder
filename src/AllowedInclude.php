@@ -59,6 +59,13 @@ class AllowedInclude
         ]);
     }
 
+    public static function custom(string $name, IncludeInterface $includeClass, ?string $internalName = null): Collection
+    {
+        return collect([
+            new static($name, $includeClass, $internalName),
+        ]);
+    }
+
     public function include(QueryBuilder $query): void
     {
         if (property_exists($this->includeClass, 'getRequestedFieldsForRelatedTable')) {
