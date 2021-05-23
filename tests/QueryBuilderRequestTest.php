@@ -158,25 +158,25 @@ class QueryBuilderRequestTest extends TestCase
         $this->assertEquals($expected, $request->filters());
     }
 
-        /** @test */
-        public function it_can_get_the_filter_query_params_from_the_request_body()
-        {
-            config(['query-builder.request_data_source' => 'body']);
+    /** @test */
+    public function it_can_get_the_filter_query_params_from_the_request_body()
+    {
+        config(['query-builder.request_data_source' => 'body']);
 
-            $request = new QueryBuilderRequest([], [
+        $request = new QueryBuilderRequest([], [
                 'filter' => [
                     'foo' => 'bar',
                     'baz' => 'qux',
                 ],
             ], [], [], [], ['REQUEST_METHOD' => 'POST']);
 
-            $expected = collect([
+        $expected = collect([
                 'foo' => 'bar',
                 'baz' => 'qux',
             ]);
 
-            $this->assertEquals($expected, $request->filters());
-        }
+        $this->assertEquals($expected, $request->filters());
+    }
 
     /** @test */
     public function it_can_get_different_filter_query_parameter_name()
