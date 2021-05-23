@@ -22,12 +22,12 @@ use Spatie\QueryBuilder\Exceptions\InvalidSubject;
  */
 class QueryBuilder implements ArrayAccess
 {
-    use FiltersQuery,
-        SortsQuery,
-        AddsIncludesToQuery,
-        AddsFieldsToQuery,
-        AppendsAttributesToResults,
-        ForwardsCalls;
+    use FiltersQuery;
+    use SortsQuery;
+    use AddsIncludesToQuery;
+    use AddsFieldsToQuery;
+    use AppendsAttributesToResults;
+    use ForwardsCalls;
 
     /** @var \Spatie\QueryBuilder\QueryBuilderRequest */
     protected $request;
