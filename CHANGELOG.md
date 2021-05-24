@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.4.1 - 2021-05-24
+
+- fix simple paginator append not working (#633)
+
 ## 3.4.0 - 2021-05-20
 
 - add support for custom includes (#623)
