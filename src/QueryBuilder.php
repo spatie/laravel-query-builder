@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\ForwardsCalls;
 use Spatie\QueryBuilder\Concerns\AddsFieldsToQuery;
@@ -124,18 +125,18 @@ class QueryBuilder implements ArrayAccess
             $this->addAppendsToResults($result);
         }
 
-        if ($result instanceof LengthAwarePaginator) {
+        if ($result instanceof LengthAwarePaginator || $result instanceof Paginator) {
             $this->addAppendsToResults(collect($result->items()));
         }
 
         return $result;
     }
-    
+
     public function clone()
     {
         return clone $this;
     }
-    
+
     public function __clone()
     {
         $this->subject = clone $this->subject;
