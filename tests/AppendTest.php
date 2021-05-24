@@ -5,6 +5,7 @@ namespace Spatie\QueryBuilder\Tests;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -151,6 +152,16 @@ class AppendTest extends TestCase
     }
 
     protected function assertPaginateAttributeLoaded(LengthAwarePaginator $collection, string $attribute)
+    {
+        $hasModelWithoutAttributeLoaded = $collection
+            ->contains(function (Model $model) use ($attribute) {
+                return ! array_key_exists($attribute, $model->toArray());
+            });
+
+        $this->assertFalse($hasModelWithoutAttributeLoaded, "The `{$attribute}` attribute was expected but not loaded.");
+    }
+
+    protected function assertSimplePaginateAttributeLoaded(Paginator $collection, string $attribute)
     {
         $hasModelWithoutAttributeLoaded = $collection
             ->contains(function (Model $model) use ($attribute) {
