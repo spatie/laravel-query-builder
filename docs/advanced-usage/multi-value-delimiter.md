@@ -27,12 +27,12 @@ You can define it in a `ServiceProvider` to apply it globally, or define a middl
 ```php
 // YourServiceProvider.php
 public function boot() {
-    QueryBuilderRequest::setArrayDelimiter(';');
+    QueryBuilderRequest::setArrayValueDelimiter(';');
 }
 
 // ApplySemicolonDelimiterMiddleware.php
 public function handle($request, $next) {
-    QueryBuilderRequest::setArrayDelimiter(';');
+    QueryBuilderRequest::setArrayValueDelimiter(';');
     return $next($request);
 }
 ```
