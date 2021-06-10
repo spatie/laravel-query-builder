@@ -2,11 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
-## 2.0.0 - unreleased
+## 1.18.0 - 2021-06-11
 
-- removed request macros
-- sorts and field selects are not allowed by default
-- field aliases
+- add support for Laravel 6
+- add support for PHP 8
 
 ## 1.17.5 - 2019-07-08
 
