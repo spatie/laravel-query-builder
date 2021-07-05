@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.4.2 - 2021-07-05
+
+- fix unexpected lowercase appends (#637)
+
 ## 3.4.1 - 2021-05-24
 
 - fix simple paginator append not working (#633)
