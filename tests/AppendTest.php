@@ -42,14 +42,14 @@ class AppendTest extends TestCase
     }
 
     /** @test */
-    public function it_can_append_case_insensitive()
+    public function it_cannot_append_case_insensitive()
     {
-        $model = $this
+        $this->expectException(InvalidAppendQuery::class);
+
+        $this
             ->createQueryFromAppendRequest('FullName')
             ->allowedAppends('fullname')
             ->first();
-
-        $this->assertAttributeLoaded($model, 'fullname');
     }
 
     /** @test */
@@ -57,7 +57,7 @@ class AppendTest extends TestCase
     {
         $models = $this
             ->createQueryFromAppendRequest('FullName')
-            ->allowedAppends('fullname')
+            ->allowedAppends('FullName')
             ->get();
 
         $this->assertCollectionAttributeLoaded($models, 'fullname');
@@ -68,7 +68,7 @@ class AppendTest extends TestCase
     {
         $models = $this
             ->createQueryFromAppendRequest('FullName')
-            ->allowedAppends('fullname')
+            ->allowedAppends('FullName')
             ->paginate();
 
         $this->assertPaginateAttributeLoaded($models, 'fullname');
@@ -152,16 +152,6 @@ class AppendTest extends TestCase
     }
 
     protected function assertPaginateAttributeLoaded(LengthAwarePaginator $collection, string $attribute)
-    {
-        $hasModelWithoutAttributeLoaded = $collection
-            ->contains(function (Model $model) use ($attribute) {
-                return ! array_key_exists($attribute, $model->toArray());
-            });
-
-        $this->assertFalse($hasModelWithoutAttributeLoaded, "The `{$attribute}` attribute was expected but not loaded.");
-    }
-
-    protected function assertSimplePaginateAttributeLoaded(Paginator $collection, string $attribute)
     {
         $hasModelWithoutAttributeLoaded = $collection
             ->contains(function (Model $model) use ($attribute) {
