@@ -19,7 +19,7 @@ class FiltersScope implements Filter
     {
         $propertyParts = collect(explode('.', $property));
 
-        $scope = $propertyParts->pop();
+        $scope = Str::camel($propertyParts->pop()); // TODO: Make this configurable?
 
         $values = array_values(Arr::wrap($values));
         $values = $this->resolveParameters($query, $values, $scope);

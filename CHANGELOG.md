@@ -4,7 +4,11 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 ## 4.0.0 - unreleased
 
-- the query builder will no longer automatically camelcase filters or includes. Instead the exact requested string will be used
+- nested filters will no longer be automatically camel-cased to match a relationship name
+- includes will no longer be automatically camel-cased to match a relationship name
+- fields will no longer be automatically snake-cased to match table or column names
+
+Take a look at the (upgrade guide)[./UPGRADING.md] for a more detailed explanation.
 
 ## 3.4.3 - 2021-07-05
 

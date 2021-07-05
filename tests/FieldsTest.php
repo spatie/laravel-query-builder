@@ -137,12 +137,12 @@ class FieldsTest extends TestCase
                 'test_models' => 'id',
                 'related_models' => 'name',
             ],
-            'include' => ['related-models'],
+            'include' => ['relatedModels'],
         ]);
 
         $queryBuilder = QueryBuilder::for(TestModel::class, $request)
             ->allowedFields('related_models.name', 'id')
-            ->allowedIncludes('related-models');
+            ->allowedIncludes('relatedModels');
 
         DB::enableQueryLog();
 
@@ -163,14 +163,14 @@ class FieldsTest extends TestCase
         $request = new Request([
             'fields' => [
                 'test_models' => 'id,name',
-                'related_models.test_model' => 'id',
+                'related_models.test_models' => 'id',
             ],
-            'include' => ['related-models.test_model'],
+            'include' => ['relatedModels.testModel'],
         ]);
 
         $result = QueryBuilder::for(TestModel::class, $request)
-            ->allowedFields('related_models.test_model.id', 'id', 'name')
-            ->allowedIncludes('related-models.test_model')
+            ->allowedFields('related_models.test_models.id', 'id', 'name')
+            ->allowedIncludes('relatedModels.testModel')
             ->first();
 
         $this->assertArrayHasKey('name', $result);
@@ -196,13 +196,13 @@ class FieldsTest extends TestCase
                 'test_models' => 'id',
                 'related_models' => 'name',
             ],
-            'include' => ['related-models'],
+            'include' => ['relatedModels'],
         ]);
 
         $this->expectException(UnknownIncludedFieldsQuery::class);
 
         QueryBuilder::for(TestModel::class, $request)
-            ->allowedIncludes('related-models')
+            ->allowedIncludes('relatedModels')
             ->allowedFields('name');
     }
 
@@ -214,13 +214,13 @@ class FieldsTest extends TestCase
                 'test_models' => 'id',
                 'related_models' => 'name',
             ],
-            'include' => ['related-models'],
+            'include' => ['relatedModels'],
         ]);
 
         $this->expectException(UnknownIncludedFieldsQuery::class);
 
         QueryBuilder::for(TestModel::class, $request)
-            ->allowedIncludes('related-models');
+            ->allowedIncludes('relatedModels');
     }
 
     /** @test */
@@ -228,12 +228,12 @@ class FieldsTest extends TestCase
     {
         $request = new Request([
             'fields' => ['related_models' => 'id,name'],
-            'include' => ['related-models'],
+            'include' => ['relatedModels'],
         ]);
 
         $queryBuilder = QueryBuilder::for(TestModel::class, $request)
             ->allowedFields(['related_models.id', 'related_models.name'])
-            ->allowedIncludes('related-models');
+            ->allowedIncludes('relatedModels');
 
         DB::enableQueryLog();
 
