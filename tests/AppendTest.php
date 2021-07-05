@@ -74,6 +74,28 @@ class AppendTest extends TestCase
     }
 
     /** @test */
+    public function it_can_append_simple_paginates()
+    {
+        $models = $this
+            ->createQueryFromAppendRequest('FullName')
+            ->allowedAppends('FullName')
+            ->simplePaginate();
+
+        $this->assertPaginateAttributeLoaded($models, 'FullName');
+    }
+
+    /** @test */
+    public function it_can_append_cursor_paginates()
+    {
+        $models = $this
+            ->createQueryFromAppendRequest('FullName')
+            ->allowedAppends('FullName')
+            ->cursorPaginate();
+
+        $this->assertPaginateAttributeLoaded($models, 'FullName');
+    }
+
+    /** @test */
     public function it_guards_against_invalid_appends()
     {
         $this->expectException(InvalidAppendQuery::class);
@@ -150,7 +172,11 @@ class AppendTest extends TestCase
         $this->assertFalse($hasModelWithoutAttributeLoaded, "The `{$attribute}` attribute was expected but not loaded.");
     }
 
-    protected function assertPaginateAttributeLoaded(LengthAwarePaginator $collection, string $attribute)
+    /**
+     * @param \Illuminate\Pagination\LengthAwarePaginator|\Illuminate\Contracts\Pagination\Paginator $collection
+     * @param string $attribute
+     */
+    protected function assertPaginateAttributeLoaded($collection, string $attribute)
     {
         $hasModelWithoutAttributeLoaded = $collection
             ->contains(function (Model $model) use ($attribute) {

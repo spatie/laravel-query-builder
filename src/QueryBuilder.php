@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder;
 
 use ArrayAccess;
+use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -125,7 +126,7 @@ class QueryBuilder implements ArrayAccess
             $this->addAppendsToResults($result);
         }
 
-        if ($result instanceof LengthAwarePaginator || $result instanceof Paginator) {
+        if ($result instanceof LengthAwarePaginator || $result instanceof Paginator || $result instanceof CursorPaginator) {
             $this->addAppendsToResults(collect($result->items()));
         }
 
