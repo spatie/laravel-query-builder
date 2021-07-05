@@ -48,7 +48,7 @@ class FiltersExact implements Filter
             return false;
         }
 
-        $firstRelationship = Str::camel(explode('.', $property)[0]);
+        $firstRelationship = explode('.', $property)[0];
 
         if (! method_exists($query->getModel(), $firstRelationship)) {
             return false;
