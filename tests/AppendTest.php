@@ -59,7 +59,7 @@ class AppendTest extends TestCase
             ->allowedAppends('FullName')
             ->get();
 
-        $this->assertCollectionAttributeLoaded($models, 'fullname');
+        $this->assertCollectionAttributeLoaded($models, 'FullName');
     }
 
     /** @test */
@@ -70,7 +70,7 @@ class AppendTest extends TestCase
             ->allowedAppends('FullName')
             ->paginate();
 
-        $this->assertPaginateAttributeLoaded($models, 'fullname');
+        $this->assertPaginateAttributeLoaded($models, 'FullName');
     }
 
     /** @test */
