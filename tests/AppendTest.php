@@ -4,7 +4,6 @@ namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 use Spatie\QueryBuilder\QueryBuilder;
