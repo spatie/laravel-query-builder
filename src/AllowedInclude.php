@@ -21,14 +21,14 @@ class AllowedInclude
 
     public function __construct(string $name, IncludeInterface $includeClass, ?string $internalName = null)
     {
-        $this->name = Str::camel($name);
+        $this->name = $name;
         $this->includeClass = $includeClass;
         $this->internalName = $internalName ?? $this->name;
     }
 
     public static function relationship(string $name, ?string $internalName = null): Collection
     {
-        $internalName = Str::camel($internalName ?? $name);
+        $internalName = $internalName ?? $name;
 
         return IncludedRelationship::getIndividualRelationshipPathsFromInclude($internalName)
             ->zip(IncludedRelationship::getIndividualRelationshipPathsFromInclude($name))

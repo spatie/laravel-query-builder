@@ -51,7 +51,7 @@ trait AddsFieldsToQuery
     public function getRequestedFieldsForRelatedTable(string $relation): array
     {
         $fields = $this->request->fields()->mapWithKeys(function ($fields, $relation) {
-            return [Str::camel($relation) => $fields];
+            return [$relation => $fields];
         })->get($relation);
 
         if (! $fields) {
@@ -71,9 +71,7 @@ trait AddsFieldsToQuery
     {
         $requestedFields = $this->request->fields()
             ->map(function ($fields, $model) {
-                $tableName = Str::snake(preg_replace('/-/', '_', $model));
-
-                $fields = array_map([Str::class, 'snake'], $fields);
+                $tableName = $model);
 
                 return $this->prependFieldsWithTableName($fields, $tableName);
             })

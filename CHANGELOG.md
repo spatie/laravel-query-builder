@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 4.0.0 - unreleased
+
+- the query builder will no longer automatically camelcase filters or includes. Instead the exact requested string will be used
+
 ## 3.4.3 - 2021-07-05
 
 - fix unexpected lowercase appends (#637)

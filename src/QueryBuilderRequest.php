@@ -38,13 +38,11 @@ class QueryBuilderRequest extends Request
 
         $includeParts = $this->getRequestData($includeParameterName);
 
-        if (! is_array($includeParts)) {
+        if (!is_array($includeParts)) {
             $includeParts = explode(static::getIncludesArrayValueDelimiter(), $this->getRequestData($includeParameterName));
         }
 
-        return collect($includeParts)
-            ->filter()
-            ->map([Str::class, 'camel']);
+        return collect($includeParts)->filter();
     }
 
     public function appends(): Collection
@@ -53,7 +51,7 @@ class QueryBuilderRequest extends Request
 
         $appendParts = $this->getRequestData($appendParameterName);
 
-        if (! is_array($appendParts)) {
+        if (!is_array($appendParts)) {
             $appendParts = explode(static::getAppendsArrayValueDelimiter(), $appendParts);
         }
 
