@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.5.0 - 2021-07-05
+
+- add support for cursor pagination
+
 ## 3.4.3 - 2021-07-05
 
 - fix unexpected lowercase appends (#637)
