@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\Cursor;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 
@@ -23,6 +24,13 @@ trait AppendsAttributesToResults
     }
 
     protected function addAppendsToResults(Collection $results)
+    {
+        return $results->each(function (Model $result) {
+            return $result->append($this->request->appends()->toArray());
+        });
+    }
+
+    protected function addAppendsToCursor( $results)
     {
         return $results->each(function (Model $result) {
             return $result->append($this->request->appends()->toArray());
