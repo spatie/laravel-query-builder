@@ -109,11 +109,16 @@ class QueryBuilder implements ArrayAccess
     public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
     {
         return parent::cursorPaginate($perPage, $columns, $cursorName, $cursor)->appends(
-            array_merge(
-                $this->request->filters()->toArray(),
-                $this->request->sorts()->toArray(),
-                $this->request->appends()->toArray(),
-                $this->request->includes()->toArray()
+            array_filter(
+                array_merge(
+                    $this->request->filters()->mapWithKeys(function ($value, $key) {
+                        return [config('query-builder.parameters.filter') . "[${key}]" => $value];
+                    })->toArray(),
+                    [config('query-builder.parameters.sort') => $this->request->sorts()->join(QueryBuilderRequest::getIncludesArrayValueDelimiter())],
+                    [config('query-builder.parameters.append') => $this->request->appends()->join(QueryBuilderRequest::getAppendsArrayValueDelimiter())],
+                    [config('query-builder.parameters.include') => $this->request->includes()->join(QueryBuilderRequest::getIncludesArrayValueDelimiter())],
+                    [config('query-builder.parameters.include') => $this->request->fields()->join(QueryBuilderRequest::getFieldsArrayValueDelimiter())]
+                )
             )
         );
     }
