@@ -106,6 +106,18 @@ class QueryBuilder implements ArrayAccess
         return new static($subject, $request);
     }
 
+    public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
+    {
+        return parent::cursorPaginate($perPage, $columns, $cursorName, $cursor)->appends(
+            array_merge(
+                $this->request->filters()->toArray(),
+                $this->request->sorts()->toArray(),
+                $this->request->appends()->toArray(),
+                $this->request->includes()->toArray()
+            )
+        );
+    }
+
     public function __call($name, $arguments)
     {
         $result = $this->forwardCallTo($this->subject, $name, $arguments);
