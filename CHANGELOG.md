@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 3.6.0 - 2021-09-06
+
+- add callback sorts (#654)
+
 ## 3.5.0 - 2021-07-05
 
 - add support for cursor pagination
