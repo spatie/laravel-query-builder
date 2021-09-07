@@ -36,7 +36,7 @@ class AllowedInclude
                 [$relationship, $alias] = $args;
 
                 $includes = collect([
-                    new self($alias, new IncludedRelationship, $relationship),
+                    new self($alias, new IncludedRelationship(), $relationship),
                 ]);
 
                 if (! Str::contains($relationship, '.')) {

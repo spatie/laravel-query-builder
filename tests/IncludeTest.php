@@ -348,7 +348,7 @@ class IncludeTest extends TestCase
     /** @test */
     public function it_can_include_custom_include_class()
     {
-        $includeClass = new class implements IncludeInterface {
+        $includeClass = new class() implements IncludeInterface {
             public function __invoke(Builder $query, string $include): Builder
             {
                 // TODO:
@@ -369,7 +369,7 @@ class IncludeTest extends TestCase
     /** @test */
     public function it_can_include_custom_include_class_by_alias()
     {
-        $includeClass = new class implements IncludeInterface {
+        $includeClass = new class() implements IncludeInterface {
             public function __invoke(Builder $query, string $include): Builder
             {
                 // TODO:
@@ -390,7 +390,7 @@ class IncludeTest extends TestCase
     /** @test */
     public function it_can_take_an_argument_for_custom_column_name_resolution()
     {
-        $include = AllowedInclude::custom('property_name', new IncludedCount, 'property_column_name');
+        $include = AllowedInclude::custom('property_name', new IncludedCount(), 'property_column_name');
 
         $this->assertInstanceOf(Collection::class, $include);
         $this->assertInstanceOf(AllowedInclude::class, $include->first());
@@ -405,7 +405,7 @@ class IncludeTest extends TestCase
         ]);
 
         $modelResult = QueryBuilder::for(TestModel::select('id', 'name'), $request)
-            ->allowedIncludes(AllowedInclude::custom('relatedModelsCount', new IncludedCount, 'relatedModels'))
+            ->allowedIncludes(AllowedInclude::custom('relatedModelsCount', new IncludedCount(), 'relatedModels'))
             ->first();
 
         $this->assertNotNull($modelResult->related_models_count);
