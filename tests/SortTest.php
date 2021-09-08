@@ -28,7 +28,7 @@ class SortTest extends TestCase
 
         DB::enableQueryLog();
 
-        $this->models = factory(TestModel::class, 5)->create();
+        $this->models = factory(TestModel::class, 10)->create();
     }
 
     /** @test */
@@ -486,6 +486,45 @@ class SortTest extends TestCase
 
         $this->assertQueryExecuted('select * from `test_models` order by `name` desc');
         $this->assertSortedDescending($sortedModels, 'name');
+    }
+
+    /** @test */
+    public function it_can_append_sorts_to_paginate()
+    {
+        /** @var \Illuminate\Pagination\AbstractPaginator $models */
+        $models = $this->createQueryFromSortRequest('name')
+            ->allowedSorts(['name'])
+            ->defaultSort('name')
+            ->paginate();
+
+        $this->assertStringContainsString('sort=name', $models->nextPageUrl());
+        $this->assertSortedAscending($models->getCollection(), 'name');
+    }
+
+    /** @test */
+    public function it_can_append_sorts_to_simple_paginate()
+    {
+        /** @var \Illuminate\Pagination\AbstractPaginator $models */
+        $models = $this->createQueryFromSortRequest('-name')
+            ->allowedSorts(['name'])
+            ->defaultSort('name')
+            ->simplePaginate();
+
+        $this->assertStringContainsString('sort=-name', $models->nextPageUrl());
+        $this->assertSortedDescending($models->getCollection(), 'name');
+    }
+
+    /** @test */
+    public function it_can_append_sorts_to_cursor_paginate()
+    {
+        /** @var \Illuminate\Pagination\AbstractPaginator $models */
+        $models = $this->createQueryFromSortRequest('name')
+            ->allowedSorts(['name'])
+            ->defaultSort('name')
+            ->cursorPaginate();
+
+        $this->assertStringContainsString('sort=name', $models->nextPageUrl());
+        $this->assertSortedAscending($models->getCollection(), 'name');
     }
 
     protected function createQueryFromSortRequest(string $sort): QueryBuilder

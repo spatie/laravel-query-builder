@@ -106,26 +106,11 @@ class QueryBuilder implements ArrayAccess
         return new static($subject, $request);
     }
 
-    public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
-    {
-        return parent::cursorPaginate($perPage, $columns, $cursorName, $cursor)->appends(
-            array_filter(
-                array_merge(
-                    $this->request->filters()->mapWithKeys(function ($value, $key) {
-                        return [config('query-builder.parameters.filter') . "[${key}]" => $value];
-                    })->toArray(),
-                    [config('query-builder.parameters.sort') => $this->request->sorts()->join(QueryBuilderRequest::getIncludesArrayValueDelimiter())],
-                    [config('query-builder.parameters.append') => $this->request->appends()->join(QueryBuilderRequest::getAppendsArrayValueDelimiter())],
-                    [config('query-builder.parameters.include') => $this->request->includes()->join(QueryBuilderRequest::getIncludesArrayValueDelimiter())],
-                    [config('query-builder.parameters.include') => $this->request->fields()->join(QueryBuilderRequest::getFieldsArrayValueDelimiter())]
-                )
-            )
-        );
-    }
-
     public function __call($name, $arguments)
     {
-        $result = $this->forwardCallTo($this->subject, $name, $arguments);
+        $subject = new QueryBuilderPaginator($this->subject, $this->request);
+
+        $result = $this->forwardCallTo($subject, $name, $arguments);
 
         /*
          * If the forwarded method call is part of a chain we can return $this
@@ -146,6 +131,7 @@ class QueryBuilder implements ArrayAccess
         if ($result instanceof LengthAwarePaginator || $result instanceof Paginator || $result instanceof CursorPaginator) {
             $this->addAppendsToResults(collect($result->items()));
         }
+
 
         return $result;
     }

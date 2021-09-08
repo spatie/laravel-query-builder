@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class AppendModel extends Model
 {
+    protected $perPage = 5;
+
     protected $guarded = [];
 
     public $timestamps = false;

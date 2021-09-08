@@ -257,6 +257,48 @@ class FieldsTest extends TestCase
         $this->assertQueryLogDoesntContain('--injection');
     }
 
+    /** @test */
+    public function it_can_append_fields_to_paginate()
+    {
+        factory(TestModel::class, 9)->create();
+
+        /** @var \Illuminate\Pagination\AbstractPaginator|\Illuminate\Contracts\Pagination\LengthAwarePaginator $models */
+        $models = $this->createQueryFromFieldRequest(['test_models' => 'name,id'])
+            ->select(['id', 'is_visible'])
+            ->allowedFields(['name', 'id'])
+            ->paginate();
+
+        $this->assertStringContainsString('fields%5Btest_models%5D=name%2Cid', $models->nextPageUrl());
+    }
+
+    /** @test */
+    public function it_can_append_fields_to_simple_paginate()
+    {
+        factory(TestModel::class, 9)->create();
+
+        /** @var \Illuminate\Pagination\AbstractPaginator|\Illuminate\Contracts\Pagination\LengthAwarePaginator $models */
+        $models = $this->createQueryFromFieldRequest(['test_models' => 'name,id'])
+            ->select(['id', 'is_visible'])
+            ->allowedFields(['name', 'id'])
+            ->simplePaginate();
+
+        $this->assertStringContainsString('fields%5Btest_models%5D=name%2Cid', $models->nextPageUrl());
+    }
+
+    /** @test */
+    public function it_can_append_fields_to_cursor_paginate()
+    {
+        factory(TestModel::class, 9)->create();
+
+        /** @var \Illuminate\Pagination\AbstractPaginator|\Illuminate\Contracts\Pagination\LengthAwarePaginator $models */
+        $models = $this->createQueryFromFieldRequest(['test_models' => 'name,id'])
+            ->select(['id', 'is_visible'])
+            ->allowedFields(['name', 'id'])
+            ->cursorPaginate();
+
+        $this->assertStringContainsString('fields%5Btest_models%5D=name%2Cid', $models->nextPageUrl());
+    }
+
     protected function createQueryFromFieldRequest(array $fields = []): QueryBuilder
     {
         $request = new Request([

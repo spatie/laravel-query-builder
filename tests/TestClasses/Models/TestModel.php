@@ -12,6 +12,8 @@ use Illuminate\Support\Carbon;
 
 class TestModel extends Model
 {
+    protected $perPage = 5;
+
     protected $guarded = [];
 
     public function relatedModels(): HasMany

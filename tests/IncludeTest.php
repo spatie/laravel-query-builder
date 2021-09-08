@@ -25,7 +25,7 @@ class IncludeTest extends TestCase
     {
         parent::setUp();
 
-        $this->models = factory(TestModel::class, 5)->create();
+        $this->models = factory(TestModel::class, 10)->create();
 
         $this->models->each(function (TestModel $model) {
             $model
@@ -409,6 +409,42 @@ class IncludeTest extends TestCase
             ->first();
 
         $this->assertNotNull($modelResult->related_models_count);
+    }
+
+    /** @test */
+    public function it_can_append_includes_to_paginate()
+    {
+        /** @var \Illuminate\Pagination\AbstractPaginator|\Illuminate\Contracts\Pagination\LengthAwarePaginator $models */
+        $models = $this->createQueryFromIncludeRequest('relatedModel')
+            ->allowedIncludes('relatedModel')
+            ->paginate();
+
+        $this->assertStringContainsString('include=relatedModel', $models->nextPageUrl());
+        $this->assertRelationLoaded($models->getCollection(), 'relatedModel');
+    }
+
+    /** @test */
+    public function it_can_append_includes_to_simple_paginate()
+    {
+        /** @var \Illuminate\Pagination\AbstractPaginator|\Illuminate\Contracts\Pagination\LengthAwarePaginator $models */
+        $models = $this->createQueryFromIncludeRequest('relatedModel')
+            ->allowedIncludes('relatedModel')
+            ->simplePaginate();
+
+        $this->assertStringContainsString('include=relatedModel', $models->nextPageUrl());
+        $this->assertRelationLoaded($models->getCollection(), 'relatedModel');
+    }
+
+    /** @test */
+    public function it_can_append_includes_to_cursor_paginate()
+    {
+        /** @var \Illuminate\Pagination\AbstractPaginator|\Illuminate\Contracts\Pagination\LengthAwarePaginator $models */
+        $models = $this->createQueryFromIncludeRequest('relatedModel')
+            ->allowedIncludes('relatedModel')
+            ->cursorPaginate();
+
+        $this->assertStringContainsString('include=relatedModel', $models->nextPageUrl());
+        $this->assertRelationLoaded($models->getCollection(), 'relatedModel');
     }
 
     protected function createQueryFromIncludeRequest(string $includes): QueryBuilder

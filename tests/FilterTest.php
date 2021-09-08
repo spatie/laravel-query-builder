@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use Faker\Factory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -23,7 +24,7 @@ class FilterTest extends TestCase
     {
         parent::setUp();
 
-        $this->models = factory(TestModel::class, 5)->create();
+        $this->models = factory(TestModel::class, 10)->create();
     }
 
     /** @test */
@@ -542,6 +543,57 @@ class FilterTest extends TestCase
             ->get();
 
         $this->assertEquals(1, $models->count());
+    }
+
+    /** @test */
+    public function it_can_append_filters_to_paginate()
+    {
+        $faker = (new Factory)->create();
+
+        factory(TestModel::class, 6)->create([
+            'name' => 'hello ' . $faker->randomNumber(5),
+        ]);
+
+        /** @var \Illuminate\Pagination\AbstractPaginator|\Illuminate\Contracts\Pagination\LengthAwarePaginator $models */
+        $models = $this->createQueryFromFilterRequest(['name' => 'hello'])
+            ->allowedFilters(['name'])
+            ->paginate();
+
+        $this->assertStringContainsString('filter%5Bname%5D=hello', $models->nextPageUrl());
+    }
+
+    /** @test */
+    public function it_can_append_filters_to_simple_paginate()
+    {
+        $faker = (new Factory)->create();
+
+        factory(TestModel::class, 6)->create([
+            'name' => 'hello ' . $faker->randomNumber(5),
+        ]);
+
+        /** @var \Illuminate\Pagination\AbstractPaginator|\Illuminate\Contracts\Pagination\LengthAwarePaginator $models */
+        $models = $this->createQueryFromFilterRequest(['name' => 'hello'])
+            ->allowedFilters(['name'])
+            ->simplePaginate();
+
+        $this->assertStringContainsString('filter%5Bname%5D=hello', $models->nextPageUrl());
+    }
+
+    /** @test */
+    public function it_can_append_filters_to_cursor_paginate()
+    {
+        $faker = (new Factory)->create();
+
+        factory(TestModel::class, 6)->create([
+            'name' => 'hello ' . $faker->randomNumber(5),
+        ]);
+
+        /** @var \Illuminate\Pagination\AbstractPaginator|\Illuminate\Contracts\Pagination\LengthAwarePaginator $models */
+        $models = $this->createQueryFromFilterRequest(['name' => 'hello'])
+            ->allowedFilters(['name'])
+            ->cursorPaginate();
+
+        $this->assertStringContainsString('filter%5Bname%5D=hello', $models->nextPageUrl());
     }
 
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder

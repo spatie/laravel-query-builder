@@ -15,7 +15,7 @@ class AppendTest extends TestCase
     {
         parent::setUp();
 
-        factory(AppendModel::class, 5)->create();
+        factory(AppendModel::class, 10)->create();
     }
 
     /** @test */
@@ -70,6 +70,7 @@ class AppendTest extends TestCase
             ->paginate();
 
         $this->assertPaginateAttributeLoaded($models, 'FullName');
+        $this->assertStringContainsString('append=FullName', $models->nextPageUrl());
     }
 
     /** @test */
@@ -81,6 +82,7 @@ class AppendTest extends TestCase
             ->simplePaginate();
 
         $this->assertPaginateAttributeLoaded($models, 'FullName');
+        $this->assertStringContainsString('append=FullName', $models->nextPageUrl());
     }
 
     /** @test */
@@ -89,9 +91,11 @@ class AppendTest extends TestCase
         $models = $this
             ->createQueryFromAppendRequest('FullName')
             ->allowedAppends('FullName')
+            ->orderBy('firstname')
             ->cursorPaginate();
 
         $this->assertPaginateAttributeLoaded($models, 'FullName');
+        $this->assertStringContainsString('append=FullName', $models->nextPageUrl());
     }
 
     /** @test */
