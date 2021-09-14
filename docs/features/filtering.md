@@ -154,7 +154,7 @@ QueryBuilder::for(User::class)
 
 ## Trashed filters
 
-When using Laravel's [soft delete feature](https://laravel.com/docs/master/eloquent#querying-soft-deleted-models) you can use the `AllowedFilters::trashed()` filter to query these models. 
+When using Laravel's [soft delete feature](https://laravel.com/docs/master/eloquent#querying-soft-deleted-models) you can use the `AllowedFilter::trashed()` filter to query these models. 
 
 The `FiltersTrashed` filter responds to particular values:
 
