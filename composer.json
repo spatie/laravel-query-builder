@@ -30,7 +30,8 @@
         "laravel/legacy-factories": "^1.0.4",
         "orchestra/testbench": "^4.9|^5.8|^6.3",
         "phpunit/phpunit": "^9.0",
-        "mockery/mockery": "^1.4"
+        "mockery/mockery": "^1.4",
+        "friendsofphp/php-cs-fixer": "^3.0"
     },
     "autoload": {
         "psr-4": {
