@@ -348,7 +348,7 @@ class IncludeTest extends TestCase
     /** @test */
     public function it_can_include_custom_include_class()
     {
-        $includeClass = new class() implements IncludeInterface {
+        $includeClass = new class () implements IncludeInterface {
             public function __invoke(Builder $query, string $include): Builder
             {
                 // TODO:
@@ -369,7 +369,7 @@ class IncludeTest extends TestCase
     /** @test */
     public function it_can_include_custom_include_class_by_alias()
     {
-        $includeClass = new class() implements IncludeInterface {
+        $includeClass = new class () implements IncludeInterface {
             public function __invoke(Builder $query, string $include): Builder
             {
                 // TODO:

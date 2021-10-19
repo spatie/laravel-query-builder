@@ -291,7 +291,7 @@ class FilterTest extends TestCase
     {
         $testModel = $this->models->first();
 
-        $filterClass = new class() implements FilterInterface {
+        $filterClass = new class () implements FilterInterface {
             public function __invoke(Builder $query, $value, string $property): Builder
             {
                 return $query->where('name', $value);
@@ -385,7 +385,7 @@ class FilterTest extends TestCase
     /** @test */
     public function it_can_create_a_custom_filter_with_an_instantiated_filter()
     {
-        $customFilter = new class('test1') implements CustomFilter {
+        $customFilter = new class ('test1') implements CustomFilter {
             /** @var string */
             protected $filter;
 

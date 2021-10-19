@@ -204,7 +204,7 @@ class QueryBuilderTest extends TestCase
     /** @test */
     public function it_executes_the_same_query_regardless_of_the_order_of_applied_filters_or_sorts()
     {
-        $customSort = new class() implements Sort {
+        $customSort = new class () implements Sort {
             public function __invoke(Builder $query, $descending, string $property): Builder
             {
                 return $query->join(
@@ -237,7 +237,7 @@ class QueryBuilderTest extends TestCase
     /** @test */
     public function it_can_filter_when_sorting_by_joining_a_related_model_which_contains_the_same_field_name()
     {
-        $customSort = new class() implements Sort {
+        $customSort = new class () implements Sort {
             public function __invoke(Builder $query, $descending, string $property): Builder
             {
                 return $query->join(
