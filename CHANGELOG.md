@@ -7,6 +7,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - nested filters will no longer be automatically camel-cased to match a relationship name
 - includes will no longer be automatically camel-cased to match a relationship name
 - fields will no longer be automatically snake-cased to match table or column names
+- switch to deferred service provider
 
 Take a look at the [upgrade guide](./UPGRADING.md) for a more detailed explanation.
 
