@@ -166,7 +166,7 @@ class FilterTest extends TestCase
             ->allowedFilters(AllowedFilter::partial('id'))
             ->get();
 
-        $this->assertQueryLogContains("select * from `test_models` where (LOWER(`test_models`.`id`) LIKE ?)");
+        $this->assertQueryLogContains("select * from `test_models` where LOWER(`test_models`.`id`) LIKE ?");
     }
 
     /** @test */

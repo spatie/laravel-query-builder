@@ -63,11 +63,16 @@ class AllowedFilter
         return new static($name, new FiltersExact($addRelationConstraint), $internalName);
     }
 
-    public static function partial(string $name, $internalName = null, bool $addRelationConstraint = true, string $arrayValueDelimiter = null): self
+    public static function partial(string $name, $internalName = null, bool $addRelationConstraint = true, string $arrayValueDelimiter = null, string $andSeparator = null, string $notPrefix = null): self
     {
         static::setFilterArrayValueDelimiter($arrayValueDelimiter);
 
-        return new static($name, new FiltersPartial($addRelationConstraint), $internalName);
+        return new static($name, new FiltersPartial($addRelationConstraint, $andSeparator, $notPrefix), $internalName);
+    }
+
+    public static function complexPartial(string $name, $internalName = null, bool $addRelationConstraint = true, string $arrayValueDelimiter = null, string $andSeparator = '+', string $notPrefix = '-'): self
+    {
+        return self::partial($name, $internalName, $addRelationConstraint, $arrayValueDelimiter, $andSeparator, $notPrefix);
     }
 
     public static function scope(string $name, $internalName = null, string $arrayValueDelimiter = null): self
