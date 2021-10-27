@@ -2,10 +2,9 @@
 
 namespace Spatie\QueryBuilder;
 
-use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
-class QueryBuilderServiceProvider extends ServiceProvider implements DeferrableProvider
+class QueryBuilderServiceProvider extends ServiceProvider
 {
     public function boot()
     {
