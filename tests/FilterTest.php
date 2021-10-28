@@ -544,6 +544,22 @@ class FilterTest extends TestCase
         $this->assertEquals(1, $models->count());
     }
 
+    /** @test */
+    public function it_should_apply_a_nullable_filter_when_filter_exists_and_null_is_set()
+    {
+        TestModel::create(['name' => null]);
+        TestModel::create(['name' => null]);
+
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'name' => null,
+            ])
+            ->allowedFilters(AllowedFilter::exact('name')->nullable())
+            ->get();
+
+        $this->assertEquals(2, $models->count());
+    }
+
     protected function createQueryFromFilterRequest(array $filters): QueryBuilder
     {
         $request = new Request([

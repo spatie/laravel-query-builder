@@ -297,3 +297,18 @@ QueryBuilder::for(User::class)
     ])
     ->get();
 ```
+
+## Nullable Filter Value
+
+You can specify a nullable way for a filter if a value for the filter was null on the request. The default way ignore null value for the filter.
+
+```php
+// GET /user?filter[name]=&filter[permission]=
+
+QueryBuilder::for(User::class)
+    ->allowedFilters([
+        AllowedFilter::exact('name')->nullable(),
+        AllowedFilter::scope('permission')->nullable(),
+    ])
+    ->get();
+```
