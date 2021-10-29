@@ -575,7 +575,7 @@ class FilterTest extends TestCase
     }
 
     /** @test */
-    public function it_should_apply_a_nullable_filter_when_filter_exists_and_null_is_set()
+    public function it_should_apply_a_nullable_filter_when_filter_exists_and_is_null()
     {
         TestModel::create(['name' => null]);
         TestModel::create(['name' => 'UniqueJohn Deer']);
@@ -583,6 +583,22 @@ class FilterTest extends TestCase
         $models = $this
             ->createQueryFromFilterRequest([
                 'name' => null,
+            ])
+            ->allowedFilters(AllowedFilter::exact('name')->nullable())
+            ->get();
+
+        $this->assertEquals(1, $models->count());
+    }
+
+    /** @test */
+    public function it_should_apply_a_nullable_filter_when_filter_exists_and_is_set()
+    {
+        TestModel::create(['name' => null]);
+        TestModel::create(['name' => 'UniqueJohn Deer']);
+
+        $models = $this
+            ->createQueryFromFilterRequest([
+                'name' => 'UniqueJohn Deer',
             ])
             ->allowedFilters(AllowedFilter::exact('name')->nullable())
             ->get();
