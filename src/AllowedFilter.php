@@ -28,6 +28,9 @@ class AllowedFilter
     protected $default;
 
     /** @var bool */
+    protected $hasDefault = false;
+
+    /** @var bool */
     protected $nullable = false;
 
     public function __construct(string $name, Filter $filterClass, ?string $internalName = null)
@@ -130,7 +133,12 @@ class AllowedFilter
 
     public function default($value): self
     {
+        $this->hasDefault = true;
         $this->default = $value;
+
+        if (is_null($value)) {
+            $this->nullable(true);
+        }
 
         return $this;
     }
@@ -142,7 +150,7 @@ class AllowedFilter
 
     public function hasDefault(): bool
     {
-        return isset($this->default);
+        return $this->hasDefault;
     }
 
     public function nullable(bool $nullable = true): self
