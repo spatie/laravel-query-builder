@@ -287,7 +287,7 @@ QueryBuilder::for(User::class)
 
 ## Default Filter Values
 
- You can specify a default value for a filter if a value for the filter was not present on the request. This is especially useful for boolean filters.
+You can specify a default value for a filter if a value for the filter was not present on the request. This is especially useful for boolean filters.
  
 ```php
 QueryBuilder::for(User::class)
@@ -299,9 +299,9 @@ QueryBuilder::for(User::class)
     ->get();
 ```
 
-## Nullable Filter Value
+## Nullable Filter
 
-You can specify a nullable way for a filter if a value for the filter was null on the request. The default way ignore null value for the filter.
+You can mark a filter nullable if you want to retrieve entries whose filtered value is null. This way you can apply the filter with an empty value, as shown in the example.
 
 ```php
 // GET /user?filter[name]=&filter[permission]=
