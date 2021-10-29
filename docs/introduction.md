@@ -23,7 +23,7 @@ $users = QueryBuilder::for(User::class)
 // all `User`s that contain the string "John" in their name
 ```
 
-[Read more about filtering features like: partial filters, exact filters, scope filters, custom filters, ignored values, default filter values, nullable filter value...](https://docs.spatie.be/laravel-query-builder/v2/features/filtering/)
+[Read more about filtering features like: partial filters, exact filters, scope filters, custom filters, ignored values, default filter values, nullable filter value, ...](https://docs.spatie.be/laravel-query-builder/v2/features/filtering/)
 
 ### Including relations based on a request: `/users?include=posts`:
 
