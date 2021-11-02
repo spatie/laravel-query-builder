@@ -50,11 +50,11 @@ trait AddsFieldsToQuery
 
     public function getRequestedFieldsForRelatedTable(string $relation): array
     {
-        $table = Str::plural(Str::snake($relation)); // TODO: make this configurable
+        $table = (new ($this->getModel()))->$relation()->getRelated()->getTable();
 
         $fields = $this->request->fields()->mapWithKeys(function ($fields, $table) {
             return [$table => $fields];
-        })->get($table);
+        })->get($relation);
 
         if (! $fields) {
             return [];
