@@ -13,7 +13,7 @@ trait AddsFieldsToQuery
     /** @var \Illuminate\Support\Collection */
     protected $allowedFields;
 
-    public function allowedFields($fields): self
+    public function allowedFields($fields): static
     {
         if ($this->allowedIncludes instanceof Collection) {
             throw new AllowedFieldsMustBeCalledBeforeAllowedIncludes();

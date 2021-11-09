@@ -13,7 +13,7 @@ trait AddsIncludesToQuery
     /** @var \Illuminate\Support\Collection */
     protected $allowedIncludes;
 
-    public function allowedIncludes($includes): self
+    public function allowedIncludes($includes): static
     {
         $includes = is_array($includes) ? $includes : func_get_args();
 

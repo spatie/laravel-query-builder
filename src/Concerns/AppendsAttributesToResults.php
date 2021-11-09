@@ -11,7 +11,7 @@ trait AppendsAttributesToResults
     /** @var \Illuminate\Support\Collection */
     protected $allowedAppends;
 
-    public function allowedAppends($appends): self
+    public function allowedAppends($appends): static
     {
         $appends = is_array($appends) ? $appends : func_get_args();
 

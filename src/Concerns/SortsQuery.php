@@ -10,7 +10,7 @@ trait SortsQuery
     /** @var \Illuminate\Support\Collection */
     protected $allowedSorts;
 
-    public function allowedSorts($sorts): self
+    public function allowedSorts($sorts): static
     {
         if ($this->request->sorts()->isEmpty()) {
             // We haven't got any requested sorts. No need to parse allowed sorts.
@@ -40,7 +40,7 @@ trait SortsQuery
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
      */
-    public function defaultSort($sorts): self
+    public function defaultSort($sorts): static
     {
         return $this->defaultSorts(func_get_args());
     }
@@ -50,7 +50,7 @@ trait SortsQuery
      *
      * @return \Spatie\QueryBuilder\QueryBuilder
      */
-    public function defaultSorts($sorts): self
+    public function defaultSorts($sorts): static
     {
         if ($this->request->sorts()->isNotEmpty()) {
             // We've got requested sorts. No need to parse defaults.
