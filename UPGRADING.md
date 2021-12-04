@@ -10,8 +10,8 @@ When following Laravel's convention of camelcase relationship names, a request w
 
 ```
 GET /api/users
-        ?includes=latestPosts,friendRequests
-        &filters[homeAddress.city]=Antwerp
+        ?include=latestPosts,friendRequests
+        &filter[homeAddress.city]=Antwerp
         &fields[related_models.test_models]=id,name
 ```
 

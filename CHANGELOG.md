@@ -2,7 +2,11 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
-## 4.0.0 - unreleased
+# 4.0.1 - 2021-10-27
+
+- revert deferred service provider (#677)
+
+## 4.0.0 - 2021-10-20
 
 - nested filters will no longer be automatically camel-cased to match a relationship name
 - includes will no longer be automatically camel-cased to match a relationship name
