@@ -51,7 +51,7 @@ class QueryBuilderRequest extends Request
 
         $appendParts = $this->getRequestData($appendParameterName);
 
-        if (! is_array($appendParts)) {
+        if (! is_array($appendParts) && ! is_null($appendParts)) {
             $appendParts = explode(static::getAppendsArrayValueDelimiter(), $appendParts);
         }
 
