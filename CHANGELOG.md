@@ -6,6 +6,20 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 - revert deferred service provider (#677)
 
+## 4.0.2 - 2021-12-26
+
+## What's Changed
+
+- DOC: New sample with multiple default sorts by @williamxsp in https://github.com/spatie/laravel-query-builder/pull/694
+- PHP 8.1 Support by @Medalink in https://github.com/spatie/laravel-query-builder/pull/702
+
+## New Contributors
+
+- @williamxsp made their first contribution in https://github.com/spatie/laravel-query-builder/pull/694
+- @Medalink made their first contribution in https://github.com/spatie/laravel-query-builder/pull/702
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/4.0.1...4.0.2
+
 ## 4.0.0 - 2021-10-20
 
 - nested filters will no longer be automatically camel-cased to match a relationship name
@@ -91,7 +105,7 @@ Take a look at the [upgrade guide](./UPGRADING.md) for a more detailed explanati
 
 ## 3.0.0 - 2020-08-18
 
-New major version. Please read the [UPGRADING](UPGRADING.md) guide _before_ upgrading.
+New major version. Please read the [UPGRADING](UPGRADING.md) guide *before* upgrading.
 
 - `Spatie\QueryBuilder\QueryBuilder` class no longer extends Laravel's `Illuminate\Database\Eloquent\Builder`
 
