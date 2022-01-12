@@ -25,7 +25,7 @@ class IncludeTest extends TestCase
     {
         parent::setUp();
 
-        $this->models = factory(TestModel::class, 5)->create();
+        $this->models = TestModel::factory()->count(5)->create();
 
         $this->models->each(function (TestModel $model) {
             $model

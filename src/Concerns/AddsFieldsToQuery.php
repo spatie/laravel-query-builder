@@ -10,8 +10,7 @@ use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
 
 trait AddsFieldsToQuery
 {
-    /** @var \Illuminate\Support\Collection */
-    protected $allowedFields;
+    protected ?Collection $allowedFields = null;
 
     public function allowedFields($fields): self
     {

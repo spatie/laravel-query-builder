@@ -2,8 +2,8 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
-use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Exceptions\AllowedFieldsMustBeCalledBeforeAllowedIncludes;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
@@ -13,17 +13,16 @@ use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 class FieldsTest extends TestCase
 {
-    /** \Spatie\QueryBuilder\Tests\Models\TestModel */
-    protected $model;
+    protected TestModel $model;
 
-    /** @var string */
-    protected $modelTableName;
+    protected string $modelTableName;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->model = factory(TestModel::class)->create();
+        $this->model = TestModel::factory()->create();
+
         $this->modelTableName = $this->model->getTable();
     }
 

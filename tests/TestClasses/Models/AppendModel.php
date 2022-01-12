@@ -2,10 +2,13 @@
 
 namespace Spatie\QueryBuilder\Tests\TestClasses\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class AppendModel extends Model
 {
+    use HasFactory;
+
     protected $guarded = [];
 
     public $timestamps = false;

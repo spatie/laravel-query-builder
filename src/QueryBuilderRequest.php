@@ -137,7 +137,7 @@ class QueryBuilderRequest extends Request
             return $this->input($key, $default);
         }
 
-        return $this->query($key, $default);
+        return $this->get($key, $default);
     }
 
     public static function setIncludesArrayValueDelimiter(string $includesArrayValueDelimiter): void

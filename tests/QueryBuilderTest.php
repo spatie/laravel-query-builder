@@ -124,7 +124,7 @@ class QueryBuilderTest extends TestCase
     {
         $queryBuilder = QueryBuilder::for(SoftDeleteModel::class);
 
-        $this->models = factory(SoftDeleteModel::class, 5)->create();
+        $this->models = SoftDeleteModel::factory()->count(5)->create();
 
         $this->assertCount(5, $queryBuilder->get());
 

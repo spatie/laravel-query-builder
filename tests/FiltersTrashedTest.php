@@ -3,21 +3,25 @@
 namespace Spatie\QueryBuilder\Tests;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\SoftDeleteModel;
 
 class FiltersTrashedTest extends TestCase
 {
-    /** @var \Illuminate\Support\Collection */
-    protected $models;
+    protected Collection $models;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->models = factory(SoftDeleteModel::class, 2)->create()
-            ->merge(factory(SoftDeleteModel::class, 1)->create(['deleted_at' => now()]));
+        $this->models = collect([
+            SoftDeleteModel::factory()->create(),
+            SoftDeleteModel::factory()->create(),
+
+            SoftDeleteModel::factory()->create(['deleted_at' => now()]),
+        ]);
     }
 
     /** @test */

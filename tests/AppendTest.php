@@ -15,7 +15,7 @@ class AppendTest extends TestCase
     {
         parent::setUp();
 
-        factory(AppendModel::class, 5)->create();
+        AppendModel::factory()->count(5)->create();
     }
 
     /** @test */

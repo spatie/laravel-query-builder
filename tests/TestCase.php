@@ -2,12 +2,14 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Spatie\LaravelRay\RayServiceProvider;
 use Spatie\QueryBuilder\QueryBuilderServiceProvider;
 
 class TestCase extends Orchestra
@@ -20,7 +22,10 @@ class TestCase extends Orchestra
 
         $this->setUpDatabase($this->app);
 
-        $this->withFactories(__DIR__.'/factories');
+        Factory::guessFactoryNamesUsing(
+            fn (string $modelName) => 'Spatie\\QueryBuilder\\Database\\Factories\\'.class_basename($modelName).'Factory'
+        );
+
     }
 
     protected function setUpDatabase(Application $app)
@@ -82,7 +87,10 @@ class TestCase extends Orchestra
 
     protected function getPackageProviders($app)
     {
-        return [QueryBuilderServiceProvider::class];
+        return [
+            RayServiceProvider::class,
+            QueryBuilderServiceProvider::class
+        ];
     }
 
     protected function assertQueryLogContains(string $partialSql)

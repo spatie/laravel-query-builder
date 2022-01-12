@@ -17,7 +17,7 @@ class FiltersCallbackTest extends TestCase
     {
         parent::setUp();
 
-        $this->models = factory(TestModel::class, 3)->create();
+        $this->models = TestModel::factory()->count(3)->create();
     }
 
     /** @test */
