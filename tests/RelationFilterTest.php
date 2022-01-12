@@ -16,7 +16,7 @@ class RelationFilterTest extends TestCase
     {
         parent::setUp();
 
-        $this->models =TestModel::factory()->count(5)->create();
+        $this->models = TestModel::factory()->count(5)->create();
 
         $this->models->each(function (TestModel $model, $index) {
             $model

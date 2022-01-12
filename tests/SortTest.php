@@ -309,7 +309,7 @@ class SortTest extends TestCase
     /** @test */
     public function it_can_sort_by_multiple_columns()
     {
-        $this->models =TestModel::factory()->count(3)->create(['name' => 'foo']);
+        $this->models = TestModel::factory()->count(3)->create(['name' => 'foo']);
 
         $sortedModels = $this
             ->createQueryFromSortRequest('name,-id')
