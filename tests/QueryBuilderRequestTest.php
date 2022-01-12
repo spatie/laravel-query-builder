@@ -1,469 +1,404 @@
 <?php
 
-namespace Spatie\QueryBuilder\Tests;
-
 use Spatie\QueryBuilder\QueryBuilderRequest;
 
-class QueryBuilderRequestTest extends TestCase
-{
-    /** @test */
-    public function it_can_filter_nested_arrays()
-    {
-        $expected = [
+uses(TestCase::class);
+
+it('can filter nested arrays', function () {
+    $expected = [
+        'info' => [
+            'foo' => [
+                'bar' => 1,
+            ],
+        ],
+    ];
+
+    $request = new QueryBuilderRequest([
+        'filter' => $expected,
+    ]);
+
+    $this->assertEquals($expected, $request->filters()->toArray());
+});
+
+it('can get empty filters recursively', function () {
+    $request = new QueryBuilderRequest([
+        'filter' => [
             'info' => [
                 'foo' => [
-                    'bar' => 1,
+                    'bar' => null,
                 ],
             ],
-        ];
+        ],
+    ]);
 
-        $request = new QueryBuilderRequest([
-            'filter' => $expected,
-        ]);
-
-        $this->assertEquals($expected, $request->filters()->toArray());
-    }
-
-    /** @test */
-    public function it_can_get_empty_filters_recursively()
-    {
-        $request = new QueryBuilderRequest([
-            'filter' => [
-                'info' => [
-                    'foo' => [
-                        'bar' => null,
-                    ],
-                ],
+    $expected = [
+        'info' => [
+            'foo' => [
+                'bar' => '',
             ],
-        ]);
+        ],
+    ];
 
-        $expected = [
+    $this->assertEquals($expected, $request->filters()->toArray());
+});
+
+it('will map true and false as booleans recursively', function () {
+    $request = new QueryBuilderRequest([
+        'filter' => [
             'info' => [
                 'foo' => [
-                    'bar' => '',
-                ],
-            ],
-        ];
-
-        $this->assertEquals($expected, $request->filters()->toArray());
-    }
-
-    /** @test */
-    public function it_will_map_true_and_false_as_booleans_recursively()
-    {
-        $request = new QueryBuilderRequest([
-            'filter' => [
-                'info' => [
-                    'foo' => [
-                        'bar' => 'true',
-                        'baz' => 'false',
-                        'bazs' => '0',
-                    ],
-                ],
-            ],
-        ]);
-
-        $expected = [
-            'info' => [
-                'foo' => [
-                    'bar' => true,
-                    'baz' => false,
+                    'bar' => 'true',
+                    'baz' => 'false',
                     'bazs' => '0',
                 ],
             ],
-        ];
+        ],
+    ]);
 
-        $this->assertEquals($expected, $request->filters()->toArray());
-    }
+    $expected = [
+        'info' => [
+            'foo' => [
+                'bar' => true,
+                'baz' => false,
+                'bazs' => '0',
+            ],
+        ],
+    ];
 
-    /** @test */
-    public function it_can_get_the_sort_query_param_from_the_request()
-    {
-        $request = new QueryBuilderRequest([
-            'sort' => 'foobar',
-        ]);
+    $this->assertEquals($expected, $request->filters()->toArray());
+});
 
-        $this->assertEquals(['foobar'], $request->sorts()->toArray());
-    }
+it('can get the sort query param from the request', function () {
+    $request = new QueryBuilderRequest([
+        'sort' => 'foobar',
+    ]);
 
-    /** @test */
-    public function it_can_get_the_sort_query_param_from_the_request_body()
-    {
-        config(['query-builder.request_data_source' => 'body']);
+    $this->assertEquals(['foobar'], $request->sorts()->toArray());
+});
 
-        $request = new QueryBuilderRequest([], [
-            'sort' => 'foobar',
-        ], [], [], [], ['REQUEST_METHOD' => 'POST']);
+it('can get the sort query param from the request body', function () {
+    config(['query-builder.request_data_source' => 'body']);
 
-        $this->assertEquals(['foobar'], $request->sorts()->toArray());
-    }
+    $request = new QueryBuilderRequest([], [
+        'sort' => 'foobar',
+    ], [], [], [], ['REQUEST_METHOD' => 'POST']);
 
-    /** @test */
-    public function it_can_get_different_sort_query_parameter_name()
-    {
-        config(['query-builder.parameters.sort' => 'sorts']);
+    $this->assertEquals(['foobar'], $request->sorts()->toArray());
+});
 
-        $request = new QueryBuilderRequest([
-            'sorts' => 'foobar',
-        ]);
+it('can get different sort query parameter name', function () {
+    config(['query-builder.parameters.sort' => 'sorts']);
 
-        $this->assertEquals(['foobar'], $request->sorts()->toArray());
-    }
+    $request = new QueryBuilderRequest([
+        'sorts' => 'foobar',
+    ]);
 
-    /** @test */
-    public function it_will_return_an_empty_collection_when_no_sort_query_param_is_specified()
-    {
-        $request = new QueryBuilderRequest();
+    $this->assertEquals(['foobar'], $request->sorts()->toArray());
+});
 
-        $this->assertEmpty($request->sorts());
-    }
+it('will return an empty collection when no sort query param is specified', function () {
+    $request = new QueryBuilderRequest();
 
-    /** @test */
-    public function it_can_get_multiple_sort_parameters_from_the_request()
-    {
-        $request = new QueryBuilderRequest([
-            'sort' => 'foo,bar',
-        ]);
+    $this->assertEmpty($request->sorts());
+});
 
-        $expected = collect(['foo', 'bar']);
+it('can get multiple sort parameters from the request', function () {
+    $request = new QueryBuilderRequest([
+        'sort' => 'foo,bar',
+    ]);
 
-        $this->assertEquals($expected, $request->sorts());
-    }
+    $expected = collect(['foo', 'bar']);
 
-    /** @test */
-    public function it_will_return_an_empty_collection_when_no_sort_query_params_are_specified()
-    {
-        $request = new QueryBuilderRequest();
+    $this->assertEquals($expected, $request->sorts());
+});
 
-        $expected = collect();
+it('will return an empty collection when no sort query params are specified', function () {
+    $request = new QueryBuilderRequest();
 
-        $this->assertEquals($expected, $request->sorts());
-    }
+    $expected = collect();
 
-    /** @test */
-    public function it_can_get_the_filter_query_params_from_the_request()
-    {
-        $request = new QueryBuilderRequest([
+    $this->assertEquals($expected, $request->sorts());
+});
+
+it('can get the filter query params from the request', function () {
+    $request = new QueryBuilderRequest([
+        'filter' => [
+            'foo' => 'bar',
+            'baz' => 'qux',
+        ],
+    ]);
+
+    $expected = collect([
+        'foo' => 'bar',
+        'baz' => 'qux',
+    ]);
+
+    $this->assertEquals($expected, $request->filters());
+});
+
+it('can get the filter query params from the request body', function () {
+    config(['query-builder.request_data_source' => 'body']);
+
+    $request = new QueryBuilderRequest([], [
             'filter' => [
                 'foo' => 'bar',
                 'baz' => 'qux',
             ],
-        ]);
+        ], [], [], [], ['REQUEST_METHOD' => 'POST']);
 
-        $expected = collect([
+    $expected = collect([
             'foo' => 'bar',
             'baz' => 'qux',
         ]);
 
-        $this->assertEquals($expected, $request->filters());
-    }
+    $this->assertEquals($expected, $request->filters());
+});
 
-    /** @test */
-    public function it_can_get_the_filter_query_params_from_the_request_body()
-    {
-        config(['query-builder.request_data_source' => 'body']);
+it('can get different filter query parameter name', function () {
+    config(['query-builder.parameters.filter' => 'filters']);
 
-        $request = new QueryBuilderRequest([], [
-                'filter' => [
-                    'foo' => 'bar',
-                    'baz' => 'qux',
-                ],
-            ], [], [], [], ['REQUEST_METHOD' => 'POST']);
-
-        $expected = collect([
-                'foo' => 'bar',
-                'baz' => 'qux',
-            ]);
-
-        $this->assertEquals($expected, $request->filters());
-    }
-
-    /** @test */
-    public function it_can_get_different_filter_query_parameter_name()
-    {
-        config(['query-builder.parameters.filter' => 'filters']);
-
-        $request = new QueryBuilderRequest([
-            'filters' => [
-                'foo' => 'bar',
-                'baz' => 'qux,lex',
-            ],
-        ]);
-
-        $expected = collect([
+    $request = new QueryBuilderRequest([
+        'filters' => [
             'foo' => 'bar',
-            'baz' => ['qux', 'lex'],
-        ]);
+            'baz' => 'qux,lex',
+        ],
+    ]);
 
-        $this->assertEquals($expected, $request->filters());
-    }
+    $expected = collect([
+        'foo' => 'bar',
+        'baz' => ['qux', 'lex'],
+    ]);
 
-    /** @test */
-    public function it_can_get_empty_filters()
-    {
-        config(['query-builder.parameters.filter' => 'filters']);
+    $this->assertEquals($expected, $request->filters());
+});
 
-        $request = new QueryBuilderRequest([
-            'filters' => [
-                'foo' => 'bar',
-                'baz' => null,
-            ],
-        ]);
+it('can get empty filters', function () {
+    config(['query-builder.parameters.filter' => 'filters']);
 
-        $expected = collect([
+    $request = new QueryBuilderRequest([
+        'filters' => [
             'foo' => 'bar',
-            'baz' => '',
-        ]);
+            'baz' => null,
+        ],
+    ]);
 
-        $this->assertEquals($expected, $request->filters());
-    }
+    $expected = collect([
+        'foo' => 'bar',
+        'baz' => '',
+    ]);
 
-    /** @test */
-    public function it_will_return_an_empty_collection_when_no_filter_query_params_are_specified()
-    {
-        $request = new QueryBuilderRequest();
+    $this->assertEquals($expected, $request->filters());
+});
 
-        $expected = collect();
+it('will return an empty collection when no filter query params are specified', function () {
+    $request = new QueryBuilderRequest();
 
-        $this->assertEquals($expected, $request->filters());
-    }
+    $expected = collect();
 
-    /** @test */
-    public function it_will_map_true_and_false_as_booleans_when_given_in_a_filter_query_string()
-    {
-        $request = new QueryBuilderRequest([
-            'filter' => [
-                'foo' => 'true',
-                'bar' => 'false',
-                'baz' => '0',
-            ],
-        ]);
+    $this->assertEquals($expected, $request->filters());
+});
 
-        $expected = collect([
-            'foo' => true,
-            'bar' => false,
+it('will map true and false as booleans when given in a filter query string', function () {
+    $request = new QueryBuilderRequest([
+        'filter' => [
+            'foo' => 'true',
+            'bar' => 'false',
             'baz' => '0',
-        ]);
+        ],
+    ]);
 
-        $this->assertEquals($expected, $request->filters());
-    }
+    $expected = collect([
+        'foo' => true,
+        'bar' => false,
+        'baz' => '0',
+    ]);
 
-    /** @test */
-    public function it_will_map_comma_separated_values_as_arrays_when_given_in_a_filter_query_string()
-    {
-        $request = new QueryBuilderRequest([
-            'filter' => [
-                'foo' => 'bar,baz',
+    $this->assertEquals($expected, $request->filters());
+});
+
+it('will map comma separated values as arrays when given in a filter query string', function () {
+    $request = new QueryBuilderRequest([
+        'filter' => [
+            'foo' => 'bar,baz',
+        ],
+    ]);
+
+    $expected = collect(['foo' => ['bar', 'baz']]);
+
+    $this->assertEquals($expected, $request->filters());
+});
+
+it('will map array in filter recursively when given in a filter query string', function () {
+    $request = new QueryBuilderRequest([
+        'filter' => [
+            'foo' => 'bar,baz',
+            'bar' => [
+                'foobar' => 'baz,bar',
             ],
-        ]);
+        ],
+    ]);
 
-        $expected = collect(['foo' => ['bar', 'baz']]);
+    $expected = collect(['foo' => ['bar', 'baz'], 'bar' => ['foobar' => ['baz', 'bar']]]);
 
-        $this->assertEquals($expected, $request->filters());
-    }
+    $this->assertEquals($expected, $request->filters());
+});
 
-    /** @test */
-    public function it_will_map_array_in_filter_recursively_when_given_in_a_filter_query_string()
-    {
-        $request = new QueryBuilderRequest([
-            'filter' => [
-                'foo' => 'bar,baz',
-                'bar' => [
-                    'foobar' => 'baz,bar',
-                ],
-            ],
-        ]);
+it('will map comma separated values as arrays when given in a filter query string and get those by key', function () {
+    $request = new QueryBuilderRequest([
+        'filter' => [
+            'foo' => 'bar,baz',
+        ],
+    ]);
 
-        $expected = collect(['foo' => ['bar', 'baz'], 'bar' => ['foobar' => ['baz', 'bar']]]);
+    $expected = ['foo' => ['bar', 'baz']];
 
-        $this->assertEquals($expected, $request->filters());
-    }
+    $this->assertEquals($expected, $request->filters()->toArray());
+});
 
-    /** @test */
-    public function it_will_map_comma_separated_values_as_arrays_when_given_in_a_filter_query_string_and_get_those_by_key()
-    {
-        $request = new QueryBuilderRequest([
-            'filter' => [
-                'foo' => 'bar,baz',
-            ],
-        ]);
+it('can get the include query params from the request', function () {
+    $request = new QueryBuilderRequest([
+        'include' => 'foo,bar',
+    ]);
 
-        $expected = ['foo' => ['bar', 'baz']];
+    $expected = collect(['foo', 'bar']);
 
-        $this->assertEquals($expected, $request->filters()->toArray());
-    }
+    $this->assertEquals($expected, $request->includes());
+});
 
-    /** @test */
-    public function it_can_get_the_include_query_params_from_the_request()
-    {
-        $request = new QueryBuilderRequest([
-            'include' => 'foo,bar',
-        ]);
+it('can get the include from the request body', function () {
+    config(['query-builder.request_data_source' => 'body']);
 
-        $expected = collect(['foo', 'bar']);
+    $request = new QueryBuilderRequest([], [
+        'include' => 'foo,bar',
+    ], [], [], [], ['REQUEST_METHOD' => 'POST']);
 
-        $this->assertEquals($expected, $request->includes());
-    }
+    $expected = collect(['foo', 'bar']);
 
-    /** @test */
-    public function it_can_get_the_include_from_the_request_body()
-    {
-        config(['query-builder.request_data_source' => 'body']);
+    $this->assertEquals($expected, $request->includes());
+});
 
-        $request = new QueryBuilderRequest([], [
-            'include' => 'foo,bar',
-        ], [], [], [], ['REQUEST_METHOD' => 'POST']);
+it('can get different include query parameter name', function () {
+    config(['query-builder.parameters.include' => 'includes']);
 
-        $expected = collect(['foo', 'bar']);
+    $request = new QueryBuilderRequest([
+        'includes' => 'foo,bar',
+    ]);
 
-        $this->assertEquals($expected, $request->includes());
-    }
+    $expected = collect(['foo', 'bar']);
 
-    /** @test */
-    public function it_can_get_different_include_query_parameter_name()
-    {
-        config(['query-builder.parameters.include' => 'includes']);
+    $this->assertEquals($expected, $request->includes());
+});
 
-        $request = new QueryBuilderRequest([
-            'includes' => 'foo,bar',
-        ]);
+it('will return an empty collection when no include query params are specified', function () {
+    $request = new QueryBuilderRequest();
 
-        $expected = collect(['foo', 'bar']);
+    $expected = collect();
 
-        $this->assertEquals($expected, $request->includes());
-    }
+    $this->assertEquals($expected, $request->includes());
+});
 
-    /** @test */
-    public function it_will_return_an_empty_collection_when_no_include_query_params_are_specified()
-    {
-        $request = new QueryBuilderRequest();
+it('can get requested fields', function () {
+    $request = new QueryBuilderRequest([
+        'fields' => [
+            'table' => 'name,email',
+        ],
+    ]);
 
-        $expected = collect();
+    $expected = collect(['table' => ['name', 'email']]);
 
-        $this->assertEquals($expected, $request->includes());
-    }
+    $this->assertEquals($expected, $request->fields());
+});
 
-    /** @test */
-    public function it_can_get_requested_fields()
-    {
-        $request = new QueryBuilderRequest([
-            'fields' => [
-                'table' => 'name,email',
-            ],
-        ]);
+it('can get requested fields from the request body', function () {
+    config(['query-builder.request_data_source' => 'body']);
 
-        $expected = collect(['table' => ['name', 'email']]);
+    $request = new QueryBuilderRequest([], [
+        'fields' => [
+            'table' => 'name,email',
+        ],
+    ], [], [], [], ['REQUEST_METHOD' => 'POST']);
 
-        $this->assertEquals($expected, $request->fields());
-    }
+    $expected = collect(['table' => ['name', 'email']]);
 
-    /** @test */
-    public function it_can_get_requested_fields_from_the_request_body()
-    {
-        config(['query-builder.request_data_source' => 'body']);
+    $this->assertEquals($expected, $request->fields());
+});
 
-        $request = new QueryBuilderRequest([], [
-            'fields' => [
-                'table' => 'name,email',
-            ],
-        ], [], [], [], ['REQUEST_METHOD' => 'POST']);
+it('can get different fields parameter name', function () {
+    config(['query-builder.parameters.fields' => 'field']);
 
-        $expected = collect(['table' => ['name', 'email']]);
+    $request = new QueryBuilderRequest([
+        'field' => [
+            'column' => 'name,email',
+        ],
+    ]);
 
-        $this->assertEquals($expected, $request->fields());
-    }
+    $expected = collect(['column' => ['name', 'email']]);
 
-    /** @test */
-    public function it_can_get_different_fields_parameter_name()
-    {
-        config(['query-builder.parameters.fields' => 'field']);
+    $this->assertEquals($expected, $request->fields());
+});
 
-        $request = new QueryBuilderRequest([
-            'field' => [
-                'column' => 'name,email',
-            ],
-        ]);
+it('can get the append query params from the request', function () {
+    $request = new QueryBuilderRequest([
+        'append' => 'foo,bar',
+    ]);
 
-        $expected = collect(['column' => ['name', 'email']]);
+    $expected = collect(['foo', 'bar']);
 
-        $this->assertEquals($expected, $request->fields());
-    }
+    $this->assertEquals($expected, $request->appends());
+});
 
-    /** @test */
-    public function it_can_get_the_append_query_params_from_the_request()
-    {
-        $request = new QueryBuilderRequest([
-            'append' => 'foo,bar',
-        ]);
+it('can get different append query parameter name', function () {
+    config(['query-builder.parameters.append' => 'appendit']);
 
-        $expected = collect(['foo', 'bar']);
+    $request = new QueryBuilderRequest([
+        'appendit' => 'foo,bar',
+    ]);
 
-        $this->assertEquals($expected, $request->appends());
-    }
+    $expected = collect(['foo', 'bar']);
 
-    /** @test */
-    public function it_can_get_different_append_query_parameter_name()
-    {
-        config(['query-builder.parameters.append' => 'appendit']);
+    $this->assertEquals($expected, $request->appends());
+});
 
-        $request = new QueryBuilderRequest([
-            'appendit' => 'foo,bar',
-        ]);
+it('will return an empty collection when no append query params are specified', function () {
+    $request = new QueryBuilderRequest();
 
-        $expected = collect(['foo', 'bar']);
+    $expected = collect();
 
-        $this->assertEquals($expected, $request->appends());
-    }
+    $this->assertEquals($expected, $request->appends());
+});
 
-    /** @test */
-    public function it_will_return_an_empty_collection_when_no_append_query_params_are_specified()
-    {
-        $request = new QueryBuilderRequest();
+it('can get the append query params from the request body', function () {
+    config(['query-builder.request_data_source' => 'body']);
 
-        $expected = collect();
+    $request = new QueryBuilderRequest([], [
+        'append' => 'foo,bar',
+    ], [], [], [], ['REQUEST_METHOD' => 'POST']);
 
-        $this->assertEquals($expected, $request->appends());
-    }
+    $expected = collect(['foo', 'bar']);
 
-    /** @test */
-    public function it_can_get_the_append_query_params_from_the_request_body()
-    {
-        config(['query-builder.request_data_source' => 'body']);
+    $this->assertEquals($expected, $request->appends());
+});
 
-        $request = new QueryBuilderRequest([], [
-            'append' => 'foo,bar',
-        ], [], [], [], ['REQUEST_METHOD' => 'POST']);
+it('takes custom delimiters for splitting request parameters', function () {
+    $request = new QueryBuilderRequest([
+        'filter' => [
+            'foo' => 'values, contain, commas|and are split on vertical| lines',
+        ],
+    ]);
 
-        $expected = collect(['foo', 'bar']);
+    QueryBuilderRequest::setArrayValueDelimiter('|');
 
-        $this->assertEquals($expected, $request->appends());
-    }
+    $expected = ['foo' => ['values, contain, commas', 'and are split on vertical', ' lines']];
 
-    /** @test */
-    public function it_takes_custom_delimiters_for_splitting_request_parameters()
-    {
-        $request = new QueryBuilderRequest([
-            'filter' => [
-                'foo' => 'values, contain, commas|and are split on vertical| lines',
-            ],
-        ]);
+    $this->assertEquals($expected, $request->filters()->toArray());
+});
 
-        QueryBuilderRequest::setArrayValueDelimiter('|');
+it('adds any appends as they come from the request', function () {
+    $request = new QueryBuilderRequest([
+        'append' => 'aCamelCaseAppend,anotherappend',
+    ]);
 
-        $expected = ['foo' => ['values, contain, commas', 'and are split on vertical', ' lines']];
+    $expected = collect(['aCamelCaseAppend', 'anotherappend']);
 
-        $this->assertEquals($expected, $request->filters()->toArray());
-    }
-
-    /** @test */
-    public function it_adds_any_appends_as_they_come_from_the_request()
-    {
-        $request = new QueryBuilderRequest([
-            'append' => 'aCamelCaseAppend,anotherappend',
-        ]);
-
-        $expected = collect(['aCamelCaseAppend', 'anotherappend']);
-
-        $this->assertEquals($expected, $request->appends());
-    }
-}
+    $this->assertEquals($expected, $request->appends());
+});

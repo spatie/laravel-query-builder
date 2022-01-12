@@ -1,64 +1,50 @@
 <?php
 
-namespace Spatie\QueryBuilder\Tests;
-
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
-class FiltersCallbackTest extends TestCase
+uses(TestCase::class);
+
+beforeEach(function () {
+    $this->models = TestModel::factory()->count(3)->create();
+});
+
+it('should filter by closure', function () {
+    $models = createQueryFromFilterRequest([
+            'callback' => $this->models->first()->name,
+        ])
+        ->allowedFilters(AllowedFilter::callback('callback', function (Builder $query, $value) {
+            $query->where('name', $value);
+        }))
+        ->get();
+
+    $this->assertCount(1, $models);
+});
+
+it('should filter by array callback', function () {
+    $models = createQueryFromFilterRequest([
+            'callback' => $this->models->first()->name,
+        ])
+        ->allowedFilters(AllowedFilter::callback('callback', [$this, 'filterCallback']))
+        ->get();
+
+    $this->assertCount(1, $models);
+});
+
+// Helpers
+function filterCallback(Builder $query, $value)
 {
-    /** @var \Illuminate\Support\Collection */
-    protected $models;
+    $query->where('name', $value);
+}
 
-    public function setUp(): void
-    {
-        parent::setUp();
+function createQueryFromFilterRequest(array $filters): QueryBuilder
+{
+    $request = new Request([
+        'filter' => $filters,
+    ]);
 
-        $this->models = TestModel::factory()->count(3)->create();
-    }
-
-    /** @test */
-    public function it_should_filter_by_closure()
-    {
-        $models = $this
-            ->createQueryFromFilterRequest([
-                'callback' => $this->models->first()->name,
-            ])
-            ->allowedFilters(AllowedFilter::callback('callback', function (Builder $query, $value) {
-                $query->where('name', $value);
-            }))
-            ->get();
-
-        $this->assertCount(1, $models);
-    }
-
-    /** @test */
-    public function it_should_filter_by_array_callback()
-    {
-        $models = $this
-            ->createQueryFromFilterRequest([
-                'callback' => $this->models->first()->name,
-            ])
-            ->allowedFilters(AllowedFilter::callback('callback', [$this, 'filterCallback']))
-            ->get();
-
-        $this->assertCount(1, $models);
-    }
-
-    public function filterCallback(Builder $query, $value)
-    {
-        $query->where('name', $value);
-    }
-
-    protected function createQueryFromFilterRequest(array $filters): QueryBuilder
-    {
-        $request = new Request([
-            'filter' => $filters,
-        ]);
-
-        return QueryBuilder::for(TestModel::class, $request);
-    }
+    return QueryBuilder::for(TestModel::class, $request);
 }
