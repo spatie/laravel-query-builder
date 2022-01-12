@@ -12,8 +12,6 @@ use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
-uses(TestCase::class);
-
 beforeEach(function () {
     $this->models = TestModel::factory()->count(5)->create();
 });
@@ -144,7 +142,7 @@ it('can filter and match results by exact property', function () {
         ->allowedFilters(AllowedFilter::exact('id'))
         ->get();
 
-    expect($models)->toEqual(Result, $models);
+    expect($models)->toEqual($modelsResult, $models);
 });
 
 it('can filter and reject results by exact property', function () {
@@ -465,12 +463,3 @@ it('can override the array value delimiter for single filters', function () {
     expect($models->count())->toEqual(0);
 });
 
-// Helpers
-function createQueryFromFilterRequest(array $filters): QueryBuilder
-{
-    $request = new Request([
-        'filter' => $filters,
-    ]);
-
-    return QueryBuilder::for(TestModel::class, $request);
-}

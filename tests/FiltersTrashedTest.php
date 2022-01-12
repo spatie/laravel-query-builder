@@ -5,8 +5,6 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\SoftDeleteModel;
 
-uses(TestCase::class);
-
 beforeEach(function () {
     $this->models = collect([
         SoftDeleteModel::factory()->create(),
@@ -29,7 +27,7 @@ it('should filter not trashed by default', function () {
 it('can filter only trashed', function () {
     $models = createQueryFromFilterRequest([
             'trashed' => 'only',
-        ])
+        ], SoftDeleteModel::class)
         ->allowedFilters(AllowedFilter::trashed())
         ->get();
 
@@ -39,7 +37,7 @@ it('can filter only trashed', function () {
 it('can filter only trashed by scope directly', function () {
     $models = createQueryFromFilterRequest([
             'only_trashed' => true,
-        ])
+        ], SoftDeleteModel::class)
         ->allowedFilters(AllowedFilter::scope('only_trashed'))
         ->get();
 
@@ -49,19 +47,10 @@ it('can filter only trashed by scope directly', function () {
 it('can filter with trashed', function () {
     $models = createQueryFromFilterRequest([
             'trashed' => 'with',
-        ])
+        ], SoftDeleteModel::class)
         ->allowedFilters(AllowedFilter::trashed())
         ->get();
 
     expect($models)->toHaveCount(3);
 });
 
-// Helpers
-function createQueryFromFilterRequest(array $filters): QueryBuilder
-{
-    $request = new Request([
-        'filter' => $filters,
-    ]);
-
-    return QueryBuilder::for(SoftDeleteModel::class, $request);
-}

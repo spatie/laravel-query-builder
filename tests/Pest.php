@@ -1,42 +1,29 @@
 <?php
 
-uses(\Spatie\QueryBuilder\Tests\TestCase::class)->in('tests', 'Concerns', 'TestClasses');
+use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\Tests\TestCase;
+use Illuminate\Http\Request;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
-/*
-|--------------------------------------------------------------------------
-| Test Case
-|--------------------------------------------------------------------------
-|
-| The closure you provide to your test functions is always bound to a specific PHPUnit test
-| case class. By default, that class is "PHPUnit\Framework\TestCase". Of course, you may
-| need to change it using the "uses()" function to bind a different classes or traits.
-|
-*/
+uses(TestCase::class)->in(__DIR__);
 
-/** @link https://pestphp.com/docs/underlying-test-case */
+function createQueryFromFilterRequest(array $filters, string $model = null): QueryBuilder
+{
+    $model ??= TestModel::class;
 
-/*
-|--------------------------------------------------------------------------
-| Expectations
-|--------------------------------------------------------------------------
-|
-| When you're writing tests, you often need to check that values meet certain conditions. The
-| "expect()" function gives you access to a set of "expectations" methods that you can use
-| to assert different things. Of course, you may extend the Expectation API at any time.
-|
-*/
+    $request = new Request([
+        'filter' => $filters,
+    ]);
 
-/** @link https://pestphp.com/docs/expectations#custom-expectations */
+    return QueryBuilder::for($model, $request);
+}
 
-/*
-|--------------------------------------------------------------------------
-| Functions
-|--------------------------------------------------------------------------
-|
-| While Pest is very powerful out-of-the-box, you may have some testing code specific to your
-| project that you don't want to repeat in every file. Here you can also expose helpers as
-| global functions to help you to reduce the number of lines of code in your test files.
-|
-*/
+function assertQueryExecuted(string $query)
+{
+    $queries = array_map(function ($queryLogItem) {
+        return $queryLogItem['query'];
+    }, DB::getQueryLog());
 
-/** @link https://pestphp.com/docs/helpers */
+    expect($queries)->toContain($query);
+}

@@ -9,8 +9,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
-uses(TestCase::class);
-
 beforeEach(function () {
     $this->model = TestModel::factory()->create();
 

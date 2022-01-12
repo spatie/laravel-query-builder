@@ -6,8 +6,6 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
-uses(TestCase::class);
-
 beforeEach(function () {
     $this->models = TestModel::factory()->count(3)->create();
 });
@@ -38,13 +36,4 @@ it('should filter by array callback', function () {
 function filterCallback(Builder $query, $value)
 {
     $query->where('name', $value);
-}
-
-function createQueryFromFilterRequest(array $filters): QueryBuilder
-{
-    $request = new Request([
-        'filter' => $filters,
-    ]);
-
-    return QueryBuilder::for(TestModel::class, $request);
 }

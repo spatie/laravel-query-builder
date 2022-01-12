@@ -7,8 +7,6 @@ use Spatie\QueryBuilder\Exceptions\InvalidAppendQuery;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\AppendModel;
 
-uses(TestCase::class);
-
 beforeEach(function () {
     AppendModel::factory()->count(5)->create();
 });

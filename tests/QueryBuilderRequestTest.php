@@ -2,8 +2,6 @@
 
 use Spatie\QueryBuilder\QueryBuilderRequest;
 
-uses(TestCase::class);
-
 it('can filter nested arrays', function () {
     $expected = [
         'info' => [

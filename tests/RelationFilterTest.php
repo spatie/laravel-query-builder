@@ -5,8 +5,6 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
-uses(TestCase::class);
-
 beforeEach(function () {
     $this->models = TestModel::factory()->count(5)->create();
 
@@ -119,13 +117,3 @@ it('can disable partial filtering based on related model properties', function (
 
     expect($sql)->toContain('LOWER(`relatedModels`.`name`) LIKE ?');
 });
-
-// Helpers
-function createQueryFromFilterRequest(array $filters): QueryBuilder
-{
-    $request = new Request([
-        'filter' => $filters,
-    ]);
-
-    return QueryBuilder::for(TestModel::class, $request);
-}

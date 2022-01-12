@@ -8,7 +8,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
-uses(TestCase::class);
 uses(AssertsCollectionSorting::class);
 
 beforeEach(function () {
@@ -41,22 +40,4 @@ it('should sort by array callback', function () {
 function sortCallback(Builder $query, $descending)
 {
     $query->orderBy('name', $descending ? 'DESC' : 'ASC');
-}
-
-function createQueryFromSortRequest(string $sort): QueryBuilder
-{
-    $request = new Request([
-        'sort' => $sort,
-    ]);
-
-    return QueryBuilder::for(TestModel::class, $request);
-}
-
-function assertQueryExecuted(string $query)
-{
-    $queries = array_map(function ($queryLogItem) {
-        return $queryLogItem['query'];
-    }, DB::getQueryLog());
-
-    expect($queries)->toContain($query);
 }

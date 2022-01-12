@@ -13,7 +13,6 @@ use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
-uses(TestCase::class);
 uses(AssertsCollectionSorting::class);
 
 beforeEach(function () {
@@ -402,13 +401,4 @@ function createQueryFromSortRequest(string $sort): QueryBuilder
     ]);
 
     return QueryBuilder::for(TestModel::class, $request);
-}
-
-function assertQueryExecuted(string $query)
-{
-    $queries = array_map(function ($queryLogItem) {
-        return $queryLogItem['query'];
-    }, DB::getQueryLog());
-
-    expect($queries)->toContain($query);
 }

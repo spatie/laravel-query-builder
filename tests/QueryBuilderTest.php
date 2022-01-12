@@ -13,8 +13,6 @@ use Spatie\QueryBuilder\Tests\TestClasses\Models\ScopeModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\SoftDeleteModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
-uses(TestCase::class);
-
 it('can be given an eloquent query using where', function () {
     $queryBuilder = QueryBuilder::for(TestModel::where('id', 1));
 
