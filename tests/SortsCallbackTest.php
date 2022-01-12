@@ -1,10 +1,8 @@
 <?php
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedSort;
-use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 

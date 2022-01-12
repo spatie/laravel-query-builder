@@ -462,4 +462,3 @@ it('can override the array value delimiter for single filters', function () {
         ->get();
     expect($models->count())->toEqual(0);
 });
-

@@ -1,9 +1,9 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestCase;
-use Illuminate\Http\Request;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 uses(TestCase::class)->in(__DIR__);

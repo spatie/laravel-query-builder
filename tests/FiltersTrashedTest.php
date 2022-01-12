@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\SoftDeleteModel;
 
 beforeEach(function () {
@@ -53,4 +51,3 @@ it('can filter with trashed', function () {
 
     expect($models)->toHaveCount(3);
 });
-
