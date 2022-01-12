@@ -31,8 +31,8 @@
         "friendsofphp/php-cs-fixer": "^3.0",
         "mockery/mockery": "^1.4",
         "orchestra/testbench": "^7.0",
-        "phpunit/phpunit": "^9.5",
-        "spatie/laravel-ray": "^1.28"
+        "spatie/laravel-ray": "^1.28",
+        "pestphp/pest": "^1.20"
     },
     "autoload": {
         "psr-4": {
