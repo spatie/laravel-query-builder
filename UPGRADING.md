@@ -1,5 +1,11 @@
 # Upgrading
 
+## From v4 to v5
+
+This version adds support for Laravel 9 and drops support for all older version.
+
+The public API was not changed, so you'll be able to upgrade without making any changes.
+
 ## From v3 to v4
 
 The biggest change in v4 is the way requested filters, includes and fields are processed. In previous versions we would automatically camel-case relationship names for includes and nested filters. Requested (nested) fields would also be transformed to their plural snake-case form, regardless of what was actually requested.
@@ -15,7 +21,7 @@ GET /api/users
         &fields[related_models.test_models]=id,name
 ```
 
-The a minimal `QueryBuilder` for the above request looks like this:
+A minimal `QueryBuilder` for the above request looks like this:
 
 ```php
 use Spatie\QueryBuilder\QueryBuilder;
