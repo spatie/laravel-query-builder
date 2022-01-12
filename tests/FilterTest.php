@@ -25,7 +25,7 @@ it('can filter models by partial property by default', function () {
         ->allowedFilters('name')
         ->get();
 
-    $this->assertCount(1, $models);
+    expect($models)->toHaveCount(1);
 });
 
 it('can filter models by an array as filter value', function () {
@@ -35,7 +35,7 @@ it('can filter models by an array as filter value', function () {
         ->allowedFilters('name')
         ->get();
 
-    $this->assertCount(1, $models);
+    expect($models)->toHaveCount(1);
 });
 
 it('can filter partially and case insensitive', function () {
@@ -45,7 +45,7 @@ it('can filter partially and case insensitive', function () {
         ->allowedFilters('name')
         ->get();
 
-    $this->assertCount(1, $models);
+    expect($models)->toHaveCount(1);
 });
 
 it('can filter results based on the partial existence of a property in an array', function () {
@@ -58,8 +58,8 @@ it('can filter results based on the partial existence of a property in an array'
         ->allowedFilters('name')
         ->get();
 
-    $this->assertCount(2, $results);
-    $this->assertEquals([$model1->id, $model2->id], $results->pluck('id')->all());
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('id')->all())->toEqual([$model1->id, $model2->id]);
 });
 
 it('can filter models and return an empty collection', function () {
@@ -69,7 +69,7 @@ it('can filter models and return an empty collection', function () {
         ->allowedFilters('name')
         ->get();
 
-    $this->assertCount(0, $models);
+    expect($models)->toHaveCount(0);
 });
 
 it('can filter a custom base query with select', function () {
@@ -85,7 +85,7 @@ it('can filter a custom base query with select', function () {
         ->where(DB::raw('LOWER(`test_models`.`name`)'), 'LIKE', 'john')
         ->toSql();
 
-    $this->assertEquals($expectedSql, $queryBuilderSql);
+    expect($queryBuilderSql)->toEqual($expectedSql);
 });
 
 it('can filter results based on the existence of a property in an array', function () {
@@ -95,8 +95,8 @@ it('can filter results based on the existence of a property in an array', functi
         ->allowedFilters(AllowedFilter::exact('id'))
         ->get();
 
-    $this->assertCount(2, $results);
-    $this->assertEquals([1, 2], $results->pluck('id')->all());
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('id')->all())->toEqual([1, 2]);
 });
 
 it('ignores empty values in an array partial filter', function () {
@@ -106,8 +106,8 @@ it('ignores empty values in an array partial filter', function () {
         ->allowedFilters(AllowedFilter::partial('id'))
         ->get();
 
-    $this->assertCount(1, $results);
-    $this->assertEquals([2], $results->pluck('id')->all());
+    expect($results)->toHaveCount(1);
+    expect($results->pluck('id')->all())->toEqual([2]);
 });
 
 it('ignores an empty array partial filter', function () {
@@ -117,7 +117,7 @@ it('ignores an empty array partial filter', function () {
         ->allowedFilters(AllowedFilter::partial('id'))
         ->get();
 
-    $this->assertCount(5, $results);
+    expect($results)->toHaveCount(5);
 });
 
 test('falsy values are not ignored when applying a partial filter', function () {
@@ -144,7 +144,7 @@ it('can filter and match results by exact property', function () {
         ->allowedFilters(AllowedFilter::exact('id'))
         ->get();
 
-    $this->assertEquals($modelsResult, $models);
+    expect($models)->toEqual(Result, $models);
 });
 
 it('can filter and reject results by exact property', function () {
@@ -156,7 +156,7 @@ it('can filter and reject results by exact property', function () {
         ->allowedFilters(AllowedFilter::exact('name'))
         ->get();
 
-    $this->assertCount(0, $modelsResult);
+    expect($modelsResult)->toHaveCount(0);
 });
 
 it('can filter results by scope', function () {
@@ -166,7 +166,7 @@ it('can filter results by scope', function () {
         ->allowedFilters(AllowedFilter::scope('named'))
         ->get();
 
-    $this->assertCount(1, $modelsResult);
+    expect($modelsResult)->toHaveCount(1);
 });
 
 it('can filter results by nested relation scope', function () {
@@ -178,7 +178,7 @@ it('can filter results by nested relation scope', function () {
         ->allowedFilters(AllowedFilter::scope('relatedModels.named'))
         ->get();
 
-    $this->assertCount(1, $modelsResult);
+    expect($modelsResult)->toHaveCount(1);
 });
 
 it('can filter results by type hinted scope', function () {
@@ -188,7 +188,7 @@ it('can filter results by type hinted scope', function () {
         ->allowedFilters(AllowedFilter::scope('user'))
         ->get();
 
-    $this->assertCount(1, $modelsResult);
+    expect($modelsResult)->toHaveCount(1);
 });
 
 it('can filter results by regular and type hinted scope', function () {
@@ -198,7 +198,7 @@ it('can filter results by regular and type hinted scope', function () {
         ->allowedFilters(AllowedFilter::scope('user_info'))
         ->get();
 
-    $this->assertCount(1, $modelsResult);
+    expect($modelsResult)->toHaveCount(1);
 });
 
 it('can filter results by scope with multiple parameters', function () {
@@ -210,7 +210,7 @@ it('can filter results by scope with multiple parameters', function () {
         ->allowedFilters(AllowedFilter::scope('created_between'))
         ->get();
 
-    $this->assertCount(1, $modelsResult);
+    expect($modelsResult)->toHaveCount(1);
 });
 
 it('can filter results by scope with multiple parameters in an associative array', function () {
@@ -222,7 +222,7 @@ it('can filter results by scope with multiple parameters in an associative array
         ->allowedFilters(AllowedFilter::scope('created_between'))
         ->get();
 
-    $this->assertCount(1, $modelsResult);
+    expect($modelsResult)->toHaveCount(1);
 });
 
 it('can filter results by a custom filter class', function () {
@@ -241,7 +241,7 @@ it('can filter results by a custom filter class', function () {
         ->allowedFilters(AllowedFilter::custom('custom_name', $filterClass))
         ->first();
 
-    $this->assertEquals($testModel->id, $modelResult->id);
+    expect($modelResult->id)->toEqual($testModel->id);
 });
 
 it('can allow multiple filters', function () {
@@ -254,8 +254,8 @@ it('can allow multiple filters', function () {
         ->allowedFilters('name', AllowedFilter::exact('id'))
         ->get();
 
-    $this->assertCount(2, $results);
-    $this->assertEquals([$model1->id, $model2->id], $results->pluck('id')->all());
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('id')->all())->toEqual([$model1->id, $model2->id]);
 });
 
 it('can allow multiple filters as an array', function () {
@@ -268,8 +268,8 @@ it('can allow multiple filters as an array', function () {
         ->allowedFilters(['name', AllowedFilter::exact('id')])
         ->get();
 
-    $this->assertCount(2, $results);
-    $this->assertEquals([$model1->id, $model2->id], $results->pluck('id')->all());
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('id')->all())->toEqual([$model1->id, $model2->id]);
 });
 
 it('can filter by multiple filters', function () {
@@ -283,8 +283,8 @@ it('can filter by multiple filters', function () {
         ->allowedFilters('name', AllowedFilter::exact('id'))
         ->get();
 
-    $this->assertCount(1, $results);
-    $this->assertEquals([$model1->id], $results->pluck('id')->all());
+    expect($results)->toHaveCount(1);
+    expect($results->pluck('id')->all())->toEqual([$model1->id]);
 });
 
 it('guards against invalid filters', function () {
@@ -300,7 +300,7 @@ it('does not throw invalid filter exception when disable in config', function ()
     createQueryFromFilterRequest(['name' => 'John'])
         ->allowedFilters('id');
 
-    $this->assertTrue(true);
+    expect(true)->toBeTrue();
 });
 
 it('can create a custom filter with an instantiated filter', function () {
@@ -332,8 +332,8 @@ it('can create a custom filter with an instantiated filter', function () {
 test('an invalid filter query exception contains the unknown and allowed filters', function () {
     $exception = new InvalidFilterQuery(collect(['unknown filter']), collect(['allowed filter']));
 
-    $this->assertEquals(['unknown filter'], $exception->unknownFilters->all());
-    $this->assertEquals(['allowed filter'], $exception->allowedFilters->all());
+    expect($exception->unknownFilters->all())->toEqual(['unknown filter']);
+    expect($exception->allowedFilters->all())->toEqual(['allowed filter']);
 });
 
 it('allows for adding ignorable values', function () {
@@ -346,7 +346,7 @@ it('allows for adding ignorable values', function () {
 
     $valuesIgnoredByFilter = $filter->getIgnored();
 
-    $this->assertEquals(sort($shouldBeIgnored), sort($valuesIgnoredByFilter));
+    expect(sort($valuesIgnoredByFilter))->toEqual(sort($shouldBeIgnored));
 });
 
 it('should not apply a filter if the supplied value is ignored', function () {
@@ -356,7 +356,7 @@ it('should not apply a filter if the supplied value is ignored', function () {
         ->allowedFilters(AllowedFilter::exact('name')->ignore('-1'))
         ->get();
 
-    $this->assertCount(TestModel::count(), $models);
+    expect($models)->toHaveCount(TestModel::count());
 });
 
 it('should apply the filter on the subset of allowed values', function () {
@@ -369,20 +369,20 @@ it('should apply the filter on the subset of allowed values', function () {
         ->allowedFilters(AllowedFilter::exact('name')->ignore('John Deer'))
         ->get();
 
-    $this->assertCount(1, $models);
+    expect($models)->toHaveCount(1);
 });
 
 it('can take an argument for custom column name resolution', function () {
     $filter = AllowedFilter::custom('property_name', new FiltersExact(), 'property_column_name');
 
-    $this->assertInstanceOf(AllowedFilter::class, $filter);
+    expect($filter)->toBeInstanceOf(AllowedFilter::class);
     $this->assertClassHasAttribute('internalName', get_class($filter));
 });
 
 it('sets property column name to property name by default', function () {
     $filter = AllowedFilter::custom('property_name', new FiltersExact());
 
-    $this->assertEquals($filter->getName(), $filter->getInternalName());
+    expect($filter->getInternalName())->toEqual($filter->getName());
 });
 
 it('resolves queries using property column name', function () {
@@ -396,7 +396,7 @@ it('resolves queries using property column name', function () {
         ->allowedFilters($filter)
         ->get();
 
-    $this->assertCount(1, $models);
+    expect($models)->toHaveCount(1);
 });
 
 it('can filter using boolean flags', function () {
@@ -407,8 +407,8 @@ it('can filter using boolean flags', function () {
         ->allowedFilters($filter)
         ->get();
 
-    $this->assertCount(0, $models);
-    $this->assertGreaterThan(0, TestModel::all()->count());
+    expect($models)->toHaveCount(0);
+    expect(TestModel::all()->count())->toBeGreaterThan(0);
 });
 
 it('should apply a default filter value if nothing in request', function () {
@@ -419,7 +419,7 @@ it('should apply a default filter value if nothing in request', function () {
         ->allowedFilters(AllowedFilter::partial('name')->default('UniqueJohn'))
         ->get();
 
-    $this->assertEquals(2, $models->count());
+    expect($models->count())->toEqual(2);
 });
 
 it('does not apply default filter when filter exists and default is set', function () {
@@ -432,7 +432,7 @@ it('does not apply default filter when filter exists and default is set', functi
         ->allowedFilters(AllowedFilter::partial('name')->default('UniqueJohn'))
         ->get();
 
-    $this->assertEquals(1, $models->count());
+    expect($models->count())->toEqual(1);
 });
 
 it('can override the array value delimiter for single filters', function () {
@@ -445,7 +445,7 @@ it('can override the array value delimiter for single filters', function () {
         ])
         ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true))
         ->get();
-    $this->assertEquals(2, $models->count());
+    expect($models->count())->toEqual(2);
 
     // Custom delimiter
     $models = createQueryFromFilterRequest([
@@ -453,7 +453,7 @@ it('can override the array value delimiter for single filters', function () {
         ])
         ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true, '|'))
         ->get();
-    $this->assertEquals(2, $models->count());
+    expect($models->count())->toEqual(2);
 
     // Custom delimiter, but default in request
     $models = createQueryFromFilterRequest([
@@ -461,7 +461,7 @@ it('can override the array value delimiter for single filters', function () {
         ])
         ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true, '|'))
         ->get();
-    $this->assertEquals(0, $models->count());
+    expect($models->count())->toEqual(0);
 });
 
 // Helpers

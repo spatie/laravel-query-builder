@@ -21,7 +21,7 @@ it('should filter by closure', function () {
         }))
         ->get();
 
-    $this->assertCount(1, $models);
+    expect($models)->toHaveCount(1);
 });
 
 it('should filter by array callback', function () {
@@ -31,7 +31,7 @@ it('should filter by array callback', function () {
         ->allowedFilters(AllowedFilter::callback('callback', [$this, 'filterCallback']))
         ->get();
 
-    $this->assertCount(1, $models);
+    expect($models)->toHaveCount(1);
 });
 
 // Helpers

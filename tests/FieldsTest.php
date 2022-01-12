@@ -22,7 +22,7 @@ it('fetches all columns if no field was requested', function () {
 
     $expected = TestModel::query()->toSql();
 
-    $this->assertEquals($expected, $query);
+    expect($query)->toEqual($expected);
 });
 
 it('fetches all columns if no field was requested but allowed fields were specified', function () {
@@ -30,7 +30,7 @@ it('fetches all columns if no field was requested but allowed fields were specif
 
     $expected = TestModel::query()->toSql();
 
-    $this->assertEquals($expected, $query);
+    expect($query)->toEqual($expected);
 });
 
 it('replaces selected columns on the query', function () {
@@ -43,7 +43,7 @@ it('replaces selected columns on the query', function () {
         ->select("{$this->modelTableName}.name", "{$this->modelTableName}.id")
         ->toSql();
 
-    $this->assertEquals($expected, $query);
+    expect($query)->toEqual($expected);
     $this->assertStringNotContainsString('is_visible', $expected);
 });
 
@@ -56,7 +56,7 @@ it('can fetch specific columns', function () {
         ->select("{$this->modelTableName}.name", "{$this->modelTableName}.id")
         ->toSql();
 
-    $this->assertEquals($expected, $query);
+    expect($query)->toEqual($expected);
 });
 
 it('wont fetch a specific column if its not allowed', function () {
@@ -64,7 +64,7 @@ it('wont fetch a specific column if its not allowed', function () {
 
     $expected = TestModel::query()->toSql();
 
-    $this->assertEquals($expected, $query);
+    expect($query)->toEqual($expected);
 });
 
 it('can fetch sketchy columns if they are allowed fields', function () {
@@ -76,7 +76,7 @@ it('can fetch sketchy columns if they are allowed fields', function () {
         ->select("{$this->modelTableName}.name->first", "{$this->modelTableName}.id")
         ->toSql();
 
-    $this->assertEquals($expected, $query);
+    expect($query)->toEqual($expected);
 });
 
 it('guards against not allowed fields', function () {
@@ -140,7 +140,7 @@ it('can fetch requested columns from included models up to two levels deep', fun
 
     $this->assertArrayHasKey('name', $result);
 
-    $this->assertEquals(['id' => $this->model->id], $result->relatedModels->first()->testModel->toArray());
+    expect($result->relatedModels->first()->testModel->toArray())->toEqual(['id' => $this->model->id]);
 });
 
 it('throws an exception when calling allowed includes before allowed fields', function () {

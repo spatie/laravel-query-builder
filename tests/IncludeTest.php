@@ -37,7 +37,7 @@ it('does not require includes', function () {
         ->allowedIncludes('relatedModels')
         ->get();
 
-    $this->assertCount(TestModel::count(), $models);
+    expect($models)->toHaveCount(TestModel::count());
 });
 
 it('can handle empty includes', function () {
@@ -49,7 +49,7 @@ it('can handle empty includes', function () {
         ])
         ->get();
 
-    $this->assertCount(TestModel::count(), $models);
+    expect($models)->toHaveCount(TestModel::count());
 });
 
 it('can include model relations', function () {
@@ -171,7 +171,7 @@ it('can include models on an empty collection', function () {
         ->allowedIncludes('relatedModels')
         ->get();
 
-    $this->assertCount(0, $models);
+    expect($models)->toHaveCount(0);
 });
 
 it('guards against invalid includes', function () {
@@ -208,9 +208,9 @@ it('can remove duplicate includes from nested includes', function () {
         return $allowedInclude->getName();
     });
 
-    $this->assertTrue($includes->contains('relatedModels'));
-    $this->assertTrue($includes->contains('relatedModelsCount'));
-    $this->assertTrue($includes->contains('relatedModels.nestedRelatedModels'));
+    expect($includes->contains('relatedModels'))->toBeTrue();
+    expect($includes->contains('relatedModelsCount'))->toBeTrue();
+    expect($includes->contains('relatedModels.nestedRelatedModels'))->toBeTrue();
 });
 
 it('can include multiple model relations', function () {
@@ -242,14 +242,14 @@ it('returns correct id when including many to many relationship', function () {
 
     $relatedModel = $models->first()->relatedThroughPivotModels->first();
 
-    $this->assertEquals($relatedModel->id, $relatedModel->pivot->related_through_pivot_model_id);
+    expect($relatedModel->pivot->related_through_pivot_model_id)->toEqual($relatedModel->id);
 });
 
 test('an invalid include query exception contains the unknown and allowed includes', function () {
     $exception = new InvalidIncludeQuery(collect(['unknown include']), collect(['allowed include']));
 
-    $this->assertEquals(['unknown include'], $exception->unknownIncludes->all());
-    $this->assertEquals(['allowed include'], $exception->allowedIncludes->all());
+    expect($exception->unknownIncludes->all())->toEqual(['unknown include']);
+    expect($exception->allowedIncludes->all())->toEqual(['allowed include']);
 });
 
 it('can alias multiple allowed includes', function () {
@@ -309,8 +309,8 @@ it('can include custom include class by alias', function () {
 it('can take an argument for custom column name resolution', function () {
     $include = AllowedInclude::custom('property_name', new IncludedCount(), 'property_column_name');
 
-    $this->assertInstanceOf(Collection::class, $include);
-    $this->assertInstanceOf(AllowedInclude::class, $include->first());
+    expect($include)->toBeInstanceOf(Collection::class);
+    expect($include->first())->toBeInstanceOf(AllowedInclude::class);
     $this->assertClassHasAttribute('internalName', get_class($include->first()));
 });
 

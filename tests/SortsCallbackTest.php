@@ -58,5 +58,5 @@ function assertQueryExecuted(string $query)
         return $queryLogItem['query'];
     }, DB::getQueryLog());
 
-    test()->assertContains($query, $queries);
+    expect($queries)->toContain($query);
 }

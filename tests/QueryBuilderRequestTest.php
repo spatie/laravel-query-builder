@@ -17,7 +17,7 @@ it('can filter nested arrays', function () {
         'filter' => $expected,
     ]);
 
-    $this->assertEquals($expected, $request->filters()->toArray());
+    expect($request->filters()->toArray())->toEqual($expected);
 });
 
 it('can get empty filters recursively', function () {
@@ -39,7 +39,7 @@ it('can get empty filters recursively', function () {
         ],
     ];
 
-    $this->assertEquals($expected, $request->filters()->toArray());
+    expect($request->filters()->toArray())->toEqual($expected);
 });
 
 it('will map true and false as booleans recursively', function () {
@@ -65,7 +65,7 @@ it('will map true and false as booleans recursively', function () {
         ],
     ];
 
-    $this->assertEquals($expected, $request->filters()->toArray());
+    expect($request->filters()->toArray())->toEqual($expected);
 });
 
 it('can get the sort query param from the request', function () {
@@ -73,7 +73,7 @@ it('can get the sort query param from the request', function () {
         'sort' => 'foobar',
     ]);
 
-    $this->assertEquals(['foobar'], $request->sorts()->toArray());
+    expect($request->sorts()->toArray())->toEqual(['foobar']);
 });
 
 it('can get the sort query param from the request body', function () {
@@ -83,7 +83,7 @@ it('can get the sort query param from the request body', function () {
         'sort' => 'foobar',
     ], [], [], [], ['REQUEST_METHOD' => 'POST']);
 
-    $this->assertEquals(['foobar'], $request->sorts()->toArray());
+    expect($request->sorts()->toArray())->toEqual(['foobar']);
 });
 
 it('can get different sort query parameter name', function () {
@@ -93,13 +93,13 @@ it('can get different sort query parameter name', function () {
         'sorts' => 'foobar',
     ]);
 
-    $this->assertEquals(['foobar'], $request->sorts()->toArray());
+    expect($request->sorts()->toArray())->toEqual(['foobar']);
 });
 
 it('will return an empty collection when no sort query param is specified', function () {
     $request = new QueryBuilderRequest();
 
-    $this->assertEmpty($request->sorts());
+    expect($request->sorts())->toBeEmpty();
 });
 
 it('can get multiple sort parameters from the request', function () {
@@ -109,7 +109,7 @@ it('can get multiple sort parameters from the request', function () {
 
     $expected = collect(['foo', 'bar']);
 
-    $this->assertEquals($expected, $request->sorts());
+    expect($request->sorts())->toEqual($expected);
 });
 
 it('will return an empty collection when no sort query params are specified', function () {
@@ -117,7 +117,7 @@ it('will return an empty collection when no sort query params are specified', fu
 
     $expected = collect();
 
-    $this->assertEquals($expected, $request->sorts());
+    expect($request->sorts())->toEqual($expected);
 });
 
 it('can get the filter query params from the request', function () {
@@ -133,7 +133,7 @@ it('can get the filter query params from the request', function () {
         'baz' => 'qux',
     ]);
 
-    $this->assertEquals($expected, $request->filters());
+    expect($request->filters())->toEqual($expected);
 });
 
 it('can get the filter query params from the request body', function () {
@@ -151,7 +151,7 @@ it('can get the filter query params from the request body', function () {
             'baz' => 'qux',
         ]);
 
-    $this->assertEquals($expected, $request->filters());
+    expect($request->filters())->toEqual($expected);
 });
 
 it('can get different filter query parameter name', function () {
@@ -169,7 +169,7 @@ it('can get different filter query parameter name', function () {
         'baz' => ['qux', 'lex'],
     ]);
 
-    $this->assertEquals($expected, $request->filters());
+    expect($request->filters())->toEqual($expected);
 });
 
 it('can get empty filters', function () {
@@ -187,7 +187,7 @@ it('can get empty filters', function () {
         'baz' => '',
     ]);
 
-    $this->assertEquals($expected, $request->filters());
+    expect($request->filters())->toEqual($expected);
 });
 
 it('will return an empty collection when no filter query params are specified', function () {
@@ -195,7 +195,7 @@ it('will return an empty collection when no filter query params are specified', 
 
     $expected = collect();
 
-    $this->assertEquals($expected, $request->filters());
+    expect($request->filters())->toEqual($expected);
 });
 
 it('will map true and false as booleans when given in a filter query string', function () {
@@ -213,7 +213,7 @@ it('will map true and false as booleans when given in a filter query string', fu
         'baz' => '0',
     ]);
 
-    $this->assertEquals($expected, $request->filters());
+    expect($request->filters())->toEqual($expected);
 });
 
 it('will map comma separated values as arrays when given in a filter query string', function () {
@@ -225,7 +225,7 @@ it('will map comma separated values as arrays when given in a filter query strin
 
     $expected = collect(['foo' => ['bar', 'baz']]);
 
-    $this->assertEquals($expected, $request->filters());
+    expect($request->filters())->toEqual($expected);
 });
 
 it('will map array in filter recursively when given in a filter query string', function () {
@@ -240,7 +240,7 @@ it('will map array in filter recursively when given in a filter query string', f
 
     $expected = collect(['foo' => ['bar', 'baz'], 'bar' => ['foobar' => ['baz', 'bar']]]);
 
-    $this->assertEquals($expected, $request->filters());
+    expect($request->filters())->toEqual($expected);
 });
 
 it('will map comma separated values as arrays when given in a filter query string and get those by key', function () {
@@ -252,7 +252,7 @@ it('will map comma separated values as arrays when given in a filter query strin
 
     $expected = ['foo' => ['bar', 'baz']];
 
-    $this->assertEquals($expected, $request->filters()->toArray());
+    expect($request->filters()->toArray())->toEqual($expected);
 });
 
 it('can get the include query params from the request', function () {
@@ -262,7 +262,7 @@ it('can get the include query params from the request', function () {
 
     $expected = collect(['foo', 'bar']);
 
-    $this->assertEquals($expected, $request->includes());
+    expect($request->includes())->toEqual($expected);
 });
 
 it('can get the include from the request body', function () {
@@ -274,7 +274,7 @@ it('can get the include from the request body', function () {
 
     $expected = collect(['foo', 'bar']);
 
-    $this->assertEquals($expected, $request->includes());
+    expect($request->includes())->toEqual($expected);
 });
 
 it('can get different include query parameter name', function () {
@@ -286,7 +286,7 @@ it('can get different include query parameter name', function () {
 
     $expected = collect(['foo', 'bar']);
 
-    $this->assertEquals($expected, $request->includes());
+    expect($request->includes())->toEqual($expected);
 });
 
 it('will return an empty collection when no include query params are specified', function () {
@@ -294,7 +294,7 @@ it('will return an empty collection when no include query params are specified',
 
     $expected = collect();
 
-    $this->assertEquals($expected, $request->includes());
+    expect($request->includes())->toEqual($expected);
 });
 
 it('can get requested fields', function () {
@@ -306,7 +306,7 @@ it('can get requested fields', function () {
 
     $expected = collect(['table' => ['name', 'email']]);
 
-    $this->assertEquals($expected, $request->fields());
+    expect($request->fields())->toEqual($expected);
 });
 
 it('can get requested fields from the request body', function () {
@@ -320,7 +320,7 @@ it('can get requested fields from the request body', function () {
 
     $expected = collect(['table' => ['name', 'email']]);
 
-    $this->assertEquals($expected, $request->fields());
+    expect($request->fields())->toEqual($expected);
 });
 
 it('can get different fields parameter name', function () {
@@ -334,7 +334,7 @@ it('can get different fields parameter name', function () {
 
     $expected = collect(['column' => ['name', 'email']]);
 
-    $this->assertEquals($expected, $request->fields());
+    expect($request->fields())->toEqual($expected);
 });
 
 it('can get the append query params from the request', function () {
@@ -344,7 +344,7 @@ it('can get the append query params from the request', function () {
 
     $expected = collect(['foo', 'bar']);
 
-    $this->assertEquals($expected, $request->appends());
+    expect($request->appends())->toEqual($expected);
 });
 
 it('can get different append query parameter name', function () {
@@ -356,7 +356,7 @@ it('can get different append query parameter name', function () {
 
     $expected = collect(['foo', 'bar']);
 
-    $this->assertEquals($expected, $request->appends());
+    expect($request->appends())->toEqual($expected);
 });
 
 it('will return an empty collection when no append query params are specified', function () {
@@ -364,7 +364,7 @@ it('will return an empty collection when no append query params are specified', 
 
     $expected = collect();
 
-    $this->assertEquals($expected, $request->appends());
+    expect($request->appends())->toEqual($expected);
 });
 
 it('can get the append query params from the request body', function () {
@@ -376,7 +376,7 @@ it('can get the append query params from the request body', function () {
 
     $expected = collect(['foo', 'bar']);
 
-    $this->assertEquals($expected, $request->appends());
+    expect($request->appends())->toEqual($expected);
 });
 
 it('takes custom delimiters for splitting request parameters', function () {
@@ -390,7 +390,7 @@ it('takes custom delimiters for splitting request parameters', function () {
 
     $expected = ['foo' => ['values, contain, commas', 'and are split on vertical', ' lines']];
 
-    $this->assertEquals($expected, $request->filters()->toArray());
+    expect($request->filters()->toArray())->toEqual($expected);
 });
 
 it('adds any appends as they come from the request', function () {
@@ -400,5 +400,5 @@ it('adds any appends as they come from the request', function () {
 
     $expected = collect(['aCamelCaseAppend', 'anotherappend']);
 
-    $this->assertEquals($expected, $request->appends());
+    expect($request->appends())->toEqual($expected);
 });

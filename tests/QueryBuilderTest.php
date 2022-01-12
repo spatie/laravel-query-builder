@@ -45,7 +45,7 @@ it('can be given a belongs to many relation query', function () {
 
     $queryBuilderResult = QueryBuilder::for($testModel->relatedThroughPivotModels())->first();
 
-    $this->assertEquals(789, $queryBuilderResult->id);
+    expect($queryBuilderResult->id)->toEqual(789);
 });
 
 it('can be given a belongs to many relation query with pivot', function () {
@@ -96,8 +96,8 @@ it('will determine the request when its not given', function () {
 
     $builder = QueryBuilder::for(TestModel::class);
 
-    $this->assertInstanceOf(QueryBuilderRequest::class, $requestProperty->getValue($builder));
-    $this->assertEquals(['name'], $requestProperty->getValue($builder)->sorts()->toArray());
+    expect($requestProperty->getValue($builder))->toBeInstanceOf(QueryBuilderRequest::class);
+    expect($requestProperty->getValue($builder)->sorts()->toArray())->toEqual(['name']);
 });
 
 it('can query soft deletes', function () {
@@ -105,12 +105,12 @@ it('can query soft deletes', function () {
 
     $this->models = SoftDeleteModel::factory()->count(5)->create();
 
-    $this->assertCount(5, $queryBuilder->get());
+    expect($queryBuilder->get())->toHaveCount(5);
 
     $this->models[0]->delete();
 
-    $this->assertCount(4, $queryBuilder->get());
-    $this->assertCount(5, $queryBuilder->withTrashed()->get());
+    expect($queryBuilder->get())->toHaveCount(4);
+    expect($queryBuilder->withTrashed()->get())->toHaveCount(5);
 });
 
 it('can query global scopes', function () {
@@ -118,11 +118,11 @@ it('can query global scopes', function () {
     ScopeModel::create(['name' => 'test']);
 
     // Global scope on ScopeModel excludes models named 'test'
-    $this->assertCount(1, QueryBuilder::for(ScopeModel::class)->get());
+    expect(QueryBuilder::for(ScopeModel::class)->get())->toHaveCount(1);
 
-    $this->assertCount(2, QueryBuilder::for(ScopeModel::query()->withoutGlobalScopes())->get());
+    expect(QueryBuilder::for(ScopeModel::query()->withoutGlobalScopes())->get())->toHaveCount(2);
 
-    $this->assertCount(2, QueryBuilder::for(ScopeModel::class)->withoutGlobalScopes()->get());
+    expect(QueryBuilder::for(ScopeModel::class)->withoutGlobalScopes()->get())->toHaveCount(2);
 });
 
 it('keeps eager loaded relationships from the base query', function () {
@@ -131,8 +131,8 @@ it('keeps eager loaded relationships from the base query', function () {
     $baseQuery = TestModel::with('relatedModels');
     $queryBuilder = QueryBuilder::for($baseQuery);
 
-    $this->assertTrue($baseQuery->first()->relationLoaded('relatedModels'));
-    $this->assertTrue($queryBuilder->first()->relationLoaded('relatedModels'));
+    expect($baseQuery->first()->relationLoaded('relatedModels'))->toBeTrue();
+    expect($queryBuilder->first()->relationLoaded('relatedModels'))->toBeTrue();
 });
 
 it('keeps local macros added to the base query', function () {
@@ -157,7 +157,7 @@ it('keeps the on delete callback added to the base query', function () {
         return 'onDelete called';
     });
 
-    $this->assertEquals('onDelete called', QueryBuilder::for($baseQuery)->delete());
+    expect(QueryBuilder::for($baseQuery)->delete())->toEqual('onDelete called');
 });
 
 it('can query local scopes', function () {
@@ -167,7 +167,7 @@ it('can query local scopes', function () {
 
     $expectedQuery = TestModel::query()->where('name', 'john')->toSql();
 
-    $this->assertEquals($expectedQuery, $queryBuilderQuery);
+    expect($queryBuilderQuery)->toEqual($expectedQuery);
 });
 
 it('executes the same query regardless of the order of applied filters or sorts', function () {
@@ -198,7 +198,7 @@ it('executes the same query regardless of the order of applied filters or sorts'
         ->allowedSorts(\Spatie\QueryBuilder\AllowedSort::custom('name', $customSort))
         ->toSql();
 
-    $this->assertEquals($usingSortFirst, $usingFilterFirst);
+    expect($usingFilterFirst)->toEqual($usingSortFirst);
 });
 
 it('can filter when sorting by joining a related model which contains the same field name', function () {
@@ -224,7 +224,7 @@ it('can filter when sorting by joining a related model which contains the same f
         ->allowedFilters('name')
         ->get();
 
-    $this->assertTrue(true);
+    expect(true)->toBeTrue();
 });
 
 it('queries the correct data for a relationship query', function () {
@@ -237,8 +237,8 @@ it('queries the correct data for a relationship query', function () {
 
     $queryBuilderResult = QueryBuilder::for($relationship)->first();
 
-    $this->assertEquals(789, $queryBuilderResult->id);
-    $this->assertEquals(321, $queryBuilderResult->testModels->first()->id);
+    expect($queryBuilderResult->id)->toEqual(789);
+    expect($queryBuilderResult->testModels->first()->id)->toEqual(321);
 });
 
 it('does not lose pivot values with belongs to many relation', function () {

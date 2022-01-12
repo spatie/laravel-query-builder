@@ -24,7 +24,7 @@ it('can filter related model property', function () {
         ->allowedFilters('relatedModels.name')
         ->get();
 
-    $this->assertCount(1, $models);
+    expect($models)->toHaveCount(1);
 });
 
 it('can filter results based on the partial existence of a property in an array', function () {
@@ -34,8 +34,8 @@ it('can filter results based on the partial existence of a property in an array'
         ->allowedFilters('relatedModels.nestedRelatedModels.name')
         ->get();
 
-    $this->assertCount(2, $results);
-    $this->assertEquals([$this->models->get(0)->id, $this->models->get(1)->id], $results->pluck('id')->all());
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('id')->all())->toEqual([$this->models->get(0)->id, $this->models->get(1)->id]);
 });
 
 it('can filter models and return an empty collection', function () {
@@ -45,7 +45,7 @@ it('can filter models and return an empty collection', function () {
         ->allowedFilters('relatedModels.name')
         ->get();
 
-    $this->assertCount(0, $models);
+    expect($models)->toHaveCount(0);
 });
 
 it('can filter related nested model property', function () {
@@ -55,7 +55,7 @@ it('can filter related nested model property', function () {
         ->allowedFilters('relatedModels.nestedRelatedModels.name')
         ->get();
 
-    $this->assertCount(5, $models);
+    expect($models)->toHaveCount(5);
 });
 
 it('can filter related model and related nested model property', function () {
@@ -66,7 +66,7 @@ it('can filter related model and related nested model property', function () {
         ->allowedFilters('relatedModels.name', 'relatedModels.nestedRelatedModels.name')
         ->get();
 
-    $this->assertCount(1, $models);
+    expect($models)->toHaveCount(1);
 });
 
 it('can filter results based on the existence of a property in an array', function () {
@@ -80,8 +80,8 @@ it('can filter results based on the existence of a property in an array', functi
         ->allowedFilters(AllowedFilter::exact('relatedModels.id'))
         ->get();
 
-    $this->assertCount(2, $results);
-    $this->assertEquals([1, 2], $results->pluck('id')->all());
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('id')->all())->toEqual([1, 2]);
 });
 
 it('can filter and reject results by exact property', function () {
@@ -93,7 +93,7 @@ it('can filter and reject results by exact property', function () {
         ->allowedFilters(AllowedFilter::exact('relatedModels.nestedRelatedModels.name'))
         ->get();
 
-    $this->assertCount(0, $modelsResult);
+    expect($modelsResult)->toHaveCount(0);
 });
 
 it('can disable exact filtering based on related model properties', function () {
@@ -105,7 +105,7 @@ it('can disable exact filtering based on related model properties', function () 
         ->allowedFilters(AllowedFilter::exact('relatedModels.name', null, $addRelationConstraint))
         ->toSql();
 
-    $this->assertStringContainsString('`relatedModels`.`name` = ', $sql);
+    expect($sql)->toContain('`relatedModels`.`name` = ');
 });
 
 it('can disable partial filtering based on related model properties', function () {
@@ -117,7 +117,7 @@ it('can disable partial filtering based on related model properties', function (
         ->allowedFilters(AllowedFilter::partial('relatedModels.name', null, $addRelationConstraint))
         ->toSql();
 
-    $this->assertStringContainsString('LOWER(`relatedModels`.`name`) LIKE ?', $sql);
+    expect($sql)->toContain('LOWER(`relatedModels`.`name`) LIKE ?');
 });
 
 // Helpers

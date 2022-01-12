@@ -75,7 +75,7 @@ it('can sort a query by a related property', function () {
         ->allowedSorts('related_models.name')
         ->toSql();
 
-    $this->assertEquals('select * from `test_models` order by `related_models`.`name` asc', $sortedQuery);
+    expect($sortedQuery)->toEqual('select * from `test_models` order by `related_models`.`name` asc');
 });
 
 it('can sort by json property if its an allowed sort', function () {
@@ -140,8 +140,8 @@ it('will throw an exception if a sort property is not allowed', function () {
 test('an invalid sort query exception contains the unknown and allowed sorts', function () {
     $exception = InvalidSortQuery::sortsNotAllowed(collect(['unknown sort']), collect(['allowed sort']));
 
-    $this->assertEquals(['unknown sort'], $exception->unknownSorts->all());
-    $this->assertEquals(['allowed sort'], $exception->allowedSorts->all());
+    expect($exception->unknownSorts->all())->toEqual(['unknown sort']);
+    expect($exception->allowedSorts->all())->toEqual(['allowed sort']);
 });
 
 it('wont sort if no sort query parameter is given', function () {
@@ -151,7 +151,7 @@ it('wont sort if no sort query parameter is given', function () {
 
     $eloquentQuery = TestModel::query()->toSql();
 
-    $this->assertEquals($eloquentQuery, $builderQuery);
+    expect($builderQuery)->toEqual($eloquentQuery);
 });
 
 it('wont sort sketchy sort requests', function () {
@@ -250,7 +250,7 @@ it('can sort by multiple columns', function () {
 
     $expected = TestModel::orderBy('name')->orderByDesc('id');
     assertQueryExecuted('select * from `test_models` order by `name` asc, `id` desc');
-    $this->assertEquals($expected->pluck('id'), $sortedModels->pluck('id'));
+    expect($sortedModels->pluck('id'))->toEqual($expected->pluck('id'));
 });
 
 it('can sort by a custom sort class', function () {
@@ -272,14 +272,14 @@ it('can sort by a custom sort class', function () {
 it('can take an argument for custom column name resolution', function () {
     $sort = AllowedSort::custom('property_name', new SortsField(), 'property_column_name');
 
-    $this->assertInstanceOf(AllowedSort::class, $sort);
+    expect($sort)->toBeInstanceOf(AllowedSort::class);
     $this->assertClassHasAttribute('internalName', get_class($sort));
 });
 
 it('sets property column name to property name by default', function () {
     $sort = AllowedSort::custom('property_name', new SortsField());
 
-    $this->assertEquals($sort->getName(), $sort->getInternalName());
+    expect($sort->getInternalName())->toEqual($sort->getName());
 });
 
 it('resolves queries using property column name', function () {
@@ -292,7 +292,7 @@ it('resolves queries using property column name', function () {
         ->get();
 
     $this->assertSorted($models, 'name');
-    $this->assertTrue($testModel->is($models->last()));
+    expect($testModel->is($models->last()))->toBeTrue();
 });
 
 it('can sort descending with an alias', function () {
@@ -308,7 +308,7 @@ it('does not add sort clauses multiple times', function () {
         ->defaultSort('name')
         ->toSql();
 
-    $this->assertSame('select * from `test_models` order by `name` asc', $sql);
+    expect($sql)->toBe('select * from `test_models` order by `name` asc');
 });
 
 test('given a default sort a sort alias will still be resolved', function () {
@@ -317,13 +317,13 @@ test('given a default sort a sort alias will still be resolved', function () {
         ->allowedSorts(AllowedSort::field('joined', 'created_at'))
         ->toSql();
 
-    $this->assertSame('select * from `test_models` order by `created_at` desc', $sql);
+    expect($sql)->toBe('select * from `test_models` order by `created_at` desc');
 });
 
 test('late specified sorts still check for allowance', function () {
     $query = createQueryFromSortRequest('created_at');
 
-    $this->assertSame('select * from `test_models`', $query->toSql());
+    expect($query->toSql())->toBe('select * from `test_models`');
 
     $this->expectException(InvalidSortQuery::class);
 
@@ -362,11 +362,11 @@ it('can sort and use scoped filters at the same time', function () {
 it('ignores non existing sorts before adding them as an alias', function () {
     $query = createQueryFromSortRequest('-alias');
 
-    $this->assertSame('select * from `test_models`', $query->toSql());
+    expect($query->toSql())->toBe('select * from `test_models`');
 
     $query->allowedSorts(AllowedSort::field('alias', 'name'));
 
-    $this->assertSame('select * from `test_models` order by `name` desc', $query->toSql());
+    expect($query->toSql())->toBe('select * from `test_models` order by `name` desc');
 });
 
 test('raw sorts do not get purged when specifying allowed sorts', function () {
@@ -374,7 +374,7 @@ test('raw sorts do not get purged when specifying allowed sorts', function () {
         ->orderByRaw('RANDOM()')
         ->allowedSorts('name');
 
-    $this->assertSame('select * from `test_models` order by RANDOM(), `name` desc', $query->toSql());
+    expect($query->toSql())->toBe('select * from `test_models` order by RANDOM(), `name` desc');
 });
 
 test('the default direction of an allow sort can be set', function () {
@@ -410,5 +410,5 @@ function assertQueryExecuted(string $query)
         return $queryLogItem['query'];
     }, DB::getQueryLog());
 
-    test()->assertContains($query, $queries);
+    expect($queries)->toContain($query);
 }

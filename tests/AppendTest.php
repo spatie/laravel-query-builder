@@ -18,7 +18,7 @@ it('does not require appends', function () {
         ->allowedAppends('fullname')
         ->get();
 
-    $this->assertCount(AppendModel::count(), $models);
+    expect($models)->toHaveCount(AppendModel::count());
 });
 
 it('can append attributes', function () {
@@ -104,8 +104,8 @@ it('can append multiple attributes', function () {
 test('an invalid append query exception contains the not allowed and allowed appends', function () {
     $exception = new InvalidAppendQuery(collect(['not allowed append']), collect(['allowed append']));
 
-    $this->assertEquals(['not allowed append'], $exception->appendsNotAllowed->all());
-    $this->assertEquals(['allowed append'], $exception->allowedAppends->all());
+    expect($exception->appendsNotAllowed->all())->toEqual(['not allowed append']);
+    expect($exception->allowedAppends->all())->toEqual(['allowed append']);
 });
 
 // Helpers
@@ -120,7 +120,7 @@ function createQueryFromAppendRequest(string $appends): QueryBuilder
 
 function assertAttributeLoaded(AppendModel $model, string $attribute)
 {
-    test()->assertTrue(array_key_exists($attribute, $model->toArray()));
+    expect(array_key_exists($attribute, $model->toArray()))->toBeTrue();
 }
 
 function assertCollectionAttributeLoaded(Collection $collection, string $attribute)

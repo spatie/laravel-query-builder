@@ -24,7 +24,7 @@ it('should filter not trashed by default', function () {
         ->allowedFilters(AllowedFilter::trashed())
         ->get();
 
-    $this->assertCount(2, $models);
+    expect($models)->toHaveCount(2);
 });
 
 it('can filter only trashed', function () {
@@ -34,7 +34,7 @@ it('can filter only trashed', function () {
         ->allowedFilters(AllowedFilter::trashed())
         ->get();
 
-    $this->assertCount(1, $models);
+    expect($models)->toHaveCount(1);
 });
 
 it('can filter only trashed by scope directly', function () {
@@ -44,7 +44,7 @@ it('can filter only trashed by scope directly', function () {
         ->allowedFilters(AllowedFilter::scope('only_trashed'))
         ->get();
 
-    $this->assertCount(1, $models);
+    expect($models)->toHaveCount(1);
 });
 
 it('can filter with trashed', function () {
@@ -54,7 +54,7 @@ it('can filter with trashed', function () {
         ->allowedFilters(AllowedFilter::trashed())
         ->get();
 
-    $this->assertCount(3, $models);
+    expect($models)->toHaveCount(3);
 });
 
 // Helpers
