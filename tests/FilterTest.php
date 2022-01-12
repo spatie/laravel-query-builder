@@ -308,7 +308,8 @@ it('can create a custom filter with an instantiated filter', function () {
         /** @var string */
         protected $filter;
 
-        public function __construct(string $filter) {
+        public function __construct(string $filter)
+        {
             $this->filter = $filter;
         }
 
