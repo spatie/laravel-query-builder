@@ -390,4 +390,3 @@ it('takes custom delimiters for splitting request parameters', function () {
 
     expect($request->filters()->toArray())->toEqual($expected);
 });
-
