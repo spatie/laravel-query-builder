@@ -25,7 +25,6 @@ class TestCase extends Orchestra
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Spatie\\QueryBuilder\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
-
     }
 
     protected function setUpDatabase(Application $app)
@@ -89,7 +88,7 @@ class TestCase extends Orchestra
     {
         return [
             RayServiceProvider::class,
-            QueryBuilderServiceProvider::class
+            QueryBuilderServiceProvider::class,
         ];
     }
 
