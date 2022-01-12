@@ -3,18 +3,13 @@
 namespace Spatie\QueryBuilder;
 
 use ArrayAccess;
-use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\ForwardsCalls;
 use Spatie\QueryBuilder\Concerns\AddsFieldsToQuery;
 use Spatie\QueryBuilder\Concerns\AddsIncludesToQuery;
-use Spatie\QueryBuilder\Concerns\AppendsAttributesToResults;
 use Spatie\QueryBuilder\Concerns\FiltersQuery;
 use Spatie\QueryBuilder\Concerns\SortsQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidSubject;
@@ -28,7 +23,6 @@ class QueryBuilder implements ArrayAccess
     use SortsQuery;
     use AddsIncludesToQuery;
     use AddsFieldsToQuery;
-    use AppendsAttributesToResults;
     use ForwardsCalls;
 
     /** @var \Spatie\QueryBuilder\QueryBuilderRequest */
@@ -116,18 +110,6 @@ class QueryBuilder implements ArrayAccess
          */
         if ($result === $this->subject) {
             return $this;
-        }
-
-        if ($result instanceof Model) {
-            $this->addAppendsToResults(collect([$result]));
-        }
-
-        if ($result instanceof Collection) {
-            $this->addAppendsToResults($result);
-        }
-
-        if ($result instanceof LengthAwarePaginator || $result instanceof Paginator || $result instanceof CursorPaginator) {
-            $this->addAppendsToResults(collect($result->items()));
         }
 
         return $result;

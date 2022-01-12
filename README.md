@@ -70,19 +70,6 @@ $users = QueryBuilder::for(User::class)
 
 [Read more about selecting fields.](https://spatie.be/docs/laravel-query-builder/v3/features/selecting-fields/)
 
-### Appending attributes to a query: `/users?append=full_name`
-
-```php
-$users = QueryBuilder::for(User::class)
-    ->allowedAppends('full_name')
-    ->get()
-    ->toJson();
-
-// the resulting JSON will have the `getFullNameAttribute` attributes included
-```
-
-[Read more about appending attributes.](https://spatie.be/docs/laravel-query-builder/v3/features/appending-attributes/)
-
 ## Support us
 
 [<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laravel-query-builder.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laravel-query-builder)

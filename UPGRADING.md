@@ -4,7 +4,7 @@
 
 This version adds support for Laravel 9 and drops support for all older version.
 
-The public API was not changed, so you'll be able to upgrade without making any changes.
+Appending attributes to a query was removed to make package maintenance easier. The rest of the public API was not changed, so you'll be able to upgrade without making any changes.
 
 ## From v3 to v4
 

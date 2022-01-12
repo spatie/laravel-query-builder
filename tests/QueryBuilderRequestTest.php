@@ -454,16 +454,4 @@ class QueryBuilderRequestTest extends TestCase
 
         $this->assertEquals($expected, $request->filters()->toArray());
     }
-
-    /** @test */
-    public function it_adds_any_appends_as_they_come_from_the_request()
-    {
-        $request = new QueryBuilderRequest([
-            'append' => 'aCamelCaseAppend,anotherappend',
-        ]);
-
-        $expected = collect(['aCamelCaseAppend', 'anotherappend']);
-
-        $this->assertEquals($expected, $request->appends());
-    }
 }
