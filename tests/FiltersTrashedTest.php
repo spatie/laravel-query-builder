@@ -22,7 +22,7 @@ it('should filter not trashed by default', function () {
         ->get();
 
     expect($models)->toHaveCount(2);
-});
+})->skip();
 
 it('can filter only trashed', function () {
     $models = createQueryFromFilterRequest([

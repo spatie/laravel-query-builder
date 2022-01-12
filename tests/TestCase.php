@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
@@ -109,5 +110,15 @@ class TestCase extends Orchestra
 
         // Could've used `assertStringContainsString` but we want to support L5.5 with PHPUnit 6.0
         $this->assertFalse(Str::contains($queryLog, $partialSql), "Query log contained partial SQL: `{$partialSql}`");
+    }
+
+    public function sortCallback(Builder $query, $descending): void
+    {
+        $query->orderBy('name', $descending ? 'DESC' : 'ASC');
+    }
+
+    public function filterCallback(Builder $query, $value): void
+    {
+        $query->where('name', $value);
     }
 }
