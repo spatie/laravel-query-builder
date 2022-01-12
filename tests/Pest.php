@@ -1,5 +1,7 @@
 <?php
 
+uses(\Spatie\QueryBuilder\Tests\TestCase::class)->in('tests', 'Concerns', 'TestClasses');
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
