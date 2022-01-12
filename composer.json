@@ -46,7 +46,7 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit",
+        "test": "vendor/bin/pest",
         "test-coverage": "phpunit --coverage-html coverage"
     },
     "config": {
