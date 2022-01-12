@@ -64,7 +64,7 @@ jobs:
                   composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
             - name: Execute tests
-              run: vendor/bin/pest
+              run: vendor/bin/phpunit
               env:
                   DB_USERNAME: user
                   DB_PASSWORD: secret
