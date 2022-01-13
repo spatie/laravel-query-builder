@@ -6,6 +6,11 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 - revert deferred service provider (#677)
 
+## 5.0.0 - 2022-01-13
+
+- add support for Laravel 9
+- drop support for older versions
+
 ## 4.0.2 - 2021-12-26
 
 ## What's Changed
