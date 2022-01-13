@@ -45,6 +45,18 @@ $users = QueryBuilder::for(User::class)
 // Will retrieve the users sorted descendingly by name
 ```
 
+You can define multiple default sorts
+
+```php
+// GET /users
+$users = QueryBuilder::for(User::class)
+    ->defaultSort('-street', 'name')
+    ->allowedSorts('name', 'street')
+    ->get();
+
+// Will retrieve the users sorted descendingly by street than in ascending order by name
+```
+
 You can sort by multiple properties by separating them with a comma:
 
 ```php

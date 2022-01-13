@@ -3,18 +3,13 @@
 namespace Spatie\QueryBuilder;
 
 use ArrayAccess;
-use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\ForwardsCalls;
 use Spatie\QueryBuilder\Concerns\AddsFieldsToQuery;
 use Spatie\QueryBuilder\Concerns\AddsIncludesToQuery;
-use Spatie\QueryBuilder\Concerns\AppendsAttributesToResults;
 use Spatie\QueryBuilder\Concerns\FiltersQuery;
 use Spatie\QueryBuilder\Concerns\SortsQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidSubject;
@@ -28,7 +23,6 @@ class QueryBuilder implements ArrayAccess
     use SortsQuery;
     use AddsIncludesToQuery;
     use AddsFieldsToQuery;
-    use AppendsAttributesToResults;
     use ForwardsCalls;
 
     /** @var \Spatie\QueryBuilder\QueryBuilderRequest */
@@ -118,18 +112,6 @@ class QueryBuilder implements ArrayAccess
             return $this;
         }
 
-        if ($result instanceof Model) {
-            $this->addAppendsToResults(collect([$result]));
-        }
-
-        if ($result instanceof Collection) {
-            $this->addAppendsToResults($result);
-        }
-
-        if ($result instanceof LengthAwarePaginator || $result instanceof Paginator || $result instanceof CursorPaginator) {
-            $this->addAppendsToResults(collect($result->items()));
-        }
-
         return $result;
     }
 
@@ -153,22 +135,22 @@ class QueryBuilder implements ArrayAccess
         $this->subject->{$name} = $value;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->subject[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): bool
     {
         return $this->subject[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->subject[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->subject[$offset]);
     }
