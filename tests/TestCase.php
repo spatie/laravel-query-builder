@@ -2,12 +2,16 @@
 
 namespace Spatie\QueryBuilder\Tests;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Spatie\LaravelRay\RayServiceProvider;
+use Spatie\QueryBuilder\QueryBuilderRequest;
 use Spatie\QueryBuilder\QueryBuilderServiceProvider;
 
 class TestCase extends Orchestra
@@ -20,7 +24,11 @@ class TestCase extends Orchestra
 
         $this->setUpDatabase($this->app);
 
-        $this->withFactories(__DIR__.'/factories');
+        QueryBuilderRequest::resetDelimiters();
+
+        Factory::guessFactoryNamesUsing(
+            fn (string $modelName) => 'Spatie\\QueryBuilder\\Database\\Factories\\'.class_basename($modelName).'Factory'
+        );
     }
 
     protected function setUpDatabase(Application $app)
@@ -82,7 +90,10 @@ class TestCase extends Orchestra
 
     protected function getPackageProviders($app)
     {
-        return [QueryBuilderServiceProvider::class];
+        return [
+            RayServiceProvider::class,
+            QueryBuilderServiceProvider::class,
+        ];
     }
 
     protected function assertQueryLogContains(string $partialSql)
@@ -99,5 +110,15 @@ class TestCase extends Orchestra
 
         // Could've used `assertStringContainsString` but we want to support L5.5 with PHPUnit 6.0
         $this->assertFalse(Str::contains($queryLog, $partialSql), "Query log contained partial SQL: `{$partialSql}`");
+    }
+
+    public function sortCallback(Builder $query, $descending): void
+    {
+        $query->orderBy('name', $descending ? 'DESC' : 'ASC');
+    }
+
+    public function filterCallback(Builder $query, $value): void
+    {
+        $query->where('name', $value);
     }
 }

@@ -2,22 +2,19 @@
 
 namespace Spatie\QueryBuilder;
 
-use Illuminate\Support\ServiceProvider;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class QueryBuilderServiceProvider extends ServiceProvider
+class QueryBuilderServiceProvider extends PackageServiceProvider
 {
-    public function boot()
+    public function configurePackage(Package $package): void
     {
-        if ($this->app->runningInConsole() && function_exists('config_path')) {
-            $this->publishes([
-                __DIR__.'/../config/query-builder.php' => config_path('query-builder.php'),
-            ], 'config');
-        }
-
-        $this->mergeConfigFrom(__DIR__.'/../config/query-builder.php', 'query-builder');
+        $package
+            ->name('laravel-query-builder')
+            ->hasConfigFile();
     }
 
-    public function register()
+    public function registeringPackage()
     {
         $this->app->bind(QueryBuilderRequest::class, function ($app) {
             return QueryBuilderRequest::fromRequest($app['request']);

@@ -10,8 +10,7 @@ use Spatie\QueryBuilder\Includes\IncludeInterface;
 
 trait AddsIncludesToQuery
 {
-    /** @var \Illuminate\Support\Collection */
-    protected $allowedIncludes;
+    protected ?Collection $allowedIncludes = null;
 
     public function allowedIncludes($includes): self
     {
