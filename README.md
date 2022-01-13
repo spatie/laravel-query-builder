@@ -21,7 +21,7 @@ $users = QueryBuilder::for(User::class)
 // all `User`s that contain the string "John" in their name
 ```
 
-[Read more about filtering features like: partial filters, exact filters, scope filters, custom filters, ignored values, default filter values, ...](https://spatie.be/docs/laravel-query-builder/v3/features/filtering/)
+[Read more about filtering features like: partial filters, exact filters, scope filters, custom filters, ignored values, default filter values, ...](https://spatie.be/docs/laravel-query-builder/v5/features/filtering/)
 
 ### Including relations based on a request: `/users?include=posts`:
 
@@ -33,7 +33,7 @@ $users = QueryBuilder::for(User::class)
 // all `User`s with their `posts` loaded
 ```
 
-[Read more about include features like: including nested relationships, including relationship count, custom includes, ...](https://spatie.be/docs/laravel-query-builder/v3/features/including-relationships/)
+[Read more about include features like: including nested relationships, including relationship count, custom includes, ...](https://spatie.be/docs/laravel-query-builder/v5/features/including-relationships/)
 
 ### Sorting a query based on a request: `/users?sort=id`:
 
@@ -45,7 +45,7 @@ $users = QueryBuilder::for(User::class)
 // all `User`s sorted by ascending id
 ```
 
-[Read more about sorting features like: custom sorts, sort direction, ...](https://spatie.be/docs/laravel-query-builder/v3/features/sorting/)
+[Read more about sorting features like: custom sorts, sort direction, ...](https://spatie.be/docs/laravel-query-builder/v5/features/sorting/)
 
 ### Works together nicely with existing queries:
 
@@ -68,7 +68,7 @@ $users = QueryBuilder::for(User::class)
 // the fetched `User`s will only have their id & email set
 ```
 
-[Read more about selecting fields.](https://spatie.be/docs/laravel-query-builder/v3/features/selecting-fields/)
+[Read more about selecting fields.](https://spatie.be/docs/laravel-query-builder/v5/features/selecting-fields/)
 
 ## Support us
 
@@ -86,7 +86,7 @@ You can install the package via composer:
 composer require spatie/laravel-query-builder
 ```
 
-Read the installation notes on the docs site: [https://spatie.be/docs/laravel-query-builder/v3/installation-setup](https://spatie.be/docs/laravel-query-builder/v3/installation-setup/).
+Read the installation notes on the docs site: [https://spatie.be/docs/laravel-query-builder/v5/installation-setup](https://spatie.be/docs/laravel-query-builder/v5/installation-setup/).
 
 ## Documentation
 
