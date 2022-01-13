@@ -90,7 +90,7 @@ Read the installation notes on the docs site: [https://spatie.be/docs/laravel-qu
 
 ## Documentation
 
-You can find the documentation on [https://spatie.be/docs/laravel-query-builder/v3](https://spatie.be/docs/laravel-query-builder/v3).
+You can find the documentation on [https://spatie.be/docs/laravel-query-builder/v5](https://spatie.be/docs/laravel-query-builder/v5).
 
 Find yourself stuck using the package? Found a bug? Do you have general questions or suggestions for improving the media library? Feel free to [create an issue on GitHub](https://github.com/spatie/laravel-query-builder/issues), we'll try to address it as soon as possible.
 
