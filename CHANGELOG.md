@@ -2,9 +2,6 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
-# 4.0.1 - 2021-10-27
-
-- revert deferred service provider (#677)
 
 ## 5.0.0 - 2022-01-13
 
@@ -24,6 +21,10 @@ All notable changes to `laravel-query-builder` will be documented in this file
 - @Medalink made their first contribution in https://github.com/spatie/laravel-query-builder/pull/702
 
 **Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/4.0.1...4.0.2
+
+## 4.0.1 - 2021-10-27
+
+- revert deferred service provider (#677)
 
 ## 4.0.0 - 2021-10-20
 
