@@ -40,11 +40,12 @@ class QueryBuilder implements ArrayAccess
     /**
      * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $subject
      * @param null|\Illuminate\Http\Request $request
+     * @param array $parameterNames
      */
-    public function __construct($subject, ?Request $request = null)
+    public function __construct($subject, ?Request $request = null, $parameterNames = [])
     {
         $this->initializeSubject($subject)
-            ->initializeRequest($request ?? app(Request::class));
+            ->initializeRequest($request ?? app(Request::class), $parameterNames);
     }
 
     /**
@@ -64,10 +65,10 @@ class QueryBuilder implements ArrayAccess
         return $this;
     }
 
-    protected function initializeRequest(?Request $request = null): self
+    protected function initializeRequest(?Request $request = null, $parameterNames = []): self
     {
         $this->request = $request
-            ? QueryBuilderRequest::fromRequest($request)
+            ? QueryBuilderRequest::fromRequest($request, $parameterNames)
             : app(QueryBuilderRequest::class);
 
         return $this;
@@ -91,19 +92,20 @@ class QueryBuilder implements ArrayAccess
         return $this->subject;
     }
 
-    /**
+   /**
      * @param EloquentBuilder|Relation|string $subject
      * @param Request|null $request
+     * @param array $parameterNames
      *
      * @return static
      */
-    public static function for($subject, ?Request $request = null): self
+    public static function for($subject, ?Request $request = null, $parameterNames = []): self
     {
         if (is_subclass_of($subject, Model::class)) {
             $subject = $subject::query();
         }
 
-        return new static($subject, $request);
+        return new static($subject, $request, $parameterNames);
     }
 
     public function __call($name, $arguments)
