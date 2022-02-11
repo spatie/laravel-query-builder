@@ -21,6 +21,9 @@ beforeEach(function () {
             ->relatedModels()->create(['name' => 'Test'])
             ->nestedRelatedModels()->create(['name' => 'Test']);
 
+        $model
+            ->relatedModels()->create(['name' => 'Test 2']);
+
         $model->morphModels()->create(['name' => 'Test']);
 
         $model->relatedThroughPivotModels()->create([
@@ -269,7 +272,7 @@ it('can alias multiple allowed includes', function () {
 });
 
 it('can include custom include class', function () {
-    $includeClass = new class () implements IncludeInterface {
+    $includeClass = new class() implements IncludeInterface {
         public function __invoke(Builder $query, string $include): Builder
         {
             // TODO:
@@ -287,7 +290,7 @@ it('can include custom include class', function () {
 });
 
 it('can include custom include class by alias', function () {
-    $includeClass = new class () implements IncludeInterface {
+    $includeClass = new class() implements IncludeInterface {
         public function __invoke(Builder $query, string $include): Builder
         {
             // TODO:
@@ -323,7 +326,17 @@ it('can include a custom base query with select', function () {
 
     $this->assertNotNull($modelResult->related_models_count);
 });
+it('can include with callback', function () {
+    $callback = fn ($query) => $query->latest('id');
 
+    $modelResult = createQueryFromIncludeRequest('relatedModels')
+        ->allowedIncludes(AllowedInclude::callback('relatedModels', $callback))
+        ->first();
+
+    $this->assertNotNull($modelResult->relatedModels);
+    expect(count($modelResult->relatedModels))->toBeGreaterThanOrEqual(2);
+    expect($modelResult->relatedModels[0]->id)->toBeGreaterThan($modelResult->relatedModels[1]->id);
+});
 // Helpers
 function createQueryFromIncludeRequest(string $includes): QueryBuilder
 {

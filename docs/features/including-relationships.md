@@ -76,6 +76,33 @@ $users = QueryBuilder::for(User::class)
 // every user in $users will contain a `posts_count` and `friends_count` property
 ```
 
+## Callback includes
+
+If you want to apply a small query modification , you can use relation with callback.
+Using `AllowedInclude::callback(string $name, callable $query)` 
+
+The filter callback will receive the following parameters: `Builder $query, mixed $value, string $name`. You can modify the `Builder` object to add your own query constraints.
+
+For example:
+
+```php
+QueryBuilder::for(User::class)
+    ->allowedIncludes([
+        AllowedInclude::callback('posts', function (Builder $query) {
+            $query->latest()->where('active',true);
+        }),
+    ]);
+```
+
+Using PHP 7.4 this example becomes a lot shorter:
+
+```php
+QueryBuilder::for(User::class)
+    ->allowedIncludes([
+        AllowedInclude::callback('posts', fn (Builder $query) => $query->latest()),
+    ]);
+```
+
 ## Custom includes
 
 You can specify custom includes using the `AllowedInclude::custom()` method. Custom includes are instances of invokable classes that implement the `\Spatie\QueryBuilder\Includes\IncludeInterface` interface. The `__invoke` method will receive the current query builder instance and the include name. This way you can build any query your heart desires.

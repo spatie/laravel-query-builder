@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Spatie\QueryBuilder\Includes\IncludedCallback;
 use Spatie\QueryBuilder\Includes\IncludedCount;
 use Spatie\QueryBuilder\Includes\IncludedRelationship;
 use Spatie\QueryBuilder\Includes\IncludeInterface;
@@ -65,7 +66,12 @@ class AllowedInclude
             new static($name, $includeClass, $internalName),
         ]);
     }
-
+    public static function callback(string $name, callable $callback, ?string $internalName = null): Collection
+    {
+        return collect([
+            new static($name, new IncludedCallback($callback), $internalName),
+        ]);
+    }
     public function include(QueryBuilder $query): void
     {
         if (property_exists($this->includeClass, 'getRequestedFieldsForRelatedTable')) {
