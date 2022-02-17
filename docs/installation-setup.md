@@ -13,7 +13,7 @@ The package will automatically register its service provider.
 
 You can optionally publish the config file with:
 ```bash
-php artisan vendor:publish --provider="Spatie\QueryBuilder\QueryBuilderServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Spatie\QueryBuilder\QueryBuilderServiceProvider" --tag="query-builder-config"
 ```
 
 These are the contents of the default config file that will be published:
