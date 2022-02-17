@@ -126,7 +126,7 @@ You can select only some fields to be included using the [`allowedFields` method
 
 ## Include casing
 
-Relation/include names will be converted to camelCase when looking for the corresponding relationship on the model. This means `/users?include=blog-posts` and `/users?include=blogPosts` will both try to load the `blogPosts()` relationship.
+Relation/include names will be passed from request URL to the query directly. This means `/users?include=blog-posts` will try to load `blog-posts` relationship and  `/users?include=blogPosts` will try to load the `blogPosts()` relationship.
 
 ## Eloquent API resources
 
