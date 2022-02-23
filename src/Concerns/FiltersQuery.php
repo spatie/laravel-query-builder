@@ -75,7 +75,8 @@ trait FiltersQuery
         $diff = $filterNames->diff($allowedFilterNames);
 
         if ($diff->count()) {
-            throw InvalidFilterQuery::filtersNotAllowed($diff, $allowedFilterNames);
+            $exception = config('query-builder.invalid_filter_query_exception') ?? InvalidFilterQuery::class;
+            throw $exception::filtersNotAllowed($diff, $allowedFilterNames);
         }
     }
 }

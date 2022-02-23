@@ -33,6 +33,12 @@ return [
     'disable_invalid_filter_query_exception' => false,
 
     /*
+     * The exception you want to throw for `InvalidFilterQuery`, needs to extends default exception
+     * \Spatie\QueryBuilder\Exceptions\InvalidFilterQuery::class
+     */
+    'invalid_filter_query_exception' => \Spatie\QueryBuilder\Exceptions\InvalidFilterQuery::class,
+
+    /*
      * By default the package inspects query string of request using $request->query().
      * You can change this behavior to inspect the request body using $request->input()
      * by setting this value to `body`.
