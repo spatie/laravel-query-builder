@@ -38,8 +38,8 @@ class QueryBuilderRequest extends Request
 
         $includeParts = $this->getRequestData($includeParameterName);
 
-        if (! is_array($includeParts)) {
-            $includeParts = explode(static::getIncludesArrayValueDelimiter(), $this->getRequestData($includeParameterName));
+        if (! is_array($includeParts) && ! is_null($includeParts)) {
+            $includeParts = explode(static::getIncludesArrayValueDelimiter(), $includeParts);
         }
 
         return collect($includeParts)->filter();
