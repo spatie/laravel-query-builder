@@ -2,6 +2,24 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 5.0.1 - 2022-03-18
+
+## What's Changed
+
+- Update README.md by @wayz9 in https://github.com/spatie/laravel-query-builder/pull/713
+- Fix release order in CHANGELOG by @medvinator in https://github.com/spatie/laravel-query-builder/pull/717
+- Fix include casing docs by @canvural in https://github.com/spatie/laravel-query-builder/pull/733
+- Adapt documentation for publishing package config by @dominikb in https://github.com/spatie/laravel-query-builder/pull/734
+- Fix warning from passing null to explode for includeParts by @steven-fox in https://github.com/spatie/laravel-query-builder/pull/742
+
+## New Contributors
+
+- @wayz9 made their first contribution in https://github.com/spatie/laravel-query-builder/pull/713
+- @medvinator made their first contribution in https://github.com/spatie/laravel-query-builder/pull/717
+- @canvural made their first contribution in https://github.com/spatie/laravel-query-builder/pull/733
+- @steven-fox made their first contribution in https://github.com/spatie/laravel-query-builder/pull/742
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.0.0...5.0.1
 
 ## 5.0.0 - 2022-01-13
 
