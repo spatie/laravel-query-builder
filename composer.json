@@ -22,8 +22,8 @@
     "require": {
         "php": "^7.3|^8.0",
         "illuminate/database": "^6.20.13|^7.30.4|^8.22.2",
-        "illuminate/http": "^6.20.13|7.30.4|^8.22.2",
-        "illuminate/support": "^6.20.13|7.30.4|^8.22.2"
+        "illuminate/http": "^6.20.13|^7.30.4|^8.22.2",
+        "illuminate/support": "^6.20.13|^7.30.4|^8.22.2"
     },
     "require-dev": {
         "ext-json": "*",
