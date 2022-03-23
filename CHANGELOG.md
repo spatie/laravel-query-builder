@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 4.0.3 - 2022-03-23
+
+## What's Changed
+
+- V4 - Add support for laravel > 7.30.4 by @luilliarcec in https://github.com/spatie/laravel-query-builder/pull/744
+
+## New Contributors
+
+- @luilliarcec made their first contribution in https://github.com/spatie/laravel-query-builder/pull/744
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/4.0.2...4.0.3
+
 ## 5.0.1 - 2022-03-18
 
 ## What's Changed
