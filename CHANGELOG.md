@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 5.0.2 - 2022-04-25
+
+## What's Changed
+
+- Fix Laravel 9 PHPStan generic check  by @kayw-geek in https://github.com/spatie/laravel-query-builder/pull/749
+
+## New Contributors
+
+- @kayw-geek made their first contribution in https://github.com/spatie/laravel-query-builder/pull/749
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.0.1...5.0.2
+
 ## 4.0.3 - 2022-03-23
 
 ## What's Changed
