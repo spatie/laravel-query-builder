@@ -46,7 +46,7 @@ class QueryBuilder implements ArrayAccess
      *
      * @return $this
      */
-    protected function initializeSubject($subject): self
+    protected function initializeSubject($subject): static
     {
         throw_unless(
             $subject instanceof EloquentBuilder || $subject instanceof Relation,
@@ -58,7 +58,7 @@ class QueryBuilder implements ArrayAccess
         return $this;
     }
 
-    protected function initializeRequest(?Request $request = null): self
+    protected function initializeRequest(?Request $request = null): static
     {
         $this->request = $request
             ? QueryBuilderRequest::fromRequest($request)
@@ -91,7 +91,7 @@ class QueryBuilder implements ArrayAccess
      *
      * @return static
      */
-    public static function for($subject, ?Request $request = null): self
+    public static function for($subject, ?Request $request = null): static
     {
         if (is_subclass_of($subject, Model::class)) {
             $subject = $subject::query();
