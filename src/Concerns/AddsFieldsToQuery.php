@@ -12,7 +12,7 @@ trait AddsFieldsToQuery
 {
     protected ?Collection $allowedFields = null;
 
-    public function allowedFields($fields): self
+    public function allowedFields($fields): static
     {
         if ($this->allowedIncludes instanceof Collection) {
             throw new AllowedFieldsMustBeCalledBeforeAllowedIncludes();
