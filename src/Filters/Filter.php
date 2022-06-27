@@ -4,10 +4,13 @@ namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ */
 interface Filter
 {
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
+     * @param \Illuminate\Database\Eloquent\Builder<TModelClass> $query
      * @param mixed $value
      * @param string $property
      *
