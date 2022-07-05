@@ -129,7 +129,7 @@ $users = QueryBuilder::for(User::class)
 
 There may be occasions where it is not appropriate to expose the column name to the user.
 
-Similar to using an alias when filtering, you can do this with for sorts as well.
+Similar to using an alias when filtering, you can do this for sorts as well.
 
 The column name can be passed as optional parameter and defaults to the property string.
 
