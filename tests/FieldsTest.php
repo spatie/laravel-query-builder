@@ -32,7 +32,7 @@ it('fetches all columns if no field was requested but allowed fields were specif
 });
 
 it('replaces selected columns on the query', function () {
-    $query = createQueryFromFieldRequest(['test_models' => 'name,id'])
+    $query = createQueryFromFieldRequest(['testModel' => 'name,id'])
         ->select(['id', 'is_visible'])
         ->allowedFields(['name', 'id'])
         ->toSql();
@@ -46,7 +46,7 @@ it('replaces selected columns on the query', function () {
 });
 
 it('can fetch specific columns', function () {
-    $query = createQueryFromFieldRequest(['test_models' => 'name,id'])
+    $query = createQueryFromFieldRequest(['testModel' => 'name,id'])
         ->allowedFields(['name', 'id'])
         ->toSql();
 
@@ -58,7 +58,7 @@ it('can fetch specific columns', function () {
 });
 
 it('wont fetch a specific column if its not allowed', function () {
-    $query = createQueryFromFieldRequest(['test_models' => 'random-column'])->toSql();
+    $query = createQueryFromFieldRequest(['testModel' => 'random-column'])->toSql();
 
     $expected = TestModel::query()->toSql();
 
@@ -66,7 +66,7 @@ it('wont fetch a specific column if its not allowed', function () {
 });
 
 it('can fetch sketchy columns if they are allowed fields', function () {
-    $query = createQueryFromFieldRequest(['test_models' => 'name->first,id'])
+    $query = createQueryFromFieldRequest(['testModel' => 'name->first,id'])
         ->allowedFields(['name->first', 'id'])
         ->toSql();
 
@@ -80,7 +80,7 @@ it('can fetch sketchy columns if they are allowed fields', function () {
 it('guards against not allowed fields', function () {
     $this->expectException(InvalidFieldQuery::class);
 
-    createQueryFromFieldRequest(['test_models' => 'random-column'])
+    createQueryFromFieldRequest(['testModel' => 'random-column'])
         ->allowedFields('name');
 });
 
@@ -99,14 +99,14 @@ it('can fetch only requested columns from an included model', function () {
 
     $request = new Request([
         'fields' => [
-            'test_models' => 'id',
-            'related_models' => 'name',
+            'testModel' => 'id',
+            'relatedModels' => 'name',
         ],
         'include' => ['relatedModels'],
     ]);
 
     $queryBuilder = QueryBuilder::for(TestModel::class, $request)
-        ->allowedFields('related_models.name', 'id')
+        ->allowedFields('relatedModels.name', 'id')
         ->allowedIncludes('relatedModels');
 
     DB::enableQueryLog();
@@ -114,7 +114,7 @@ it('can fetch only requested columns from an included model', function () {
     $queryBuilder->first()->relatedModels;
 
     $this->assertQueryLogContains('select `test_models`.`id` from `test_models`');
-    $this->assertQueryLogContains('select `name` from `related_models`');
+    $this->assertQueryLogContains('select `id`, `test_model_id`, `name` from `related_models`');
 });
 
 it('can fetch requested columns from included models up to two levels deep', function () {
@@ -125,14 +125,14 @@ it('can fetch requested columns from included models up to two levels deep', fun
 
     $request = new Request([
         'fields' => [
-            'test_models' => 'id,name',
-            'related_models.test_models' => 'id',
+            'testModel' => 'id,name',
+            'relatedModels.testModel' => 'id',
         ],
         'include' => ['relatedModels.testModel'],
     ]);
 
     $result = QueryBuilder::for(TestModel::class, $request)
-        ->allowedFields('related_models.test_models.id', 'id', 'name')
+        ->allowedFields('relatedModels.testModel.id', 'id', 'name')
         ->allowedIncludes('relatedModels.testModel')
         ->first();
 
@@ -152,8 +152,8 @@ it('throws an exception when calling allowed includes before allowed fields', fu
 it('throws an exception when calling allowed includes before allowed fields but with requested fields', function () {
     $request = new Request([
         'fields' => [
-            'test_models' => 'id',
-            'related_models' => 'name',
+            'testModels' => 'id',
+            'relatedModels' => 'name',
         ],
         'include' => ['relatedModels'],
     ]);
@@ -168,8 +168,8 @@ it('throws an exception when calling allowed includes before allowed fields but 
 it('throws an exception when requesting fields for an allowed included without any allowed fields', function () {
     $request = new Request([
         'fields' => [
-            'test_models' => 'id',
-            'related_models' => 'name',
+            'testModel' => 'id',
+            'relatedModels' => 'name',
         ],
         'include' => ['relatedModels'],
     ]);
@@ -182,12 +182,12 @@ it('throws an exception when requesting fields for an allowed included without a
 
 it('can allow specific fields on an included model', function () {
     $request = new Request([
-        'fields' => ['related_models' => 'id,name'],
+        'fields' => ['relatedModels' => 'id,name'],
         'include' => ['relatedModels'],
     ]);
 
     $queryBuilder = QueryBuilder::for(TestModel::class, $request)
-        ->allowedFields(['related_models.id', 'related_models.name'])
+        ->allowedFields(['relatedModels.id', 'relatedModels.name'])
         ->allowedIncludes('relatedModels');
 
     DB::enableQueryLog();
@@ -195,12 +195,12 @@ it('can allow specific fields on an included model', function () {
     $queryBuilder->first()->relatedModels;
 
     $this->assertQueryLogContains('select * from `test_models`');
-    $this->assertQueryLogContains('select `id`, `name` from `related_models`');
+    $this->assertQueryLogContains('select `id`, `test_model_id`, `name` from `related_models`');
 });
 
 it('wont use sketchy field requests', function () {
     $request = new Request([
-        'fields' => ['test_models' => 'id->"\')from test_models--injection'],
+        'fields' => ['testModel' => 'id->"\')from testModel--injection'],
     ]);
 
     DB::enableQueryLog();
@@ -208,6 +208,33 @@ it('wont use sketchy field requests', function () {
     QueryBuilder::for(TestModel::class, $request)->get();
 
     $this->assertQueryLogDoesntContain('--injection');
+});
+
+it('takes allowed fields for a relation into account', function () {
+    $createdRelatedModel = RelatedModel::create([
+        'test_model_id' => $this->model->id,
+        'name' => 'related',
+    ]);
+
+    $request = new Request([
+        'fields'  => ['relatedModels' => 'id,name'],
+        'include' => ['relatedModels'],
+    ]);
+
+    DB::enableQueryLog();
+
+    $result = QueryBuilder::for(TestModel::class, $request)
+      ->allowedFields(['relatedModels.id', 'relatedModels.name'])
+      ->allowedIncludes('relatedModels')
+      ->first();
+
+    $queryLogBefore = DB::getQueryLog();
+
+    expect($result->relatedModels)->toHaveCount(1);
+    expect($result->relatedModels->first()->attributesToArray())->toMatchArray(
+        $createdRelatedModel->attributesToArray(),
+    );
+    expect(DB::getQueryLog())->toEqual($queryLogBefore); // Ensure eager loading
 });
 
 // Helpers

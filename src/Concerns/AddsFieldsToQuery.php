@@ -2,8 +2,10 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
+use ReflectionClass;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\QueryBuilder\Exceptions\AllowedFieldsMustBeCalledBeforeAllowedIncludes;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
@@ -34,14 +36,15 @@ trait AddsFieldsToQuery
 
     protected function addRequestedModelFieldsToQuery()
     {
-        $modelTableName = $this->getModel()->getTable();
+        $modelName = Str::lcfirst((new ReflectionClass($this->getModel()))->getShortName());
 
-        $modelFields = $this->request->fields()->get($modelTableName);
+        $modelFields = $this->request->fields()->get($modelName);
 
         if (empty($modelFields)) {
             return;
         }
 
+        $modelTableName = $this->getModel()->getTable();
         $prependedFields = $this->prependFieldsWithTableName($modelFields, $modelTableName);
 
         $this->select($prependedFields);
@@ -49,11 +52,9 @@ trait AddsFieldsToQuery
 
     public function getRequestedFieldsForRelatedTable(string $relation): array
     {
-        $table = Str::plural(Str::snake($relation)); // TODO: make this configurable
-
         $fields = $this->request->fields()->mapWithKeys(function ($fields, $table) {
             return [$table => $fields];
-        })->get($table);
+        })->get($relation);
 
         if (! $fields) {
             return [];
@@ -65,7 +66,10 @@ trait AddsFieldsToQuery
             throw new UnknownIncludedFieldsQuery($fields);
         }
 
-        return $fields;
+        return array_unique([
+            ...$this->resolveAdditionallyRequiredKeys($relation),
+            ...$fields
+        ]);
     }
 
     protected function ensureAllFieldsExist()
@@ -93,10 +97,10 @@ trait AddsFieldsToQuery
         }, $fields);
     }
 
-    protected function prependField(string $field, ?string $table = null): string
+    protected function prependField(string $field, ?string $modelName = null): string
     {
-        if (! $table) {
-            $table = $this->getModel()->getTable();
+        if (! $modelName) {
+            $modelName = Str::lcfirst((new ReflectionClass($this->getModel()))->getShortName());
         }
 
         if (Str::contains($field, '.')) {
@@ -105,6 +109,37 @@ trait AddsFieldsToQuery
             return $field;
         }
 
-        return "{$table}.{$field}";
+        return "{$modelName}.{$field}";
+    }
+
+    /**
+     * We need the primary key of any associated relation model.
+     * We also need the foreign key to associate the included model correctly
+     *
+     * Navigate the graph for nested relations to find (possibly) nested keys
+     * and foreign keys.
+     *
+     * @param string $relation
+     *
+     * @return string[]
+     */
+    protected function resolveAdditionallyRequiredKeys(string $relation): array
+    {
+        [$nestedModel, $nestedRelation] =
+            collect(explode('.', $relation))
+            ->reduce(fn($acc, $relationPart) => [
+                $acc[0]->$relationPart()->getModel(),
+                $acc[0]->$relationPart()
+            ], [$this->getModel(), null]);
+
+        $requiredKeys = [ $nestedModel->getKeyName() ];
+
+        // We need to query the foreign key only if it is saved on the table
+        // of the related model
+        if ( ! ($nestedRelation instanceof BelongsTo)) {
+            $requiredKeys[] = $nestedRelation->getForeignKeyName();
+        }
+
+        return $requiredKeys;
     }
 }
