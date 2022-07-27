@@ -2,10 +2,10 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
-use ReflectionClass;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use ReflectionClass;
 use Spatie\QueryBuilder\Exceptions\AllowedFieldsMustBeCalledBeforeAllowedIncludes;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
@@ -68,7 +68,7 @@ trait AddsFieldsToQuery
 
         return array_unique([
             ...$this->resolveAdditionallyRequiredKeys($relation),
-            ...$fields
+            ...$fields,
         ]);
     }
 
@@ -127,16 +127,16 @@ trait AddsFieldsToQuery
     {
         [$nestedModel, $nestedRelation] =
             collect(explode('.', $relation))
-            ->reduce(fn($acc, $relationPart) => [
+            ->reduce(fn ($acc, $relationPart) => [
                 $acc[0]->$relationPart()->getModel(),
-                $acc[0]->$relationPart()
+                $acc[0]->$relationPart(),
             ], [$this->getModel(), null]);
 
         $requiredKeys = [ $nestedModel->getKeyName() ];
 
         // We need to query the foreign key only if it is saved on the table
         // of the related model
-        if ( ! ($nestedRelation instanceof BelongsTo)) {
+        if (! ($nestedRelation instanceof BelongsTo)) {
             $requiredKeys[] = $nestedRelation->getForeignKeyName();
         }
 

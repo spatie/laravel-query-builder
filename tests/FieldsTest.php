@@ -217,7 +217,7 @@ it('takes allowed fields for a relation into account', function () {
     ]);
 
     $request = new Request([
-        'fields'  => ['relatedModels' => 'id,name'],
+        'fields' => ['relatedModels' => 'id,name'],
         'include' => ['relatedModels'],
     ]);
 
