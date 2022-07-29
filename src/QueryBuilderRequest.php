@@ -113,7 +113,7 @@ class QueryBuilderRequest extends Request
         if (empty($value)) {
             return $value;
         }
-        
+
         if (is_array($value)) {
             return collect($value)->map(function ($valueValue) {
                 return $this->getFilterValue($valueValue);
