@@ -106,11 +106,11 @@ class QueryBuilderRequest extends Request
     /**
      * @param $value
      *
-     * @return array|bool
+     * @return array|bool|null
      */
     protected function getFilterValue($value)
     {
-        if ($value === null || $value === '') {
+        if (empty($value)) {
             return $value;
         }
         
