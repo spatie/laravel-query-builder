@@ -106,10 +106,14 @@ class QueryBuilderRequest extends Request
     /**
      * @param $value
      *
-     * @return array|bool
+     * @return array|bool|null
      */
     protected function getFilterValue($value)
     {
+        if (empty($value)) {
+            return $value;
+        }
+        
         if (is_array($value)) {
             return collect($value)->map(function ($valueValue) {
                 return $this->getFilterValue($valueValue);
