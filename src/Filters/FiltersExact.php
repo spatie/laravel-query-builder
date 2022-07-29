@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+/**
+ * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ * @template-implements \Spatie\QueryBuilder\Filters\Filter<TModelClass>
+ */
 class FiltersExact implements Filter
 {
     protected $relationConstraints = [];
@@ -19,6 +23,7 @@ class FiltersExact implements Filter
         $this->addRelationConstraint = $addRelationConstraint;
     }
 
+    /** {@inheritdoc} */
     public function __invoke(Builder $query, $value, string $property)
     {
         if ($this->addRelationConstraint) {
