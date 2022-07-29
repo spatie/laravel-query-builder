@@ -2,6 +2,29 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 5.0.3 - 2022-07-29
+
+### What's Changed
+
+- Fixed: Some links in the documentation for v5 pointing to v2 pages by @hameedraha in https://github.com/spatie/laravel-query-builder/pull/757
+- static return type when returning $this by @lorenzolosa in https://github.com/spatie/laravel-query-builder/pull/775
+- [PHP 8.2] Fix `${var}` string interpolation deprecation by @Ayesh in https://github.com/spatie/laravel-query-builder/pull/779
+- Fix grammar by @clouder in https://github.com/spatie/laravel-query-builder/pull/784
+- Add Inertia.js Tables for Laravel Query Builder by @fabianpnke in https://github.com/spatie/laravel-query-builder/pull/790
+- Fix Laravel 9 PHPStan generic check for  `__invoke()` method of Filter by @kayw-geek in https://github.com/spatie/laravel-query-builder/pull/781
+- Fix for Warning by @shaunluedeke in https://github.com/spatie/laravel-query-builder/pull/791
+
+### New Contributors
+
+- @hameedraha made their first contribution in https://github.com/spatie/laravel-query-builder/pull/757
+- @lorenzolosa made their first contribution in https://github.com/spatie/laravel-query-builder/pull/775
+- @Ayesh made their first contribution in https://github.com/spatie/laravel-query-builder/pull/779
+- @clouder made their first contribution in https://github.com/spatie/laravel-query-builder/pull/784
+- @fabianpnke made their first contribution in https://github.com/spatie/laravel-query-builder/pull/790
+- @shaunluedeke made their first contribution in https://github.com/spatie/laravel-query-builder/pull/791
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.0.2...5.0.3
+
 ## 5.0.2 - 2022-04-25
 
 ## What's Changed
