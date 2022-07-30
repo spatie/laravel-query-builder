@@ -36,7 +36,7 @@ trait AddsFieldsToQuery
 
     protected function addRequestedModelFieldsToQuery()
     {
-        $modelName = Str::lcfirst((new ReflectionClass($this->getModel()))->getShortName());
+        $modelName = lcfirst((new ReflectionClass($this->getModel()))->getShortName());
 
         $modelFields = $this->request->fields()->get($modelName);
 
@@ -100,7 +100,7 @@ trait AddsFieldsToQuery
     protected function prependField(string $field, ?string $modelName = null): string
     {
         if (! $modelName) {
-            $modelName = Str::lcfirst((new ReflectionClass($this->getModel()))->getShortName());
+            $modelName = lcfirst((new ReflectionClass($this->getModel()))->getShortName());
         }
 
         if (Str::contains($field, '.')) {
