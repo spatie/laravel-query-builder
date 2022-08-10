@@ -175,7 +175,7 @@ QueryBuilder::for(Booking::class)
 
 ## Callback filters
 
-If you want to define a tiny custom filter, you can use a callback filter. Using `AllowedFilter::callback(string $name, callable $filter)` you can specify a callable that will executed when the filter is requested. 
+If you want to define a tiny custom filter, you can use a callback filter. Using `AllowedFilter::callback(string $name, callable $filter)` you can specify a callable that will be executed when the filter is requested. 
 
 The filter callback will receive the following parameters: `Builder $query, mixed $value, string $name`. You can modify the `Builder` object to add your own query constraints.
 
