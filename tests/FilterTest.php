@@ -371,6 +371,19 @@ it('should apply the filter on the subset of allowed values', function () {
     expect($models)->toHaveCount(1);
 });
 
+it('should apply the filter on the subset of allowed values regardless of the keys order', function () {
+    TestModel::create(['id' => 6, 'name' => 'John Doe']);
+    TestModel::create(['id' => 7, 'name' => 'John Deer']);
+
+    $models = createQueryFromFilterRequest([
+            'id' => [ 7, 6 ]
+        ])
+        ->allowedFilters(AllowedFilter::exact('id')->ignore(6))
+        ->get();
+
+    expect($models)->toHaveCount(1);
+});
+
 it('can take an argument for custom column name resolution', function () {
     $filter = AllowedFilter::custom('property_name', new FiltersExact(), 'property_column_name');
 
