@@ -365,7 +365,7 @@ it('should apply the filter on the subset of allowed values', function () {
     $models = createQueryFromFilterRequest([
             'name' => 'John Deer,John Doe',
         ])
-        ->allowedFilters(AllowedFilter::exact('name')->ignore('John Deer'))
+        ->allowedFilters(AllowedFilter::exact('name')->ignore('John Doe'))
         ->get();
 
     expect($models)->toHaveCount(1);
