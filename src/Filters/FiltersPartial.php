@@ -26,7 +26,7 @@ class FiltersPartial extends FiltersExact implements Filter
                 return $query;
             }
 
-            $query->where(function (Builder $query) use ($value, $sql, $property) {
+            $query->where(function (Builder $query) use ($value, $property) {
                 foreach (array_filter($value, 'strlen') as $partialValue) {
                     $this->applyWhere($query, $partialValue, $property);
                 }
