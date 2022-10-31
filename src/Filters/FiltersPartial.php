@@ -28,7 +28,6 @@ class FiltersPartial extends FiltersExact implements Filter
 
             $query->where(function (Builder $query) use ($value, $sql, $property) {
                 foreach (array_filter($value, 'strlen') as $partialValue) {
-                    $partialValue = mb_strtolower($partialValue, 'UTF8');
                     $this->applyWhere($query, $partialValue, $property);
                 }
             });
@@ -36,13 +35,13 @@ class FiltersPartial extends FiltersExact implements Filter
             return;
         }
 
-        $value = mb_strtolower($value, 'UTF8');
-
         $this->applyWhere($query, $value, $property);
     }
 
     protected function applyWhere(Builder $query, $value, string $property)
     {
+        $value = mb_strtolower($value, 'UTF8');
+
         $wrappedProperty = $query->getQuery()->getGrammar()->wrap($query->qualifyColumn($property));
 
         $query->whereRaw("LOWER({$wrappedProperty}) LIKE ?", ["%{$value}%"]);
