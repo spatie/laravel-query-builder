@@ -130,6 +130,37 @@ test('falsy values are not ignored when applying a partial filter', function () 
     $this->assertQueryLogContains("select * from `test_models` where (LOWER(`test_models`.`id`) LIKE ?)");
 });
 
+test('falsy values are not ignored when applying a begins with strict filter', function () {
+    DB::enableQueryLog();
+
+    createQueryFromFilterRequest([
+            'id' => [0],
+        ])
+        ->allowedFilters(AllowedFilter::beginsWithStrict('id'))
+        ->get();
+
+    $this->assertQueryLogContains("select * from `test_models` where (`test_models`.`id` LIKE ?)");
+});
+
+it('can filter partial using begins with strict', function () {
+    TestModel::create([
+        'name' => 'John Doe',
+    ]);
+
+    $models = createQueryFromFilterRequest(['name' => 'john'])
+        ->allowedFilters([
+            AllowedFilter::beginsWithStrict('name'),
+        ]);
+
+    $models2 = createQueryFromFilterRequest(['name' => 'doe'])
+        ->allowedFilters([
+            AllowedFilter::beginsWithStrict('name'),
+        ]);
+
+    expect($models->count())->toBe(1);
+    expect($models2->count())->toBe(0);
+});
+
 it('can filter and match results by exact property', function () {
     $testModel = TestModel::first();
 
