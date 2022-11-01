@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class FiltersBeginsWithStrict extends FiltersPartial implements Filter
 {
-    protected function applyWhere(Builder $query, $value, string $property)
+    protected function getWhereRawParameters($value, string $property): array
     {
-        $wrappedProperty = $query->getQuery()->getGrammar()->wrap($query->qualifyColumn($property));
-
-        $query->whereRaw("{$wrappedProperty} LIKE ?", ["{$value}%"]);
+        return [
+            "{$property} LIKE ?",
+            ["{$value}%"],
+        ];
     }
 }

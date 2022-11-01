@@ -21,29 +21,34 @@ class FiltersPartial extends FiltersExact implements Filter
             }
         }
 
+        $wrappedProperty = $query->getQuery()->getGrammar()->wrap($query->qualifyColumn($property));
+
         if (is_array($value)) {
             if (count(array_filter($value, 'strlen')) === 0) {
                 return $query;
             }
 
-            $query->where(function (Builder $query) use ($value, $property) {
+            $query->where(function (Builder $query) use ($value, $wrappedProperty) {
                 foreach (array_filter($value, 'strlen') as $partialValue) {
-                    $this->applyWhere($query, $partialValue, $property);
+                    [$sql, $bindings] = $this->getWhereRawParameters($partialValue, $wrappedProperty);
+                    $query->orWhereRaw($sql, $bindings);
                 }
             });
 
             return;
         }
 
-        $this->applyWhere($query, $value, $property);
+        [$sql, $bindings] = $this->getWhereRawParameters($value, $wrappedProperty);
+        $query->whereRaw($sql, $bindings);
     }
 
-    protected function applyWhere(Builder $query, $value, string $property)
+    protected function getWhereRawParameters($value, string $property): array
     {
         $value = mb_strtolower($value, 'UTF8');
 
-        $wrappedProperty = $query->getQuery()->getGrammar()->wrap($query->qualifyColumn($property));
-
-        $query->whereRaw("LOWER({$wrappedProperty}) LIKE ?", ["%{$value}%"]);
+        return [
+            "LOWER({$property}) LIKE ?",
+            ["%{$value}%"],
+        ];
     }
 }
