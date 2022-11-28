@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+# 4.0.2 - 2022-11-28
+
+- bugfix: appending to `pluck`ed values (that are not a `Model`) is not possible
+
 # 4.0.1 - 2021-10-27
 
 - revert deferred service provider (#677)
