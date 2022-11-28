@@ -23,26 +23,32 @@ class FiltersPartial extends FiltersExact implements Filter
 
         $wrappedProperty = $query->getQuery()->getGrammar()->wrap($query->qualifyColumn($property));
 
-        $sql = "LOWER({$wrappedProperty}) LIKE ?";
-
         if (is_array($value)) {
             if (count(array_filter($value, 'strlen')) === 0) {
                 return $query;
             }
 
-            $query->where(function (Builder $query) use ($value, $sql) {
+            $query->where(function (Builder $query) use ($value, $wrappedProperty) {
                 foreach (array_filter($value, 'strlen') as $partialValue) {
-                    $partialValue = mb_strtolower($partialValue, 'UTF8');
-
-                    $query->orWhereRaw($sql, ["%{$partialValue}%"]);
+                    [$sql, $bindings] = $this->getWhereRawParameters($partialValue, $wrappedProperty);
+                    $query->orWhereRaw($sql, $bindings);
                 }
             });
 
             return;
         }
 
+        [$sql, $bindings] = $this->getWhereRawParameters($value, $wrappedProperty);
+        $query->whereRaw($sql, $bindings);
+    }
+
+    protected function getWhereRawParameters($value, string $property): array
+    {
         $value = mb_strtolower($value, 'UTF8');
 
-        $query->whereRaw($sql, ["%{$value}%"]);
+        return [
+            "LOWER({$property}) LIKE ?",
+            ["%{$value}%"],
+        ];
     }
 }
