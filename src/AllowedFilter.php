@@ -153,7 +153,7 @@ class AllowedFilter
     protected function resolveValueForFiltering($value)
     {
         if (is_array($value)) {
-            $remainingProperties = array_diff($value, $this->ignored->toArray());
+            $remainingProperties = array_diff_assoc($value, $this->ignored->toArray());
 
             return ! empty($remainingProperties) ? $remainingProperties : null;
         }
