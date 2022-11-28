@@ -376,7 +376,7 @@ it('should apply the filter on the subset of allowed values regardless of the ke
     TestModel::create(['id' => 7, 'name' => 'John Deer']);
 
     $models = createQueryFromFilterRequest([
-            'id' => [ 7, 6 ]
+            'id' => [ 7, 6 ],
         ])
         ->allowedFilters(AllowedFilter::exact('id')->ignore(6))
         ->get();
