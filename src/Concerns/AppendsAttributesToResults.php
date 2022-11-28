@@ -24,15 +24,19 @@ trait AppendsAttributesToResults
 
     protected function addAppendsToResults(Collection $results)
     {
-        return $results->each(function (Model $result) {
-            return $result->append($this->request->appends()->toArray());
+        return $results->each(function ($result) {
+            if ($result instanceof Model) {
+                return $result->append($this->request->appends()->toArray());
+            }
         });
     }
 
     protected function addAppendsToCursor($results)
     {
-        return $results->each(function (Model $result) {
-            return $result->append($this->request->appends()->toArray());
+        return $results->each(function ($result) {
+            if($result instanceof Model) {
+                return $result->append($this->request->appends()->toArray());
+            }
         });
     }
 
