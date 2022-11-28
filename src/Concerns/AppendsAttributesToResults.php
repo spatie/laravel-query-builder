@@ -34,7 +34,7 @@ trait AppendsAttributesToResults
     protected function addAppendsToCursor($results)
     {
         return $results->each(function ($result) {
-            if($result instanceof Model) {
+            if ($result instanceof Model) {
                 return $result->append($this->request->appends()->toArray());
             }
         });
