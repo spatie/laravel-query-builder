@@ -62,6 +62,10 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 **Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.0.1...5.0.2
 
+# 4.0.4 - 2022-11-28
+
+- bugfix: appending to `pluck`ed values (that are not a `Model`) is not possible
+
 ## 4.0.3 - 2022-03-23
 
 ## What's Changed
