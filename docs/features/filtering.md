@@ -5,7 +5,7 @@ weight: 1
 
 The `filter` query parameters can be used to add `where` clauses to your Eloquent query. Out of the box we support filtering results by partial attribute value, exact attribute value or even if an attribute value exists in a given array of values. For anything more advanced, custom filters can be used.
 
-By default, all filters have to be explicitly allowed using `allowedFilters()`. This method takes an array of strings or `AllowedFilter` instances. An allowed filter can be partial, exact, scope or custom. By default, any string values passed to `allowedFilters()` will automatically be converted to `AllowedFilter::partial()` filters.
+By default, all filters have to be explicitly allowed using `allowedFilters()`. This method takes an array of strings or `AllowedFilter` instances. An allowed filter can be partial, beginsWithStrict, exact, scope or custom. By default, any string values passed to `allowedFilters()` will automatically be converted to `AllowedFilter::partial()` filters.
 
 ## Basic usage
 
@@ -31,6 +31,8 @@ $users = QueryBuilder::for(User::class)
 // $users will contain all users that contain "seb" OR "freek" in their name
 ```
 
+By passing column name strings to `allowedFilters`, **partial** filters are automatically applied.
+
 ## Disallowed filters
 
 Finally, when trying to filter on properties that have not been allowed using `allowedFilters()` an `InvalidFilterQuery` exception will be thrown along with a list of allowed filters.
@@ -38,13 +40,17 @@ Finally, when trying to filter on properties that have not been allowed using `a
 
 ## Disable InvalidFilterQuery exception
 
-You can set in configuration file to not throw an InvalidFilterQuery exception when a filter is not set in allowedFilter method.
+You can set in configuration file to not throw an InvalidFilterQuery exception when a filter is not set in allowedFilter method. This does **not** allow using any filter, it just disables the exception.
 
 ```php
 'disable_invalid_filter_query_exception' => true
 ```
 
 By default the option is set false.
+
+## Partial and beginsWithStrict filters
+
+By default, all values passed to `allowedFilters` are converted to partial filters. The underlying query will be modified to use a `LIKE LOWER(%value%)` statement. Because this can cause missed indexes, it's often worth considering a `beginsWithStrict` filter instead. This filter will use a `LIKE value%` statement instead.
 
 ## Exact filters
 
