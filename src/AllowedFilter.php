@@ -153,10 +153,7 @@ class AllowedFilter
     protected function resolveValueForFiltering($value)
     {
         if (is_array($value)) {
-            $remainingProperties = array_map(
-                [$this, 'resolveValueForFiltering'],
-                $value
-            );
+            $remainingProperties = array_map([$this, 'resolveValueForFiltering'], $value);
 
             return ! empty($remainingProperties) ? $remainingProperties : null;
         }
