@@ -17,3 +17,4 @@ class FiltersTestModels implements Filter
         return $query->where($property, $value);
     }
 }
+
