@@ -365,7 +365,20 @@ it('should apply the filter on the subset of allowed values', function () {
     $models = createQueryFromFilterRequest([
             'name' => 'John Deer,John Doe',
         ])
-        ->allowedFilters(AllowedFilter::exact('name')->ignore('John Deer'))
+        ->allowedFilters(AllowedFilter::exact('name')->ignore('John Doe'))
+        ->get();
+
+    expect($models)->toHaveCount(1);
+});
+
+it('should apply the filter on the subset of allowed values regardless of the keys order', function () {
+    TestModel::create(['id' => 6, 'name' => 'John Doe']);
+    TestModel::create(['id' => 7, 'name' => 'John Deer']);
+
+    $models = createQueryFromFilterRequest([
+            'id' => [ 7, 6 ]
+        ])
+        ->allowedFilters(AllowedFilter::exact('id')->ignore(6))
         ->get();
 
     expect($models)->toHaveCount(1);
