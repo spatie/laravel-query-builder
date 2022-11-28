@@ -2,8 +2,6 @@
 
 namespace Spatie\QueryBuilder\Filters;
 
-use Illuminate\Database\Eloquent\Builder;
-
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
  * @template-implements \Spatie\QueryBuilder\Filters\Filter<TModelClass>
