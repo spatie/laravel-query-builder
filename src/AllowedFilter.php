@@ -2,7 +2,6 @@
 
 namespace Spatie\QueryBuilder;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Filters\Filter;
 use Spatie\QueryBuilder\Filters\FiltersBeginsWithStrict;
@@ -154,9 +153,9 @@ class AllowedFilter
     protected function resolveValueForFiltering($value)
     {
         if (is_array($value)) {
-            $remainingProperties = Arr::isAssoc($value)
-                ? array_diff($value, $this->ignored->toArray())
-                : array_diff_assoc($value, $this->ignored->toArray());
+            $remainingProperties = array_map(
+                [$this, 'resolveValueForFiltering'], $value
+            );
 
             return ! empty($remainingProperties) ? $remainingProperties : null;
         }
