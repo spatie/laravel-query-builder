@@ -155,8 +155,8 @@ class AllowedFilter
     {
         if (is_array($value)) {
             $remainingProperties = Arr::isAssoc($value)
-                ? array_diff_assoc($value, $this->ignored->toArray())
-                : array_diff($value, $this->ignored->toArray());
+                ? array_diff($value, $this->ignored->toArray())
+                : array_diff_assoc($value, $this->ignored->toArray());
 
             return ! empty($remainingProperties) ? $remainingProperties : null;
         }
