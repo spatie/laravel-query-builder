@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 5.1.1 - 2022-12-02
+
+### What's Changed
+
+- Fix `array_diff_assoc` BC break in v5.1.0 by @stevebauman in https://github.com/spatie/laravel-query-builder/pull/827
+
+### New Contributors
+
+- @stevebauman made their first contribution in https://github.com/spatie/laravel-query-builder/pull/827
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.1.0...5.1.1
+
 ## 4.0.4 - 2022-11-28
 
 ### What's Changed
