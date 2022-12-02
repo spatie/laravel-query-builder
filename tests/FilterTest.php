@@ -478,6 +478,28 @@ it('does not apply default filter when filter exists and default is set', functi
     expect($models->count())->toEqual(1);
 });
 
+it('should apply a filter with a multi-dimensional array value', function () {
+    TestModel::create(['name' => 'John Doe']);
+
+    $models = createQueryFromFilterRequest(['conditions' => [[
+            'attribute' => 'name',
+            'operator' => '=',
+            'value' => 'John Doe',
+        ]]])
+        ->allowedFilters(AllowedFilter::callback('conditions', function ($query, $conditions) {
+            foreach ($conditions as $condition) {
+                $query->where(
+                    $condition['attribute'],
+                    $condition['operator'],
+                    $condition['value']
+                );
+            }
+        }))
+        ->get();
+
+    expect($models->count())->toEqual(1);
+});
+
 it('can override the array value delimiter for single filters', function () {
     TestModel::create(['name' => '>XZII/Q1On']);
     TestModel::create(['name' => 'h4S4MG3(+>azv4z/I<o>']);
