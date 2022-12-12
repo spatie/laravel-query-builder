@@ -85,7 +85,7 @@ trait SortsQuery
 
                 $sort = $this->findSort($key);
 
-                $sort->sort($this, $descending);
+                $sort?->sort($this, $descending);
             });
     }
 
