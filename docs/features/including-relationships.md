@@ -78,7 +78,7 @@ $users = QueryBuilder::for(User::class)
 
 ## Include aliases
 
-It can be useful to specify an alias for an include to enable friendly realtionship names. For example, your users table might have a `userProfile` relationship, which might be neater just specified as `profile`. Using aliases you can specify a new, shorter name for this include:
+It can be useful to specify an alias for an include to enable friendly relationship names. For example, your users table might have a `userProfile` relationship, which might be neater just specified as `profile`. Using aliases you can specify a new, shorter name for this include:
 
 ```php
 use Spatie\QueryBuilder\AllowedInclude;
