@@ -76,6 +76,20 @@ $users = QueryBuilder::for(User::class)
 // every user in $users will contain a `posts_count` and `friends_count` property
 ```
 
+## Include aliases
+
+It can be useful to specify an alias for an include to enable friendly realtionship names. For example, your users table might have a `userProfile` relationship, which might be neater just specified as `profile`. Using aliases you can specify a new, shorter name for this include:
+
+```php
+use Spatie\QueryBuilder\AllowedInclude;
+
+// GET /users?include=profile
+
+$users = QueryBuilder::for(User::class)
+    ->allowedIncludes(AllowedInclude::exact('profile', 'userProfile')) // will include the `userProfile` relationship
+    ->get();
+```
+
 ## Custom includes
 
 You can specify custom includes using the `AllowedInclude::custom()` method. Custom includes are instances of invokable classes that implement the `\Spatie\QueryBuilder\Includes\IncludeInterface` interface. The `__invoke` method will receive the current query builder instance and the include name. This way you can build any query your heart desires.
