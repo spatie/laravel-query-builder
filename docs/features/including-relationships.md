@@ -86,7 +86,7 @@ use Spatie\QueryBuilder\AllowedInclude;
 // GET /users?include=profile
 
 $users = QueryBuilder::for(User::class)
-    ->allowedIncludes(AllowedInclude::exact('profile', 'userProfile')) // will include the `userProfile` relationship
+    ->allowedIncludes(AllowedInclude::relationship('profile', 'userProfile')) // will include the `userProfile` relationship
     ->get();
 ```
 
