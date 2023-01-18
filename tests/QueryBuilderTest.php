@@ -280,3 +280,16 @@ it('supports clone as method', function () {
         $queryBuilder2->toSql()
     );
 });
+
+it('can be given an eloquent model', function () {
+    $testModel = TestModel::create(['id' => 123, 'name' => 'John Doe']);
+
+    $queryBuilder = QueryBuilder::for($testModel);
+
+    $eloquentBuilder = TestModel::where('id', 123);
+
+    $this->assertEquals(
+        $eloquentBuilder->toSql(),
+        $queryBuilder->toSql()
+    );
+});
