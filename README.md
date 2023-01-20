@@ -4,8 +4,8 @@
 # Build Eloquent queries from API requests
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
-![Test Status](https://img.shields.io/github/workflow/status/spatie/laravel-query-builder/run-tests?label=tests)
-![Code Style Status](https://img.shields.io/github/workflow/status/spatie/laravel-query-builder/Check%20&%20fix%20styling?label=code%20style)
+![Test Status](https://img.shields.io/github/actions/workflow/status/spatie/laravel-query-builder/run-tests.yml?label=tests&branch=main)
+![Code Style Status](https://img.shields.io/github/actions/workflow/status/spatie/laravel-query-builder/php-cs-fixer.yml?label=code%20style&branch=main)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
 
 This package allows you to filter, sort and include eloquent relations based on a request. The `QueryBuilder` used in this package extends Laravel's default Eloquent builder. This means all your favorite methods and macros are still available. Query parameter names follow the [JSON API specification](http://jsonapi.org/) as closely as possible.
