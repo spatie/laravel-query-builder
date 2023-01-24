@@ -2,6 +2,22 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 5.1.2 - 2023-01-24
+
+### What's Changed
+
+- Update including-relationships.md by @designvoid in https://github.com/spatie/laravel-query-builder/pull/837
+- Fix workflow badges in README by @nelson6e65 in https://github.com/spatie/laravel-query-builder/pull/841
+- Laravel 10.x Compatibility by @laravel-shift in https://github.com/spatie/laravel-query-builder/pull/842
+
+### New Contributors
+
+- @designvoid made their first contribution in https://github.com/spatie/laravel-query-builder/pull/837
+- @nelson6e65 made their first contribution in https://github.com/spatie/laravel-query-builder/pull/841
+- @laravel-shift made their first contribution in https://github.com/spatie/laravel-query-builder/pull/842
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.1.1...5.1.2
+
 ## 5.1.1 - 2022-12-02
 
 ### What's Changed
