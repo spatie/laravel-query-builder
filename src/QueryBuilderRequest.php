@@ -5,6 +5,7 @@ namespace Spatie\QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Spatie\QueryBuilder\Mappings\Column;
 
 class QueryBuilderRequest extends Request
 {
@@ -62,15 +63,14 @@ class QueryBuilderRequest extends Request
     {
         $fieldsParameterName = config('query-builder.parameters.fields');
 
-        $fieldsPerTable = collect($this->getRequestData($fieldsParameterName));
 
-        if ($fieldsPerTable->isEmpty()) {
+        $data = $this->getRequestData($fieldsParameterName);
+
+        if (!$data) {
             return collect();
         }
 
-        return $fieldsPerTable->map(function ($fields) {
-            return explode(static::getFieldsArrayValueDelimiter(), $fields);
-        });
+        return collect(explode(static::getFieldsArrayValueDelimiter(), $data))->mapInto(Column::class);
     }
 
     public function sorts(): Collection
