@@ -117,11 +117,11 @@ $users = QueryBuilder::for(User::class)
 To change the default direction of the a sort you can use `defaultDirection` :
 
 ```php
-$customSort = AllowedSort::custom('custom-sort', new SentSort())->defaultDirection('desc');
+$customSort = AllowedSort::custom('custom-sort', new SentSort())->defaultDirection(SortDirection::DESCENDING);
 
 $users = QueryBuilder::for(User::class)
             ->allowedSorts($customSort)
-            ->defaultSort($customSort)->defaultDirection(SortDirection::DESCENDING)
+            ->defaultSort($customSort)
             ->get();
 ```
 
