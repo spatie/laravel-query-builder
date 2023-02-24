@@ -85,7 +85,7 @@ trait SortsQuery
 
                 $sort = $this->findSort($key);
 
-                $sort->sort($this, $descending);
+                $sort?->sort($this, $descending);
             });
     }
 
@@ -99,6 +99,10 @@ trait SortsQuery
 
     protected function ensureAllSortsExist(): void
     {
+        if (config('query-builder.disable_invalid_sort_query_exception')) {
+            return;
+        }
+
         $requestedSortNames = $this->request->sorts()->map(function (string $sort) {
             return ltrim($sort, '-');
         });

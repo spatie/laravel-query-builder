@@ -136,6 +136,15 @@ it('will throw an exception if a sort property is not allowed', function () {
         ->allowedSorts('id');
 });
 
+it('does not throw invalid sort query exception when disable in config', function () {
+    config(['query-builder.disable_invalid_sort_query_exception' => true]);
+
+    createQueryFromSortRequest('name')
+        ->allowedSorts('id');
+
+    expect(true)->toBeTrue();
+});
+
 test('an invalid sort query exception contains the unknown and allowed sorts', function () {
     $exception = InvalidSortQuery::sortsNotAllowed(collect(['unknown sort']), collect(['allowed sort']));
 

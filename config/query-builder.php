@@ -33,6 +33,12 @@ return [
     'disable_invalid_filter_query_exception' => false,
 
     /*
+     * By default the package will throw an `InvalidSortQuery` exception when a sort in the
+     * URL is not allowed in the `allowedSorts()` method.
+     */
+    'disable_invalid_sort_query_exception' => false,
+
+    /*
      * By default the package inspects query string of request using $request->query().
      * You can change this behavior to inspect the request body using $request->input()
      * by setting this value to `body`.
