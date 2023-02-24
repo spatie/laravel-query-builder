@@ -2,6 +2,23 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 5.2.0 - 2023-02-24
+
+### What's Changed
+
+- Bump dependabot/fetch-metadata from 1.3.5 to 1.3.6 by @dependabot in https://github.com/spatie/laravel-query-builder/pull/843
+- Update sorting.md by @shukriYusof in https://github.com/spatie/laravel-query-builder/pull/846
+- Update custom sorts link in documentation by @turpoint in https://github.com/spatie/laravel-query-builder/pull/844
+- Add config to disable InvalidSortQuery exception by @bohemima in https://github.com/spatie/laravel-query-builder/pull/830
+
+### New Contributors
+
+- @shukriYusof made their first contribution in https://github.com/spatie/laravel-query-builder/pull/846
+- @turpoint made their first contribution in https://github.com/spatie/laravel-query-builder/pull/844
+- @bohemima made their first contribution in https://github.com/spatie/laravel-query-builder/pull/830
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.1.2...5.2.0
+
 ## 5.1.2 - 2023-01-24
 
 ### What's Changed
