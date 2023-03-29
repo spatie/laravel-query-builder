@@ -10,8 +10,6 @@ class QueryBuilderRequest extends Request
 {
     private static $includesArrayValueDelimiter = ',';
 
-    private static $appendsArrayValueDelimiter = ',';
-
     private static $fieldsArrayValueDelimiter = ',';
 
     private static $sortsArrayValueDelimiter = ',';
@@ -22,7 +20,6 @@ class QueryBuilderRequest extends Request
     {
         static::$filterArrayValueDelimiter = $delimiter;
         static::$includesArrayValueDelimiter = $delimiter;
-        static::$appendsArrayValueDelimiter = $delimiter;
         static::$fieldsArrayValueDelimiter = $delimiter;
         static::$sortsArrayValueDelimiter = $delimiter;
     }
@@ -43,19 +40,6 @@ class QueryBuilderRequest extends Request
         }
 
         return collect($includeParts)->filter();
-    }
-
-    public function appends(): Collection
-    {
-        $appendParameterName = config('query-builder.parameters.append');
-
-        $appendParts = $this->getRequestData($appendParameterName);
-
-        if (! is_array($appendParts) && ! is_null($appendParts)) {
-            $appendParts = explode(static::getAppendsArrayValueDelimiter(), $appendParts);
-        }
-
-        return collect($appendParts)->filter();
     }
 
     public function fields(): Collection
@@ -149,11 +133,6 @@ class QueryBuilderRequest extends Request
         static::$includesArrayValueDelimiter = $includesArrayValueDelimiter;
     }
 
-    public static function setAppendsArrayValueDelimiter(string $appendsArrayValueDelimiter): void
-    {
-        static::$appendsArrayValueDelimiter = $appendsArrayValueDelimiter;
-    }
-
     public static function setFieldsArrayValueDelimiter(string $fieldsArrayValueDelimiter): void
     {
         static::$fieldsArrayValueDelimiter = $fieldsArrayValueDelimiter;
@@ -174,11 +153,6 @@ class QueryBuilderRequest extends Request
         return static::$includesArrayValueDelimiter;
     }
 
-    public static function getAppendsArrayValueDelimiter(): string
-    {
-        return static::$appendsArrayValueDelimiter;
-    }
-
     public static function getFieldsArrayValueDelimiter(): string
     {
         return static::$fieldsArrayValueDelimiter;
@@ -197,7 +171,6 @@ class QueryBuilderRequest extends Request
     public static function resetDelimiters(): void
     {
         self::$includesArrayValueDelimiter = ',';
-        self::$appendsArrayValueDelimiter = ',';
         self::$fieldsArrayValueDelimiter = ',';
         self::$sortsArrayValueDelimiter = ',';
         self::$filterArrayValueDelimiter = ',';

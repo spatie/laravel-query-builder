@@ -40,7 +40,6 @@ public function handle($request, $next) {
 You can also set the delimiter for each feature individually:
 ```php
 QueryBuilderRequest::setIncludesArrayValueDelimiter(';'); // Includes
-QueryBuilderRequest::setAppendsArrayValueDelimiter(';');  // Appends
 QueryBuilderRequest::setFieldsArrayValueDelimiter(';');   // Fields
 QueryBuilderRequest::setSortsArrayValueDelimiter(';');    // Sorts
 QueryBuilderRequest::setFilterArrayValueDelimiter(';');   // Filter

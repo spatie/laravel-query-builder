@@ -40,12 +40,6 @@ class TestCase extends Orchestra
             $table->boolean('is_visible')->default(true);
         });
 
-        $app['db']->connection()->getSchemaBuilder()->create('append_models', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('firstname');
-            $table->string('lastname');
-        });
-
         $app['db']->connection()->getSchemaBuilder()->create('soft_delete_models', function (Blueprint $table) {
             $table->increments('id');
             $table->softDeletes();

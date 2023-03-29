@@ -335,47 +335,6 @@ it('can get different fields parameter name', function () {
     expect($request->fields())->toEqual($expected);
 });
 
-it('can get the append query params from the request', function () {
-    $request = new QueryBuilderRequest([
-        'append' => 'foo,bar',
-    ]);
-
-    $expected = collect(['foo', 'bar']);
-
-    expect($request->appends())->toEqual($expected);
-});
-
-it('can get different append query parameter name', function () {
-    config(['query-builder.parameters.append' => 'appendit']);
-
-    $request = new QueryBuilderRequest([
-        'appendit' => 'foo,bar',
-    ]);
-
-    $expected = collect(['foo', 'bar']);
-
-    expect($request->appends())->toEqual($expected);
-});
-
-it('will return an empty collection when no append query params are specified', function () {
-    $request = new QueryBuilderRequest();
-
-    $expected = collect();
-
-    expect($request->appends())->toEqual($expected);
-});
-
-it('can get the append query params from the request body', function () {
-    config(['query-builder.request_data_source' => 'body']);
-
-    $request = new QueryBuilderRequest([], [
-        'append' => 'foo,bar',
-    ], [], [], [], ['REQUEST_METHOD' => 'POST']);
-
-    $expected = collect(['foo', 'bar']);
-
-    expect($request->appends())->toEqual($expected);
-});
 
 it('takes custom delimiters for splitting request parameters', function () {
     $request = new QueryBuilderRequest([
