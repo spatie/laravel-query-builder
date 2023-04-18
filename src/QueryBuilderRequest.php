@@ -135,8 +135,12 @@ class QueryBuilderRequest extends Request
         return $value;
     }
 
-    protected function getRequestData(?string $key = null, $default = null)
+    protected function getRequestData(string|array|null $key = null, $default = null)
     {
+        if (is_array($key)) {
+            $key = array_filter($key, fn ($key) => $this->has($key))[0] ?? $key[0] ?? null;
+        }
+        
         if (config('query-builder.request_data_source') === 'body') {
             return $this->input($key, $default);
         }
