@@ -61,16 +61,29 @@ class QueryBuilderRequest extends Request
     public function fields(): Collection
     {
         $fieldsParameterName = config('query-builder.parameters.fields');
+        $fieldsData = $this->getRequestData($fieldsParameterName);
 
-        $fieldsPerTable = collect($this->getRequestData($fieldsParameterName));
+        $fieldsPerTable = collect(is_string($fieldsData) ? explode(static::getFieldsArrayValueDelimiter(), $fieldsData) : $fieldsData);
 
         if ($fieldsPerTable->isEmpty()) {
             return collect();
         }
 
-        return $fieldsPerTable->map(function ($fields) {
-            return explode(static::getFieldsArrayValueDelimiter(), $fields);
+        $fields = [];
+
+        $fieldsPerTable->each(function ($tableFields, $model) use (&$fields) {
+            if (is_numeric($model)) {
+                $model = Str::contains($tableFields, '.') ? Str::before($tableFields, '.') : '_';
+            }
+
+            if (!isset($fields[$model])) {
+                $fields[$model] = [];
+            }
+
+            $fields[$model] = array_merge($fields[$model], explode(static::getFieldsArrayValueDelimiter(), $tableFields));
         });
+
+        return collect($fields);
     }
 
     public function sorts(): Collection
