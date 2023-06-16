@@ -22,12 +22,6 @@ trait SortsQuery
             return AllowedSort::field(ltrim($sort, '-'));
         });
 
-        if ($this->request->sorts()->isEmpty()) {
-            // We haven't got any requested sorts. No need to parse allowed sorts.
-
-            return $this;
-        }
-
         $this->ensureAllSortsExist();
 
         $this->addRequestedSortsToQuery(); // allowed is known & request is known, add what we can, if there is no request, -wait
