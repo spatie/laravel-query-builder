@@ -14,9 +14,17 @@ trait FiltersQuery
     {
         $filters = is_array($filters) ? $filters : func_get_args();
 
-        $this->allowedFilters = collect($filters)->map(function ($filter) {
+        $searchFields = collect($filters)->map(function ($filter) {
+            return $filter instanceof AllowedFilter ? null : 'search.' . $filter;
+        })->whereNotNull()->toArray();
+
+        $this->allowedFilters = collect(array_merge($searchFields ?? [], $filters))->map(function ($filter) {
             if ($filter instanceof AllowedFilter) {
                 return $filter;
+            }
+
+            if (str_starts_with($filter, 'search.')) {
+                return AllowedFilter::search($filter);
             }
 
             return AllowedFilter::partial($filter);

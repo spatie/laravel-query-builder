@@ -9,6 +9,7 @@ use Spatie\QueryBuilder\Filters\FiltersCallback;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\Filters\FiltersPartial;
 use Spatie\QueryBuilder\Filters\FiltersScope;
+use Spatie\QueryBuilder\Filters\FiltersSearch;
 use Spatie\QueryBuilder\Filters\FiltersTrashed;
 
 class AllowedFilter
@@ -84,6 +85,14 @@ class AllowedFilter
 
         return new static($name, new FiltersScope(), $internalName);
     }
+
+    public static function search(string $name, $internalName = null, string $arrayValueDelimiter = null): self
+    {
+        static::setFilterArrayValueDelimiter($arrayValueDelimiter);
+
+        return new static($name, new FiltersSearch(), $internalName);
+    }
+
 
     public static function callback(string $name, $callback, $internalName = null, string $arrayValueDelimiter = null): self
     {
