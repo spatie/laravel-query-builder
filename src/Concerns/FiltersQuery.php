@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
+use Spatie\QueryBuilder\Filters\FiltersSearch;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
@@ -10,13 +11,11 @@ trait FiltersQuery
     /** @var \Illuminate\Support\Collection */
     protected $allowedFilters;
 
+    protected $searchGroup = [];
+
     public function allowedFilters($filters): static
     {
         $filters = is_array($filters) ? $filters : func_get_args();
-
-        $searchFields = collect($filters)->map(function ($filter) {
-            return $filter instanceof AllowedFilter ? null : 'search.' . $filter;
-        })->whereNotNull()->toArray();
 
         $this->allowedFilters = collect(array_merge($searchFields ?? [], $filters))->map(function ($filter) {
             if ($filter instanceof AllowedFilter) {
@@ -41,7 +40,20 @@ trait FiltersQuery
     {
         $this->allowedFilters->each(function (AllowedFilter $filter) {
             if ($this->isFilterRequested($filter)) {
+
                 $value = $this->request->filters()->get($filter->getName());
+
+                if ($filter->getFilterClass() instanceof FiltersSearch) {
+
+                    if (!isset($this->searchGroup[FiltersSearch::class]['instance'])) {
+                        $this->searchGroup[FiltersSearch::class]['values'] = [];
+                        $this->searchGroup[FiltersSearch::class]['instance'] = $filter;
+                    }
+                    $this->searchGroup[FiltersSearch::class]['values'][] = ['value' => $value, 'column'
+                    => str_replace('search.', '', $filter->getName())];
+                    return;
+                }
+
                 $filter->filter($this, $value);
 
                 return;
@@ -53,6 +65,11 @@ trait FiltersQuery
                 return;
             }
         });
+
+        if (isset($this->searchGroup[FiltersSearch::class]['instance'])) {
+            $values = $this->searchGroup[FiltersSearch::class]['values'];
+            $this->searchGroup[FiltersSearch::class]['instance']->filter($this, $values);
+        }
     }
 
     protected function findFilter(string $property): ?AllowedFilter

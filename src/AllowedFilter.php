@@ -169,4 +169,11 @@ class AllowedFilter
 
         return ! $this->ignored->contains($value) ? $value : null;
     }
+
+
+    public function getFilterClass()
+    {
+        return $this->filterClass;
+    }
+
 }
