@@ -21,6 +21,20 @@ $users = QueryBuilder::for(User::class)
 // all `User`s that contain the string "John" in their name
 ```
 
+### Grouping Multiple Filters (OR)
+
+### Filter a query based on a request: `/users?filter[search.name]=Birtan&filter[search.surname]=Taskin`:
+
+```php
+use Spatie\QueryBuilder\QueryBuilder;
+
+$users = QueryBuilder::for(User::class)
+    ->allowedFilters('search.name', 'search.surname')
+    ->get();
+
+// all `User`s that contain the string "Birtan" or contain the string "Taskin" in their name OR surname
+```
+
 [Read more about filtering features like: partial filters, exact filters, scope filters, custom filters, ignored values, default filter values, ...](https://spatie.be/docs/laravel-query-builder/v5/features/filtering/)
 
 ### Including relations based on a request: `/users?include=posts`:
