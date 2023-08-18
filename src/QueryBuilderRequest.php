@@ -76,7 +76,7 @@ class QueryBuilderRequest extends Request
                 $model = Str::contains($tableFields, '.') ? Str::before($tableFields, '.') : '_';
             }
 
-            if (!isset($fields[$model])) {
+            if (! isset($fields[$model])) {
                 $fields[$model] = [];
             }
 
