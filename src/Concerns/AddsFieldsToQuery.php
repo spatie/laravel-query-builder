@@ -36,7 +36,9 @@ trait AddsFieldsToQuery
     {
         $modelTableName = $this->getModel()->getTable();
 
-        $modelFields = $this->request->fields()->get($modelTableName);
+        $fields = $this->request->fields();
+
+        $modelFields = $fields->has($modelTableName) ? $fields->get($modelTableName) : $fields->get('_');
 
         if (empty($modelFields)) {
             return;
@@ -70,11 +72,13 @@ trait AddsFieldsToQuery
 
     protected function ensureAllFieldsExist()
     {
+        $modelTable = $this->getModel()->getTable();
+
         $requestedFields = $this->request->fields()
-            ->map(function ($fields, $model) {
+            ->map(function ($fields, $model) use ($modelTable) {
                 $tableName = $model;
 
-                return $this->prependFieldsWithTableName($fields, $tableName);
+                return $this->prependFieldsWithTableName($fields, $model === '_' ? $modelTable : $tableName);
             })
             ->flatten()
             ->unique();
