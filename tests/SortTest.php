@@ -30,6 +30,13 @@ it('can sort a query ascending', function () {
     $this->assertSortedAscending($sortedModels, 'name');
 });
 
+it('has the allowed sorts property set even if no sorts are requested', function () {
+    $queryBuilder = createQueryFromSortRequest()
+        ->allowedSorts('name');
+
+    expect(invade($queryBuilder)->allowedSorts)->not->toBeEmpty();
+});
+
 it('can sort a query descending', function () {
     $sortedModels = createQueryFromSortRequest('-name')
         ->allowedSorts('name')
@@ -403,11 +410,11 @@ test('the default direction of an allow sort can be set', function () {
 });
 
 // Helpers
-function createQueryFromSortRequest(string $sort): QueryBuilder
+function createQueryFromSortRequest(?string $sort = null): QueryBuilder
 {
-    $request = new Request([
+    $request = new Request($sort ? [
         'sort' => $sort,
-    ]);
+    ] : []);
 
     return QueryBuilder::for(TestModel::class, $request);
 }
