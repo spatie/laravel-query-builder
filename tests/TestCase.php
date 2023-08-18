@@ -101,7 +101,7 @@ class TestCase extends Orchestra
         $queryLog = collect(DB::getQueryLog())->pluck('query')->implode('|');
 
         // Could've used `assertStringContainsString` but we want to support L5.5 with PHPUnit 6.0
-        $this->assertTrue(Str::contains($queryLog, $partialSql));
+        $this->assertTrue(Str::contains($queryLog, $partialSql), "Query log did not contain partial SQL: `{$partialSql}`. Query log: {$queryLog}");
     }
 
     protected function assertQueryLogDoesntContain(string $partialSql)
