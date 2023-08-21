@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -73,14 +74,21 @@ class QueryBuilderRequest extends Request
 
         $fieldsPerTable->each(function ($tableFields, $model) use (&$fields) {
             if (is_numeric($model)) {
-                $model = Str::contains($tableFields, '.') ? Str::before($tableFields, '.') : '_';
+                // If the field is in dot notation, we'll grab the table without the field.
+                // If the field isn't in dot notation we want the base table. We'll use `_` and replace it later.
+                $model = Str::contains($tableFields, '.') ? Str::beforeLast($tableFields, '.') : '_';
             }
 
             if (! isset($fields[$model])) {
                 $fields[$model] = [];
             }
 
-            $fields[$model] = array_merge($fields[$model], explode(static::getFieldsArrayValueDelimiter(), $tableFields));
+            // If the field is in dot notation, we'll grab the field without the tables:
+            $tableFields = array_map(function (string $field) {
+                return Str::afterLast($field, '.');
+            }, explode(static::getFieldsArrayValueDelimiter(), $tableFields));
+
+            $fields[$model] = array_merge($fields[$model], $tableFields);
         });
 
         return collect($fields);

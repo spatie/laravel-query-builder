@@ -197,7 +197,7 @@ it('can fetch only requested string columns from an included model', function ()
     $queryBuilder->first()->relatedModels;
 
     $this->assertQueryLogContains('select `test_models`.`id` from `test_models`');
-    $this->assertQueryLogContains('select `related_models`.`name` from `related_models`');
+    $this->assertQueryLogContains('select `name` from `related_models`');
 });
 
 it('can fetch requested array columns from included models up to two levels deep', function () {
@@ -225,8 +225,6 @@ it('can fetch requested array columns from included models up to two levels deep
 });
 
 it('can fetch requested string columns from included models up to two levels deep', function () {
-    $this->markTestSkipped('Broken. Need to fix this before releasing!');
-
     RelatedModel::create([
         'test_model_id' => $this->model->id,
         'name' => 'related',

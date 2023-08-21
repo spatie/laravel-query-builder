@@ -307,6 +307,48 @@ it('can get requested fields', function () {
     expect($request->fields())->toEqual($expected);
 });
 
+it('can get requested fields without a table name', function () {
+    $request = new QueryBuilderRequest([
+        'fields' =>  'name,email,related.id,related.type',
+    ]);
+
+    $expected = collect(['_' => ['name', 'email'], 'related' => ['id', 'type']]);
+
+    expect($request->fields())->toEqual($expected);
+});
+
+it('can get nested fields', function () {
+    $request = new QueryBuilderRequest([
+        'fields' => [
+            'table' => 'name,email',
+            'pivots' => 'id,type',
+            'pivots.posts' => 'content',
+        ],
+    ]);
+
+    $expected = collect([
+        'table' => ['name', 'email'],
+        'pivots' => ['id', 'type'],
+        'pivots.posts' => ['content'],
+    ]);
+
+    expect($request->fields())->toEqual($expected);
+});
+
+it('can get nested fields from a string fields request', function () {
+    $request = new QueryBuilderRequest([
+        'fields' => 'id,name,email,pivots.id,pivots.type,pivots.posts.content',
+    ]);
+
+    $expected = collect([
+        '_' => ['id', 'name', 'email'],
+        'pivots' => ['id', 'type'],
+        'pivots.posts' => ['content'],
+    ]);
+
+    expect($request->fields())->toEqual($expected);
+});
+
 it('can get requested fields from the request body', function () {
     config(['query-builder.request_data_source' => 'body']);
 

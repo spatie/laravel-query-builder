@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\Exceptions\AllowedFieldsMustBeCalledBeforeAllowedIncludes;
@@ -53,9 +54,9 @@ trait AddsFieldsToQuery
     {
         $table = Str::plural(Str::snake($relation)); // TODO: make this configurable
 
-        $fields = $this->request->fields()->mapWithKeys(function ($fields, $table) {
-            return [$table => $fields];
-        })->get($table);
+        $fields = $this->request->fields()
+            ->mapWithKeys(fn($fields, $table) => [$table => $fields])
+            ->get($table);
 
         if (! $fields) {
             return [];
