@@ -2,6 +2,21 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 5.3.0 - 2023-08-21
+
+### What's Changed
+
+- Accepts string value for the `fields` query parameter by @ezra-obiwale in https://github.com/spatie/laravel-query-builder/pull/872
+- Add `FiltersEndsWithStrict` filter by @utsavsomaiya in https://github.com/spatie/laravel-query-builder/pull/885
+- Make sure the `allowedSorts` are always set (even when none are requested) @luilliarcec in https://github.com/spatie/laravel-query-builder/pull/865
+
+### New Contributors
+
+- @ezra-obiwale made their first contribution in https://github.com/spatie/laravel-query-builder/pull/872
+- @utsavsomaiya made their first contribution in https://github.com/spatie/laravel-query-builder/pull/885
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.2.0...5.3.0
+
 ## 5.2.0 - 2023-02-24
 
 ### What's Changed
