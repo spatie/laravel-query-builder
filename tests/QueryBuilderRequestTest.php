@@ -309,7 +309,7 @@ it('can get requested fields', function () {
 
 it('can get requested fields without a table name', function () {
     $request = new QueryBuilderRequest([
-        'fields' =>  'name,email,related.id,related.type',
+        'fields' => 'name,email,related.id,related.type',
     ]);
 
     $expected = collect(['_' => ['name', 'email'], 'related' => ['id', 'type']]);
