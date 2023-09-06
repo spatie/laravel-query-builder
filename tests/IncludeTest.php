@@ -82,6 +82,23 @@ test('allowing an include also allows the include count', function () {
     $this->assertNotNull($model->related_models_count);
 });
 
+it('can include an includes exists', function () {
+    $model = createQueryFromIncludeRequest('relatedModelsExists')
+        ->allowedIncludes('relatedModelsExists')
+        ->first();
+
+    $this->assertNotNull($model->related_models_exists);
+    $this->assertIsBool($model->related_models_exists);
+});
+
+test('allowing an include also allows the include exists', function () {
+    $model = createQueryFromIncludeRequest('relatedModelsExists')
+        ->allowedIncludes('relatedModels')
+        ->first();
+
+    $this->assertNotNull($model->related_models_exists);
+});
+
 it('can include nested model relations', function () {
     $models = createQueryFromIncludeRequest('relatedModels.nestedRelatedModels')
         ->allowedIncludes('relatedModels.nestedRelatedModels')
@@ -130,6 +147,26 @@ test('allowing a nested include only allows the include count for the first leve
     $this->expectException(InvalidIncludeQuery::class);
 
     createQueryFromIncludeRequest('related-models.nestedRelatedModelsCount')
+        ->allowedIncludes('relatedModels.nestedRelatedModels')
+        ->first();
+});
+
+test('allowing a nested include only allows the include exists for the first level', function () {
+    $model = createQueryFromIncludeRequest('relatedModelsExists')
+        ->allowedIncludes('relatedModels.nestedRelatedModels')
+        ->first();
+
+    $this->assertNotNull($model->related_models_exists);
+
+    $this->expectException(InvalidIncludeQuery::class);
+
+    createQueryFromIncludeRequest('nestedRelatedModelsExists')
+        ->allowedIncludes('relatedModels.nestedRelatedModels')
+        ->first();
+
+    $this->expectException(InvalidIncludeQuery::class);
+
+    createQueryFromIncludeRequest('related-models.nestedRelatedModelsExists')
         ->allowedIncludes('relatedModels.nestedRelatedModels')
         ->first();
 });
