@@ -12,6 +12,7 @@ use Spatie\QueryBuilder\Includes\IncludeInterface;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\MorphModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+use function PHPUnit\Framework\assertObjectHasProperty;
 
 beforeEach(function () {
     $this->models = TestModel::factory()->count(5)->create();
@@ -309,7 +310,7 @@ it('can take an argument for custom column name resolution', function () {
 
     expect($include)->toBeInstanceOf(Collection::class);
     expect($include->first())->toBeInstanceOf(AllowedInclude::class);
-    $this->assertClassHasAttribute('internalName', get_class($include->first()));
+    assertObjectHasProperty('internalName', $include->first());
 });
 
 it('can include a custom base query with select', function () {
