@@ -15,6 +15,7 @@ use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
 use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+use function PHPUnit\Framework\assertObjectHasProperty;
 
 uses(AssertsCollectionSorting::class);
 
@@ -291,7 +292,7 @@ it('can take an argument for custom column name resolution', function () {
     $sort = AllowedSort::custom('property_name', new SortsField(), 'property_column_name');
 
     expect($sort)->toBeInstanceOf(AllowedSort::class);
-    $this->assertClassHasAttribute('internalName', get_class($sort));
+    assertObjectHasProperty('internalName', $sort);
 });
 
 it('sets property column name to property name by default', function () {

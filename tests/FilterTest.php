@@ -14,6 +14,7 @@ use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+use function PHPUnit\Framework\assertObjectHasProperty;
 
 beforeEach(function () {
     $this->models = TestModel::factory()->count(5)->create();
@@ -453,7 +454,7 @@ it('can take an argument for custom column name resolution', function () {
     $filter = AllowedFilter::custom('property_name', new FiltersExact(), 'property_column_name');
 
     expect($filter)->toBeInstanceOf(AllowedFilter::class);
-    $this->assertClassHasAttribute('internalName', get_class($filter));
+    assertObjectHasProperty('internalName', $filter);
 });
 
 it('sets property column name to property name by default', function () {
