@@ -5,11 +5,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-
-use function PHPUnit\Framework\assertObjectHasProperty;
-
-use function PHPUnit\Framework\assertObjectHasProperty;
-
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 use Spatie\QueryBuilder\Includes\IncludedCount;
@@ -17,6 +12,7 @@ use Spatie\QueryBuilder\Includes\IncludeInterface;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\MorphModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+use function PHPUnit\Framework\assertObjectHasProperty;
 
 beforeEach(function () {
     $this->models = TestModel::factory()->count(5)->create();
@@ -314,6 +310,7 @@ it('can take an argument for custom column name resolution', function () {
 
     expect($include)->toBeInstanceOf(Collection::class);
     expect($include->first())->toBeInstanceOf(AllowedInclude::class);
+    assertObjectHasProperty('internalName', $include->first());
     assertObjectHasProperty('internalName', $include->first());
 });
 
