@@ -157,11 +157,7 @@ class QueryBuilderRequest extends Request
 
     protected function getRequestData(?string $key = null, $default = null)
     {
-        if (config('query-builder.request_data_source') === 'body') {
-            return $this->input($key, $default);
-        }
-
-        return $this->get($key, $default);
+        return $this->input($key, $default);
     }
 
     public static function setIncludesArrayValueDelimiter(string $includesArrayValueDelimiter): void
