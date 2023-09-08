@@ -75,8 +75,6 @@ it('can get the sort query param from the request', function () {
 });
 
 it('can get the sort query param from the request body', function () {
-    config(['query-builder.request_data_source' => 'body']);
-
     $request = new QueryBuilderRequest([], [
         'sort' => 'foobar',
     ], [], [], [], ['REQUEST_METHOD' => 'POST']);
@@ -135,8 +133,6 @@ it('can get the filter query params from the request', function () {
 });
 
 it('can get the filter query params from the request body', function () {
-    config(['query-builder.request_data_source' => 'body']);
-
     $request = new QueryBuilderRequest([], [
             'filter' => [
                 'foo' => 'bar',
@@ -152,7 +148,7 @@ it('can get the filter query params from the request body', function () {
     expect($request->filters())->toEqual($expected);
 });
 
-it('can get different filter query parameter name', function () {
+it('can use different filter query parameter name', function () {
     config(['query-builder.parameters.filter' => 'filters']);
 
     $request = new QueryBuilderRequest([
@@ -160,6 +156,22 @@ it('can get different filter query parameter name', function () {
             'foo' => 'bar',
             'baz' => 'qux,lex',
         ],
+    ]);
+
+    $expected = collect([
+        'foo' => 'bar',
+        'baz' => ['qux', 'lex'],
+    ]);
+
+    expect($request->filters())->toEqual($expected);
+});
+
+it('can use null as the filter query parameter name', function () {
+    config(['query-builder.parameters.filter' => null]);
+
+    $request = new QueryBuilderRequest([
+        'foo' => 'bar',
+        'baz' => 'qux,lex',
     ]);
 
     $expected = collect([
@@ -264,8 +276,6 @@ it('can get the include query params from the request', function () {
 });
 
 it('can get the include from the request body', function () {
-    config(['query-builder.request_data_source' => 'body']);
-
     $request = new QueryBuilderRequest([], [
         'include' => 'foo,bar',
     ], [], [], [], ['REQUEST_METHOD' => 'POST']);
@@ -350,8 +360,6 @@ it('can get nested fields from a string fields request', function () {
 });
 
 it('can get requested fields from the request body', function () {
-    config(['query-builder.request_data_source' => 'body']);
-
     $request = new QueryBuilderRequest([], [
         'fields' => [
             'table' => 'name,email',
@@ -408,8 +416,6 @@ it('will return an empty collection when no append query params are specified', 
 });
 
 it('can get the append query params from the request body', function () {
-    config(['query-builder.request_data_source' => 'body']);
-
     $request = new QueryBuilderRequest([], [
         'append' => 'foo,bar',
     ], [], [], [], ['REQUEST_METHOD' => 'POST']);

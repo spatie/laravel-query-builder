@@ -18,8 +18,8 @@ beforeEach(function () {
 
 it('can filter models by partial property by default', function () {
     $models = createQueryFromFilterRequest([
-            'name' => $this->models->first()->name,
-        ])
+        'name' => $this->models->first()->name,
+    ])
         ->allowedFilters('name')
         ->get();
 
