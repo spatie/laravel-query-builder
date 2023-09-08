@@ -3,6 +3,9 @@
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
+use function PHPUnit\Framework\assertObjectHasProperty;
+
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Enums\SortDirection;
@@ -12,7 +15,6 @@ use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
 use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
-use function PHPUnit\Framework\assertObjectHasProperty;
 
 uses(AssertsCollectionSorting::class);
 

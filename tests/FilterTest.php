@@ -4,6 +4,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+
+use function PHPUnit\Framework\assertObjectHasProperty;
+
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
@@ -11,7 +14,6 @@ use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
-use function PHPUnit\Framework\assertObjectHasProperty;
 
 beforeEach(function () {
     $this->models = TestModel::factory()->count(5)->create();
