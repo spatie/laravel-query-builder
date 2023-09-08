@@ -312,7 +312,7 @@ it('can take an argument for custom column name resolution', function () {
 
     expect($include)->toBeInstanceOf(Collection::class);
     expect($include->first())->toBeInstanceOf(AllowedInclude::class);
-    assertObjectHasProperty('internalName', $include->first());
+    $this->assertClassHasAttribute('internalName', get_class($include->first()));
 });
 
 it('can include a custom base query with select', function () {

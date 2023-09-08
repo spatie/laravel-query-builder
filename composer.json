@@ -30,7 +30,7 @@
         "ext-json": "*",
         "mockery/mockery": "^1.4",
         "orchestra/testbench": "^7.0|^8.0",
-        "pestphp/pest": "^2.0",
+        "pestphp/pest": "^1.20",
         "spatie/invade": "^2.0",
         "spatie/laravel-ray": "^1.28"
     },

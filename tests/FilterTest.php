@@ -453,7 +453,7 @@ it('can take an argument for custom column name resolution', function () {
     $filter = AllowedFilter::custom('property_name', new FiltersExact(), 'property_column_name');
 
     expect($filter)->toBeInstanceOf(AllowedFilter::class);
-    assertObjectHasProperty('internalName', $filter);
+    $this->assertClassHasAttribute('internalName', get_class($filter));
 });
 
 it('sets property column name to property name by default', function () {

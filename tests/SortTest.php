@@ -291,7 +291,7 @@ it('can take an argument for custom column name resolution', function () {
     $sort = AllowedSort::custom('property_name', new SortsField(), 'property_column_name');
 
     expect($sort)->toBeInstanceOf(AllowedSort::class);
-    assertObjectHasProperty('internalName', $sort);
+    $this->assertClassHasAttribute('internalName', get_class($sort));
 });
 
 it('sets property column name to property name by default', function () {
