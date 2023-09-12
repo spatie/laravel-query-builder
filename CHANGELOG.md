@@ -2,6 +2,15 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 5.5.0 - 2023-09-12
+
+### What's Changed
+
+- Add support for [`withExists`](https://laravel.com/docs/master/eloquent-relationships#other-aggregate-functions) via `IncludedExists` by @enricodelazzari in https://github.com/spatie/laravel-query-builder/pull/891
+- Use default values for all config keys (avoids issues when `QueryBuilder` is used as a dependency in a package)
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.4.0...5.5.0
+
 ## 5.4.0 - 2023-09-08
 
 ### What's Changed
