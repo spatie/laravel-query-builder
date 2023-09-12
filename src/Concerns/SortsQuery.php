@@ -93,7 +93,7 @@ trait SortsQuery
 
     protected function ensureAllSortsExist(): void
     {
-        if (config('query-builder.disable_invalid_sort_query_exception')) {
+        if (config('query-builder.disable_invalid_sort_query_exception', false)) {
             return;
         }
 

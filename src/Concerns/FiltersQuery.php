@@ -62,7 +62,7 @@ trait FiltersQuery
 
     protected function ensureAllFiltersExist()
     {
-        if (config('query-builder.disable_invalid_filter_query_exception')) {
+        if (config('query-builder.disable_invalid_filter_query_exception', false)) {
             return;
         }
 

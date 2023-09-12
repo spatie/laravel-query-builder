@@ -41,8 +41,8 @@ class AllowedInclude
                 ]);
 
                 if (! Str::contains($relationship, '.')) {
-                    $countSuffix = config('query-builder.count_suffix');
-                    $existsSuffix = config('query-builder.exists_suffix');
+                    $countSuffix = config('query-builder.count_suffix', 'Count');
+                    $existsSuffix = config('query-builder.exists_suffix', 'Exists');
 
                     $includes = $includes
                         ->merge(self::count(

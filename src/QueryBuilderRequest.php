@@ -34,7 +34,7 @@ class QueryBuilderRequest extends Request
 
     public function includes(): Collection
     {
-        $includeParameterName = config('query-builder.parameters.include');
+        $includeParameterName = config('query-builder.parameters.include', 'include');
 
         $includeParts = $this->getRequestData($includeParameterName);
 
@@ -47,7 +47,7 @@ class QueryBuilderRequest extends Request
 
     public function appends(): Collection
     {
-        $appendParameterName = config('query-builder.parameters.append');
+        $appendParameterName = config('query-builder.parameters.append', 'append');
 
         $appendParts = $this->getRequestData($appendParameterName);
 
@@ -60,7 +60,7 @@ class QueryBuilderRequest extends Request
 
     public function fields(): Collection
     {
-        $fieldsParameterName = config('query-builder.parameters.fields');
+        $fieldsParameterName = config('query-builder.parameters.fields', 'fields');
         $fieldsData = $this->getRequestData($fieldsParameterName);
 
         $fieldsPerTable = collect(is_string($fieldsData) ? explode(static::getFieldsArrayValueDelimiter(), $fieldsData) : $fieldsData);
@@ -95,7 +95,7 @@ class QueryBuilderRequest extends Request
 
     public function sorts(): Collection
     {
-        $sortParameterName = config('query-builder.parameters.sort');
+        $sortParameterName = config('query-builder.parameters.sort', 'sort');
 
         $sortParts = $this->getRequestData($sortParameterName);
 
@@ -108,7 +108,7 @@ class QueryBuilderRequest extends Request
 
     public function filters(): Collection
     {
-        $filterParameterName = config('query-builder.parameters.filter');
+        $filterParameterName = config('query-builder.parameters.filter', 'filter');
 
         $filterParts = $this->getRequestData($filterParameterName, []);
 

@@ -9,7 +9,7 @@ class IncludedExists implements IncludeInterface
 {
     public function __invoke(Builder $query, string $exists)
     {
-        $exists = Str::before($exists, config('query-builder.exists_suffix'));
+        $exists = Str::before($exists, config('query-builder.exists_suffix', 'Exists'));
 
         $query
             ->withExists($exists)
