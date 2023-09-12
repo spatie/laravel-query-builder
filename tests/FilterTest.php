@@ -512,6 +512,56 @@ it('does not apply default filter when filter exists and default is set', functi
     expect($models->count())->toEqual(1);
 });
 
+it('should apply a null default filter value if nothing in request', function () {
+    TestModel::create(['name' => 'UniqueJohn Doe']);
+    TestModel::create(['name' => null]);
+
+    $models = createQueryFromFilterRequest([])
+        ->allowedFilters(AllowedFilter::exact('name')->default(null))
+        ->get();
+
+    expect($models->count())->toEqual(1);
+});
+
+it('does not apply default filter when filter exists and default null is set', function () {
+    TestModel::create(['name' => null]);
+    TestModel::create(['name' => 'UniqueJohn Deer']);
+
+    $models = createQueryFromFilterRequest([
+            'name' => 'UniqueJohn Deer',
+        ])
+        ->allowedFilters(AllowedFilter::exact('name')->default(null))
+        ->get();
+
+    expect($models->count())->toEqual(1);
+});
+
+it('should apply a nullable filter when filter exists and is null', function () {
+    TestModel::create(['name' => null]);
+    TestModel::create(['name' => 'UniqueJohn Deer']);
+
+    $models = createQueryFromFilterRequest([
+            'name' => null,
+        ])
+        ->allowedFilters(AllowedFilter::exact('name')->nullable())
+        ->get();
+
+    expect($models->count())->toEqual(1);
+});
+
+it('should apply a nullable filter when filter exists and is set', function () {
+    TestModel::create(['name' => null]);
+    TestModel::create(['name' => 'UniqueJohn Deer']);
+
+    $models = createQueryFromFilterRequest([
+            'name' => 'UniqueJohn Deer',
+        ])
+        ->allowedFilters(AllowedFilter::exact('name')->nullable())
+        ->get();
+
+    expect($models->count())->toEqual(1);
+});
+
 it('should apply a filter with a multi-dimensional array value', function () {
     TestModel::create(['name' => 'John Doe']);
 
