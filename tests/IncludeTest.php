@@ -14,6 +14,7 @@ use Spatie\QueryBuilder\Includes\IncludedCount;
 use Spatie\QueryBuilder\Includes\IncludeInterface;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\MorphModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 beforeEach(function () {
@@ -67,6 +68,22 @@ it('can include model relations by alias', function () {
         ->get();
 
     assertRelationLoaded($models, 'relatedModels');
+});
+
+it('can include an includes callback', function () {
+    $models = createQueryFromIncludeRequest('relatedModels')
+        ->allowedIncludes([
+            AllowedInclude::callback('relatedModels', fn ($query) => $query->whereKey(RelatedModel::first()))
+        ])
+        ->get();
+
+    assertRelationLoaded($models, 'relatedModels');
+
+    $models = $models->reverse();
+    expect($models->pop()->relatedModels)->toHaveCount(1);
+    expect($models)->each(
+        fn($model) => $model->relatedModels->toHaveCount(0)
+    );
 });
 
 it('can include an includes count', function () {
