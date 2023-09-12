@@ -33,6 +33,10 @@ trait AddsIncludesToQuery
                     return AllowedInclude::count($include);
                 }
 
+                if (Str::endsWith($include, config('query-builder.exists_suffix'))) {
+                    return AllowedInclude::exists($include);
+                }
+
                 return AllowedInclude::relationship($include);
             })
             ->unique(function (AllowedInclude $allowedInclude) {
