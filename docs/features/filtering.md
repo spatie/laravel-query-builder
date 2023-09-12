@@ -299,6 +299,7 @@ QueryBuilder::for(User::class)
 QueryBuilder::for(User::class)
     ->allowedFilters([
         AllowedFilter::exact('name')->default('Joe'),
+        AllowedFilter::scope('deleted')->default(false),
         AllowedFilter::scope('permission')->default(null),
     ])
     ->get();
