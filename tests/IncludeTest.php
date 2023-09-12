@@ -73,7 +73,7 @@ it('can include model relations by alias', function () {
 it('can include an includes callback', function () {
     $models = createQueryFromIncludeRequest('relatedModels')
         ->allowedIncludes([
-            AllowedInclude::callback('relatedModels', fn ($query) => $query->whereKey(RelatedModel::first()))
+            AllowedInclude::callback('relatedModels', fn ($query) => $query->whereKey(RelatedModel::first())),
         ])
         ->get();
 
@@ -82,7 +82,7 @@ it('can include an includes callback', function () {
     $models = $models->reverse();
     expect($models->pop()->relatedModels)->toHaveCount(1);
     expect($models)->each(
-        fn($model) => $model->relatedModels->toHaveCount(0)
+        fn ($model) => $model->relatedModels->toHaveCount(0)
     );
 });
 
