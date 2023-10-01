@@ -57,7 +57,7 @@ class FiltersPartial extends FiltersExact implements Filter
         return str_replace(
             ['\\', '_', '%'],
             ['\\\\', '\\_', '\\%'],
-            $str,
+            $value,
         );
     }
 }
