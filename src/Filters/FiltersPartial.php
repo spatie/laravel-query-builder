@@ -44,11 +44,20 @@ class FiltersPartial extends FiltersExact implements Filter
 
     protected function getWhereRawParameters($value, string $property): array
     {
-        $value = mb_strtolower($value, 'UTF8');
+        $value = mb_strtolower((string) $value, 'UTF8');
 
         return [
             "LOWER({$property}) LIKE ?",
-            ["%{$value}%"],
+            ['%'.self::escapeLike($value).'%'],
         ];
+    }
+
+    private static function escapeLike(string $value): string
+    {
+        return str_replace(
+            ['\\', '_', '%'],
+            ['\\\\', '\\_', '\\%'],
+            $value,
+        );
     }
 }
