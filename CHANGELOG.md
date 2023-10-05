@@ -2,6 +2,16 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 5.6.0 - 2023-10-05
+
+### What's Changed
+
+- Add support for defining includes by callback by @enricodelazzari in https://github.com/spatie/laravel-query-builder/pull/894
+- Add nullable filters by @enricodelazzari in https://github.com/spatie/laravel-query-builder/pull/895
+- Fix escaping control characters in partial filters by @GrahamCampbell in https://github.com/spatie/laravel-query-builder/pull/898
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.5.0...5.6.0
+
 ## 5.5.0 - 2023-09-12
 
 ### What's Changed
