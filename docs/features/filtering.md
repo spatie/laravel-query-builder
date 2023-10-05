@@ -300,6 +300,23 @@ QueryBuilder::for(User::class)
     ->allowedFilters([
         AllowedFilter::exact('name')->default('Joe'),
         AllowedFilter::scope('deleted')->default(false),
+        AllowedFilter::scope('permission')->default(null),
     ])
     ->get();
 ```
+
+## Nullable Filter
+
+You can mark a filter nullable if you want to retrieve entries whose filtered value is null. This way you can apply the filter with an empty value, as shown in the example.
+
+```php
+// GET /user?filter[name]=&filter[permission]=
+
+QueryBuilder::for(User::class)
+    ->allowedFilters([
+        AllowedFilter::exact('name')->nullable(),
+        AllowedFilter::scope('permission')->nullable(),
+    ])
+    ->get();
+```
+

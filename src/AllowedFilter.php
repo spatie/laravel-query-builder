@@ -29,6 +29,12 @@ class AllowedFilter
     /** @var mixed */
     protected $default;
 
+    /** @var bool */
+    protected $hasDefault = false;
+
+    /** @var bool */
+    protected $nullable = false;
+
     public function __construct(string $name, Filter $filterClass, ?string $internalName = null)
     {
         $this->name = $name;
@@ -44,7 +50,7 @@ class AllowedFilter
     {
         $valueToFilter = $this->resolveValueForFiltering($value);
 
-        if (is_null($valueToFilter)) {
+        if (! $this->nullable && is_null($valueToFilter)) {
             return;
         }
 
@@ -143,7 +149,12 @@ class AllowedFilter
 
     public function default($value): self
     {
+        $this->hasDefault = true;
         $this->default = $value;
+
+        if (is_null($value)) {
+            $this->nullable(true);
+        }
 
         return $this;
     }
@@ -155,7 +166,14 @@ class AllowedFilter
 
     public function hasDefault(): bool
     {
-        return isset($this->default);
+        return $this->hasDefault;
+    }
+
+    public function nullable(bool $nullable = true): self
+    {
+        $this->nullable = $nullable;
+
+        return $this;
     }
 
     protected function resolveValueForFiltering($value)
