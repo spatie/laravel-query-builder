@@ -150,6 +150,23 @@ $posts = QueryBuilder::for(Post::class)
 // every post in $posts will contain a `comments_sum_votes` property
 ```
 
+## Callback includes
+
+If you want to define a tiny custom include, you can use a callback include. Using `AllowedInclude::callback(string $name, Closure $callback, ?string $internalName = null)` you can specify a Closure that will be executed when the includes is requested. 
+
+You can modify the `Builder` object to add your own query constraints.
+
+For example:
+
+```php
+QueryBuilder::for(User::class)
+    ->allowedIncludes([
+        AllowedInclude::callback('latest_post', function (Builder $query) {
+            $query->latestOfMany();
+        }),
+    ]);
+```
+
 ## Selecting included fields
 
 You can select only some fields to be included using the [`allowedFields` method on the query builder](https://spatie.be/docs/laravel-query-builder/v5/features/selecting-fields/).

@@ -2,8 +2,10 @@
 
 namespace Spatie\QueryBuilder;
 
+use Closure;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Spatie\QueryBuilder\Includes\IncludedCallback;
 use Spatie\QueryBuilder\Includes\IncludedCount;
 use Spatie\QueryBuilder\Includes\IncludedExists;
 use Spatie\QueryBuilder\Includes\IncludedRelationship;
@@ -70,6 +72,13 @@ class AllowedInclude
     {
         return collect([
             new static($name, new IncludedExists(), $internalName),
+        ]);
+    }
+
+    public static function callback(string $name, Closure $callback, ?string $internalName = null): Collection
+    {
+        return collect([
+            new static($name, new IncludedCallback($callback), $internalName),
         ]);
     }
 
