@@ -153,6 +153,7 @@ class AllowedFilter
         $this->default = $value;
 
         if (is_null($value)) {
+            $this->unsetDefault();
             $this->nullable(true);
         }
 
@@ -172,6 +173,14 @@ class AllowedFilter
     public function nullable(bool $nullable = true): self
     {
         $this->nullable = $nullable;
+
+        return $this;
+    }
+
+    public function unsetDefault(): self
+    {
+        $this->hasDefault = false;
+        unset($this->default);
 
         return $this;
     }
