@@ -43,4 +43,10 @@ return [
      * URL is not allowed in the `allowedSorts()` method.
      */
     'disable_invalid_sort_query_exception' => false,
+
+    /*
+     * By default the package will throw an `InvalidIncludeQuery` exception when an include in the
+     * URL is not allowed in the `allowedIncludes()` method.
+     */
+    'disable_invalid_includes_query_exception' => false,
 ];
