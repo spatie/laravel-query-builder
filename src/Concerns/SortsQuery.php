@@ -2,12 +2,14 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
+use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
+use Spatie\QueryBuilder\QueryBuilder;
 
 trait SortsQuery
 {
-    /** @var \Illuminate\Support\Collection */
+    /** @var Collection */
     protected $allowedSorts;
 
     public function allowedSorts($sorts): static
@@ -36,9 +38,9 @@ trait SortsQuery
     }
 
     /**
-     * @param array|string|\Spatie\QueryBuilder\AllowedSort $sorts
+     * @param array|string|AllowedSort $sorts
      *
-     * @return \Spatie\QueryBuilder\QueryBuilder
+     * @return QueryBuilder
      */
     public function defaultSort($sorts): static
     {
@@ -46,9 +48,9 @@ trait SortsQuery
     }
 
     /**
-     * @param array|string|\Spatie\QueryBuilder\AllowedSort $sorts
+     * @param array|string|AllowedSort $sorts
      *
-     * @return \Spatie\QueryBuilder\QueryBuilder
+     * @return QueryBuilder
      */
     public function defaultSorts($sorts): static
     {
@@ -112,5 +114,10 @@ trait SortsQuery
         if ($unknownSorts->isNotEmpty()) {
             throw InvalidSortQuery::sortsNotAllowed($unknownSorts, $allowedSortNames);
         }
+    }
+
+    public function getAllowedSorts(): ?Collection
+    {
+        return $this->allowedSorts;
     }
 }

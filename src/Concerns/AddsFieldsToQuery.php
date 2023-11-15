@@ -41,8 +41,9 @@ trait AddsFieldsToQuery
         $modelTableName = $this->getModel()->getTable();
 
         $this->allowedFields->map(function (AllowedField $field) {
-            if ($this->request->fields()->where('name', $field->getName())->count() > 0)
+            if ($this->request->fields()->where('name', $field->getName())->count() > 0) {
                 return $field->getInternalName();
+            }
         })->toArray();
 
         if (empty($modelFields)) {
@@ -62,11 +63,11 @@ trait AddsFieldsToQuery
             return [$table => $fields];
         })->get($table);
 
-        if (! $fields) {
+        if (!$fields) {
             return [];
         }
 
-        if (! $this->allowedFields instanceof Collection) {
+        if (!$this->allowedFields instanceof Collection) {
             // We have requested fields but no allowed fields (yet?)
 
             throw new UnknownIncludedFieldsQuery($fields);
@@ -100,7 +101,7 @@ trait AddsFieldsToQuery
 
     protected function prependField(string $field, ?string $table = null): string
     {
-        if (! $table) {
+        if (!$table) {
             $table = $this->getModel()->getTable();
         }
 
@@ -111,5 +112,10 @@ trait AddsFieldsToQuery
         }
 
         return "{$table}.{$field}";
+    }
+
+    public function getAllowedFields(): ?Collection
+    {
+        return $this->allowedFields;
     }
 }
