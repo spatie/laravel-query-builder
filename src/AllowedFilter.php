@@ -118,7 +118,7 @@ class AllowedFilter
         return new static($name, $filterClass, $internalName);
     }
 
-    public function getFilterClass(): string
+    public function getFilterClass(): \Spatie\QueryBuilder\Filters\Filter
     {
         return $this->filterClass;
     }
