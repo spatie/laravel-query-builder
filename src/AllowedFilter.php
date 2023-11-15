@@ -118,6 +118,11 @@ class AllowedFilter
         return new static($name, $filterClass, $internalName);
     }
 
+    public function getFilterClass(): string
+    {
+        return $this->filterClass;
+    }
+
     public function getName(): string
     {
         return $this->name;
