@@ -33,6 +33,7 @@
         "orchestra/testbench": "^7.0|^8.0",
         "pestphp/pest": "^1.20",
         "phpunit/phpunit": "^9.6.11",
+        "rector/rector": "^0.18.10",
         "spatie/invade": "^2.0",
         "spatie/laravel-ray": "^1.28"
     },
