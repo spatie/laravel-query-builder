@@ -12,7 +12,6 @@ use Spatie\QueryBuilder\Concerns\AddsFieldsToQuery;
 use Spatie\QueryBuilder\Concerns\AddsIncludesToQuery;
 use Spatie\QueryBuilder\Concerns\FiltersQuery;
 use Spatie\QueryBuilder\Concerns\SortsQuery;
-use Spatie\QueryBuilder\Exceptions\InvalidSubject;
 
 /**
  * @mixin EloquentBuilder
@@ -29,8 +28,8 @@ class QueryBuilder implements ArrayAccess
 
     public function __construct(
         protected EloquentBuilder|Relation $subject,
-        ?Request $request = null)
-    {
+        ?Request $request = null
+    ) {
         $this->request = $request
             ? QueryBuilderRequest::fromRequest($request)
             : app(QueryBuilderRequest::class);
