@@ -19,6 +19,7 @@ parameters:
     noUnnecessaryCollectionCall: true
     checkNullables: true
     checkGenericClassInNonGenericObjectType: false
+    treatPhpDocTypesAsCertain: false
 
     ignoreErrors:
         - '#Unsafe usage of new static#'
