@@ -12,7 +12,7 @@ class InvalidSubject extends InvalidArgumentException
             sprintf(
                 'Subject %s is invalid.',
                 is_object($subject)
-                    ? sprintf('class `%s`', get_class($subject))
+                    ? sprintf('class `%s`', $subject::class)
                     : sprintf('type `%s`', gettype($subject))
             )
         );

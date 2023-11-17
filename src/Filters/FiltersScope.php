@@ -49,7 +49,7 @@ class FiltersScope implements Filter
             $parameters = (new ReflectionObject($query->getModel()))
                 ->getMethod('scope' . ucfirst($scope))
                 ->getParameters();
-        } catch (ReflectionException $e) {
+        } catch (ReflectionException) {
             return $values;
         }
 
