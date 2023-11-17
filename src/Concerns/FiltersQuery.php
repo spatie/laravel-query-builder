@@ -8,7 +8,7 @@ use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
 trait FiltersQuery
 {
-    protected Collection$allowedFilters;
+    protected Collection $allowedFilters;
 
     public function allowedFilters($filters): static
     {
