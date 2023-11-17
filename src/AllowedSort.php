@@ -10,23 +10,13 @@ use Spatie\QueryBuilder\Sorts\SortsField;
 
 class AllowedSort
 {
-    /** @var \Spatie\QueryBuilder\Sorts\Sort */
-    protected $sortClass;
+    protected string $defaultDirection;
 
-    /** @var string */
-    protected $name;
+    protected string $internalName;
 
-    /** @var string */
-    protected $defaultDirection;
-
-    /** @var string */
-    protected $internalName;
-
-    public function __construct(string $name, Sort $sortClass, ?string $internalName = null)
+    public function __construct(protected string $name, protected Sort $sortClass, ?string $internalName = null)
     {
         $this->name = ltrim($name, '-');
-
-        $this->sortClass = $sortClass;
 
         $this->defaultDirection = static::parseSortDirection($name);
 
@@ -75,7 +65,7 @@ class AllowedSort
         return $this->internalName;
     }
 
-    public function defaultDirection(string $defaultDirection)
+    public function defaultDirection(string $defaultDirection): static
     {
         if (! in_array($defaultDirection, [
             SortDirection::ASCENDING,

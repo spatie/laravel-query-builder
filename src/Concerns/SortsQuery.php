@@ -2,13 +2,13 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
+use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 
 trait SortsQuery
 {
-    /** @var \Illuminate\Support\Collection */
-    protected $allowedSorts;
+    protected Collection $allowedSorts;
 
     public function allowedSorts($sorts): static
     {
@@ -69,7 +69,7 @@ trait SortsQuery
         return $this;
     }
 
-    protected function addRequestedSortsToQuery()
+    protected function addRequestedSortsToQuery(): void
     {
         $this->request->sorts()
             ->each(function (string $property) {

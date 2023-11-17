@@ -50,12 +50,12 @@ trait AddsIncludesToQuery
         return $this;
     }
 
-    protected function addIncludesToQuery(Collection $includes)
+    protected function addIncludesToQuery(Collection $includes): void
     {
         $includes->each(function ($include) {
             $include = $this->findInclude($include);
 
-            $include->include($this);
+            $include?->include($this);
         });
     }
 
@@ -67,11 +67,11 @@ trait AddsIncludesToQuery
             });
     }
 
-    protected function ensureAllIncludesExist()
+    protected function ensureAllIncludesExist(): void
     {
         $includes = $this->request->includes();
 
-        $allowedIncludeNames = $this->allowedIncludes->map(function (AllowedInclude $allowedInclude) {
+        $allowedIncludeNames = $this->allowedIncludes?->map(function (AllowedInclude $allowedInclude) {
             return $allowedInclude->getName();
         });
 

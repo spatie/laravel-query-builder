@@ -2,8 +2,6 @@
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use PHPUnit\Util\Test;
-use Spatie\QueryBuilder\Exceptions\InvalidSubject;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\QueryBuilderRequest;
 use Spatie\QueryBuilder\Sorts\Sort;
@@ -70,17 +68,13 @@ it('can be given a model class name', function () {
 });
 
 it('can not be given a string that is not a class name', function () {
-    $this->expectException(InvalidSubject::class);
-
-    $this->expectExceptionMessage('Subject type `string` is invalid.');
+    $this->expectException(TypeError::class);
 
     QueryBuilder::for('not a class name');
 });
 
 it('can not be given an object that is neither relation nor eloquent builder', function () {
-    $this->expectException(InvalidSubject::class);
-
-    $this->expectExceptionMessage(sprintf('Subject class `%s` is invalid.', self::class));
+    $this->expectException(TypeError::class);
 
     QueryBuilder::for($this);
 });

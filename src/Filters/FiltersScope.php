@@ -58,7 +58,8 @@ class FiltersScope implements Filter
                 continue;
             }
 
-            $model = $this->getClass($parameter)->newInstance();
+            /** @var TModelClass $model */
+            $model = $this->getClass($parameter)?->newInstance();
             $index = $parameter->getPosition() - 1;
             $value = $values[$index];
 
