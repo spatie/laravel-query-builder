@@ -153,7 +153,6 @@ class AllowedFilter
         $this->default = $value;
 
         if (is_null($value)) {
-            $this->unsetDefault();
             $this->nullable(true);
         }
 
