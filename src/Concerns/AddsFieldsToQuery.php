@@ -51,7 +51,7 @@ trait AddsFieldsToQuery
 
     public function getRequestedFieldsForRelatedTable(string $relation): array
     {
-        $tableOrRelation = config('query-builder.convert_to_snake_case_plural', true)
+        $tableOrRelation = config('query-builder.convert_relation_names_to_snake_case_plural', true)
             ? Str::plural(Str::snake($relation))
             : $relation;
 
