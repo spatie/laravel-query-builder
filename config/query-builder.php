@@ -45,6 +45,12 @@ return [
     'disable_invalid_sort_query_exception' => false,
 
     /*
+     * By default the package will throw an `InvalidIncludeQuery` exception when an include in the
+     * URL is not allowed in the `allowedIncludes()` method.
+     */
+    'disable_invalid_includes_query_exception' => false,
+
+    /*
      * By default, the package expects relationship names to be snake case plural when using fields[relationship].
      * For example, fetching the id and name for a userOwner relation would look like this:
      * GET /users?fields[user_owner]=id,name
