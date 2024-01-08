@@ -14,7 +14,7 @@ use Spatie\QueryBuilder\Filters\FiltersTrashed;
 
 class AllowedFilter
 {
-    /** @var \Spatie\QueryBuilder\Filters\Filter */
+    /** @var Filter */
     protected $filterClass;
 
     /** @var string */
@@ -118,7 +118,7 @@ class AllowedFilter
         return new static($name, $filterClass, $internalName);
     }
 
-    public function getFilterClass(): \Spatie\QueryBuilder\Filters\Filter
+    public function getFilterClass(): Filter
     {
         return $this->filterClass;
     }
