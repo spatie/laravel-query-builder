@@ -45,8 +45,13 @@ return [
     'disable_invalid_sort_query_exception' => false,
 
     /*
-     * By default, the package convert the relationship names to snake case plural when using fields[relationship].
-     * Set this to false if you don't want that and keep the relationship names.
+     * By default, the package expects relationship names to be snake case plural when using fields[relationship].
+     * For example, fetching the id and name for a userOwner relation would look like this:
+     * GET /users?fields[user_owner]=id,name
+     *
+     * Set this to `false` if you don't want that and keep the requested relationship names as-is and allows you to
+     * request the fields using a camelCase relationship name:
+     * GET /users?fields[userOwner]=id,name
      */
     'convert_relation_names_to_snake_case_plural' => true,
 ];
