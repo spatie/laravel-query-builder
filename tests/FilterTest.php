@@ -562,6 +562,28 @@ it('should apply a nullable filter when filter exists and is set', function () {
     expect($models->count())->toEqual(1);
 });
 
+it('should filter by query parameters if a default value is set and unset afterwards', function () {
+    TestModel::create(['name' => 'John Doe']);
+
+    $filterWithDefault = AllowedFilter::exact('name')->default('some default value');
+    $models = createQueryFromFilterRequest([
+            'name' => 'John Doe',
+        ])
+        ->allowedFilters($filterWithDefault->unsetDefault())
+        ->get();
+
+    expect($models->count())->toEqual(1);
+});
+
+it('should not filter at all if a default value is set and unset afterwards', function () {
+    $filterWithDefault = AllowedFilter::exact('name')->default('some default value');
+    $models = createQueryFromFilterRequest([])
+        ->allowedFilters($filterWithDefault->unsetDefault())
+        ->get();
+
+    expect($models->count())->toEqual(5);
+});
+
 it('should apply a filter with a multi-dimensional array value', function () {
     TestModel::create(['name' => 'John Doe']);
 
