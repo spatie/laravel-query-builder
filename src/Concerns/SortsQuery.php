@@ -37,7 +37,7 @@ trait SortsQuery
     public function defaultSort($sorts): static
     {
         $sorts = is_array($sorts) ? $sorts : func_get_args();
-        
+
         return $this->defaultSorts($sorts);
     }
 
