@@ -176,6 +176,14 @@ class AllowedFilter
         return $this;
     }
 
+    public function unsetDefault(): self
+    {
+        $this->hasDefault = false;
+        unset($this->default);
+
+        return $this;
+    }
+
     protected function resolveValueForFiltering($value)
     {
         if (is_array($value)) {
