@@ -1,5 +1,9 @@
 # Upgrading
 
+## Notice when upgrading to 5.6.0
+
+The changes to the `default()` method break backwards compatibility when setting the default value to `null` (`default(null)`). This is pretty much an edge case, but if you're trying to unset the default value, you can use the `unsetDefault()` method instead. 
+
 ## From v4 to v5
 
 This version adds support for Laravel 9 and drops support for all older version.
