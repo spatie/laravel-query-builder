@@ -2,6 +2,28 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 5.7.0 - 2024-01-08
+
+### What's Changed
+
+* Start testing against PHP 8.3 by @sergiy-petrov in https://github.com/spatie/laravel-query-builder/pull/899
+* Add the possibility to use the literal relation names in the `allowedFields`. by @carvemerson in https://github.com/spatie/laravel-query-builder/pull/917
+* Add `unsetDefault` as a replacement for `default(null)` which was removed in 5.6.0 by @patrickrobrecht in https://github.com/spatie/laravel-query-builder/pull/902
+* Allow passing an array to the `defaultSort` function as documented by @MajidMohammadian in https://github.com/spatie/laravel-query-builder/pull/904
+* Add `disable_invalid_includes_query_exception` config option by @dimzeta in https://github.com/spatie/laravel-query-builder/pull/906
+* Update `AllowedFilter.php` to include `getFilterClass` function by @justasSendrauskas in https://github.com/spatie/laravel-query-builder/pull/909
+
+### New Contributors
+
+* @sergiy-petrov made their first contribution in https://github.com/spatie/laravel-query-builder/pull/899
+* @carvemerson made their first contribution in https://github.com/spatie/laravel-query-builder/pull/917
+* @patrickrobrecht made their first contribution in https://github.com/spatie/laravel-query-builder/pull/902
+* @MajidMohammadian made their first contribution in https://github.com/spatie/laravel-query-builder/pull/904
+* @dimzeta made their first contribution in https://github.com/spatie/laravel-query-builder/pull/906
+* @justasSendrauskas made their first contribution in https://github.com/spatie/laravel-query-builder/pull/909
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.6.0...5.7.0
+
 ## 5.6.0 - 2023-10-05
 
 ### What's Changed
