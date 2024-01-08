@@ -43,4 +43,10 @@ return [
      * URL is not allowed in the `allowedSorts()` method.
      */
     'disable_invalid_sort_query_exception' => false,
+
+    /*
+     * By default, the package convert the relationship names to snake case plural when using fields[relationship].
+     * Set this to false if you don't want that and keep the relationship names.
+     */
+    'convert_relation_names_to_snake_case_plural' => true,
 ];
