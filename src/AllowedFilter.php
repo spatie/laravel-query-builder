@@ -16,6 +16,8 @@ class AllowedFilter
 {
     protected string $internalName;
 
+    protected Filter $filterClass;
+
     protected Collection $ignored;
 
     /** @var mixed */
@@ -107,6 +109,11 @@ class AllowedFilter
         return new static($name, $filterClass, $internalName);
     }
 
+    public function getFilterClass(): Filter
+    {
+        return $this->filterClass;
+    }
+
     public function getName(): string
     {
         return $this->name;
@@ -161,6 +168,14 @@ class AllowedFilter
     public function nullable(bool $nullable = true): self
     {
         $this->nullable = $nullable;
+
+        return $this;
+    }
+
+    public function unsetDefault(): self
+    {
+        $this->hasDefault = false;
+        unset($this->default);
 
         return $this;
     }

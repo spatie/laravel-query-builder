@@ -236,6 +236,15 @@ it('guards against invalid includes', function () {
         ->allowedIncludes('relatedModels');
 });
 
+it('does not throw invalid include query exception when disable in config', function () {
+    config(['query-builder.disable_invalid_includes_query_exception' => true]);
+
+    createQueryFromIncludeRequest('random-model')
+        ->allowedIncludes('relatedModels');
+
+    expect(true)->toBeTrue();
+});
+
 it('can allow multiple includes', function () {
     $models = createQueryFromIncludeRequest('relatedModels')
         ->allowedIncludes('relatedModels', 'otherRelatedModels')

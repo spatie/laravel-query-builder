@@ -242,6 +242,23 @@ it('allows multiple default sort parameters', function () {
     $this->assertSortedAscending($sortedModels, 'name');
 });
 
+it('allows multiple default sort parameters in an array', function () {
+    $sortClass = new class () implements SortInterface {
+        public function __invoke(Builder $query, $descending, string $property): Builder
+        {
+            return $query->orderBy('name', $descending ? 'desc' : 'asc');
+        }
+    };
+
+    $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+        ->allowedSorts(AllowedSort::custom('custom_name', $sortClass), 'id')
+        ->defaultSort([AllowedSort::custom('custom_name', $sortClass), '-id'])
+        ->get();
+
+    assertQueryExecuted('select * from `test_models` order by `name` asc, `id` desc');
+    $this->assertSortedAscending($sortedModels, 'name');
+});
+
 it('can allow multiple sort parameters', function () {
     DB::enableQueryLog();
     $sortedModels = createQueryFromSortRequest('name')
