@@ -42,7 +42,7 @@ class FiltersPartial extends FiltersExact implements Filter
         $query->whereRaw($sql, $bindings);
     }
 
-    protected function getWhereRawParameters($value, string $property): array
+    protected function getWhereRawParameters(mixed $value, string $property): array
     {
         $value = mb_strtolower((string) $value, 'UTF8');
 

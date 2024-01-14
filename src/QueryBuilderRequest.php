@@ -8,15 +8,15 @@ use Illuminate\Support\Str;
 
 class QueryBuilderRequest extends Request
 {
-    private static $includesArrayValueDelimiter = ',';
+    protected static string $includesArrayValueDelimiter = ',';
 
-    private static $appendsArrayValueDelimiter = ',';
+    protected static string $appendsArrayValueDelimiter = ',';
 
-    private static $fieldsArrayValueDelimiter = ',';
+    protected static string $fieldsArrayValueDelimiter = ',';
 
-    private static $sortsArrayValueDelimiter = ',';
+    protected static string $sortsArrayValueDelimiter = ',';
 
-    private static $filterArrayValueDelimiter = ',';
+    protected static string $filterArrayValueDelimiter = ',';
 
     public static function setArrayValueDelimiter(string $delimiter): void
     {
@@ -123,12 +123,8 @@ class QueryBuilderRequest extends Request
         });
     }
 
-    /**
-     * @param $value
-     *
-     * @return array|bool|null
-     */
-    protected function getFilterValue($value)
+    /** @return array|float|int|string|bool|null */
+    protected function getFilterValue(mixed $value): mixed
     {
         if (empty($value)) {
             return $value;

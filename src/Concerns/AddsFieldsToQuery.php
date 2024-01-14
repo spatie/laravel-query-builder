@@ -32,7 +32,7 @@ trait AddsFieldsToQuery
         return $this;
     }
 
-    protected function addRequestedModelFieldsToQuery()
+    protected function addRequestedModelFieldsToQuery(): void
     {
         $modelTableName = $this->getModel()->getTable();
 
@@ -72,7 +72,7 @@ trait AddsFieldsToQuery
         return $fields;
     }
 
-    protected function ensureAllFieldsExist()
+    protected function ensureAllFieldsExist(): void
     {
         $modelTable = $this->getModel()->getTable();
 

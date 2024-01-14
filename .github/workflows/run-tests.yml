@@ -6,7 +6,7 @@ jobs:
     test:
         runs-on: ${{ matrix.os }}
         strategy:
-            fail-fast: false
+            fail-fast: true
             matrix:
                 os: [ubuntu-latest]
                 php: [8.3, 8.2, 8.1, 8.0]
@@ -21,7 +21,7 @@ jobs:
                       carbon: ^2.63
                 exclude:
                     - laravel: 10.*
-                      php: 8.0                         
+                      php: 8.0
 
         name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -48,8 +48,6 @@ jobs:
                     --health-retries 5
 
         steps:
-
-
             - name: Checkout code
               uses: actions/checkout@v4
 
