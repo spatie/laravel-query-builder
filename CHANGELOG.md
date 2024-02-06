@@ -2,6 +2,20 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 5.8.0 - 2024-02-06
+
+### What's Changed
+
+* [Docs] Update config file content by @shdehnavi in https://github.com/spatie/laravel-query-builder/pull/918
+* Bump: Deprecating Laravel 9 and PHP 8.1, adding Laravel 11 support by @JustSteveKing in https://github.com/spatie/laravel-query-builder/pull/922
+
+### New Contributors
+
+* @shdehnavi made their first contribution in https://github.com/spatie/laravel-query-builder/pull/918
+* @JustSteveKing made their first contribution in https://github.com/spatie/laravel-query-builder/pull/922
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.7.0...5.8.0
+
 ## 5.7.0 - 2024-01-08
 
 ### What's Changed
