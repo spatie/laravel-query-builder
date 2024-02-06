@@ -1,16 +1,24 @@
 name: run-tests
 
-on: [push, pull_request]
+on:
+    push:
+        paths:
+            - '**.php'
+            - '.github/workflows/run-tests.yml'
+            - 'phpunit.xml.dist'
+            - 'composer.json'
+            - 'composer.lock'
 
 jobs:
     test:
         runs-on: ${{ matrix.os }}
+        timeout-minutes: 5
         strategy:
-            fail-fast: false
+            fail-fast: true
             matrix:
                 os: [ubuntu-latest]
                 php: [8.3, 8.2, 8.1]
-                laravel: [9.*, 10.*]
+                laravel: [9.*, 10.*, 11.*]
                 stability: [prefer-lowest, prefer-stable]
                 include:
                     - laravel: 11.*
@@ -18,10 +26,6 @@ jobs:
                       carbon: ^2.63
                     - laravel: 10.*
                       testbench: 8.*
-                      carbon: ^2.63
-                exclude:
-                    - laravel: 10.*
-                      php: 8.0                         
 
         name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
