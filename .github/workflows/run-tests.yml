@@ -19,7 +19,7 @@ jobs:
                 os: [ubuntu-latest]
                 php: [8.3, 8.2, 8.1]
                 laravel: [10.*, 11.*]
-                stability: [prefer-lowest, prefer-stable]
+                stability: [prefer-stable]
                 include:
                     - laravel: 11.*
                       testbench: 8.*
@@ -71,7 +71,7 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" --no-interaction --no-update
+                  composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}"  --no-interaction --no-update
                   composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
             - name: Execute tests
