@@ -14,12 +14,6 @@ trait SortsQuery
 
     public function allowedSorts($sorts): static
     {
-        if ($this->request->sorts()->isEmpty()) {
-            // We haven't got any requested sorts. No need to parse allowed sorts.
-
-            return $this;
-        }
-
         $sorts = is_array($sorts) ? $sorts : func_get_args();
 
         $this->allowedSorts = collect($sorts)->map(function ($sort) {
