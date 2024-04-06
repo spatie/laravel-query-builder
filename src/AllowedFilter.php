@@ -116,6 +116,11 @@ class AllowedFilter
         return $this->name;
     }
 
+    public function getNames(): array
+    {
+        return [$this->getName()];
+    }
+
     public function isForFilter(string $filterName): bool
     {
         return $this->name === $filterName;
@@ -186,5 +191,20 @@ class AllowedFilter
         }
 
         return ! $this->ignored->contains($value) ? $value : null;
+    }
+
+    public function isFilterRequested(QueryBuilderRequest $request): bool
+    {
+        return $request->filters()->has($this->getName());
+    }
+
+    public function getValueFromRequest(QueryBuilderRequest $request): mixed
+    {
+        return $request->filters()->get($this->getName());
+    }
+
+    public function getValueFromCollection(Collection $value): mixed
+    {
+        return $value->get($this->getName());
     }
 }
