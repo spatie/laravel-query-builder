@@ -41,7 +41,7 @@ class AllowedRelationshipFilter extends AllowedFilter
     public function getNames(): array
     {
         return $this->allowedFilters->map(
-            fn(AllowedFilter $allowedFilter) => $allowedFilter->getNames()
+            fn (AllowedFilter $allowedFilter) => $allowedFilter->getNames()
         )->flatten()->toArray();
     }
 
