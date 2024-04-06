@@ -118,7 +118,6 @@ it('can disable partial filtering based on related model properties', function (
 });
 
 it('defaults to separate exist clauses for each relationship allowed filter', function () {
-
     $modelToFind = $this->models->first();
 
     $relatedModelToFind = $modelToFind->relatedModels->first();
@@ -147,11 +146,9 @@ it('defaults to separate exist clauses for each relationship allowed filter', fu
     expect($rawSql)->toBe("select * from `test_models` where exists (select * from `related_models` where `test_models`.`id` = `related_models`.`test_model_id` and `related_models`.`id` = 1) and exists (select * from `related_models` where `test_models`.`id` = `related_models`.`test_model_id` and `related_models`.`name` = 'asdf') and exists (select * from `related_models` where `test_models`.`id` = `related_models`.`test_model_id` and exists (select * from `nested_related_models` where `related_models`.`id` = `nested_related_models`.`related_model_id` and `nested_related_models`.`id` = 1)) and exists (select * from `related_models` where `test_models`.`id` = `related_models`.`test_model_id` and exists (select * from `nested_related_models` where `related_models`.`id` = `nested_related_models`.`related_model_id` and `nested_related_models`.`name` = 'ghjk'))");
     expect($models)->toHaveCount(1);
     expect($models->first()->id)->toBe($modelToFind->id);
-
 });
 
 it('can group filters in same exist clause', function () {
-
     $modelToFind = $this->models->first();
 
     $relatedModelToFind = $modelToFind->relatedModels->first();
@@ -184,5 +181,4 @@ it('can group filters in same exist clause', function () {
     expect($rawSql)->toBe("select * from `test_models` where exists (select * from `related_models` where `test_models`.`id` = `related_models`.`test_model_id` and `related_models`.`id` = 1 and `related_models`.`name` = 'asdf' and exists (select * from `nested_related_models` where `related_models`.`id` = `nested_related_models`.`related_model_id` and `nested_related_models`.`id` = 1 and `nested_related_models`.`name` = 'ghjk'))");
     expect($models)->toHaveCount(1);
     expect($models->first()->id)->toBe($modelToFind->id);
-
 });
