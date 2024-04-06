@@ -129,9 +129,9 @@ it('defaults to separate exist clauses for each relationship allowed filter', fu
     $nestedRelatedModelToFind->save();
 
     $query = createQueryFromFilterRequest([
-        'relatedModels.id'                       => $relatedModelToFind->id,
-        'relatedModels.name'                     => 'asdf',
-        'relatedModels.nestedRelatedModels.id'   => $nestedRelatedModelToFind->id,
+        'relatedModels.id' => $relatedModelToFind->id,
+        'relatedModels.name' => 'asdf',
+        'relatedModels.nestedRelatedModels.id' => $nestedRelatedModelToFind->id,
         'relatedModels.nestedRelatedModels.name' => 'ghjk',
     ])->allowedFilters([
         AllowedFilter::exact('relatedModels.id'),
@@ -160,9 +160,9 @@ it('can group filters in same exist clause', function () {
     $nestedRelatedModelToFind->save();
 
     $query = createQueryFromFilterRequest([
-        'relatedModels.id'                       => $relatedModelToFind->id,
-        'relatedModels.name'                     => 'asdf',
-        'relatedModels.nestedRelatedModels.id'   => $nestedRelatedModelToFind->id,
+        'relatedModels.id' => $relatedModelToFind->id,
+        'relatedModels.name' => 'asdf',
+        'relatedModels.nestedRelatedModels.id' => $nestedRelatedModelToFind->id,
         'relatedModels.nestedRelatedModels.name' => 'ghjk',
     ])->allowedFilters([
         AllowedRelationshipFilter::group('relatedModels', ...[
@@ -171,8 +171,8 @@ it('can group filters in same exist clause', function () {
             AllowedRelationshipFilter::group('nestedRelatedModels', ...[
                 AllowedFilter::exact('relatedModels.nestedRelatedModels.id', 'id'),
                 AllowedFilter::exact('relatedModels.nestedRelatedModels.name', 'name'),
-            ])
-        ])
+            ]),
+        ]),
     ]);
 
     $models = $query->get();
