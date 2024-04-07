@@ -3,8 +3,9 @@
 namespace Spatie\QueryBuilder;
 
 use Illuminate\Support\Collection;
+use Spatie\QueryBuilder\Contracts\AllowedFilterContract;
 
-class AllowedRelationshipFilter extends AllowedFilter
+class AllowedRelationshipFilter implements AllowedFilterContract
 {
     /** @var string */
     protected $relationship;
@@ -12,14 +13,14 @@ class AllowedRelationshipFilter extends AllowedFilter
     /** @var \Illuminate\Support\Collection */
     protected $allowedFilters;
 
-    public function __construct(string $relationship, AllowedFilter ...$allowedFilters)
+    public function __construct(string $relationship, AllowedFilterContract ...$allowedFilters)
     {
         $this->relationship = $relationship;
 
         $this->allowedFilters = collect($allowedFilters);
     }
 
-    public static function group(string $relationship, AllowedFilter ...$allowedFilters): self
+    public static function group(string $relationship, AllowedFilterContract ...$allowedFilters): self
     {
         return new static($relationship, ...$allowedFilters);
     }
@@ -28,7 +29,7 @@ class AllowedRelationshipFilter extends AllowedFilter
     {
         $query->whereHas($this->relationship, function ($query) use ($value) {
             $this->allowedFilters->each(
-                function (AllowedFilter $allowedFilter) use ($query, $value) {
+                function (AllowedFilterContract $allowedFilter) use ($query, $value) {
                     $allowedFilter->filter(
                         QueryBuilder::for($query),
                         $allowedFilter->getValueFromCollection($value)
@@ -41,11 +42,11 @@ class AllowedRelationshipFilter extends AllowedFilter
     public function getNames(): array
     {
         return $this->allowedFilters->map(
-            fn (AllowedFilter $allowedFilter) => $allowedFilter->getNames()
+            fn (AllowedFilterContract $allowedFilter) => $allowedFilter->getNames()
         )->flatten()->toArray();
     }
 
-    public function isFilterRequested(QueryBuilderRequest $request): bool
+    public function isRequested(QueryBuilderRequest $request): bool
     {
         return $request->filters()->hasAny($this->getNames());
     }
@@ -58,5 +59,15 @@ class AllowedRelationshipFilter extends AllowedFilter
     public function getValueFromCollection(Collection $value): Collection
     {
         return $value->only($this->getNames());
+    }
+
+    public function hasDefault(): bool
+    {
+        return false;
+    }
+
+    public function getDefault(): mixed
+    {
+        return null;
     }
 }

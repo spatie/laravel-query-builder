@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder\Concerns;
 
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\Contracts\AllowedFilterContract;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
 trait FiltersQuery
@@ -15,7 +16,7 @@ trait FiltersQuery
         $filters = is_array($filters) ? $filters : func_get_args();
 
         $this->allowedFilters = collect($filters)->map(function ($filter) {
-            if ($filter instanceof AllowedFilter) {
+            if ($filter instanceof AllowedFilterContract) {
                 return $filter;
             }
 
@@ -31,8 +32,8 @@ trait FiltersQuery
 
     protected function addFiltersToQuery()
     {
-        $this->allowedFilters->each(function (AllowedFilter $filter) {
-            if ($this->isFilterRequested($filter)) {
+        $this->allowedFilters->each(function (AllowedFilterContract $filter) {
+            if ($filter->isRequested($this->request)) {
                 $value = $filter->getValueFromRequest($this->request);
                 $filter->filter($this, $value);
 
@@ -41,23 +42,8 @@ trait FiltersQuery
 
             if ($filter->hasDefault()) {
                 $filter->filter($this, $filter->getDefault());
-
-                return;
             }
         });
-    }
-
-    protected function findFilter(string $property): ?AllowedFilter
-    {
-        return $this->allowedFilters
-            ->first(function (AllowedFilter $filter) use ($property) {
-                return $filter->isForFilter($property);
-            });
-    }
-
-    protected function isFilterRequested(AllowedFilter $allowedFilter): bool
-    {
-        return $allowedFilter->isFilterRequested($this->request);
     }
 
     protected function ensureAllFiltersExist()
@@ -68,7 +54,7 @@ trait FiltersQuery
 
         $filterNames = $this->request->filters()->keys();
 
-        $allowedFilterNames = $this->allowedFilters->map(function (AllowedFilter $allowedFilter) {
+        $allowedFilterNames = $this->allowedFilters->map(function (AllowedFilterContract $allowedFilter) {
             return $allowedFilter->getNames();
         })->flatten();
 
