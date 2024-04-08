@@ -148,6 +148,27 @@ it('defaults to separate exist clauses for each relationship allowed filter', fu
     expect($models->first()->id)->toBe($modelToFind->id);
 });
 
+it('does not add exists statement when no filters provided', function () {
+    $query = createQueryFromFilterRequest([
+        // intentionally empty
+    ])->allowedFilters([
+        AllowedRelationshipFilter::group('relatedModels', ...[
+            AllowedFilter::exact('relatedModels.id', 'id'),
+            AllowedFilter::exact('relatedModels.name', 'name'),
+            AllowedRelationshipFilter::group('nestedRelatedModels', ...[
+                AllowedFilter::exact('relatedModels.nestedRelatedModels.id', 'id'),
+                AllowedFilter::exact('relatedModels.nestedRelatedModels.name', 'name'),
+            ]),
+        ]),
+    ]);
+
+    $models = $query->get();
+    $rawSql = $query->toRawSql();
+
+    expect($rawSql)->toBe("select * from `test_models`");
+    expect($models)->toHaveCount(5);
+});
+
 it('can group filters in same exist clause', function () {
     $modelToFind = $this->models->first();
 
