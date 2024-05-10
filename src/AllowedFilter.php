@@ -16,12 +16,9 @@ class AllowedFilter
 {
     protected string $internalName;
 
-    protected Filter $filterClass;
-
     protected Collection $ignored;
 
-    /** @var mixed */
-    protected $default;
+    protected mixed $default;
 
     protected bool $hasDefault = false;
 
