@@ -8,11 +8,11 @@ namespace Spatie\QueryBuilder\Filters;
  */
 class FiltersBeginsWithStrict extends FiltersPartial implements Filter
 {
-    protected function getWhereRawParameters($value, string $property): array
+    protected function getWhereRawParameters($value, string $property, string $driver): array
     {
         return [
-            "{$property} LIKE ?",
-            ["{$value}%"],
+            "{$property} LIKE ?".static::maybeSpecifyEscapeChar($driver),
+            [static::escapeLike($value).'%'],
         ];
     }
 }
