@@ -1,27 +1,32 @@
 name: run-tests
 
-on: [push, pull_request]
+on:
+    push:
+        paths:
+            - '**.php'
+            - '.github/workflows/run-tests.yml'
+            - 'phpunit.xml.dist'
+            - 'composer.json'
+            - 'composer.lock'
 
 jobs:
     test:
         runs-on: ${{ matrix.os }}
+        timeout-minutes: 5
         strategy:
             fail-fast: true
             matrix:
                 os: [ubuntu-latest]
-                php: [8.3, 8.2, 8.1, 8.0]
-                laravel: [9.*, 10.*]
-                stability: [prefer-lowest, prefer-stable]
+                php: [8.3, 8.2]
+                laravel: [10.*, 11.*]
+                stability: [prefer-stable]
                 include:
-                    - laravel: 10.*
-                      testbench: 8.*
+                    - laravel: 11.*
+                      testbench: 9.*
                       carbon: ^2.63
-                    - laravel: 9.*
-                      testbench: 7.*
-                      carbon: ^2.63
-                exclude:
                     - laravel: 10.*
                       php: 8.0
+                      testbench: 8.*
 
         name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -65,7 +70,7 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" --no-interaction --no-update
+                  composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}"  --no-interaction --no-update
                   composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
             - name: Execute tests

@@ -5,7 +5,7 @@ weight: 2
 
 The `sort` query parameter is used to determine by which property the results collection will be ordered. Sorting is ascending by default and can be reversed by adding a hyphen (`-`) to the start of the property name.
 
-All sorts have to be explicitly allowed by passing an array to the `allowedSorts()` method. The `allowedSorts` method takes an array of column names as strings or instances of `AllowedSorts`s.
+All sorts have to be explicitly allowed by passing an array to the `allowedSorts()` method. The `allowedSorts` method takes an array of column names as strings or instances of `AllowedSorts`.
 
 For more advanced use cases, [custom sorts](#content-custom-sorts) can be used.
 

@@ -20,10 +20,10 @@
         }
     ],
     "require": {
-        "php": "^8.0",
-        "illuminate/database": "^9.0|^10.0",
-        "illuminate/http": "^9.0|^10.0",
-        "illuminate/support": "^9.0|^10.0",
+        "php": "^8.2",
+        "illuminate/database": "^10.0|^11.0",
+        "illuminate/http": "^10.0|^11.0",
+        "illuminate/support": "^10.0|^11.0",
         "spatie/laravel-package-tools": "^1.11"
     },
     "require-dev": {
@@ -31,9 +31,9 @@
         "mockery/mockery": "^1.4",
         "nunomaduro/larastan": "^2.0",
         "orchestra/testbench": "^7.0|^8.0",
-        "pestphp/pest": "^1.20",
         "phpunit/phpunit": "^9.6.11",
         "rector/rector": "^0.18.10",
+        "pestphp/pest": "^2.0",
         "spatie/invade": "^2.0",
         "spatie/laravel-ray": "^1.28"
     },
