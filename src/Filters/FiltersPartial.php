@@ -22,15 +22,16 @@ class FiltersPartial extends FiltersExact implements Filter
         }
 
         $wrappedProperty = $query->getQuery()->getGrammar()->wrap($query->qualifyColumn($property));
+        $databaseDriver = $this->getDatabaseDriver($query);
 
         if (is_array($value)) {
             if (count(array_filter($value, 'strlen')) === 0) {
                 return $query;
             }
 
-            $query->where(function (Builder $query) use ($value, $wrappedProperty) {
+            $query->where(function (Builder $query) use ($databaseDriver, $value, $wrappedProperty) {
                 foreach (array_filter($value, 'strlen') as $partialValue) {
-                    [$sql, $bindings] = $this->getWhereRawParameters($partialValue, $wrappedProperty);
+                    [$sql, $bindings] = $this->getWhereRawParameters($partialValue, $wrappedProperty, $databaseDriver);
                     $query->orWhereRaw($sql, $bindings);
                 }
             });
@@ -38,26 +39,45 @@ class FiltersPartial extends FiltersExact implements Filter
             return;
         }
 
-        [$sql, $bindings] = $this->getWhereRawParameters($value, $wrappedProperty);
+        [$sql, $bindings] = $this->getWhereRawParameters($value, $wrappedProperty, $databaseDriver);
         $query->whereRaw($sql, $bindings);
     }
 
-    protected function getWhereRawParameters(mixed $value, string $property): array
+    protected function getDatabaseDriver(Builder $query): string
+    {
+        return $query->getConnection()->getDriverName();
+    }
+
+  
+    protected function getWhereRawParameters(mixed $value, string $property, string $driver): array
     {
         $value = mb_strtolower((string) $value, 'UTF8');
 
         return [
-            "LOWER({$property}) LIKE ?",
+            "LOWER({$property}) LIKE ?".self::maybeSpecifyEscapeChar($driver),
             ['%'.self::escapeLike($value).'%'],
         ];
     }
 
-    private static function escapeLike(string $value): string
+    protected static function escapeLike(string $value): string
     {
         return str_replace(
             ['\\', '_', '%'],
             ['\\\\', '\\_', '\\%'],
             $value,
         );
+    }
+
+    /**
+     * @param 'sqlite'|'pgsql'|'sqlsrc'|'mysql' $driver
+     * @return string
+     */
+    protected static function maybeSpecifyEscapeChar(string $driver): string
+    {
+        if(! in_array($driver, ['sqlite','pgsql','sqlsrv'])) {
+            return '';
+        }
+
+        return " ESCAPE '\'";
     }
 }
