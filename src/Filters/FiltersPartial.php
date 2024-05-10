@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
@@ -47,7 +48,7 @@ class FiltersPartial extends FiltersExact implements Filter
         $value = mb_strtolower((string) $value, 'UTF8');
 
         return [
-            "LOWER({$property}) LIKE ?",
+            "LOWER({$property}) LIKE ?".self::maybeSpecifyEscapeChar(),
             ['%'.self::escapeLike($value).'%'],
         ];
     }
@@ -59,5 +60,14 @@ class FiltersPartial extends FiltersExact implements Filter
             ['\\\\', '\\_', '\\%'],
             $value,
         );
+    }
+
+    private static function maybeSpecifyEscapeChar(): string
+    {
+        if(!in_array(DB::getDriverName(), ["sqlite","pgsql","sqlsrv"])){
+            return "";
+        }
+
+        return " ESCAPE '\'";        
     }
 }
