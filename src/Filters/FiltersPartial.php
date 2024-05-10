@@ -3,7 +3,6 @@
 namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
@@ -74,7 +73,7 @@ class FiltersPartial extends FiltersExact implements Filter
      */
     protected static function maybeSpecifyEscapeChar(string $driver): string
     {
-        if(!in_array($driver, ['sqlite','pgsql','sqlsrv'])){
+        if(! in_array($driver, ['sqlite','pgsql','sqlsrv'])) {
             return '';
         }
 
