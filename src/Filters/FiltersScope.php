@@ -20,7 +20,7 @@ use Spatie\QueryBuilder\Exceptions\InvalidFilterValue;
 class FiltersScope implements Filter
 {
     /** {@inheritdoc} */
-    public function __invoke(Builder $query, $values, string $property): Builder
+    public function __invoke(Builder $query, mixed $values, string $property): Builder
     {
         $propertyParts = collect(explode('.', $property));
 
@@ -77,10 +77,6 @@ class FiltersScope implements Filter
 
     protected function getClass(ReflectionParameter $parameter): ?ReflectionClass
     {
-        if (version_compare(PHP_VERSION, '8.0', '<')) {
-            return $parameter->getClass();
-        }
-
         $type = $parameter->getType();
 
         if (is_null($type)) {

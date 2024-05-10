@@ -29,8 +29,3 @@ parameters:
 			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<TModelClass of Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:withoutTrashed\\(\\)\\.$#"
 			count: 1
 			path: src/Filters/FiltersTrashed.php
-
-		-
-			message: "#^PHPDoc tag @return with type Spatie\\\\QueryBuilder\\\\QueryBuilder is not subtype of native type static\\(Spatie\\\\QueryBuilder\\\\QueryBuilder\\)\\.$#"
-			count: 2
-			path: src/QueryBuilder.php

@@ -61,12 +61,10 @@ class FiltersExact implements Filter
     protected function withRelationConstraint(Builder $query, mixed $value, string $property): void
     {
         [$relation, $property] = collect(explode('.', $property))
-            ->pipe(function (Collection $parts) {
-                return [
-                    $parts->except(count($parts) - 1)->implode('.'),
-                    $parts->last(),
-                ];
-            });
+            ->pipe(fn(Collection $parts) => [
+                $parts->except(count($parts) - 1)->implode('.'),
+                $parts->last(),
+            ]);
 
         $query->whereHas($relation, function (Builder $query) use ($value, $property) {
             $this->relationConstraints[] = $property = $query->qualifyColumn($property);
