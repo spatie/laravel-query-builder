@@ -64,10 +64,10 @@ class FiltersPartial extends FiltersExact implements Filter
 
     private static function maybeSpecifyEscapeChar(): string
     {
-        if(!in_array(DB::getDriverName(), ["sqlite","pgsql","sqlsrv"])){
+        if(! in_array(DB::getDriverName(), ["sqlite","pgsql","sqlsrv"])) {
             return "";
         }
 
-        return " ESCAPE '\'";        
+        return " ESCAPE '\'";
     }
 }

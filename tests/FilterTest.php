@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 use Pest\Expectation;
+
 use function PHPUnit\Framework\assertObjectHasProperty;
 
 use Spatie\QueryBuilder\AllowedFilter;
@@ -92,13 +93,13 @@ it('can filter a custom base query with select', function () {
 
 it('specifies escape character in supported databases', function (string $dbDriver) {
     $fakeConnection = "test_{$dbDriver}";
-    
+
     DB::connectUsing($fakeConnection, [
         'driver' => $dbDriver,
         'database' => null,
     ]);
 
-    DB::usingConnection($fakeConnection, function() use ($dbDriver){
+    DB::usingConnection($fakeConnection, function () use ($dbDriver) {
         $request = new Request([
             'filter' => ['name' => 'to_find'],
         ]);
@@ -107,8 +108,8 @@ it('specifies escape character in supported databases', function (string $dbDriv
             ->allowedFilters('name', 'id')
             ->toSql();
 
-        expect($queryBuilderSql)->when(in_array($dbDriver, ["sqlite","pgsql","sqlsrv"]), fn(Expectation $query) => $query->toContain("ESCAPE '\'"));
-        expect($queryBuilderSql)->when($dbDriver === 'mysql', fn(Expectation $query) => $query->not->toContain("ESCAPE '\'"));
+        expect($queryBuilderSql)->when(in_array($dbDriver, ["sqlite","pgsql","sqlsrv"]), fn (Expectation $query) => $query->toContain("ESCAPE '\'"));
+        expect($queryBuilderSql)->when($dbDriver === 'mysql', fn (Expectation $query) => $query->not->toContain("ESCAPE '\'"));
     });
 })->with(['sqlite', 'mysql', 'pgsql', 'sqlsrv']);
 
