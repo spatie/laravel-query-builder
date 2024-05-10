@@ -13,19 +13,13 @@ use Spatie\QueryBuilder\Includes\IncludeInterface;
 
 class AllowedInclude
 {
-    /** @var string */
-    protected $name;
+    protected string $internalName;
 
-    /** @var IncludeInterface */
-    protected $includeClass;
-
-    /** @var string|null */
-    protected $internalName;
-
-    public function __construct(string $name, IncludeInterface $includeClass, ?string $internalName = null)
-    {
-        $this->name = $name;
-        $this->includeClass = $includeClass;
+    public function __construct(
+        protected string $name,
+        protected IncludeInterface $includeClass,
+        ?string $internalName = null
+    ) {
         $this->internalName = $internalName ?? $this->name;
     }
 

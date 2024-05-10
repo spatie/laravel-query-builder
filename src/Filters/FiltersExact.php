@@ -13,14 +13,10 @@ use Illuminate\Support\Str;
  */
 class FiltersExact implements Filter
 {
-    protected $relationConstraints = [];
+    protected array $relationConstraints = [];
 
-    /** @var bool */
-    protected $addRelationConstraint = true;
-
-    public function __construct(bool $addRelationConstraint = true)
+    public function __construct(protected bool $addRelationConstraint = true)
     {
-        $this->addRelationConstraint = $addRelationConstraint;
     }
 
     /** {@inheritdoc} */
@@ -62,7 +58,7 @@ class FiltersExact implements Filter
         return is_a($query->getModel()->{$firstRelationship}(), Relation::class);
     }
 
-    protected function withRelationConstraint(Builder $query, $value, string $property)
+    protected function withRelationConstraint(Builder $query, mixed $value, string $property): void
     {
         [$relation, $property] = collect(explode('.', $property))
             ->pipe(function (Collection $parts) {

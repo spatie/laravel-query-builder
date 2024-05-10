@@ -29,7 +29,10 @@
     "require-dev": {
         "ext-json": "*",
         "mockery/mockery": "^1.4",
+        "nunomaduro/larastan": "^2.0",
         "orchestra/testbench": "^7.0|^8.0",
+        "phpunit/phpunit": "^9.6.11",
+        "rector/rector": "^0.18.10",
         "pestphp/pest": "^2.0",
         "spatie/invade": "^2.0",
         "spatie/laravel-ray": "^1.28"
@@ -47,7 +50,9 @@
     },
     "scripts": {
         "test": "vendor/bin/pest",
-        "test-coverage": "phpunit --coverage-html coverage"
+        "test-coverage": "phpunit --coverage-html coverage",
+        "analyse": "vendor/bin/phpstan analyse --ansi --memory-limit=4G",
+        "baseline": "vendor/bin/phpstan analyse --generate-baseline --memory-limit=4G"
     },
     "config": {
         "sort-packages": true,

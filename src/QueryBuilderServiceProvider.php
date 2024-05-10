@@ -14,14 +14,14 @@ class QueryBuilderServiceProvider extends PackageServiceProvider
             ->hasConfigFile();
     }
 
-    public function registeringPackage()
+    public function registeringPackage(): void
     {
         $this->app->bind(QueryBuilderRequest::class, function ($app) {
             return QueryBuilderRequest::fromRequest($app['request']);
         });
     }
 
-    public function provides()
+    public function provides(): array
     {
         return [
             QueryBuilderRequest::class,

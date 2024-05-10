@@ -49,7 +49,7 @@ class FiltersScope implements Filter
             $parameters = (new ReflectionObject($query->getModel()))
                 ->getMethod('scope' . ucfirst($scope))
                 ->getParameters();
-        } catch (ReflectionException $e) {
+        } catch (ReflectionException) {
             return $values;
         }
 
@@ -58,7 +58,8 @@ class FiltersScope implements Filter
                 continue;
             }
 
-            $model = $this->getClass($parameter)->newInstance();
+            /** @var TModelClass $model */
+            $model = $this->getClass($parameter)?->newInstance();
             $index = $parameter->getPosition() - 1;
             $value = $values[$index];
 

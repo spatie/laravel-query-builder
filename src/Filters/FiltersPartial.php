@@ -48,7 +48,8 @@ class FiltersPartial extends FiltersExact implements Filter
         return $query->getConnection()->getDriverName();
     }
 
-    protected function getWhereRawParameters($value, string $property, string $driver): array
+  
+    protected function getWhereRawParameters(mixed $value, string $property, string $driver): array
     {
         $value = mb_strtolower((string) $value, 'UTF8');
 
