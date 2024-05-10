@@ -2,6 +2,22 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 5.8.1 - 2024-05-10
+
+### What's Changed
+
+* Fix typo by @justinkekeocha in https://github.com/spatie/laravel-query-builder/pull/926
+* List query-builder-ts front-end implementation package by @rogervila in https://github.com/spatie/laravel-query-builder/pull/925
+* Fix incorrect escape character in SQL for LIKE query in partial filter by @Talpx1 in https://github.com/spatie/laravel-query-builder/pull/927
+
+### New Contributors
+
+* @justinkekeocha made their first contribution in https://github.com/spatie/laravel-query-builder/pull/926
+* @rogervila made their first contribution in https://github.com/spatie/laravel-query-builder/pull/925
+* @Talpx1 made their first contribution in https://github.com/spatie/laravel-query-builder/pull/927
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.8.0...5.8.1
+
 ## 5.8.0 - 2024-02-06
 
 ### What's Changed
