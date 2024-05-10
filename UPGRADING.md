@@ -1,5 +1,9 @@
 # Upgrading
 
+## From v5 to v6
+
+A lot of the query builder classes now have typed properties and method parameters. If you have any custom sorts, includes, or filters, you will need to specify the property and parameter types used.
+
 ## Notice when upgrading to 5.6.0
 
 The changes to the `default()` method break backwards compatibility when setting the default value to `null` (`default(null)`). This is pretty much an edge case, but if you're trying to unset the default value, you can use the `unsetDefault()` method instead. 
