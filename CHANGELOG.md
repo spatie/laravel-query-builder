@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.0.0 - 2024-05-10
+
+### What's Changed
+
+* Add additional types & Phpstan by @Nielsvanpach in https://github.com/spatie/laravel-query-builder/pull/910
+
+### New Contributors
+
+* @Nielsvanpach made their first contribution in https://github.com/spatie/laravel-query-builder/pull/910
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/5.8.1...6.0.0
+
 ## 5.8.1 - 2024-05-10
 
 ### What's Changed
