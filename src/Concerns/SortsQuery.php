@@ -54,7 +54,7 @@ trait SortsQuery
 
                 return AllowedSort::field($sort);
             })
-            ->each(fn(AllowedSort $sort) => $sort->sort($this));
+            ->each(fn (AllowedSort $sort) => $sort->sort($this));
 
         return $this;
     }
@@ -76,7 +76,7 @@ trait SortsQuery
     protected function findSort(string $property): ?AllowedSort
     {
         return $this->allowedSorts
-            ->first(fn(AllowedSort $sort) => $sort->isSort($property));
+            ->first(fn (AllowedSort $sort) => $sort->isSort($property));
     }
 
     protected function ensureAllSortsExist(): void
@@ -85,9 +85,9 @@ trait SortsQuery
             return;
         }
 
-        $requestedSortNames = $this->request->sorts()->map(fn(string $sort) => ltrim($sort, '-'));
+        $requestedSortNames = $this->request->sorts()->map(fn (string $sort) => ltrim($sort, '-'));
 
-        $allowedSortNames = $this->allowedSorts->map(fn(AllowedSort $sort) => $sort->getName());
+        $allowedSortNames = $this->allowedSorts->map(fn (AllowedSort $sort) => $sort->getName());
 
         $unknownSorts = $requestedSortNames->diff($allowedSortNames);
 

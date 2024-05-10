@@ -64,7 +64,7 @@ trait AddsIncludesToQuery
     protected function findInclude(string $include): ?AllowedInclude
     {
         return $this->allowedIncludes
-            ->first(fn(AllowedInclude $included) => $included->isForInclude($include));
+            ->first(fn (AllowedInclude $included) => $included->isForInclude($include));
     }
 
     protected function ensureAllIncludesExist(): void
@@ -75,7 +75,7 @@ trait AddsIncludesToQuery
 
         $includes = $this->request->includes();
 
-        $allowedIncludeNames = $this->allowedIncludes?->map(fn(AllowedInclude $allowedInclude) => $allowedInclude->getName());
+        $allowedIncludeNames = $this->allowedIncludes?->map(fn (AllowedInclude $allowedInclude) => $allowedInclude->getName());
 
         $diff = $includes->diff($allowedIncludeNames);
 
@@ -91,10 +91,10 @@ trait AddsIncludesToQuery
      */
     protected function filterNonExistingIncludes(Collection $includes): Collection
     {
-        if (!config('query-builder.disable_invalid_includes_query_exception', false)) {
+        if (! config('query-builder.disable_invalid_includes_query_exception', false)) {
             return $includes;
         }
 
-        return $includes->filter(fn($include) => !is_null($this->findInclude($include)));
+        return $includes->filter(fn ($include) => ! is_null($this->findInclude($include)));
     }
 }
