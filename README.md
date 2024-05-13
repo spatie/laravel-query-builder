@@ -7,6 +7,17 @@
 
 This package allows you to filter, sort and include eloquent relations based on a request. The `QueryBuilder` used in this package extends Laravel's default Eloquent builder. This means all your favorite methods and macros are still available. Query parameter names follow the [JSON API specification](http://jsonapi.org/) as closely as possible.
 
+## Caching foreign keys
+Add this line to your composer.json file to cache foreign keys. This will allow the query builder to automatically detect foreign keys without having to make a database call.
+These foreign keys will always be included in select statements, which will prevent a loss of potential relations.
+```json
+"scripts": {
+    "post-update-cmd": [
+        "@php artisan query-builder:cache-foreign-keys"
+    ],
+}
+```
+
 ## Basic usage
 
 ### Filter a query based on a request: `/users?filter[name]=John`:

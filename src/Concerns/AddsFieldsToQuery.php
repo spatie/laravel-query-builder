@@ -5,13 +5,14 @@ namespace Spatie\QueryBuilder\Concerns;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedField;
+use Spatie\QueryBuilder\App\Console\Commands\CacheForeignKeys;
 use Spatie\QueryBuilder\Exceptions\AllowedFieldsMustBeCalledBeforeAllowedIncludes;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
 
 trait AddsFieldsToQuery
 {
-    protected ?Collection $allowedFields = null;
+    public ?Collection $allowedFields = null;
 
     public function allowedFields($fields): static
     {
@@ -36,19 +37,38 @@ trait AddsFieldsToQuery
         return $this;
     }
 
-    protected function addRequestedModelFieldsToQuery()
+    protected function addRequestedModelFieldsToQuery(): void
     {
         $modelTableName = $this->getModel()->getTable();
 
-        $this->allowedFields->map(function (AllowedField $field) {
-            if ($this->request->fields()->where('name', $field->getName())->count() > 0)
-                return $field->getInternalName();
-        })->toArray();
+        $requestFields = $this->request->fields()->map(function ($field) {
+            return $field->name;
+        });
+
+        $modelFields = $this->allowedFields->mapWithKeys(function (AllowedField $field) {
+            return [
+                $field->getName() => $field->getInternalNames()->toArray()
+            ];
+        });
+
+        if ($requestFields->count() > 0) {
+            // If fields are requested, only select those
+            $modelFields = $modelFields->filter(function ($internalName, $name) use ($requestFields) {
+                return $requestFields->contains($name);
+            })->toArray();
+        } else {
+            // If no fields are requested, select all allowed fields
+            $modelFields = $modelFields->toArray();
+        }
 
         if (empty($modelFields)) {
             return;
         }
 
+        // Flatten array
+        $modelFields = array_unique(array_merge(...array_values($modelFields)));
+
+        // Prepend the fields with the table name
         $prependedFields = $this->prependFieldsWithTableName($modelFields, $modelTableName);
 
         $this->select($prependedFields);
@@ -56,26 +76,25 @@ trait AddsFieldsToQuery
 
     public function getRequestedFieldsForRelatedTable(string $relation): array
     {
-        $table = Str::plural(Str::snake($relation)); // TODO: make this configurable
+        $table = Str::plural(Str::snake($relation));
 
         $fields = $this->request->fields()->mapWithKeys(function ($fields, $table) {
             return [$table => $fields];
         })->get($table);
 
-        if (! $fields) {
+        if (!$fields) {
             return [];
         }
 
-        if (! $this->allowedFields instanceof Collection) {
+        if (!$this->allowedFields instanceof Collection) {
             // We have requested fields but no allowed fields (yet?)
-
             throw new UnknownIncludedFieldsQuery($fields);
         }
 
         return $fields;
     }
 
-    protected function ensureAllFieldsExist()
+    protected function ensureAllFieldsExist(): void
     {
         // Map fieldnames from object
         $allowedFields = $this->allowedFields->map(function (AllowedField $field) {
@@ -100,16 +119,20 @@ trait AddsFieldsToQuery
 
     protected function prependField(string $field, ?string $table = null): string
     {
-        if (! $table) {
+        if (!$table) {
             $table = $this->getModel()->getTable();
         }
 
         if (Str::contains($field, '.')) {
             // Already prepended
-
             return $field;
         }
 
         return "{$table}.{$field}";
+    }
+
+    public function getAllowedFields(): ?Collection
+    {
+        return $this->allowedFields;
     }
 }

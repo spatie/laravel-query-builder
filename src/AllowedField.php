@@ -2,20 +2,19 @@
 
 namespace Spatie\QueryBuilder;
 
+use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Filters\Filter;
 
 class AllowedField
 {
-    /** @var string */
-    protected $name;
+    protected string $name;
+    protected Collection $internalNames;
 
-    /** @var string */
-    protected $internalName;
-    public function __construct(string $name, ?string $internalName = null)
+    public function __construct(string $name, string|array $internalName = null)
     {
         $this->name = $name;
 
-        $this->internalName = $internalName ?? $name;
+        $this->internalNames = collect($internalName);
     }
 
 
@@ -26,18 +25,19 @@ class AllowedField
         }
     }
 
-    public static function partial(string $name, $internalName = null, bool $addRelationConstraint = true, string $arrayValueDelimiter = null): self
+    public static function partial(string $name, $internalNames = null, bool $addRelationConstraint = true, string $arrayValueDelimiter = null): self
     {
         static::setFilterArrayValueDelimiter($arrayValueDelimiter);
-        return new static($name, $internalName);
+        return new static($name, $internalNames);
     }
 
     public function getName(): string
     {
         return $this->name;
     }
-    public function getInternalName(): string
+
+    public function getInternalNames(): Collection
     {
-        return $this->internalName;
+        return $this->internalNames;
     }
 }
