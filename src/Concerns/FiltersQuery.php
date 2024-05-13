@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
+use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
@@ -77,5 +78,10 @@ trait FiltersQuery
         if ($diff->count()) {
             throw InvalidFilterQuery::filtersNotAllowed($diff, $allowedFilterNames);
         }
+    }
+
+    public function getAllowedFilters(): ?Collection
+    {
+        return $this->allowedFilters;
     }
 }

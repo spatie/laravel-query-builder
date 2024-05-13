@@ -2,22 +2,18 @@
 
 namespace Spatie\QueryBuilder\Concerns;
 
+use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
+use Spatie\QueryBuilder\QueryBuilder;
 
 trait SortsQuery
 {
-    /** @var \Illuminate\Support\Collection */
+    /** @var Collection */
     protected $allowedSorts;
 
     public function allowedSorts($sorts): static
     {
-        if ($this->request->sorts()->isEmpty()) {
-            // We haven't got any requested sorts. No need to parse allowed sorts.
-
-            return $this;
-        }
-
         $sorts = is_array($sorts) ? $sorts : func_get_args();
 
         $this->allowedSorts = collect($sorts)->map(function ($sort) {
@@ -36,9 +32,9 @@ trait SortsQuery
     }
 
     /**
-     * @param array|string|\Spatie\QueryBuilder\AllowedSort $sorts
+     * @param array|string|AllowedSort $sorts
      *
-     * @return \Spatie\QueryBuilder\QueryBuilder
+     * @return QueryBuilder
      */
     public function defaultSort($sorts): static
     {
@@ -46,9 +42,9 @@ trait SortsQuery
     }
 
     /**
-     * @param array|string|\Spatie\QueryBuilder\AllowedSort $sorts
+     * @param array|string|AllowedSort $sorts
      *
-     * @return \Spatie\QueryBuilder\QueryBuilder
+     * @return QueryBuilder
      */
     public function defaultSorts($sorts): static
     {
@@ -112,5 +108,10 @@ trait SortsQuery
         if ($unknownSorts->isNotEmpty()) {
             throw InvalidSortQuery::sortsNotAllowed($unknownSorts, $allowedSortNames);
         }
+    }
+
+    public function getAllowedSorts(): ?Collection
+    {
+        return $this->allowedSorts;
     }
 }
