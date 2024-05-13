@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder\Concerns;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Spatie\QueryBuilder\AllowedField;
 use Spatie\QueryBuilder\Exceptions\AllowedFieldsMustBeCalledBeforeAllowedIncludes;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
@@ -20,10 +21,13 @@ trait AddsFieldsToQuery
 
         $fields = is_array($fields) ? $fields : func_get_args();
 
-        $this->allowedFields = collect($fields)
-            ->map(function (string $fieldName) {
-                return $this->prependField($fieldName);
-            });
+        $this->allowedFields = collect($fields)->map(function ($field) {
+            if ($field instanceof AllowedField) {
+                return $field;
+            }
+
+            return AllowedField::partial($field);
+        });
 
         $this->ensureAllFieldsExist();
 
@@ -36,7 +40,10 @@ trait AddsFieldsToQuery
     {
         $modelTableName = $this->getModel()->getTable();
 
-        $modelFields = $this->request->fields()->get($modelTableName);
+        $this->allowedFields->map(function (AllowedField $field) {
+            if ($this->request->fields()->where('name', $field->getName())->count() > 0)
+                return $field->getInternalName();
+        })->toArray();
 
         if (empty($modelFields)) {
             return;
@@ -70,19 +77,17 @@ trait AddsFieldsToQuery
 
     protected function ensureAllFieldsExist()
     {
-        $requestedFields = $this->request->fields()
-            ->map(function ($fields, $model) {
-                $tableName = $model;
+        // Map fieldnames from object
+        $allowedFields = $this->allowedFields->map(function (AllowedField $field) {
+            return $field->getName();
+        });
 
-                return $this->prependFieldsWithTableName($fields, $tableName);
-            })
-            ->flatten()
-            ->unique();
+        $requestedFields = $this->request->fields();
 
-        $unknownFields = $requestedFields->diff($this->allowedFields);
+        $unknownFields = $requestedFields->pluck('name')->diff($allowedFields);
 
         if ($unknownFields->isNotEmpty()) {
-            throw InvalidFieldQuery::fieldsNotAllowed($unknownFields, $this->allowedFields);
+            throw InvalidFieldQuery::fieldsNotAllowed($unknownFields, $allowedFields);
         }
     }
 
