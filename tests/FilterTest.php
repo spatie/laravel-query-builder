@@ -684,7 +684,7 @@ it('can filter name with not equal operator filter', function () {
     expect($results)->toHaveCount(5);
 });
 
-it('can filter name with greater than operator filter', function () {
+it('can filter salary with greater than operator filter', function () {
     TestModel::create(['salary' => 5000]);
 
     $results = createQueryFromFilterRequest([
@@ -696,7 +696,7 @@ it('can filter name with greater than operator filter', function () {
     expect($results)->toHaveCount(1);
 });
 
-it('can filter name with less than operator filter', function () {
+it('can filter salary with less than operator filter', function () {
     TestModel::create(['salary' => 5000]);
 
     $results = createQueryFromFilterRequest([
@@ -708,7 +708,7 @@ it('can filter name with less than operator filter', function () {
     expect($results)->toHaveCount(1);
 });
 
-it('can filter name with greater than or equal operator filter', function () {
+it('can filter salary with greater than or equal operator filter', function () {
     TestModel::create(['salary' => 5000]);
 
     $results = createQueryFromFilterRequest([
@@ -720,7 +720,7 @@ it('can filter name with greater than or equal operator filter', function () {
     expect($results)->toHaveCount(1);
 });
 
-it('can filter name with less than or equal operator filter', function () {
+it('can filter salary with less than or equal operator filter', function () {
     TestModel::create(['salary' => 5000]);
 
     $results = createQueryFromFilterRequest([
@@ -740,6 +740,34 @@ it('can filter array of names with equal operator filter', function () {
             'name' => 'John Doe,Max Doe',
         ])
         ->allowedFilters(AllowedFilter::operator('name', FilterOperator::EQUAL, 'or'))
+        ->get();
+
+    expect($results)->toHaveCount(2);
+});
+
+it('can filter salary with dynamic operator filter', function () {
+    TestModel::create(['salary' => 5000]);
+    TestModel::create(['salary' => 2000]);
+
+    $results = createQueryFromFilterRequest([
+            'salary' => '>2000',
+        ])
+        ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::DYNAMIC))
+        ->get();
+
+    expect($results)->toHaveCount(1);
+});
+
+it('can filter salary with dynamic array operator filter', function () {
+    TestModel::create(['salary' => 1000]);
+    TestModel::create(['salary' => 2000]);
+    TestModel::create(['salary' => 3000]);
+    TestModel::create(['salary' => 4000]);
+
+    $results = createQueryFromFilterRequest([
+            'salary' => '>1000,<4000',
+        ])
+        ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::DYNAMIC))
         ->get();
 
     expect($results)->toHaveCount(2);

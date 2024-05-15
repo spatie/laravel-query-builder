@@ -2,7 +2,6 @@
 
 namespace Spatie\QueryBuilder\Filters;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Enums\FilterOperator;
 
