@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Filters;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Enums\FilterOperator;
 
@@ -18,6 +19,8 @@ class FiltersOperator extends FiltersExact implements Filter
     /** {@inheritdoc} */
     public function __invoke(Builder $query, $value, string $property)
     {
+        $filterOperator = $this->filterOperator;
+
         if ($this->addRelationConstraint) {
             if ($this->isRelationProperty($query, $property)) {
                 $this->withRelationConstraint($query, $value, $property);
@@ -35,7 +38,32 @@ class FiltersOperator extends FiltersExact implements Filter
 
             return;
         }
+        else if ($this->filterOperator->isDynamic()) {
+            $filterOperator = $this->getDynamicFilterOperator($value, $this);
+            $this->removeDynamicFilterOperatorFromValue($value, $filterOperator);
+        }
 
-        $query->where($query->qualifyColumn($property), $this->filterOperator->value, $value, $this->boolean);
+        $query->where($query->qualifyColumn($property), $filterOperator->value, $value, $this->boolean);
+    }
+
+    protected function getDynamicFilterOperator(string $value): FilterOperator
+    {
+        $filterOperator = FilterOperator::EQUAL;
+
+        // match filter operators and assign the filter operator.
+        foreach(FilterOperator::cases() as $filterOperatorCase) {
+            if (str_starts_with($value, $filterOperatorCase->value) && ! $filterOperatorCase->isDynamic()) {
+                $filterOperator = $filterOperatorCase;
+            }
+        }
+
+        return $filterOperator;
+    }
+
+    protected function removeDynamicFilterOperatorFromValue(string &$value, FilterOperator $filterOperator)
+    {
+        if (str_contains($value, $filterOperator->value)) {
+            $value = substr_replace($value, '', 0, strlen($filterOperator->value));
+        }
     }
 }
