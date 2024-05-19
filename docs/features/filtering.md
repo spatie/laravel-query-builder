@@ -100,6 +100,25 @@ QueryBuilder::for(User::class)
     ->allowedFilters(AllowedFilter::exact('posts.title', null, $addRelationConstraint));
 ```
 
+## Grouping allowed relation filters.
+
+By default, multiple filters on relation properties will apply multiple `where exists` clauses in the underlying query.
+
+To improve query performance (only one `where exists` clause) you can use `AllowedRelationshipFilter::group()`. 
+
+```php
+QueryBuilder::for(User::class)->allowedFilters([
+    AllowedRelationshipFilter::group('posts', ...[
+        AllowedFilter::exact('posts.id', 'id'),
+        AllowedFilter::exact('posts.name', 'title'),
+        AllowedRelationshipFilter::group('comments', ...[
+            AllowedFilter::exact('posts.comments.id', 'id'),
+            AllowedFilter::partial('posts.comments.content', 'content'),
+        ]),
+    ]),
+]);
+```
+
 ## Scope filters
 
 Sometimes more advanced filtering options are necessary. This is where scope filters, callback filters and custom filters come in handy.
