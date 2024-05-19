@@ -25,7 +25,7 @@ class AllowedRelationshipFilter implements AllowedFilterContract
             $this->allowedFilters->each(
                 function (AllowedFilterContract $allowedFilter) use ($query, $value) {
                     $allowedFilter->filter(
-                        $query,
+                        QueryBuilder::for($query),
                         $allowedFilter->getValueFromCollection($value)
                     );
                 }
