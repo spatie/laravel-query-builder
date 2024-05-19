@@ -16,7 +16,6 @@ class AllowedInclude
     protected string $internalName;
 
     public function __construct(
-
         protected string $name,
         protected IncludeInterface $includeClass,
         ?string $internalName = null
