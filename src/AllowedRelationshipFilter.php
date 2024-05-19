@@ -7,16 +7,10 @@ use Spatie\QueryBuilder\Contracts\AllowedFilterContract;
 
 class AllowedRelationshipFilter implements AllowedFilterContract
 {
-    /** @var string */
-    protected $relationship;
+    protected Collection $allowedFilters;
 
-    /** @var \Illuminate\Support\Collection */
-    protected $allowedFilters;
-
-    public function __construct(string $relationship, AllowedFilterContract ...$allowedFilters)
+    public function __construct(protected string $relationship, AllowedFilterContract ...$allowedFilters)
     {
-        $this->relationship = $relationship;
-
         $this->allowedFilters = collect($allowedFilters);
     }
 
@@ -25,7 +19,7 @@ class AllowedRelationshipFilter implements AllowedFilterContract
         return new static($relationship, ...$allowedFilters);
     }
 
-    public function filter(QueryBuilder $query, $value)
+    public function filter(QueryBuilder $query, $value): void
     {
         $query->whereHas($this->relationship, function ($query) use ($value) {
             $this->allowedFilters->each(
@@ -66,7 +60,7 @@ class AllowedRelationshipFilter implements AllowedFilterContract
         return false;
     }
 
-    public function getDefault(): mixed
+    public function getDefault(): null
     {
         return null;
     }
