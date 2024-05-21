@@ -25,12 +25,12 @@ class FiltersPartial extends FiltersExact implements Filter
         $databaseDriver = $this->getDatabaseDriver($query);
 
         if (is_array($value)) {
-            if (count(array_filter($value, fn ($item) => empty($item))) === 0) {
+            if (count(array_filter($value, fn ($item) => strlen($item) > 0)) === 0) {
                 return $query;
             }
 
             $query->where(function (Builder $query) use ($databaseDriver, $value, $wrappedProperty) {
-                foreach (array_filter($value, fn ($item) => empty($item)) as $partialValue) {
+                foreach (array_filter($value, fn ($item) => strlen($item) > 0) as $partialValue) {
                     [$sql, $bindings] = $this->getWhereRawParameters($partialValue, $wrappedProperty, $databaseDriver);
                     $query->orWhereRaw($sql, $bindings);
                 }
