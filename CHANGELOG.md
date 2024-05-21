@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.0.1 - 2024-05-21
+
+### What's Changed
+
+* Fix ability to filter models by an array as filter value by @inmula in https://github.com/spatie/laravel-query-builder/pull/943
+
+### New Contributors
+
+* @inmula made their first contribution in https://github.com/spatie/laravel-query-builder/pull/943
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/6.0.0...6.0.1
+
 ## 6.0.0 - 2024-05-10
 
 ### What's Changed
