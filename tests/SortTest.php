@@ -430,6 +430,21 @@ test('the default direction of an allow sort can be set', function () {
     $this->assertSortedDescending($sortedModels, 'name');
 });
 
+// Test for issue resolution
+it('applies default sort when all provided sort parameters are invalid', function () {
+    $request = new Request([
+        'sort' => 'invalid_column',
+    ]);
+
+    $sortedModels = QueryBuilder::for(TestModel::class, $request)
+        ->allowedSorts('name')
+        ->defaultSort('-name')
+        ->get();
+
+    // The default sort '-name' should be applied, resulting in models being sorted by 'name' in descending order.
+    $this->assertSortedDescending($sortedModels, 'name');
+});
+
 // Helpers
 function createQueryFromSortRequest(?string $sort = null): QueryBuilder
 {
