@@ -69,7 +69,7 @@ trait SortsQuery
 
                 $sort = $this->findSort($key);
 
-                if (!$sort) {
+                if (! $sort) {
                     // Apply default sort if no valid sorts are present in the request
                     $this->defaultSorts($this->allowedSorts->toArray());
                 } else {
