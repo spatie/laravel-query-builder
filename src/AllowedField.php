@@ -3,7 +3,6 @@
 namespace Spatie\QueryBuilder;
 
 use Illuminate\Support\Collection;
-use Spatie\QueryBuilder\Filters\Filter;
 
 class AllowedField
 {
@@ -28,6 +27,7 @@ class AllowedField
     public static function partial(string $name, $internalNames = null, bool $addRelationConstraint = true, string $arrayValueDelimiter = null): self
     {
         static::setFilterArrayValueDelimiter($arrayValueDelimiter);
+
         return new static($name, $internalNames);
     }
 

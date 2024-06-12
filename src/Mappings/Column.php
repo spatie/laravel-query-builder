@@ -10,7 +10,7 @@ class Column
      * @param  string  $name
      * @return void
      */
-    function __construct(string $name)
+    public function __construct(string $name)
     {
         $this->name = $name;
     }

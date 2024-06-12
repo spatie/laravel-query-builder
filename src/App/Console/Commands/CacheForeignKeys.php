@@ -12,7 +12,6 @@ use ReflectionClass;
 
 class CacheForeignKeys extends Command
 {
-
     protected $signature = 'query-builder:cache-foreign-keys';
 
     protected $description = 'Cache foreign keys for the QueryBuilder package.';

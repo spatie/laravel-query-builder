@@ -5,7 +5,6 @@ namespace Spatie\QueryBuilder\Concerns;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
-use Spatie\QueryBuilder\QueryBuilder;
 
 trait SortsQuery
 {
