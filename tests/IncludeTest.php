@@ -5,12 +5,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+
+use function PHPUnit\Framework\assertObjectHasProperty;
+
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 use Spatie\QueryBuilder\Includes\IncludedCount;
 use Spatie\QueryBuilder\Includes\IncludeInterface;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\MorphModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 beforeEach(function () {
@@ -66,6 +70,22 @@ it('can include model relations by alias', function () {
     assertRelationLoaded($models, 'relatedModels');
 });
 
+it('can include an includes callback', function () {
+    $models = createQueryFromIncludeRequest('relatedModels')
+        ->allowedIncludes([
+            AllowedInclude::callback('relatedModels', fn ($query) => $query->whereKey(RelatedModel::first())),
+        ])
+        ->get();
+
+    assertRelationLoaded($models, 'relatedModels');
+
+    $models = $models->reverse();
+    expect($models->pop()->relatedModels)->toHaveCount(1);
+    expect($models)->each(
+        fn ($model) => $model->relatedModels->toHaveCount(0)
+    );
+});
+
 it('can include an includes count', function () {
     $model = createQueryFromIncludeRequest('relatedModelsCount')
         ->allowedIncludes('relatedModelsCount')
@@ -80,6 +100,23 @@ test('allowing an include also allows the include count', function () {
         ->first();
 
     $this->assertNotNull($model->related_models_count);
+});
+
+it('can include an includes exists', function () {
+    $model = createQueryFromIncludeRequest('relatedModelsExists')
+        ->allowedIncludes('relatedModelsExists')
+        ->first();
+
+    $this->assertNotNull($model->related_models_exists);
+    $this->assertIsBool($model->related_models_exists);
+});
+
+test('allowing an include also allows the include exists', function () {
+    $model = createQueryFromIncludeRequest('relatedModelsExists')
+        ->allowedIncludes('relatedModels')
+        ->first();
+
+    $this->assertNotNull($model->related_models_exists);
 });
 
 it('can include nested model relations', function () {
@@ -134,6 +171,26 @@ test('allowing a nested include only allows the include count for the first leve
         ->first();
 });
 
+test('allowing a nested include only allows the include exists for the first level', function () {
+    $model = createQueryFromIncludeRequest('relatedModelsExists')
+        ->allowedIncludes('relatedModels.nestedRelatedModels')
+        ->first();
+
+    $this->assertNotNull($model->related_models_exists);
+
+    $this->expectException(InvalidIncludeQuery::class);
+
+    createQueryFromIncludeRequest('nestedRelatedModelsExists')
+        ->allowedIncludes('relatedModels.nestedRelatedModels')
+        ->first();
+
+    $this->expectException(InvalidIncludeQuery::class);
+
+    createQueryFromIncludeRequest('related-models.nestedRelatedModelsExists')
+        ->allowedIncludes('relatedModels.nestedRelatedModels')
+        ->first();
+});
+
 it('can include morph model relations', function () {
     $models = createQueryFromIncludeRequest('morphModels')
         ->allowedIncludes('morphModels')
@@ -177,6 +234,15 @@ it('guards against invalid includes', function () {
 
     createQueryFromIncludeRequest('random-model')
         ->allowedIncludes('relatedModels');
+});
+
+it('does not throw invalid include query exception when disable in config', function () {
+    config(['query-builder.disable_invalid_includes_query_exception' => true]);
+
+    createQueryFromIncludeRequest('random-model')
+        ->allowedIncludes('relatedModels');
+
+    expect(true)->toBeTrue();
 });
 
 it('can allow multiple includes', function () {
@@ -309,7 +375,8 @@ it('can take an argument for custom column name resolution', function () {
 
     expect($include)->toBeInstanceOf(Collection::class);
     expect($include->first())->toBeInstanceOf(AllowedInclude::class);
-    $this->assertClassHasAttribute('internalName', get_class($include->first()));
+    assertObjectHasProperty('internalName', $include->first());
+    assertObjectHasProperty('internalName', $include->first());
 });
 
 it('can include a custom base query with select', function () {

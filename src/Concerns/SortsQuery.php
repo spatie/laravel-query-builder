@@ -9,8 +9,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 trait SortsQuery
 {
-    /** @var Collection */
-    protected $allowedSorts;
+    protected Collection $allowedSorts;
 
     public function allowedSorts($sorts): static
     {
@@ -31,22 +30,14 @@ trait SortsQuery
         return $this;
     }
 
-    /**
-     * @param array|string|AllowedSort $sorts
-     *
-     * @return QueryBuilder
-     */
-    public function defaultSort($sorts): static
+    public function defaultSort(AllowedSort|array|string $sorts): static
     {
-        return $this->defaultSorts(func_get_args());
+        $sorts = is_array($sorts) ? $sorts : func_get_args();
+
+        return $this->defaultSorts($sorts);
     }
 
-    /**
-     * @param array|string|AllowedSort $sorts
-     *
-     * @return QueryBuilder
-     */
-    public function defaultSorts($sorts): static
+    public function defaultSorts(AllowedSort|array|string $sorts): static
     {
         if ($this->request->sorts()->isNotEmpty()) {
             // We've got requested sorts. No need to parse defaults.
@@ -64,14 +55,12 @@ trait SortsQuery
 
                 return AllowedSort::field($sort);
             })
-            ->each(function (AllowedSort $sort) {
-                $sort->sort($this);
-            });
+            ->each(fn (AllowedSort $sort) => $sort->sort($this));
 
         return $this;
     }
 
-    protected function addRequestedSortsToQuery()
+    protected function addRequestedSortsToQuery(): void
     {
         $this->request->sorts()
             ->each(function (string $property) {
@@ -81,27 +70,25 @@ trait SortsQuery
 
                 $sort = $this->findSort($key);
 
-                $sort->sort($this, $descending);
+                $sort?->sort($this, $descending);
             });
     }
 
     protected function findSort(string $property): ?AllowedSort
     {
         return $this->allowedSorts
-            ->first(function (AllowedSort $sort) use ($property) {
-                return $sort->isSort($property);
-            });
+            ->first(fn (AllowedSort $sort) => $sort->isSort($property));
     }
 
     protected function ensureAllSortsExist(): void
     {
-        $requestedSortNames = $this->request->sorts()->map(function (string $sort) {
-            return ltrim($sort, '-');
-        });
+        if (config('query-builder.disable_invalid_sort_query_exception', false)) {
+            return;
+        }
 
-        $allowedSortNames = $this->allowedSorts->map(function (AllowedSort $sort) {
-            return $sort->getName();
-        });
+        $requestedSortNames = $this->request->sorts()->map(fn (string $sort) => ltrim($sort, '-'));
+
+        $allowedSortNames = $this->allowedSorts->map(fn (AllowedSort $sort) => $sort->getName());
 
         $unknownSorts = $requestedSortNames->diff($allowedSortNames);
 

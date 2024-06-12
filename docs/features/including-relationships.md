@@ -38,6 +38,7 @@ $users = QueryBuilder::for(User::class)
     ->allowedIncludes(['friends'])
     ->with('posts') // posts will always by included, friends can be requested
     ->withCount('posts')
+    ->withExists('posts')
     ->get();
 ```
 
@@ -70,10 +71,27 @@ Under the hood this uses Laravel's `withCount method`. [Read more about the `wit
 
 $users = QueryBuilder::for(User::class)
     ->allowedIncludes([
-        'posts', // allows including `posts` or `postsCount`
+        'posts', // allows including `posts` or `postsCount` or `postsExists`
         AllowedInclude::count('friendsCount'), // only allows include the number of `friends()` related models
     ]); 
 // every user in $users will contain a `posts_count` and `friends_count` property
+```
+
+## Including related model exists
+
+Every allowed include will automatically allow requesting its related model exists using a `Exists` suffix. On top of that it's also possible to specifically allow requesting and querying the related model exists (and not include the entire relationship).
+
+Under the hood this uses Laravel's `withExists method`. [Read more about the `withExists` method here](https://laravel.com/docs/master/eloquent-relationships#other-aggregate-functions).
+
+```php
+// GET /users?include=postsExists,friendsExists
+
+$users = QueryBuilder::for(User::class)
+    ->allowedIncludes([
+        'posts', // allows including `posts` or `postsCount` or `postsExists`
+        AllowedInclude::exists('friendsExists'), // only allows include the existence of `friends()` related models
+    ]); 
+// every user in $users will contain a `posts_exists` and `friends_exists` property
 ```
 
 ## Include aliases
@@ -130,6 +148,23 @@ $posts = QueryBuilder::for(Post::class)
     ->get();
 
 // every post in $posts will contain a `comments_sum_votes` property
+```
+
+## Callback includes
+
+If you want to define a tiny custom include, you can use a callback include. Using `AllowedInclude::callback(string $name, Closure $callback, ?string $internalName = null)` you can specify a Closure that will be executed when the includes is requested. 
+
+You can modify the `Builder` object to add your own query constraints.
+
+For example:
+
+```php
+QueryBuilder::for(User::class)
+    ->allowedIncludes([
+        AllowedInclude::callback('latest_post', function (Builder $query) {
+            $query->latestOfMany();
+        }),
+    ]);
 ```
 
 ## Selecting included fields
