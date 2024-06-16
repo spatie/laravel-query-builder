@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder\Concerns;
 
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\Contracts\AllowedFilterContract;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
 trait FiltersQuery
@@ -15,7 +16,7 @@ trait FiltersQuery
         $filters = is_array($filters) ? $filters : func_get_args();
 
         $this->allowedFilters = collect($filters)->map(function ($filter) {
-            if ($filter instanceof AllowedFilter) {
+            if ($filter instanceof AllowedFilterContract) {
                 return $filter;
             }
 
@@ -31,9 +32,9 @@ trait FiltersQuery
 
     protected function addFiltersToQuery(): void
     {
-        $this->allowedFilters->each(function (AllowedFilter $filter) {
-            if ($this->isFilterRequested($filter)) {
-                $value = $this->request->filters()->get($filter->getName());
+        $this->allowedFilters->each(function (AllowedFilterContract $filter) {
+            if ($filter->isRequested($this->request)) {
+                $value = $filter->getValueFromRequest($this->request);
                 $filter->filter($this, $value);
 
                 return;
@@ -45,19 +46,6 @@ trait FiltersQuery
         });
     }
 
-    protected function findFilter(string $property): ?AllowedFilter
-    {
-        return $this->allowedFilters
-            ->first(function (AllowedFilter $filter) use ($property) {
-                return $filter->isForFilter($property);
-            });
-    }
-
-    protected function isFilterRequested(AllowedFilter $allowedFilter): bool
-    {
-        return $this->request->filters()->has($allowedFilter->getName());
-    }
-
     protected function ensureAllFiltersExist(): void
     {
         if (config('query-builder.disable_invalid_filter_query_exception', false)) {
@@ -66,9 +54,9 @@ trait FiltersQuery
 
         $filterNames = $this->request->filters()->keys();
 
-        $allowedFilterNames = $this->allowedFilters->map(function (AllowedFilter $allowedFilter) {
-            return $allowedFilter->getName();
-        });
+        $allowedFilterNames = $this->allowedFilters->map(function (AllowedFilterContract $allowedFilter) {
+            return $allowedFilter->getNames();
+        })->flatten();
 
         $diff = $filterNames->diff($allowedFilterNames);
 
