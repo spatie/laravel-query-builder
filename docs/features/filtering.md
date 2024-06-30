@@ -148,6 +148,12 @@ public function scopeEvent(Builder $query, \App\Models\Event $event): Builder
 // GET /events?filter[event]=1 - the event with ID 1 will automatically be resolved and passed to the scoped filter
 ```
 
+If you use any other column aside `id` column for route model binding (ULID,UUID). Remeber to specify the value of the column used in route model binding
+
+```php
+// GET /events?filter[event]=01j0rcpkx5517v0aqyez5vnwn - supposing we use a ULID column for route model binding.
+```
+
 Scopes are usually not named with query filters in mind. Use [filter aliases](#filter-aliases) to alias them to something more appropriate:
 
 ```php
