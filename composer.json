@@ -1,11 +1,24 @@
 {
-    "name": "kjsoftware/laravel-query-builder",
+    "name": "spatie/laravel-query-builder",
     "description": "Easily build Eloquent queries from API requests",
     "keywords": [
-        "kjsoftware",
+        "spatie",
         "laravel-query-builder"
     ],
+    "homepage": "https://github.com/spatie/laravel-query-builder",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/spatie/laravel-query-builder/issues",
+        "source": "https://github.com/spatie/laravel-query-builder"
+    },
+    "authors": [
+        {
+            "name": "Alex Vanderbist",
+            "email": "alex@spatie.be",
+            "homepage": "https://spatie.be",
+            "role": "Developer"
+        }
+    ],
     "require": {
         "php": "^8.2",
         "illuminate/database": "^10.0|^11.0",
