@@ -5,7 +5,6 @@ namespace Spatie\QueryBuilder\Concerns;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedField;
-use Spatie\QueryBuilder\App\Console\Commands\CacheForeignKeys;
 use Spatie\QueryBuilder\Exceptions\AllowedFieldsMustBeCalledBeforeAllowedIncludes;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
@@ -47,7 +46,7 @@ trait AddsFieldsToQuery
 
         $modelFields = $this->allowedFields->mapWithKeys(function (AllowedField $field) {
             return [
-                $field->getName() => $field->getInternalNames()->toArray()
+                $field->getName() => $field->getInternalNames()->toArray(),
             ];
         });
 
@@ -82,11 +81,11 @@ trait AddsFieldsToQuery
             return [$table => $fields];
         })->get($table);
 
-        if (!$fields) {
+        if (! $fields) {
             return [];
         }
 
-        if (!$this->allowedFields instanceof Collection) {
+        if (! $this->allowedFields instanceof Collection) {
             // We have requested fields but no allowed fields (yet?)
             throw new UnknownIncludedFieldsQuery($fields);
         }
@@ -119,7 +118,7 @@ trait AddsFieldsToQuery
 
     protected function prependField(string $field, ?string $table = null): string
     {
-        if (!$table) {
+        if (! $table) {
             $table = $this->getModel()->getTable();
         }
 

@@ -66,7 +66,7 @@ class QueryBuilderRequest extends Request
 
         $data = $this->getRequestData($fieldsParameterName);
 
-        if (!$data) {
+        if (! $data) {
             return collect();
         }
 
