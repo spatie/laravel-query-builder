@@ -4,6 +4,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+
+use Pest\Expectation;
+
+use function PHPUnit\Framework\assertObjectHasProperty;
+
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
@@ -18,8 +23,8 @@ beforeEach(function () {
 
 it('can filter models by partial property by default', function () {
     $models = createQueryFromFilterRequest([
-            'name' => $this->models->first()->name,
-        ])
+        'name' => $this->models->first()->name,
+    ])
         ->allowedFilters('name')
         ->get();
 
@@ -83,8 +88,30 @@ it('can filter a custom base query with select', function () {
         ->where(DB::raw('LOWER(`test_models`.`name`)'), 'LIKE', 'john')
         ->toSql();
 
-    expect($queryBuilderSql)->toEqual($expectedSql);
+    expect($queryBuilderSql)->toContain($expectedSql);
 });
+
+it('specifies escape character in supported databases', function (string $dbDriver) {
+    $fakeConnection = "test_{$dbDriver}";
+
+    DB::connectUsing($fakeConnection, [
+        'driver' => $dbDriver,
+        'database' => null,
+    ]);
+
+    DB::usingConnection($fakeConnection, function () use ($dbDriver) {
+        $request = new Request([
+            'filter' => ['name' => 'to_find'],
+        ]);
+
+        $queryBuilderSql = QueryBuilder::for(TestModel::select('id', 'name'), $request)
+            ->allowedFilters('name', 'id')
+            ->toSql();
+
+        expect($queryBuilderSql)->when(in_array($dbDriver, ["sqlite","pgsql","sqlsrv"]), fn (Expectation $query) => $query->toContain("ESCAPE '\'"));
+        expect($queryBuilderSql)->when($dbDriver === 'mysql', fn (Expectation $query) => $query->not->toContain("ESCAPE '\'"));
+    });
+})->with(['sqlite', 'mysql', 'pgsql', 'sqlsrv']);
 
 it('can filter results based on the existence of a property in an array', function () {
     $results = createQueryFromFilterRequest([
@@ -142,6 +169,18 @@ test('falsy values are not ignored when applying a begins with strict filter', f
     $this->assertQueryLogContains("select * from `test_models` where (`test_models`.`id` LIKE ?)");
 });
 
+test('falsy values are not ignored when applying a ends with strict filter', function () {
+    DB::enableQueryLog();
+
+    createQueryFromFilterRequest([
+            'id' => [0],
+        ])
+        ->allowedFilters(AllowedFilter::endsWithStrict('id'))
+        ->get();
+
+    $this->assertQueryLogContains("select * from `test_models` where (`test_models`.`id` LIKE ?)");
+});
+
 it('can filter partial using begins with strict', function () {
     TestModel::create([
         'name' => 'John Doe',
@@ -155,6 +194,25 @@ it('can filter partial using begins with strict', function () {
     $models2 = createQueryFromFilterRequest(['name' => 'doe'])
         ->allowedFilters([
             AllowedFilter::beginsWithStrict('name'),
+        ]);
+
+    expect($models->count())->toBe(1);
+    expect($models2->count())->toBe(0);
+});
+
+it('can filter partial using ends with strict', function () {
+    TestModel::create([
+        'name' => 'John Doe',
+    ]);
+
+    $models = createQueryFromFilterRequest(['name' => 'doe'])
+        ->allowedFilters([
+            AllowedFilter::endsWithStrict('name'),
+        ]);
+
+    $models2 = createQueryFromFilterRequest(['name' => 'john'])
+        ->allowedFilters([
+            AllowedFilter::endsWithStrict('name'),
         ]);
 
     expect($models->count())->toBe(1);
@@ -419,7 +477,7 @@ it('can take an argument for custom column name resolution', function () {
     $filter = AllowedFilter::custom('property_name', new FiltersExact(), 'property_column_name');
 
     expect($filter)->toBeInstanceOf(AllowedFilter::class);
-    $this->assertClassHasAttribute('internalName', get_class($filter));
+    assertObjectHasProperty('internalName', $filter);
 });
 
 it('sets property column name to property name by default', function () {
@@ -476,6 +534,78 @@ it('does not apply default filter when filter exists and default is set', functi
         ->get();
 
     expect($models->count())->toEqual(1);
+});
+
+it('should apply a null default filter value if nothing in request', function () {
+    TestModel::create(['name' => 'UniqueJohn Doe']);
+    TestModel::create(['name' => null]);
+
+    $models = createQueryFromFilterRequest([])
+        ->allowedFilters(AllowedFilter::exact('name')->default(null))
+        ->get();
+
+    expect($models->count())->toEqual(1);
+});
+
+it('does not apply default filter when filter exists and default null is set', function () {
+    TestModel::create(['name' => null]);
+    TestModel::create(['name' => 'UniqueJohn Deer']);
+
+    $models = createQueryFromFilterRequest([
+            'name' => 'UniqueJohn Deer',
+        ])
+        ->allowedFilters(AllowedFilter::exact('name')->default(null))
+        ->get();
+
+    expect($models->count())->toEqual(1);
+});
+
+it('should apply a nullable filter when filter exists and is null', function () {
+    TestModel::create(['name' => null]);
+    TestModel::create(['name' => 'UniqueJohn Deer']);
+
+    $models = createQueryFromFilterRequest([
+            'name' => null,
+        ])
+        ->allowedFilters(AllowedFilter::exact('name')->nullable())
+        ->get();
+
+    expect($models->count())->toEqual(1);
+});
+
+it('should apply a nullable filter when filter exists and is set', function () {
+    TestModel::create(['name' => null]);
+    TestModel::create(['name' => 'UniqueJohn Deer']);
+
+    $models = createQueryFromFilterRequest([
+            'name' => 'UniqueJohn Deer',
+        ])
+        ->allowedFilters(AllowedFilter::exact('name')->nullable())
+        ->get();
+
+    expect($models->count())->toEqual(1);
+});
+
+it('should filter by query parameters if a default value is set and unset afterwards', function () {
+    TestModel::create(['name' => 'John Doe']);
+
+    $filterWithDefault = AllowedFilter::exact('name')->default('some default value');
+    $models = createQueryFromFilterRequest([
+            'name' => 'John Doe',
+        ])
+        ->allowedFilters($filterWithDefault->unsetDefault())
+        ->get();
+
+    expect($models->count())->toEqual(1);
+});
+
+it('should not filter at all if a default value is set and unset afterwards', function () {
+    $filterWithDefault = AllowedFilter::exact('name')->default('some default value');
+    $models = createQueryFromFilterRequest([])
+        ->allowedFilters($filterWithDefault->unsetDefault())
+        ->get();
+
+    expect($models->count())->toEqual(5);
 });
 
 it('should apply a filter with a multi-dimensional array value', function () {

@@ -12,7 +12,6 @@ use Spatie\QueryBuilder\Concerns\AddsFieldsToQuery;
 use Spatie\QueryBuilder\Concerns\AddsIncludesToQuery;
 use Spatie\QueryBuilder\Concerns\FiltersQuery;
 use Spatie\QueryBuilder\Concerns\SortsQuery;
-use Spatie\QueryBuilder\Exceptions\InvalidSubject;
 
 /**
  * @mixin EloquentBuilder
@@ -25,46 +24,15 @@ class QueryBuilder implements ArrayAccess
     use AddsFieldsToQuery;
     use ForwardsCalls;
 
-    /** @var \Spatie\QueryBuilder\QueryBuilderRequest */
-    protected $request;
+    protected QueryBuilderRequest $request;
 
-    /** @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation */
-    protected $subject;
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $subject
-     * @param null|\Illuminate\Http\Request $request
-     */
-    public function __construct($subject, ?Request $request = null)
-    {
-        $this->initializeSubject($subject)
-            ->initializeRequest($request ?? app(Request::class));
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $subject
-     *
-     * @return $this
-     */
-    protected function initializeSubject($subject): static
-    {
-        throw_unless(
-            $subject instanceof EloquentBuilder || $subject instanceof Relation,
-            InvalidSubject::make($subject)
-        );
-
-        $this->subject = $subject;
-
-        return $this;
-    }
-
-    protected function initializeRequest(?Request $request = null): static
-    {
+    public function __construct(
+        protected EloquentBuilder|Relation $subject,
+        ?Request $request = null
+    ) {
         $this->request = $request
             ? QueryBuilderRequest::fromRequest($request)
             : app(QueryBuilderRequest::class);
-
-        return $this;
     }
 
     public function getEloquentBuilder(): EloquentBuilder
@@ -73,26 +41,18 @@ class QueryBuilder implements ArrayAccess
             return $this->subject;
         }
 
-        if ($this->subject instanceof Relation) {
-            return $this->subject->getQuery();
-        }
-
-        throw InvalidSubject::make($this->subject);
+        return $this->subject->getQuery();
     }
 
-    public function getSubject()
+    public function getSubject(): Relation|EloquentBuilder
     {
         return $this->subject;
     }
 
-    /**
-     * @param EloquentBuilder|Relation|string $subject
-     * @param Request|null $request
-     *
-     * @return static
-     */
-    public static function for($subject, ?Request $request = null): static
-    {
+    public static function for(
+        EloquentBuilder|Relation|string $subject,
+        ?Request $request = null
+    ): static {
         if (is_subclass_of($subject, Model::class)) {
             $subject = $subject::query();
         }
@@ -115,7 +75,7 @@ class QueryBuilder implements ArrayAccess
         return $result;
     }
 
-    public function clone()
+    public function clone(): static
     {
         return clone $this;
     }

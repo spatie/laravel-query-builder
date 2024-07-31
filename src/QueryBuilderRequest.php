@@ -9,15 +9,15 @@ use Spatie\QueryBuilder\Mappings\Column;
 
 class QueryBuilderRequest extends Request
 {
-    private static $includesArrayValueDelimiter = ',';
+    protected static string $includesArrayValueDelimiter = ',';
 
-    private static $appendsArrayValueDelimiter = ',';
+    protected static string $appendsArrayValueDelimiter = ',';
 
-    private static $fieldsArrayValueDelimiter = ',';
+    protected static string $fieldsArrayValueDelimiter = ',';
 
-    private static $sortsArrayValueDelimiter = ',';
+    protected static string $sortsArrayValueDelimiter = ',';
 
-    private static $filterArrayValueDelimiter = ',';
+    protected static string $filterArrayValueDelimiter = ',';
 
     public static function setArrayValueDelimiter(string $delimiter): void
     {
@@ -35,7 +35,7 @@ class QueryBuilderRequest extends Request
 
     public function includes(): Collection
     {
-        $includeParameterName = config('query-builder.parameters.include');
+        $includeParameterName = config('query-builder.parameters.include', 'include');
 
         $includeParts = $this->getRequestData($includeParameterName);
 
@@ -48,7 +48,7 @@ class QueryBuilderRequest extends Request
 
     public function appends(): Collection
     {
-        $appendParameterName = config('query-builder.parameters.append');
+        $appendParameterName = config('query-builder.parameters.append', 'append');
 
         $appendParts = $this->getRequestData($appendParameterName);
 
@@ -61,8 +61,10 @@ class QueryBuilderRequest extends Request
 
     public function fields(): Collection
     {
-        $fieldsParameterName = config('query-builder.parameters.fields');
+        $fieldsParameterName = config('query-builder.parameters.fields', 'fields');
+        $fieldsData = $this->getRequestData($fieldsParameterName);
 
+        $fieldsPerTable = collect(is_string($fieldsData) ? explode(static::getFieldsArrayValueDelimiter(), $fieldsData) : $fieldsData);
 
         $data = $this->getRequestData($fieldsParameterName);
 
@@ -75,7 +77,7 @@ class QueryBuilderRequest extends Request
 
     public function sorts(): Collection
     {
-        $sortParameterName = config('query-builder.parameters.sort');
+        $sortParameterName = config('query-builder.parameters.sort', 'sort');
 
         $sortParts = $this->getRequestData($sortParameterName);
 
@@ -88,7 +90,7 @@ class QueryBuilderRequest extends Request
 
     public function filters(): Collection
     {
-        $filterParameterName = config('query-builder.parameters.filter');
+        $filterParameterName = config('query-builder.parameters.filter', 'filter');
 
         $filterParts = $this->getRequestData($filterParameterName, []);
 
@@ -103,12 +105,8 @@ class QueryBuilderRequest extends Request
         });
     }
 
-    /**
-     * @param $value
-     *
-     * @return array|bool|null
-     */
-    protected function getFilterValue($value)
+    /** @return array|float|int|string|bool|null */
+    protected function getFilterValue(mixed $value): mixed
     {
         if (empty($value)) {
             return $value;
@@ -137,11 +135,7 @@ class QueryBuilderRequest extends Request
 
     protected function getRequestData(?string $key = null, $default = null)
     {
-        if (config('query-builder.request_data_source') === 'body') {
-            return $this->input($key, $default);
-        }
-
-        return $this->get($key, $default);
+        return $this->input($key, $default);
     }
 
     public static function setIncludesArrayValueDelimiter(string $includesArrayValueDelimiter): void

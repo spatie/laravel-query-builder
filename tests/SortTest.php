@@ -3,6 +3,9 @@
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
+use function PHPUnit\Framework\assertObjectHasProperty;
+
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Enums\SortDirection;
@@ -11,6 +14,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
 use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
+
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 uses(AssertsCollectionSorting::class);
@@ -28,6 +32,13 @@ it('can sort a query ascending', function () {
 
     assertQueryExecuted('select * from `test_models` order by `name` asc');
     $this->assertSortedAscending($sortedModels, 'name');
+});
+
+it('has the allowed sorts property set even if no sorts are requested', function () {
+    $queryBuilder = createQueryFromSortRequest()
+        ->allowedSorts('name');
+
+    expect(invade($queryBuilder)->allowedSorts)->not->toBeEmpty();
 });
 
 it('can sort a query descending', function () {
@@ -136,6 +147,15 @@ it('will throw an exception if a sort property is not allowed', function () {
         ->allowedSorts('id');
 });
 
+it('does not throw invalid sort query exception when disable in config', function () {
+    config(['query-builder.disable_invalid_sort_query_exception' => true]);
+
+    createQueryFromSortRequest('name')
+        ->allowedSorts('id');
+
+    expect(true)->toBeTrue();
+});
+
 test('an invalid sort query exception contains the unknown and allowed sorts', function () {
     $exception = InvalidSortQuery::sortsNotAllowed(collect(['unknown sort']), collect(['allowed sort']));
 
@@ -222,6 +242,23 @@ it('allows multiple default sort parameters', function () {
     $this->assertSortedAscending($sortedModels, 'name');
 });
 
+it('allows multiple default sort parameters in an array', function () {
+    $sortClass = new class () implements SortInterface {
+        public function __invoke(Builder $query, $descending, string $property): Builder
+        {
+            return $query->orderBy('name', $descending ? 'desc' : 'asc');
+        }
+    };
+
+    $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+        ->allowedSorts(AllowedSort::custom('custom_name', $sortClass), 'id')
+        ->defaultSort([AllowedSort::custom('custom_name', $sortClass), '-id'])
+        ->get();
+
+    assertQueryExecuted('select * from `test_models` order by `name` asc, `id` desc');
+    $this->assertSortedAscending($sortedModels, 'name');
+});
+
 it('can allow multiple sort parameters', function () {
     DB::enableQueryLog();
     $sortedModels = createQueryFromSortRequest('name')
@@ -272,7 +309,7 @@ it('can take an argument for custom column name resolution', function () {
     $sort = AllowedSort::custom('property_name', new SortsField(), 'property_column_name');
 
     expect($sort)->toBeInstanceOf(AllowedSort::class);
-    $this->assertClassHasAttribute('internalName', get_class($sort));
+    assertObjectHasProperty('internalName', $sort);
 });
 
 it('sets property column name to property name by default', function () {
@@ -394,11 +431,11 @@ test('the default direction of an allow sort can be set', function () {
 });
 
 // Helpers
-function createQueryFromSortRequest(string $sort): QueryBuilder
+function createQueryFromSortRequest(?string $sort = null): QueryBuilder
 {
-    $request = new Request([
+    $request = new Request($sort ? [
         'sort' => $sort,
-    ]);
+    ] : []);
 
     return QueryBuilder::for(TestModel::class, $request);
 }

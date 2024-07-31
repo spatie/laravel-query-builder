@@ -75,11 +75,13 @@ trait AddsFieldsToQuery
 
     public function getRequestedFieldsForRelatedTable(string $relation): array
     {
-        $table = Str::plural(Str::snake($relation));
+        $tableOrRelation = config('query-builder.convert_relation_names_to_snake_case_plural', true)
+            ? Str::plural(Str::snake($relation))
+            : $relation;
 
-        $fields = $this->request->fields()->mapWithKeys(function ($fields, $table) {
-            return [$table => $fields];
-        })->get($table);
+        $fields = $this->request->fields()
+            ->mapWithKeys(fn ($fields, $table) => [$table => $fields])
+            ->get($tableOrRelation);
 
         if (! $fields) {
             return [];

@@ -8,8 +8,7 @@ use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
 trait FiltersQuery
 {
-    /** @var \Illuminate\Support\Collection */
-    protected $allowedFilters;
+    protected Collection $allowedFilters;
 
     public function allowedFilters($filters): static
     {
@@ -30,7 +29,7 @@ trait FiltersQuery
         return $this;
     }
 
-    protected function addFiltersToQuery()
+    protected function addFiltersToQuery(): void
     {
         $this->allowedFilters->each(function (AllowedFilter $filter) {
             if ($this->isFilterRequested($filter)) {
@@ -42,8 +41,6 @@ trait FiltersQuery
 
             if ($filter->hasDefault()) {
                 $filter->filter($this, $filter->getDefault());
-
-                return;
             }
         });
     }
@@ -61,9 +58,9 @@ trait FiltersQuery
         return $this->request->filters()->has($allowedFilter->getName());
     }
 
-    protected function ensureAllFiltersExist()
+    protected function ensureAllFiltersExist(): void
     {
-        if (config('query-builder.disable_invalid_filter_query_exception')) {
+        if (config('query-builder.disable_invalid_filter_query_exception', false)) {
             return;
         }
 

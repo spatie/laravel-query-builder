@@ -7,17 +7,10 @@ use Illuminate\Support\Collection;
 
 class InvalidIncludeQuery extends InvalidQuery
 {
-    /** @var \Illuminate\Support\Collection */
-    public $unknownIncludes;
-
-    /** @var \Illuminate\Support\Collection */
-    public $allowedIncludes;
-
-    public function __construct(Collection $unknownIncludes, Collection $allowedIncludes)
-    {
-        $this->unknownIncludes = $unknownIncludes;
-        $this->allowedIncludes = $allowedIncludes;
-
+    public function __construct(
+        public Collection $unknownIncludes,
+        public Collection $allowedIncludes
+    ) {
         $unknownIncludes = $unknownIncludes->implode(', ');
 
         $message = "Requested include(s) `{$unknownIncludes}` are not allowed. ";
@@ -32,7 +25,7 @@ class InvalidIncludeQuery extends InvalidQuery
         parent::__construct(Response::HTTP_BAD_REQUEST, $message);
     }
 
-    public static function includesNotAllowed(Collection $unknownIncludes, Collection $allowedIncludes)
+    public static function includesNotAllowed(Collection $unknownIncludes, Collection $allowedIncludes): static
     {
         return new static(...func_get_args());
     }
