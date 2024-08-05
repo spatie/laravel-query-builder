@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder;
 
 use Illuminate\Support\Collection;
+use Spatie\QueryBuilder\Contracts\AllowedFilterContract;
 use Spatie\QueryBuilder\Filters\Filter;
 use Spatie\QueryBuilder\Filters\FiltersBeginsWithStrict;
 use Spatie\QueryBuilder\Filters\FiltersCallback;
@@ -12,7 +13,7 @@ use Spatie\QueryBuilder\Filters\FiltersPartial;
 use Spatie\QueryBuilder\Filters\FiltersScope;
 use Spatie\QueryBuilder\Filters\FiltersTrashed;
 
-class AllowedFilter
+class AllowedFilter implements AllowedFilterContract
 {
     protected string $internalName;
 
@@ -116,9 +117,9 @@ class AllowedFilter
         return $this->name;
     }
 
-    public function isForFilter(string $filterName): bool
+    public function getNames(): array
     {
-        return $this->name === $filterName;
+        return [$this->getName()];
     }
 
     public function ignore(...$values): self
@@ -152,7 +153,7 @@ class AllowedFilter
         return $this;
     }
 
-    public function getDefault()
+    public function getDefault(): mixed
     {
         return $this->default;
     }
@@ -186,5 +187,20 @@ class AllowedFilter
         }
 
         return ! $this->ignored->contains($value) ? $value : null;
+    }
+
+    public function isRequested(QueryBuilderRequest $request): bool
+    {
+        return $request->filters()->has($this->getName());
+    }
+
+    public function getValueFromRequest(QueryBuilderRequest $request): mixed
+    {
+        return $request->filters()->get($this->getName());
+    }
+
+    public function getValueFromCollection(Collection $value): mixed
+    {
+        return $value->get($this->getName());
     }
 }
