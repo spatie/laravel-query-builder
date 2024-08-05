@@ -1,6 +1,7 @@
 <?php
 
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\Enums\FilterOperator;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 beforeEach(function () {
@@ -114,4 +115,16 @@ it('can disable partial filtering based on related model properties', function (
         ->toSql();
 
     expect($sql)->toContain('LOWER(`relatedModels`.`name`) LIKE ?');
+});
+
+it('can disable operator filtering based on related model properties', function () {
+    $addRelationConstraint = false;
+
+    $sql = createQueryFromFilterRequest([
+            'relatedModels.name' => $this->models->first()->name,
+        ])
+        ->allowedFilters(AllowedFilter::operator('relatedModels.name', FilterOperator::EQUAL, 'and', null, $addRelationConstraint))
+        ->toSql();
+
+    expect($sql)->toContain('`relatedModels`.`name` = ?');
 });

@@ -37,6 +37,7 @@ class TestCase extends Orchestra
             $table->increments('id');
             $table->timestamps();
             $table->string('name')->nullable();
+            $table->double('salary')->nullable();
             $table->boolean('is_visible')->default(true);
         });
 
