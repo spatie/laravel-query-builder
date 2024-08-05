@@ -1,6 +1,6 @@
 ---
 title: Front-end implementation
-weight: 3
+weight: 6
 ---
 
 If you're interested in building query urls on the front-end to match this package, you could use one of the below:
@@ -11,3 +11,4 @@ If you're interested in building query urls on the front-end to match this packa
 Pascal Baljet](https://github.com/pascalbaljet).
 - React: [cogent-js package](https://www.npmjs.com/package/cogent-js) by [Joel Male](https://github.com/joelwmale).
 - Typescript: [query-builder-ts package](https://www.npmjs.com/package/@vortechron/query-builder-ts) by [Amirul Adli](https://www.npmjs.com/~vortechron)
+- Typescript + React [react-query-builder](https://www.npmjs.com/package/@cgarciagarcia/react-query-builder) by [Carlos Garcia](https://github.com/cgarciagarcia)
