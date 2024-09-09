@@ -91,7 +91,7 @@ it('can filter a custom base query with select', function () {
 });
 
 it('specifies escape character in supported databases', function (string $dbDriver) {
-    if($dbDriver === 'mariadb' && !in_array('mariadb', DB::supportedDrivers())){
+    if ($dbDriver === 'mariadb' && ! in_array('mariadb', DB::supportedDrivers())) {
         $this->markTestSkipped('mariadb driver not supported in the installed version of illuminate/database dependency');
     }
 
@@ -103,7 +103,7 @@ it('specifies escape character in supported databases', function (string $dbDriv
     ]);
 
     DB::usingConnection($fakeConnection, function () use ($dbDriver) {
-        
+
         $request = new Request([
             'filter' => ['name' => 'to_find'],
         ]);
