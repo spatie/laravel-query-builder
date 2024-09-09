@@ -91,6 +91,10 @@ it('can filter a custom base query with select', function () {
 });
 
 it('specifies escape character in supported databases', function (string $dbDriver) {
+    if($dbDriver === 'mariadb' && !in_array('mariadb', DB::supportedDrivers())){
+        $this->markTestSkipped('mariadb driver not supported in the installed version of illuminate/database dependency');
+    }
+
     $fakeConnection = "test_{$dbDriver}";
 
     DB::connectUsing($fakeConnection, [
@@ -99,6 +103,7 @@ it('specifies escape character in supported databases', function (string $dbDriv
     ]);
 
     DB::usingConnection($fakeConnection, function () use ($dbDriver) {
+        
         $request = new Request([
             'filter' => ['name' => 'to_find'],
         ]);
@@ -107,10 +112,10 @@ it('specifies escape character in supported databases', function (string $dbDriv
             ->allowedFilters('name', 'id')
             ->toSql();
 
-        expect($queryBuilderSql)->when(in_array($dbDriver, ["sqlite","pgsql","sqlsrv"]), fn (Expectation $query) => $query->toContain("ESCAPE '\'"));
-        expect($queryBuilderSql)->when($dbDriver === 'mysql', fn (Expectation $query) => $query->not->toContain("ESCAPE '\'"));
+        expect($queryBuilderSql)->when(in_array($dbDriver, ["sqlite","sqlsrv"]), fn (Expectation $query) => $query->toContain("ESCAPE '\'"));
+        expect($queryBuilderSql)->when(in_array($dbDriver, ["mysql","mariadb", "pgsql"]), fn (Expectation $query) => $query->not->toContain("ESCAPE '\'"));
     });
-})->with(['sqlite', 'mysql', 'pgsql', 'sqlsrv']);
+})->with(['sqlite', 'mysql', 'pgsql', 'sqlsrv', 'mariadb']);
 
 it('can filter results based on the existence of a property in an array', function () {
     $results = createQueryFromFilterRequest([
