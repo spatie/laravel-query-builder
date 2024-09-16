@@ -9,8 +9,8 @@ Sometimes you'll want to fetch only a couple fields to reduce the overall size o
 
 The following example fetches only the users' `id` and `name`:
 
-```
-GET /users?fields[users]=id,name
+```php
+// GET /users?fields[users]=id,name
 
 $users = QueryBuilder::for(User::class)
     ->allowedFields(['id', 'name'])
