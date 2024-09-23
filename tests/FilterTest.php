@@ -4,7 +4,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-
 use Pest\Expectation;
 
 use function PHPUnit\Framework\assertObjectHasProperty;
