@@ -14,7 +14,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
 use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
-
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 uses(AssertsCollectionSorting::class);
