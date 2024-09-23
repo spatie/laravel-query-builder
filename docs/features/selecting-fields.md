@@ -42,13 +42,24 @@ $users = QueryBuilder::for(User::class)
 Selecting fields for included models works the same way. This is especially useful when you only need a couple of columns from an included relationship. Consider the following example:
 
 ```php
-GET /posts?include=author&fields[author]=id,name
+GET /posts?include=author&fields[authors]=name
 
 QueryBuilder::for(Post::class)
-    ->allowedFields('author.id', 'author.name')
+    ->allowedFields('authors.name')
     ->allowedIncludes('author');
 
-// All posts will be fetched including _only_ the name of the author. 
+// All posts will be fetched including _only_ the id a  nd name of the author (id is always selected).
+```
+⚠️ By default, relationship names are expected to be in plural form (e.g., 'authors' instead of 'author' | 'postComments' instead of 'postComment'). This applies to both table names and relationship names in queries.
+
+If you prefer to use singular names, you need to publish the query-builder config file and set the `convert_relation_names_to_snake_case_plural` option to `false`:
+
+```php
+php artisan vendor:publish --provider="Spatie\QueryBuilder\QueryBuilderServiceProvider" --tag="query-builder-config"
+```
+
+```php
+'convert_relation_names_to_snake_case_plural' => false,
 ```
 
 ⚠️ Keep in mind that the fields query will completely override the `SELECT` part of the query. This means that you'll need to manually specify any columns required for Eloquent relationships to work, in the above example `author.id`. See issue [#175](https://github.com/spatie/laravel-query-builder/issues/175) as well.
