@@ -30,14 +30,13 @@ class FiltersOperator extends FiltersExact implements Filter
 
         if (is_array($value)) {
             $query->where(function ($query) use ($value, $property) {
-                foreach($value as $item) {
+                foreach ($value as $item) {
                     $this->__invoke($query, $item, $property);
                 }
             });
 
             return;
-        }
-        else if ($this->filterOperator->isDynamic()) {
+        } elseif ($this->filterOperator->isDynamic()) {
             $filterOperator = $this->getDynamicFilterOperator($value, $this);
             $this->removeDynamicFilterOperatorFromValue($value, $filterOperator);
         }
@@ -50,7 +49,7 @@ class FiltersOperator extends FiltersExact implements Filter
         $filterOperator = FilterOperator::EQUAL;
 
         // match filter operators and assign the filter operator.
-        foreach(FilterOperator::cases() as $filterOperatorCase) {
+        foreach (FilterOperator::cases() as $filterOperatorCase) {
             if (str_starts_with($value, $filterOperatorCase->value) && ! $filterOperatorCase->isDynamic()) {
                 $filterOperator = $filterOperatorCase;
             }
