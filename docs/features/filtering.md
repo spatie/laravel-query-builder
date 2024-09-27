@@ -86,6 +86,40 @@ $users = QueryBuilder::for(User::class)
 // $users will contain all admin users with id 1, 2, 3, 4 or 5
 ```
 
+## Operator filters
+
+Operator filters allow you to filter results based on different operators such as EQUAL, NOT_EQUAL, GREATER_THAN, LESS_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN_OR_EQUAL, and DYNAMIC. You can use the `AllowedFilter::operator` method to create operator filters.
+
+```php
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\Enums\FilterOperator;
+
+// GET /users?filter[salary]=>3000
+$users = QueryBuilder::for(User::class)
+    ->allowedFilters([
+        AllowedFilter::operator('salary', FilterOperator::GREATER_THAN),
+    ])
+    ->get();
+
+// $users will contain all users with a salary greater than 3000
+```
+
+You can also use dynamic operator filters, which allow you to specify the operator in the filter value:
+
+```php
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\Enums\FilterOperator;
+
+// GET /users?filter[salary]=>3000
+$users = QueryBuilder::for(User::class)
+    ->allowedFilters([
+        AllowedFilter::operator('salary', FilterOperator::DYNAMIC),
+    ])
+    ->get();
+
+// $users will contain all users with a salary greater than 3000
+```
+
 ## Exact or partial filters for related properties
 
 You can also add filters for a relationship property using the dot-notation: `AllowedFilter::exact('posts.title')`. This works for exact and partial filters. Under the hood we'll add a `whereHas` statement for the `posts` that filters for the given `title` property as well.
