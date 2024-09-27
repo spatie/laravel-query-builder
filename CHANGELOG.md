@@ -2,6 +2,19 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.2.0 - 2024-09-27
+
+### What's Changed
+
+* [FEAT] add filter by operator by @AbdelrahmanBl in https://github.com/spatie/laravel-query-builder/pull/940
+* Add documentation for the operator filter by @AlexVanderbist in https://github.com/spatie/laravel-query-builder/pull/974
+
+### New Contributors
+
+* @AbdelrahmanBl made their first contribution in https://github.com/spatie/laravel-query-builder/pull/940
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/6.1.0...6.2.0
+
 ## 6.1.0 - 2024-09-23
 
 ### What's Changed
