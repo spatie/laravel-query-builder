@@ -69,12 +69,12 @@ class FiltersPartial extends FiltersExact implements Filter
     }
 
     /**
-     * @param 'sqlite'|'pgsql'|'sqlsrc'|'mysql' $driver
+     * @param 'sqlite'|'pgsql'|'sqlsrc'|'mysql'|'mariadb' $driver
      * @return string
      */
     protected static function maybeSpecifyEscapeChar(string $driver): string
     {
-        if (! in_array($driver, ['sqlite','pgsql','sqlsrv'])) {
+        if (! in_array($driver, ['sqlite','sqlsrv'])) {
             return '';
         }
 
