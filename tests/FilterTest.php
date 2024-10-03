@@ -120,7 +120,7 @@ it('can filter a custom base query with select', function () {
 });
 
 it('specifies escape character in supported databases', function (string $dbDriver) {
-    if ($dbDriver === 'mariadb' && !in_array('mariadb', DB::supportedDrivers())) {
+    if ($dbDriver === 'mariadb' && ! in_array('mariadb', DB::supportedDrivers())) {
         $this->markTestSkipped('mariadb driver not supported in the installed version of illuminate/database dependency');
     }
 
@@ -141,9 +141,11 @@ it('specifies escape character in supported databases', function (string $dbDriv
             ->allowedFilters('name', 'id')
             ->toSql();
 
-        expect($queryBuilderSql)->when(in_array($dbDriver, ["sqlite", "sqlsrv"]), fn(Expectation $query
+        expect($queryBuilderSql)->when(in_array($dbDriver, ["sqlite", "sqlsrv"]), fn (
+            Expectation $query
         ) => $query->toContain("ESCAPE '\'"));
-        expect($queryBuilderSql)->when(in_array($dbDriver, ["mysql", "mariadb", "pgsql"]), fn(Expectation $query
+        expect($queryBuilderSql)->when(in_array($dbDriver, ["mysql", "mariadb", "pgsql"]), fn (
+            Expectation $query
         ) => $query->not->toContain("ESCAPE '\'"));
     });
 })->with(['sqlite', 'mysql', 'pgsql', 'sqlsrv', 'mariadb']);
