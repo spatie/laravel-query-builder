@@ -31,10 +31,38 @@ it('can filter models by partial property by default', function () {
     expect($models)->toHaveCount(1);
 });
 
+it('can use a custom filter query string parameter', function () {
+    config(['query-builder.parameters.filter' => 'custom_filter']);
+
+    $request = new Request([
+        'custom_filter' => ['name' => $this->models->first()->name],
+    ]);
+
+    $models = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFilters('name')
+        ->get();
+
+    expect($models)->toHaveCount(1);
+});
+
+it('can work without a general filter query string parameter configured', function () {
+    config(['query-builder.parameters.filter' => null]);
+
+    $request = new Request([
+        'name' => $this->models->first()->name,
+    ]);
+
+    $models = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFilters('name')
+        ->get();
+
+    expect($models)->toHaveCount(1);
+});
+
 it('can filter models by an array as filter value', function () {
     $models = createQueryFromFilterRequest([
-            'name' => ['first' => $this->models->first()->name],
-        ])
+        'name' => ['first' => $this->models->first()->name],
+    ])
         ->allowedFilters('name')
         ->get();
 
@@ -43,8 +71,8 @@ it('can filter models by an array as filter value', function () {
 
 it('can filter partially and case insensitive', function () {
     $models = createQueryFromFilterRequest([
-            'name' => strtoupper($this->models->first()->name),
-        ])
+        'name' => strtoupper($this->models->first()->name),
+    ])
         ->allowedFilters('name')
         ->get();
 
@@ -56,8 +84,8 @@ it('can filter results based on the partial existence of a property in an array'
     $model2 = TestModel::create(['name' => 'uvwxyz']);
 
     $results = createQueryFromFilterRequest([
-            'name' => 'abc,xyz',
-        ])
+        'name' => 'abc,xyz',
+    ])
         ->allowedFilters('name')
         ->get();
 
@@ -67,8 +95,8 @@ it('can filter results based on the partial existence of a property in an array'
 
 it('can filter models and return an empty collection', function () {
     $models = createQueryFromFilterRequest([
-            'name' => 'None existing first name',
-        ])
+        'name' => 'None existing first name',
+    ])
         ->allowedFilters('name')
         ->get();
 
@@ -92,7 +120,7 @@ it('can filter a custom base query with select', function () {
 });
 
 it('specifies escape character in supported databases', function (string $dbDriver) {
-    if ($dbDriver === 'mariadb' && ! in_array('mariadb', DB::supportedDrivers())) {
+    if ($dbDriver === 'mariadb' && !in_array('mariadb', DB::supportedDrivers())) {
         $this->markTestSkipped('mariadb driver not supported in the installed version of illuminate/database dependency');
     }
 
@@ -113,15 +141,17 @@ it('specifies escape character in supported databases', function (string $dbDriv
             ->allowedFilters('name', 'id')
             ->toSql();
 
-        expect($queryBuilderSql)->when(in_array($dbDriver, ["sqlite","sqlsrv"]), fn (Expectation $query) => $query->toContain("ESCAPE '\'"));
-        expect($queryBuilderSql)->when(in_array($dbDriver, ["mysql","mariadb", "pgsql"]), fn (Expectation $query) => $query->not->toContain("ESCAPE '\'"));
+        expect($queryBuilderSql)->when(in_array($dbDriver, ["sqlite", "sqlsrv"]), fn(Expectation $query
+        ) => $query->toContain("ESCAPE '\'"));
+        expect($queryBuilderSql)->when(in_array($dbDriver, ["mysql", "mariadb", "pgsql"]), fn(Expectation $query
+        ) => $query->not->toContain("ESCAPE '\'"));
     });
 })->with(['sqlite', 'mysql', 'pgsql', 'sqlsrv', 'mariadb']);
 
 it('can filter results based on the existence of a property in an array', function () {
     $results = createQueryFromFilterRequest([
-            'id' => '1,2',
-        ])
+        'id' => '1,2',
+    ])
         ->allowedFilters(AllowedFilter::exact('id'))
         ->get();
 
@@ -131,8 +161,8 @@ it('can filter results based on the existence of a property in an array', functi
 
 it('ignores empty values in an array partial filter', function () {
     $results = createQueryFromFilterRequest([
-            'id' => '2,',
-        ])
+        'id' => '2,',
+    ])
         ->allowedFilters(AllowedFilter::partial('id'))
         ->get();
 
@@ -142,8 +172,8 @@ it('ignores empty values in an array partial filter', function () {
 
 it('ignores an empty array partial filter', function () {
     $results = createQueryFromFilterRequest([
-            'id' => ',,',
-        ])
+        'id' => ',,',
+    ])
         ->allowedFilters(AllowedFilter::partial('id'))
         ->get();
 
@@ -154,8 +184,8 @@ test('falsy values are not ignored when applying a partial filter', function () 
     DB::enableQueryLog();
 
     createQueryFromFilterRequest([
-            'id' => [0],
-        ])
+        'id' => [0],
+    ])
         ->allowedFilters(AllowedFilter::partial('id'))
         ->get();
 
@@ -166,8 +196,8 @@ test('falsy values are not ignored when applying a begins with strict filter', f
     DB::enableQueryLog();
 
     createQueryFromFilterRequest([
-            'id' => [0],
-        ])
+        'id' => [0],
+    ])
         ->allowedFilters(AllowedFilter::beginsWithStrict('id'))
         ->get();
 
@@ -178,8 +208,8 @@ test('falsy values are not ignored when applying a ends with strict filter', fun
     DB::enableQueryLog();
 
     createQueryFromFilterRequest([
-            'id' => [0],
-        ])
+        'id' => [0],
+    ])
         ->allowedFilters(AllowedFilter::endsWithStrict('id'))
         ->get();
 
@@ -231,8 +261,8 @@ it('can filter and match results by exact property', function () {
         ->get();
 
     $modelsResult = createQueryFromFilterRequest([
-            'id' => $testModel->id,
-        ])
+        'id' => $testModel->id,
+    ])
         ->allowedFilters(AllowedFilter::exact('id'))
         ->get();
 
@@ -243,8 +273,8 @@ it('can filter and reject results by exact property', function () {
     $testModel = TestModel::create(['name' => 'John Testing Doe']);
 
     $modelsResult = createQueryFromFilterRequest([
-            'name' => ' Testing ',
-        ])
+        'name' => ' Testing ',
+    ])
         ->allowedFilters(AllowedFilter::exact('name'))
         ->get();
 
@@ -328,8 +358,8 @@ it('can filter results by a custom filter class', function () {
     };
 
     $modelResult = createQueryFromFilterRequest([
-            'custom_name' => $testModel->name,
-        ])
+        'custom_name' => $testModel->name,
+    ])
         ->allowedFilters(AllowedFilter::custom('custom_name', $filterClass))
         ->first();
 
@@ -341,8 +371,8 @@ it('can allow multiple filters', function () {
     $model2 = TestModel::create(['name' => 'abcdef']);
 
     $results = createQueryFromFilterRequest([
-            'name' => 'abc',
-        ])
+        'name' => 'abc',
+    ])
         ->allowedFilters('name', AllowedFilter::exact('id'))
         ->get();
 
@@ -355,8 +385,8 @@ it('can allow multiple filters as an array', function () {
     $model2 = TestModel::create(['name' => 'abcdef']);
 
     $results = createQueryFromFilterRequest([
-            'name' => 'abc',
-        ])
+        'name' => 'abc',
+    ])
         ->allowedFilters(['name', AllowedFilter::exact('id')])
         ->get();
 
@@ -369,9 +399,9 @@ it('can filter by multiple filters', function () {
     $model2 = TestModel::create(['name' => 'abcdef']);
 
     $results = createQueryFromFilterRequest([
-            'name' => 'abc',
-            'id' => "1,{$model1->id}",
-        ])
+        'name' => 'abc',
+        'id' => "1,{$model1->id}",
+    ])
         ->allowedFilters('name', AllowedFilter::exact('id'))
         ->get();
 
@@ -414,8 +444,8 @@ it('can create a custom filter with an instantiated filter', function () {
     TestModel::create(['name' => 'abcdef']);
 
     $results = createQueryFromFilterRequest([
-            '*' => '*',
-        ])
+        '*' => '*',
+    ])
         ->allowedFilters('name', AllowedFilter::custom('*', $customFilter))
         ->get();
 
@@ -444,8 +474,8 @@ it('allows for adding ignorable values', function () {
 
 it('should not apply a filter if the supplied value is ignored', function () {
     $models = createQueryFromFilterRequest([
-            'name' => '-1',
-        ])
+        'name' => '-1',
+    ])
         ->allowedFilters(AllowedFilter::exact('name')->ignore('-1'))
         ->get();
 
@@ -457,8 +487,8 @@ it('should apply the filter on the subset of allowed values', function () {
     TestModel::create(['name' => 'John Deer']);
 
     $models = createQueryFromFilterRequest([
-            'name' => 'John Deer,John Doe',
-        ])
+        'name' => 'John Deer,John Doe',
+    ])
         ->allowedFilters(AllowedFilter::exact('name')->ignore('John Doe'))
         ->get();
 
@@ -470,8 +500,8 @@ it('should apply the filter on the subset of allowed values regardless of the ke
     TestModel::create(['id' => 7, 'name' => 'John Deer']);
 
     $models = createQueryFromFilterRequest([
-            'id' => [ 7, 6 ],
-        ])
+        'id' => [7, 6],
+    ])
         ->allowedFilters(AllowedFilter::exact('id')->ignore(6))
         ->get();
 
@@ -497,8 +527,8 @@ it('resolves queries using property column name', function () {
     TestModel::create(['name' => 'abcdef']);
 
     $models = createQueryFromFilterRequest([
-            'nickname' => 'abcdef',
-        ])
+        'nickname' => 'abcdef',
+    ])
         ->allowedFilters($filter)
         ->get();
 
@@ -533,8 +563,8 @@ it('does not apply default filter when filter exists and default is set', functi
     TestModel::create(['name' => 'UniqueJohn Deer']);
 
     $models = createQueryFromFilterRequest([
-            'name' => 'UniqueDoe',
-        ])
+        'name' => 'UniqueDoe',
+    ])
         ->allowedFilters(AllowedFilter::partial('name')->default('UniqueJohn'))
         ->get();
 
@@ -557,8 +587,8 @@ it('does not apply default filter when filter exists and default null is set', f
     TestModel::create(['name' => 'UniqueJohn Deer']);
 
     $models = createQueryFromFilterRequest([
-            'name' => 'UniqueJohn Deer',
-        ])
+        'name' => 'UniqueJohn Deer',
+    ])
         ->allowedFilters(AllowedFilter::exact('name')->default(null))
         ->get();
 
@@ -570,8 +600,8 @@ it('should apply a nullable filter when filter exists and is null', function () 
     TestModel::create(['name' => 'UniqueJohn Deer']);
 
     $models = createQueryFromFilterRequest([
-            'name' => null,
-        ])
+        'name' => null,
+    ])
         ->allowedFilters(AllowedFilter::exact('name')->nullable())
         ->get();
 
@@ -583,8 +613,8 @@ it('should apply a nullable filter when filter exists and is set', function () {
     TestModel::create(['name' => 'UniqueJohn Deer']);
 
     $models = createQueryFromFilterRequest([
-            'name' => 'UniqueJohn Deer',
-        ])
+        'name' => 'UniqueJohn Deer',
+    ])
         ->allowedFilters(AllowedFilter::exact('name')->nullable())
         ->get();
 
@@ -596,8 +626,8 @@ it('should filter by query parameters if a default value is set and unset afterw
 
     $filterWithDefault = AllowedFilter::exact('name')->default('some default value');
     $models = createQueryFromFilterRequest([
-            'name' => 'John Doe',
-        ])
+        'name' => 'John Doe',
+    ])
         ->allowedFilters($filterWithDefault->unsetDefault())
         ->get();
 
@@ -617,10 +647,10 @@ it('should apply a filter with a multi-dimensional array value', function () {
     TestModel::create(['name' => 'John Doe']);
 
     $models = createQueryFromFilterRequest(['conditions' => [[
-            'attribute' => 'name',
-            'operator' => '=',
-            'value' => 'John Doe',
-        ]]])
+        'attribute' => 'name',
+        'operator' => '=',
+        'value' => 'John Doe',
+    ]]])
         ->allowedFilters(AllowedFilter::callback('conditions', function ($query, $conditions) {
             foreach ($conditions as $condition) {
                 $query->where(
@@ -641,24 +671,24 @@ it('can override the array value delimiter for single filters', function () {
 
     // First use default delimiter
     $models = createQueryFromFilterRequest([
-            'ref_id' => 'h4S4MG3(+>azv4z/I<o>,>XZII/Q1On',
-        ])
+        'ref_id' => 'h4S4MG3(+>azv4z/I<o>,>XZII/Q1On',
+    ])
         ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true))
         ->get();
     expect($models->count())->toEqual(2);
 
     // Custom delimiter
     $models = createQueryFromFilterRequest([
-            'ref_id' => 'h4S4MG3(+>azv4z/I<o>|>XZII/Q1On',
-        ])
+        'ref_id' => 'h4S4MG3(+>azv4z/I<o>|>XZII/Q1On',
+    ])
         ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true, '|'))
         ->get();
     expect($models->count())->toEqual(2);
 
     // Custom delimiter, but default in request
     $models = createQueryFromFilterRequest([
-            'ref_id' => 'h4S4MG3(+>azv4z/I<o>,>XZII/Q1On',
-        ])
+        'ref_id' => 'h4S4MG3(+>azv4z/I<o>,>XZII/Q1On',
+    ])
         ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true, '|'))
         ->get();
     expect($models->count())->toEqual(0);
@@ -668,8 +698,8 @@ it('can filter name with equal operator filter', function () {
     TestModel::create(['name' => 'John Doe']);
 
     $results = createQueryFromFilterRequest([
-            'name' => 'John Doe',
-        ])
+        'name' => 'John Doe',
+    ])
         ->allowedFilters(AllowedFilter::operator('name', FilterOperator::EQUAL))
         ->get();
 
@@ -680,8 +710,8 @@ it('can filter name with not equal operator filter', function () {
     TestModel::create(['name' => 'John Doe']);
 
     $results = createQueryFromFilterRequest([
-            'name' => 'John Doe',
-        ])
+        'name' => 'John Doe',
+    ])
         ->allowedFilters(AllowedFilter::operator('name', FilterOperator::NOT_EQUAL))
         ->get();
 
@@ -692,8 +722,8 @@ it('can filter salary with greater than operator filter', function () {
     TestModel::create(['salary' => 5000]);
 
     $results = createQueryFromFilterRequest([
-            'salary' => 3000,
-        ])
+        'salary' => 3000,
+    ])
         ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::GREATER_THAN))
         ->get();
 
@@ -704,8 +734,8 @@ it('can filter salary with less than operator filter', function () {
     TestModel::create(['salary' => 5000]);
 
     $results = createQueryFromFilterRequest([
-            'salary' => 7000,
-        ])
+        'salary' => 7000,
+    ])
         ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::LESS_THAN))
         ->get();
 
@@ -716,8 +746,8 @@ it('can filter salary with greater than or equal operator filter', function () {
     TestModel::create(['salary' => 5000]);
 
     $results = createQueryFromFilterRequest([
-            'salary' => 3000,
-        ])
+        'salary' => 3000,
+    ])
         ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::GREATER_THAN_OR_EQUAL))
         ->get();
 
@@ -728,8 +758,8 @@ it('can filter salary with less than or equal operator filter', function () {
     TestModel::create(['salary' => 5000]);
 
     $results = createQueryFromFilterRequest([
-            'salary' => 7000,
-        ])
+        'salary' => 7000,
+    ])
         ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::LESS_THAN_OR_EQUAL))
         ->get();
 
@@ -741,8 +771,8 @@ it('can filter array of names with equal operator filter', function () {
     TestModel::create(['name' => 'Max Doe']);
 
     $results = createQueryFromFilterRequest([
-            'name' => 'John Doe,Max Doe',
-        ])
+        'name' => 'John Doe,Max Doe',
+    ])
         ->allowedFilters(AllowedFilter::operator('name', FilterOperator::EQUAL, 'or'))
         ->get();
 
@@ -754,8 +784,8 @@ it('can filter salary with dynamic operator filter', function () {
     TestModel::create(['salary' => 2000]);
 
     $results = createQueryFromFilterRequest([
-            'salary' => '>2000',
-        ])
+        'salary' => '>2000',
+    ])
         ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::DYNAMIC))
         ->get();
 
@@ -769,8 +799,8 @@ it('can filter salary with dynamic array operator filter', function () {
     TestModel::create(['salary' => 4000]);
 
     $results = createQueryFromFilterRequest([
-            'salary' => '>1000,<4000',
-        ])
+        'salary' => '>1000,<4000',
+    ])
         ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::DYNAMIC))
         ->get();
 
