@@ -9,6 +9,7 @@ use Pest\Expectation;
 use function PHPUnit\Framework\assertObjectHasProperty;
 
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\Enums\FilterOperator;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
@@ -661,4 +662,117 @@ it('can override the array value delimiter for single filters', function () {
         ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true, '|'))
         ->get();
     expect($models->count())->toEqual(0);
+});
+
+it('can filter name with equal operator filter', function () {
+    TestModel::create(['name' => 'John Doe']);
+
+    $results = createQueryFromFilterRequest([
+            'name' => 'John Doe',
+        ])
+        ->allowedFilters(AllowedFilter::operator('name', FilterOperator::EQUAL))
+        ->get();
+
+    expect($results)->toHaveCount(1);
+});
+
+it('can filter name with not equal operator filter', function () {
+    TestModel::create(['name' => 'John Doe']);
+
+    $results = createQueryFromFilterRequest([
+            'name' => 'John Doe',
+        ])
+        ->allowedFilters(AllowedFilter::operator('name', FilterOperator::NOT_EQUAL))
+        ->get();
+
+    expect($results)->toHaveCount(5);
+});
+
+it('can filter salary with greater than operator filter', function () {
+    TestModel::create(['salary' => 5000]);
+
+    $results = createQueryFromFilterRequest([
+            'salary' => 3000,
+        ])
+        ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::GREATER_THAN))
+        ->get();
+
+    expect($results)->toHaveCount(1);
+});
+
+it('can filter salary with less than operator filter', function () {
+    TestModel::create(['salary' => 5000]);
+
+    $results = createQueryFromFilterRequest([
+            'salary' => 7000,
+        ])
+        ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::LESS_THAN))
+        ->get();
+
+    expect($results)->toHaveCount(1);
+});
+
+it('can filter salary with greater than or equal operator filter', function () {
+    TestModel::create(['salary' => 5000]);
+
+    $results = createQueryFromFilterRequest([
+            'salary' => 3000,
+        ])
+        ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::GREATER_THAN_OR_EQUAL))
+        ->get();
+
+    expect($results)->toHaveCount(1);
+});
+
+it('can filter salary with less than or equal operator filter', function () {
+    TestModel::create(['salary' => 5000]);
+
+    $results = createQueryFromFilterRequest([
+            'salary' => 7000,
+        ])
+        ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::LESS_THAN_OR_EQUAL))
+        ->get();
+
+    expect($results)->toHaveCount(1);
+});
+
+it('can filter array of names with equal operator filter', function () {
+    TestModel::create(['name' => 'John Doe']);
+    TestModel::create(['name' => 'Max Doe']);
+
+    $results = createQueryFromFilterRequest([
+            'name' => 'John Doe,Max Doe',
+        ])
+        ->allowedFilters(AllowedFilter::operator('name', FilterOperator::EQUAL, 'or'))
+        ->get();
+
+    expect($results)->toHaveCount(2);
+});
+
+it('can filter salary with dynamic operator filter', function () {
+    TestModel::create(['salary' => 5000]);
+    TestModel::create(['salary' => 2000]);
+
+    $results = createQueryFromFilterRequest([
+            'salary' => '>2000',
+        ])
+        ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::DYNAMIC))
+        ->get();
+
+    expect($results)->toHaveCount(1);
+});
+
+it('can filter salary with dynamic array operator filter', function () {
+    TestModel::create(['salary' => 1000]);
+    TestModel::create(['salary' => 2000]);
+    TestModel::create(['salary' => 3000]);
+    TestModel::create(['salary' => 4000]);
+
+    $results = createQueryFromFilterRequest([
+            'salary' => '>1000,<4000',
+        ])
+        ->allowedFilters(AllowedFilter::operator('salary', FilterOperator::DYNAMIC))
+        ->get();
+
+    expect($results)->toHaveCount(2);
 });
