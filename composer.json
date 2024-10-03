@@ -28,11 +28,11 @@
     },
     "require-dev": {
         "ext-json": "*",
+        "larastan/larastan": "^2.9",
         "mockery/mockery": "^1.4",
-        "nunomaduro/larastan": "^2.0",
         "orchestra/testbench": "^7.0|^8.0",
-        "phpunit/phpunit": "^10.0",
         "pestphp/pest": "^2.0",
+        "phpunit/phpunit": "^10.0",
         "spatie/invade": "^2.0"
     },
     "autoload": {

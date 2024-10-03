@@ -1,5 +1,5 @@
 includes:
-    - ./vendor/nunomaduro/larastan/extension.neon
+    - ./vendor/larastan/larastan/extension.neon
     - phpstan-baseline.neon
 
 parameters:
@@ -14,11 +14,9 @@ parameters:
 
     checkModelProperties: true
     checkOctaneCompatibility: true
-    checkMissingIterableValueType: false
     reportUnmatchedIgnoredErrors: false
     noUnnecessaryCollectionCall: true
     checkNullables: true
-    checkGenericClassInNonGenericObjectType: false
     treatPhpDocTypesAsCertain: false
 
     ignoreErrors:
