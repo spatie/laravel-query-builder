@@ -11,12 +11,35 @@ use Spatie\QueryBuilder\Includes\IncludeInterface;
 trait AddsIncludesToQuery
 {
     protected ?Collection $allowedIncludes = null;
+    protected ?Collection $defaultIncludes = null;
 
     public function allowedIncludes($includes): static
     {
         $includes = is_array($includes) ? $includes : func_get_args();
 
-        $this->allowedIncludes = collect($includes)
+        $this->allowedIncludes = $this->parseIncludes($includes);
+
+        $this->ensureAllIncludesExist();
+        
+        $includes = $this->filterNonExistingIncludes($this->request->includes());
+        
+        $this->addIncludesToQuery($includes);
+
+        return $this;
+    }
+
+    public function defaultIncludes($includes): static
+    {
+        $this->defaultIncludes = $this->parseIncludes($includes);
+
+        $this->addIncludesToQuery(collect($includes));
+
+        return $this;
+    }
+
+    protected function parseIncludes($includes): Collection
+    {
+        return collect($includes)
             ->reject(function ($include) {
                 return empty($include);
             })
@@ -39,17 +62,9 @@ trait AddsIncludesToQuery
 
                 return AllowedInclude::relationship($include);
             })
-            ->unique(function (AllowedInclude $allowedInclude) {
-                return $allowedInclude->getName();
+            ->unique(function (AllowedInclude $include) {
+                return $include->getName();
             });
-
-        $this->ensureAllIncludesExist();
-
-        $includes = $this->filterNonExistingIncludes($this->request->includes());
-
-        $this->addIncludesToQuery($includes);
-
-        return $this;
     }
 
     protected function addIncludesToQuery(Collection $includes): void
@@ -63,7 +78,11 @@ trait AddsIncludesToQuery
 
     protected function findInclude(string $include): ?AllowedInclude
     {
-        return $this->allowedIncludes
+        $allowedIncludes = $this->allowedIncludes ?? collect();
+        $defaultIncludes = $this->defaultIncludes ?? collect();
+        $includes = $allowedIncludes->merge($defaultIncludes);
+
+        return $includes
             ->first(fn (AllowedInclude $included) => $included->isForInclude($include));
     }
 
