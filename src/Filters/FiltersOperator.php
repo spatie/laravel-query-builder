@@ -37,7 +37,7 @@ class FiltersOperator extends FiltersExact implements Filter
 
             return;
         } elseif ($this->filterOperator->isDynamic()) {
-            $filterOperator = $this->getDynamicFilterOperator($value, $this);
+            $filterOperator = $this->getDynamicFilterOperator($value);
             $this->removeDynamicFilterOperatorFromValue($value, $filterOperator);
         }
 
@@ -48,7 +48,6 @@ class FiltersOperator extends FiltersExact implements Filter
     {
         $filterOperator = FilterOperator::EQUAL;
 
-        // match filter operators and assign the filter operator.
         foreach (FilterOperator::cases() as $filterOperatorCase) {
             if (str_starts_with($value, $filterOperatorCase->value) && ! $filterOperatorCase->isDynamic()) {
                 $filterOperator = $filterOperatorCase;
