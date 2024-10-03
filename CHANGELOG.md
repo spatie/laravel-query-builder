@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.2.1 - 2024-10-03
+
+### What's Changed
+
+* Removed explicit escaping for `pgsql` driver in `FiltersPartial` - Fixes #941 by @Talpx1 in https://github.com/spatie/laravel-query-builder/pull/968
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/6.2.0...6.2.1
+
 ## 6.2.0 - 2024-09-27
 
 ### What's Changed
