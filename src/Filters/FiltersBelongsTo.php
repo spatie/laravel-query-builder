@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterProperty;
 
 /**
@@ -45,7 +44,7 @@ class FiltersBelongsTo implements Filter
     {
         if ($relationParent) {
             $modelParent = $this->getModelFromRelation($modelQuery, $relationParent);
-            if (!$modelParent) {
+            if (! $modelParent) {
                 throw InvalidFilterProperty::make($relationParent.'.'.$relationName);
             }
         } else {
@@ -53,7 +52,7 @@ class FiltersBelongsTo implements Filter
         }
 
         $relatedModel = $this->getRelatedModelFromRelation($modelParent, $relationName);
-        if (!$relatedModel) {
+        if (! $relatedModel) {
             throw InvalidFilterProperty::make($relationParent.'.'.$relationName);
         }
 
@@ -62,17 +61,17 @@ class FiltersBelongsTo implements Filter
 
     protected function getRelatedModelFromRelation(Model $model, string  $relationName): ?Model
     {
-        if (!method_exists($model, $relationName)) {
+        if (! method_exists($model, $relationName)) {
             return null;
         }
 
         $relationObject = $model->$relationName();
-        if (!is_subclass_of ($relationObject, Relation::class)) {
+        if (! is_subclass_of($relationObject, Relation::class)) {
             return null;
         }
 
         $relatedModel = $relationObject->getRelated();
-        if (!is_subclass_of($relatedModel, Model::class)) {
+        if (! is_subclass_of($relatedModel, Model::class)) {
             return null;
         }
 
@@ -87,9 +86,10 @@ class FiltersBelongsTo implements Filter
         } else {
             $firstRelation = $relationParts[0];
             $firstRelatedModel = $this->getRelatedModelFromRelation($model, $firstRelation);
-            if (!$firstRelatedModel) {
+            if (! $firstRelatedModel) {
                 return null;
             }
+
             return $this->getModelFromRelation($firstRelatedModel, implode('.', array_slice($relationParts, 1)), $level + 1);
         }
     }
