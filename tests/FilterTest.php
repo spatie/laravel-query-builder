@@ -10,11 +10,14 @@ use function PHPUnit\Framework\assertObjectHasProperty;
 
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Enums\FilterOperator;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterProperty;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\NestedRelatedModel;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 beforeEach(function () {
@@ -281,6 +284,82 @@ it('can filter and reject results by exact property', function () {
         ->get();
 
     expect($modelsResult)->toHaveCount(0);
+});
+
+it('can filter results by belongs to', function () {
+    $relatedModel = RelatedModel::create(['name' => 'John Related Doe', 'test_model_id' => 0]);
+    $nestedModel = NestedRelatedModel::create(['name' => 'John Nested Doe', 'related_model_id' => $relatedModel->id]);
+
+    $modelsResult = createQueryFromFilterRequest(['relatedModel' => $relatedModel->id], NestedRelatedModel::class)
+        ->allowedFilters(AllowedFilter::belongsTo('relatedModel'))
+        ->get();
+
+    expect($modelsResult)->toHaveCount(1);
+});
+
+it('can filter results by belongs to no match', function () {
+    $relatedModel = RelatedModel::create(['name' => 'John Related Doe', 'test_model_id' => 0]);
+    $nestedModel = NestedRelatedModel::create(['name' => 'John Nested Doe', 'related_model_id' => $relatedModel->id + 1]);
+
+    $modelsResult = createQueryFromFilterRequest(['relatedModel' => $relatedModel->id], NestedRelatedModel::class)
+        ->allowedFilters(AllowedFilter::belongsTo('relatedModel'))
+        ->get();
+
+    expect($modelsResult)->toHaveCount(0);
+});
+
+it('can filter results by belongs multiple', function () {
+    $relatedModel1 = RelatedModel::create(['name' => 'John Related Doe 1', 'test_model_id' => 0]);
+    $nestedModel1 = NestedRelatedModel::create(['name' => 'John Nested Doe 1', 'related_model_id' => $relatedModel1->id]);
+    $relatedModel2 = RelatedModel::create(['name' => 'John Related Doe 2', 'test_model_id' => 0]);
+    $nestedModel2 = NestedRelatedModel::create(['name' => 'John Nested Doe 2', 'related_model_id' => $relatedModel2->id]);
+
+    $modelsResult = createQueryFromFilterRequest(['relatedModel' => $relatedModel1->id.','.$relatedModel2->id], NestedRelatedModel::class)
+        ->allowedFilters(AllowedFilter::belongsTo('relatedModel'))
+        ->get();
+
+    expect($modelsResult)->toHaveCount(2);
+});
+
+it('can filter results by belongs multiple with different internal name', function () {
+    $relatedModel1 = RelatedModel::create(['name' => 'John Related Doe 1', 'test_model_id' => 0]);
+    $nestedModel1 = NestedRelatedModel::create(['name' => 'John Nested Doe 1', 'related_model_id' => $relatedModel1->id]);
+    $relatedModel2 = RelatedModel::create(['name' => 'John Related Doe 2', 'test_model_id' => 0]);
+    $nestedModel2 = NestedRelatedModel::create(['name' => 'John Nested Doe 2', 'related_model_id' => $relatedModel2->id]);
+
+    $modelsResult = createQueryFromFilterRequest(['testFilter' => $relatedModel1->id.','.$relatedModel2->id], NestedRelatedModel::class)
+        ->allowedFilters(AllowedFilter::belongsTo('testFilter', 'relatedModel'))
+        ->get();
+
+    expect($modelsResult)->toHaveCount(2);
+});
+
+it('can filter results by belongs multiple with different internal name and nested model', function () {
+    $testModel1 = TestModel::create(['name' => 'John Test Doe 1']);
+    $relatedModel1 = RelatedModel::create(['name' => 'John Related Doe 1', 'test_model_id' => $testModel1->id]);
+    $nestedModel1 = NestedRelatedModel::create(['name' => 'John Nested Doe 1', 'related_model_id' => $relatedModel1->id]);
+    $testModel2 = TestModel::create(['name' => 'John Test Doe 2']);
+    $relatedModel2 = RelatedModel::create(['name' => 'John Related Doe 2', 'test_model_id' => $testModel2->id]);
+    $nestedModel2 = NestedRelatedModel::create(['name' => 'John Nested Doe 2', 'related_model_id' => $relatedModel2->id]);
+
+    $modelsResult = createQueryFromFilterRequest(['test_filter' => $testModel1->id.','.$testModel2->id], NestedRelatedModel::class)
+        ->allowedFilters(AllowedFilter::belongsTo('test_filter', 'relatedModel.testModel'))
+        ->get();
+
+    expect($modelsResult)->toHaveCount(2);
+});
+
+it('throws an exception when trying to filter by belongs to with an inexistent relation', function () {
+    $this->expectException(InvalidFilterProperty::class);
+
+    $testModel = TestModel::create(['name' => 'John Test Doe']);
+    $relatedModel = RelatedModel::create(['name' => 'John Related Doe', 'test_model_id' => $testModel->id]);
+    $nestedModel = NestedRelatedModel::create(['name' => 'John Nested Doe', 'related_model_id' => $relatedModel->id]);
+
+    $modelsResult = createQueryFromFilterRequest(['test_filter' => $testModel->id], NestedRelatedModel::class)
+        ->allowedFilters(AllowedFilter::belongsTo('test_filter', 'inexistentRelation.testModel'))
+        ->get();
+
 });
 
 it('can filter results by scope', function () {
