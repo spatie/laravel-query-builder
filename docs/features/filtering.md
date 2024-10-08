@@ -171,6 +171,14 @@ You can even pass multiple parameters to the scope by passing a comma separated 
 GET /events?filter[schedule.starts_between]=2018-01-01,2018-12-31
 ```
 
+When passing an array as a parameter you can access it, as an array, in the scope by using the spread operator.
+```php
+public function scopeInvitedUsers(Builder $query,  ...$users): Builder
+{
+    return $query->whereIn('id', $users);
+}
+```
+
 When using scopes that require model instances in the parameters, we'll automatically try to inject the model instances into your scope. This works the same way as route model binding does for injecting Eloquent models into controllers. For example:
 
 ```php
