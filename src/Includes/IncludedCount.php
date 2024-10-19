@@ -9,6 +9,9 @@ class IncludedCount implements IncludeInterface
 {
     public function __invoke(Builder $query, string $count)
     {
-        $query->withCount(Str::before($count, config('query-builder.count_suffix', 'Count')));
+        $suffix = config('query-builder.count_suffix', 'Count');
+        $relation = Str::endsWith($count, $suffix) ? Str::beforeLast($count, $suffix) : $count;
+
+        $query->withCount($relation);
     }
 }
