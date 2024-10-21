@@ -10,7 +10,6 @@ use function PHPUnit\Framework\assertObjectHasProperty;
 
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Enums\FilterOperator;
-use Spatie\QueryBuilder\Exceptions\InvalidFilterProperty;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
@@ -349,18 +348,23 @@ it('can filter results by belongs multiple with different internal name and nest
     expect($modelsResult)->toHaveCount(2);
 });
 
-it('throws an exception when trying to filter by belongs to with an inexistent relation', function () {
-    $this->expectException(InvalidFilterProperty::class);
+it('throws an exception when trying to filter by belongs to with an inexistent relation', function ($relationName, $exceptionClass) {
+    $this->expectException($exceptionClass);
 
-    $testModel = TestModel::create(['name' => 'John Test Doe']);
-    $relatedModel = RelatedModel::create(['name' => 'John Related Doe', 'test_model_id' => $testModel->id]);
-    $nestedModel = NestedRelatedModel::create(['name' => 'John Nested Doe', 'related_model_id' => $relatedModel->id]);
-
-    $modelsResult = createQueryFromFilterRequest(['test_filter' => $testModel->id], NestedRelatedModel::class)
-        ->allowedFilters(AllowedFilter::belongsTo('test_filter', 'inexistentRelation.testModel'))
+    $modelsResult = createQueryFromFilterRequest(['test_filter' => 1], RelatedModel::class)
+        ->allowedFilters(AllowedFilter::belongsTo('test_filter', $relationName))
         ->get();
 
-});
+})->with([
+    ['inexistentRelation', \BadMethodCallException::class],
+    ['testModel.inexistentRelation', \BadMethodCallException::class], // existing 'testModel' belongsTo relation
+    ['inexistentRelation.inexistentRelation', \BadMethodCallException::class],
+    ['getTable', \Illuminate\Database\Eloquent\RelationNotFoundException::class],
+    ['testModel.getTable', \Illuminate\Database\Eloquent\RelationNotFoundException::class], // existing 'testModel' belongsTo relation
+    ['getTable.getTable', \Illuminate\Database\Eloquent\RelationNotFoundException::class],
+    ['nestedRelatedModels', \Illuminate\Database\Eloquent\RelationNotFoundException::class], // existing 'nestedRelatedModels' relation but not a belongsTo relation
+    ['testModel.relatedModels', \Illuminate\Database\Eloquent\RelationNotFoundException::class], // existing 'testModel' belongsTo relation and existing 'relatedModels' relation but not a belongsTo relation
+]);
 
 it('can filter results by scope', function () {
     $testModel = TestModel::create(['name' => 'John Testing Doe']);

@@ -4,9 +4,9 @@ namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\RelationNotFoundException;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
-use Spatie\QueryBuilder\Exceptions\InvalidFilterProperty;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
@@ -44,36 +44,23 @@ class FiltersBelongsTo implements Filter
     {
         if ($relationParent) {
             $modelParent = $this->getModelFromRelation($modelQuery, $relationParent);
-            if (! $modelParent) {
-                throw InvalidFilterProperty::make($relationParent.'.'.$relationName);
-            }
         } else {
             $modelParent = $modelQuery;
         }
 
         $relatedModel = $this->getRelatedModelFromRelation($modelParent, $relationName);
-        if (! $relatedModel) {
-            throw InvalidFilterProperty::make($relationParent.'.'.$relationName);
-        }
 
         return $relatedModel;
     }
 
     protected function getRelatedModelFromRelation(Model $model, string  $relationName): ?Model
     {
-        if (! method_exists($model, $relationName)) {
-            return null;
-        }
-
         $relationObject = $model->$relationName();
         if (! is_subclass_of($relationObject, Relation::class)) {
-            return null;
+            throw RelationNotFoundException::make($model, $relationName);
         }
 
         $relatedModel = $relationObject->getRelated();
-        if (! is_subclass_of($relatedModel, Model::class)) {
-            return null;
-        }
 
         return $relatedModel;
     }
