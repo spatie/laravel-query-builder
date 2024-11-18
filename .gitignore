@@ -3,7 +3,7 @@ composer.lock
 vendor
 .php_cs.cache
 coverage
+.phpunit.cache
 .phpunit.result.cache
 /.idea
 .php-cs-fixer.cache
-
