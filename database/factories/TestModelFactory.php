@@ -16,4 +16,3 @@ class TestModelFactory extends Factory
         ];
     }
 }
-

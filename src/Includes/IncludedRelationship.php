@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder\Includes;
 
 use Closure;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -16,11 +17,27 @@ class IncludedRelationship implements IncludeInterface
         $relatedTables = collect(explode('.', $relationship));
 
         $withs = $relatedTables
-            ->mapWithKeys(function ($table, $key) use ($relatedTables) {
+            ->mapWithKeys(function ($table, $key) use ($relatedTables, $query) {
                 $fullRelationName = $relatedTables->slice(0, $key + 1)->implode('.');
 
                 if ($this->getRequestedFieldsForRelatedTable) {
-                    $fields = ($this->getRequestedFieldsForRelatedTable)($fullRelationName);
+
+                    $tableName = null;
+                    $strategy = config('query-builder.convert_relation_table_name_strategy', false);
+
+                    if ($strategy !== false) {
+                        // Try to resolve the related model's table name
+                        try {
+                            // Use the current query's model to resolve the relationship
+                            $relatedModel = $query->getModel()->{$fullRelationName}()->getRelated();
+                            $tableName = $relatedModel->getTable();
+                        } catch (Exception $e) {
+                            // If we can not figure out the table don't do anything
+                            $tableName = null;
+                        }
+                    }
+
+                    $fields = ($this->getRequestedFieldsForRelatedTable)($fullRelationName, $tableName);
                 }
 
                 if (empty($fields)) {
