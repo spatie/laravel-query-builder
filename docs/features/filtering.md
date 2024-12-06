@@ -94,7 +94,7 @@ Operator filters allow you to filter results based on different operators such a
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Enums\FilterOperator;
 
-// GET /users?filter[salary]=>3000
+// GET /users?filter[salary]=3000
 $users = QueryBuilder::for(User::class)
     ->allowedFilters([
         AllowedFilter::operator('salary', FilterOperator::GREATER_THAN),
