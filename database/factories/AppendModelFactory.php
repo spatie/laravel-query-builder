@@ -2,8 +2,8 @@
 
 namespace Spatie\QueryBuilder\Database\Factories;
 
-use Spatie\QueryBuilder\Tests\TestClasses\Models\AppendModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\AppendModel;
 
 class AppendModelFactory extends Factory
 {

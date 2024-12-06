@@ -83,6 +83,21 @@ it('can fetch specific string columns', function () {
     expect($query)->toEqual($expected);
 });
 
+it('can fetch specific string columns jsonApi Format', function () {
+    config(['query-builder.convert_field_names_to_snake_case' => true]);
+    config(['query-builder.convert_relation_table_name_strategy' => 'camelCase']);
+
+    $query = createQueryFromFieldRequest('firstName,id')
+        ->allowedFields(['firstName', 'id'])
+        ->toSql();
+
+    $expected = TestModel::query()
+        ->select("{$this->modelTableName}.first_name", "{$this->modelTableName}.id")
+        ->toSql();
+
+    expect($query)->toEqual($expected);
+});
+
 it('wont fetch a specific array column if its not allowed', function () {
     $query = createQueryFromFieldRequest(['test_models' => 'random-column'])->toSql();
 
@@ -200,6 +215,81 @@ it('can fetch only requested string columns from an included model', function ()
     $this->assertQueryLogContains('select `name` from `related_models`');
 });
 
+it('can fetch only requested string columns from an included model jsonApi format', function () {
+    config(['query-builder.convert_relation_table_name_strategy' => 'camelCase']);
+    RelatedModel::create([
+        'test_model_id' => $this->model->id,
+        'name' => 'related',
+    ]);
+
+    $request = new Request([
+        'fields' => 'id,relatedModels.name',
+        'include' => ['relatedModels'],
+    ]);
+
+    $queryBuilder = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFields('relatedModels.name', 'id')
+        ->allowedIncludes('relatedModels');
+
+    DB::enableQueryLog();
+
+    $queryBuilder->first()->relatedModels;
+
+    $this->assertQueryLogContains('select `test_models`.`id` from `test_models`');
+    $this->assertQueryLogContains('select `related_models`.`name` from `related_models`');
+});
+
+it('can fetch only requested string columns from an included model jsonApi format with field conversion', function () {
+    config(['query-builder.convert_field_names_to_snake_case' => true]);
+    config(['query-builder.convert_relation_table_name_strategy' => 'camelCase']);
+
+    RelatedModel::create([
+        'test_model_id' => $this->model->id,
+        'name' => 'related',
+    ]);
+
+    $request = new Request([
+        'fields' => 'id,relatedModels.fullName',
+        'include' => ['relatedModels'],
+    ]);
+
+    $queryBuilder = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFields('relatedModels.fullName', 'id')
+        ->allowedIncludes('relatedModels');
+
+    DB::enableQueryLog();
+
+    $queryBuilder->first()->relatedModels;
+
+    $this->assertQueryLogContains('select `test_models`.`id` from `test_models`');
+    $this->assertQueryLogContains('select `related_models`.`full_name` from `related_models`');
+});
+
+it('can fetch only requested string columns from an included model through pivot jsonApi format', function () {
+    config(['query-builder.convert_relation_table_name_strategy' => 'camelCase']);
+
+    $this->model->relatedThroughPivotModels()->create([
+        'id' => $this->model->id + 1,
+        'name' => 'Test',
+    ]);
+
+    $request = new Request([
+        'fields' => 'id,relatedThroughPivotModels.name',
+        'include' => ['relatedThroughPivotModels'],
+    ]);
+
+    $queryBuilder = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFields('relatedThroughPivotModels.name', 'id')
+        ->allowedIncludes('relatedThroughPivotModels');
+
+    DB::enableQueryLog();
+
+    $queryBuilder->first()->relatedThroughPivotModels;
+
+    $this->assertQueryLogContains('select `test_models`.`id` from `test_models`');
+    $this->assertQueryLogContains('select `related_through_pivot_models`.`name`, `pivot_models`.`test_model_id` as `pivot_test_model_id`, `pivot_models`.`related_through_pivot_model_id` as `pivot_related_through_pivot_model_id` from `related_through_pivot_models`');
+});
+
 it('can fetch requested array columns from included models up to two levels deep', function () {
     RelatedModel::create([
         'test_model_id' => $this->model->id,
@@ -222,6 +312,36 @@ it('can fetch requested array columns from included models up to two levels deep
     $this->assertArrayHasKey('name', $result);
 
     expect($result->relatedModels->first()->testModel->toArray())->toEqual(['id' => $this->model->id]);
+});
+
+it('can fetch requested array columns from included models up to two levels deep jsonApi mapper', function () {
+    config(['query-builder.convert_field_names_to_snake_case' => true]);
+    config(['query-builder.convert_relation_table_name_strategy' => 'camelCase']);
+
+    $relatedModel = RelatedModel::create([
+        'test_model_id' => $this->model->id,
+        'name' => 'related',
+    ]);
+
+    $relatedModel->nestedRelatedModels()->create([
+        'name' => 'nested related',
+    ]);
+
+    $request = new Request([
+        'fields' => 'id,name,relatedModels.id,relatedModels.name,nestedRelatedModels.id,nestedRelatedModels.name',
+        'include' => ['nestedRelatedModels', 'relatedModels'],
+    ]);
+
+
+    $queryBuilder = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFields('id', 'name', 'relatedModels.id', 'relatedModels.name', 'nestedRelatedModels.id', 'nestedRelatedModels.name')
+        ->allowedIncludes('relatedModels', 'nestedRelatedModels');
+
+    DB::enableQueryLog();
+    $queryBuilder->first();
+
+    $this->assertQueryLogContains('select `test_models`.`id`, `test_models`.`name` from `test_models`');
+    $this->assertQueryLogContains('select `nested_related_models`.`id`, `nested_related_models`.`name`, `related_models`.`test_model_id` as `laravel_through_key` from `nested_related_models`');
 });
 
 it('can fetch requested string columns from included models up to two levels deep', function () {
