@@ -2,6 +2,24 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.2.2 - 2024-12-11
+
+### What's Changed
+
+* Update filtering.md to clarify handling of array scope parameter by @g-gullstrand in https://github.com/spatie/laravel-query-builder/pull/976
+* Remove PHPUnit cache by @tarexme in https://github.com/spatie/laravel-query-builder/pull/982
+* Fix typo in filtering.md by @yngc0der in https://github.com/spatie/laravel-query-builder/pull/984
+* Fixed IncludedCount.php by @dash8x in https://github.com/spatie/laravel-query-builder/pull/978
+
+### New Contributors
+
+* @g-gullstrand made their first contribution in https://github.com/spatie/laravel-query-builder/pull/976
+* @tarexme made their first contribution in https://github.com/spatie/laravel-query-builder/pull/982
+* @yngc0der made their first contribution in https://github.com/spatie/laravel-query-builder/pull/984
+* @dash8x made their first contribution in https://github.com/spatie/laravel-query-builder/pull/978
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/6.2.1...6.2.2
+
 ## 6.2.1 - 2024-10-03
 
 ### What's Changed
