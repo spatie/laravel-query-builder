@@ -37,6 +37,7 @@ class TestCase extends Orchestra
             $table->increments('id');
             $table->timestamps();
             $table->string('name')->nullable();
+            $table->string('full_name')->nullable();
             $table->double('salary')->nullable();
             $table->boolean('is_visible')->default(true);
         });
@@ -62,6 +63,7 @@ class TestCase extends Orchestra
             $table->increments('id');
             $table->integer('test_model_id');
             $table->string('name');
+            $table->string('full_name')->nullable();
         });
 
         $app['db']->connection()->getSchemaBuilder()->create('nested_related_models', function (Blueprint $table) {
@@ -92,7 +94,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            RayServiceProvider::class,
+            // RayServiceProvider::class,
             QueryBuilderServiceProvider::class,
         ];
     }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 
@@ -25,6 +26,18 @@ class TestModel extends Model
     public function relatedModel(): BelongsTo
     {
         return $this->belongsTo(RelatedModel::class);
+    }
+
+    public function nestedRelatedModels(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            NestedRelatedModel::class,    // Target model
+            RelatedModel::class,          // Intermediate model
+            'test_model_id',              // Foreign key on RelatedModel
+            'related_model_id',           // Foreign key on NestedRelatedModel
+            'id',                         // Local key on TestModel
+            'id'                          // Local key on RelatedModel
+        );
     }
 
     public function otherRelatedModels(): HasMany
