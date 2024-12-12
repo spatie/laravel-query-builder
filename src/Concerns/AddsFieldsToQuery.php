@@ -42,7 +42,12 @@ trait AddsFieldsToQuery
             $fields = $fields->mapWithKeys(fn ($fields, $table) => [$table => collect($fields)->map(fn ($field) => Str::snake($field))->toArray()]);
         }
 
-        $modelFields = $fields->has($modelTableName) ? $fields->get($modelTableName) : $fields->get('_');
+        // Apply additional table name conversion based on strategy
+        if (config('query-builder.convert_relation_table_name_strategy', false) === 'camelCase') {
+            $modelFields = $fields->has(Str::camel($modelTableName)) ? $fields->get(Str::camel($modelTableName)) : $fields->get('_');
+        } else {
+            $modelFields = $fields->has($modelTableName) ? $fields->get($modelTableName) : $fields->get('_');
+        }
 
         if (empty($modelFields)) {
             return;
