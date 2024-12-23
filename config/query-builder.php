@@ -60,4 +60,23 @@ return [
      * GET /users?fields[userOwner]=id,name
      */
     'convert_relation_names_to_snake_case_plural' => true,
+
+    /*
+     * By default, the package expects relationship names to be snake case plural when using fields[relationship].
+     * For example, fetching the id and name for a userOwner relation would look like this:
+     * GET /users?fields[user_owner]=id,name
+     *
+     * Set this to one of `snake_case`, `camelCase` or `none` if you want to enable table name resolution in addition to the relation name resolution
+     * GET /users?include=topOrders&fields[orders]=id,name
+     */
+    'convert_relation_table_name_strategy' => false,
+
+    /*
+     * By default, the package expects the field names to match the database names
+     * For example, fetching the field named firstName would look like this:
+     * GET /users?fields=firstName
+     *
+     * Set this to `true` if you want to convert the firstName into first_name for the underlying query
+     */
+    'convert_field_names_to_snake_case' => false,
 ];
