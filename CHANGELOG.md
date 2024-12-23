@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.2.3 - 2024-12-23
+
+### What's Changed
+
+* Fix selecting fields on belongs to many relations by @rasmuscnielsen in https://github.com/spatie/laravel-query-builder/pull/986
+
+### New Contributors
+
+* @rasmuscnielsen made their first contribution in https://github.com/spatie/laravel-query-builder/pull/986
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/6.2.2...6.2.3
+
 ## 6.2.2 - 2024-12-11
 
 ### What's Changed
