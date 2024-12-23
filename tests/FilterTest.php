@@ -681,6 +681,8 @@ it('does not apply default filter when filter exists and default null is set', f
 });
 
 it('should apply a nullable filter when filter exists and is null', function () {
+    DB::enableQueryLog();
+
     TestModel::create(['name' => null]);
     TestModel::create(['name' => 'UniqueJohn Deer']);
 
@@ -690,6 +692,7 @@ it('should apply a nullable filter when filter exists and is null', function () 
         ->allowedFilters(AllowedFilter::exact('name')->nullable())
         ->get();
 
+    $this->assertQueryLogContains("select * from `test_models` where `test_models`.`name` is null");
     expect($models->count())->toEqual(1);
 });
 
