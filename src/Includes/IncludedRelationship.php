@@ -28,7 +28,7 @@ class IncludedRelationship implements IncludeInterface
                 }
 
                 return [$fullRelationName => function ($query) use ($fields) {
-                    $query->select($fields);
+                    $query->select($query->qualifyColumns($fields));
                 }];
             })
             ->toArray();
