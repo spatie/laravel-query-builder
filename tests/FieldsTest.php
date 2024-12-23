@@ -174,7 +174,7 @@ it('can fetch only requested array columns from an included model', function () 
     $queryBuilder->first()->relatedModels;
 
     $this->assertQueryLogContains('select `test_models`.`id` from `test_models`');
-    $this->assertQueryLogContains('select `name` from `related_models`');
+    $this->assertQueryLogContains('select `related_models`.`name` from `related_models`');
 });
 
 it('can fetch only requested string columns from an included model', function () {
@@ -197,7 +197,29 @@ it('can fetch only requested string columns from an included model', function ()
     $queryBuilder->first()->relatedModels;
 
     $this->assertQueryLogContains('select `test_models`.`id` from `test_models`');
-    $this->assertQueryLogContains('select `name` from `related_models`');
+    $this->assertQueryLogContains('select `related_models`.`name` from `related_models`');
+});
+
+it('can fetch only requested string columns from an included belongs to many model', function () {
+    TestModel::first()->relatedThroughPivotModels()->create([
+        'name' => 'related',
+    ]);
+
+    $request = new Request([
+        'fields' => 'id,related_through_pivot_models.id,related_through_pivot_models.name',
+        'include' => ['relatedThroughPivotModels'],
+    ]);
+
+    $queryBuilder = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFields('id', 'related_through_pivot_models.id', 'related_through_pivot_models.name')
+        ->allowedIncludes('relatedThroughPivotModels');
+
+    DB::enableQueryLog();
+
+    $queryBuilder->first()->relatedThroughPivotModels;
+
+    $this->assertQueryLogContains('select `test_models`.`id` from `test_models`');
+    $this->assertQueryLogContains('select `related_through_pivot_models`.`id`, `related_through_pivot_models`.`name`, `pivot_models`.`test_model_id` as `pivot_test_model_id`, `pivot_models`.`related_through_pivot_model_id` as `pivot_related_through_pivot_model_id` from `related_through_pivot_models` inner join `pivot_models` on `related_through_pivot_models`.`id` = `pivot_models`.`related_through_pivot_model_id` where `pivot_models`.`test_model_id` in (');
 });
 
 it('can fetch requested array columns from included models up to two levels deep', function () {
@@ -299,7 +321,7 @@ it('can allow specific fields on an included model', function () {
     $queryBuilder->first()->relatedModels;
 
     $this->assertQueryLogContains('select * from `test_models`');
-    $this->assertQueryLogContains('select `id`, `name` from `related_models`');
+    $this->assertQueryLogContains('select `related_models`.`id`, `related_models`.`name` from `related_models`');
 });
 
 it('wont use sketchy field requests', function () {
