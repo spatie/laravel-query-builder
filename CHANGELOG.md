@@ -2,6 +2,19 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.3.0 - 2024-12-23
+
+### What's Changed
+
+* Feature: Add "belongs to" filter by @gpibarra in https://github.com/spatie/laravel-query-builder/pull/975
+* Feature: Additional config options to better match the API spec by @CoolGoose in https://github.com/spatie/laravel-query-builder/pull/983
+
+### New Contributors
+
+* @CoolGoose made their first contribution in https://github.com/spatie/laravel-query-builder/pull/983
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/6.2.3...6.3.0
+
 ## 6.2.3 - 2024-12-23
 
 ### What's Changed
