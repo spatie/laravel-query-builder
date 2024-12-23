@@ -134,6 +134,55 @@ QueryBuilder::for(User::class)
     ->allowedFilters(AllowedFilter::exact('posts.title', null, $addRelationConstraint));
 ```
 
+## BelongsTo filters
+
+In Model:
+```php
+class Comment extends Model
+{
+    public function post(): BelongsTo
+    {
+        return $this->belongsTo(Post::class);
+    }
+}
+```
+
+```php
+QueryBuilder::for(Comment::class)
+    ->allowedFilters([
+        AllowedFilter::belongsTo('post'),
+    ])
+    ->get();
+```
+
+Alias
+```php
+QueryBuilder::for(Comment::class)
+    ->allowedFilters([
+        AllowedFilter::belongsTo('post_id', 'post'),
+    ])
+    ->get();
+```
+
+Nested
+```php
+class Post extends Model
+{
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+}
+```
+
+```php
+QueryBuilder::for(Comment::class)
+    ->allowedFilters([
+        AllowedFilter::belongsTo('author_post_id', 'post.author'),
+    ])
+    ->get();
+```
+
 ## Scope filters
 
 Sometimes more advanced filtering options are necessary. This is where scope filters, callback filters and custom filters come in handy.
