@@ -894,3 +894,33 @@ it('can filter salary with dynamic array operator filter', function () {
 
     expect($results)->toHaveCount(2);
 });
+
+it('can filter models by partial property when the condition return true', function () {
+    $models = createQueryFromFilterRequest([
+        'name' => $this->models->first()->name,
+    ])
+        ->allowedFilters(AllowedFilter::partial('name')->when(fn () => true))
+        ->get();
+
+    expect($models)->toHaveCount(1);
+});
+
+it('cannot filter models by partial property when the condition return false', function () {
+    $models = createQueryFromFilterRequest([
+        'name' => $this->models->first()->name,
+    ])
+        ->allowedFilters(AllowedFilter::partial('name')->when(fn () => false))
+        ->get();
+
+    expect($models)->toHaveCount(5);
+});
+
+it('can filter only trashed passing the class as a parameter to evaluate the condition', function () {
+    $models = createQueryFromFilterRequest([
+        'name' => $this->models->first()->name,
+    ])
+        ->allowedFilters(AllowedFilter::partial('name')->when(fn (AllowedFilter $filter) => $filter->getName() === 'name'))
+        ->get();
+
+    expect($models)->toHaveCount(1);
+});

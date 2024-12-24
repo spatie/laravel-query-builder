@@ -51,3 +51,33 @@ it('can filter with trashed', function () {
 
     expect($models)->toHaveCount(3);
 });
+
+it('can filter only trashed when the condition return true', function () {
+    $models = createQueryFromFilterRequest([
+        'trashed' => 'only',
+    ], SoftDeleteModel::class)
+        ->allowedFilters(AllowedFilter::trashed()->when(fn () => true))
+        ->get();
+
+    expect($models)->toHaveCount(1);
+});
+
+it('cannot filter only trashed when the condition return false', function () {
+    $models = createQueryFromFilterRequest([
+        'trashed' => 'only',
+    ], SoftDeleteModel::class)
+        ->allowedFilters(AllowedFilter::trashed()->when(fn () => false))
+        ->get();
+
+    expect($models)->toHaveCount(2);
+});
+
+it('can filter only trashed passing the class as a parameter to evaluate the condition', function () {
+    $models = createQueryFromFilterRequest([
+        'trashed' => 'only',
+    ], SoftDeleteModel::class)
+        ->allowedFilters(AllowedFilter::trashed()->when(fn (AllowedFilter $filter) => $filter->getName() === 'trashed'))
+        ->get();
+
+    expect($models)->toHaveCount(1);
+});

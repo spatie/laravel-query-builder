@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder;
 
+use Closure;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\Enums\FilterOperator;
 use Spatie\QueryBuilder\Filters\Filter;
@@ -27,6 +28,8 @@ class AllowedFilter
 
     protected bool $nullable = false;
 
+    protected ?Closure $condition = null;
+
     public function __construct(
         protected string $name,
         protected Filter $filterClass,
@@ -39,6 +42,10 @@ class AllowedFilter
 
     public function filter(QueryBuilder $query, $value): void
     {
+        if ($this->condition && ! value($this->condition, $this)) {
+            return;
+        }
+
         $valueToFilter = $this->resolveValueForFiltering($value);
 
         if (! $this->nullable && is_null($valueToFilter)) {
@@ -203,5 +210,12 @@ class AllowedFilter
         }
 
         return ! $this->ignored->contains($value) ? $value : null;
+    }
+
+    public function when(Closure $callback): static
+    {
+        $this->condition = $callback;
+
+        return $this;
     }
 }
