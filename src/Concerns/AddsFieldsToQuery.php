@@ -101,6 +101,11 @@ trait AddsFieldsToQuery
             throw new UnknownIncludedFieldsQuery($fields);
         }
 
+        // add id to fields
+        if (! in_array('id', $fields)) {
+            $fields[] = 'id';
+        }
+
         return $fields;
     }
 
