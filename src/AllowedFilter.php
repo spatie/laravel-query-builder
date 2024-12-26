@@ -120,7 +120,7 @@ class AllowedFilter
     {
         static::setFilterArrayValueDelimiter($arrayValueDelimiter);
 
-        return new static($name, new FiltersOperator($addRelationConstraint, $filterOperator, $boolean), $internalName, $filterOperator);
+        return new static($name, new FiltersOperator($addRelationConstraint, $filterOperator, $boolean), $internalName);
     }
 
     public function getFilterClass(): Filter
