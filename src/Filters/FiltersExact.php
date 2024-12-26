@@ -66,7 +66,7 @@ class FiltersExact implements Filter
                 $parts->last(),
             ]);
 
-        $query->whereHas($relation, function (Builder $query) use ($value, $property) {
+        $query->whereHas($relation, function (Builder $query) use ($property, $value) {
             $this->relationConstraints[] = $property = $query->qualifyColumn($property);
 
             $this->__invoke($query, $value, $property);

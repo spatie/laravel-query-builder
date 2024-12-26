@@ -29,7 +29,7 @@ class FiltersPartial extends FiltersExact implements Filter
                 return $query;
             }
 
-            $query->where(function (Builder $query) use ($databaseDriver, $value, $wrappedProperty) {
+            $query->where(function (Builder $query) use ($value, $wrappedProperty, $databaseDriver) {
                 foreach (array_filter($value, fn ($item) => strlen($item) > 0) as $partialValue) {
                     [$sql, $bindings] = $this->getWhereRawParameters($partialValue, $wrappedProperty, $databaseDriver);
                     $query->orWhereRaw($sql, $bindings);
