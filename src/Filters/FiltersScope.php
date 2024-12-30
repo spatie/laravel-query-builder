@@ -54,12 +54,12 @@ class FiltersScope implements Filter
         }
 
         foreach ($parameters as $parameter) {
-            if (! optional($this->getClass($parameter))->isSubclassOf(Model::class)) {
+            if (! $this->getClass($parameter)?->isSubclassOf(Model::class)) {
                 continue;
             }
 
             /** @var TModelClass $model */
-            $model = $this->getClass($parameter)?->newInstance();
+            $model = $this->getClass($parameter)->newInstance();
             $index = $parameter->getPosition() - 1;
             $value = $values[$index];
 

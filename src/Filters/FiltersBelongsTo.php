@@ -70,14 +70,14 @@ class FiltersBelongsTo implements Filter
         $relationParts = explode('.', $relation);
         if (count($relationParts) == 1) {
             return $this->getRelatedModelFromRelation($model, $relation);
-        } else {
-            $firstRelation = $relationParts[0];
-            $firstRelatedModel = $this->getRelatedModelFromRelation($model, $firstRelation);
-            if (! $firstRelatedModel) {
-                return null;
-            }
-
-            return $this->getModelFromRelation($firstRelatedModel, implode('.', array_slice($relationParts, 1)), $level + 1);
         }
+
+        $firstRelation = $relationParts[0];
+        $firstRelatedModel = $this->getRelatedModelFromRelation($model, $firstRelation);
+        if (! $firstRelatedModel) {
+            return null;
+        }
+
+        return $this->getModelFromRelation($firstRelatedModel, implode('.', array_slice($relationParts, 1)), $level + 1);
     }
 }
