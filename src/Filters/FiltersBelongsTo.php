@@ -5,7 +5,7 @@ namespace Spatie\QueryBuilder\Filters;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\RelationNotFoundException;
-use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
 
 /**
@@ -17,67 +17,84 @@ class FiltersBelongsTo implements Filter
     /** {@inheritdoc} */
     public function __invoke(Builder $query, $value, string $property)
     {
-        $values = array_values(Arr::wrap($value));
+        $values = $this->prepareValues($value);
+        $valuesWithoutNulls = $this->filterNullValues($values);
+        $withWhereNull = count($values) !== count($valuesWithoutNulls);
+
+        if (empty($valuesWithoutNulls) && ! $withWhereNull) {
+            return $query;
+        }
 
         $propertyParts = collect(explode('.', $property));
         $relation = $propertyParts->pop();
         $relationParent = $propertyParts->implode('.');
-        $relatedModel = $this->getRelatedModel($query->getModel(), $relation, $relationParent);
-
-        $relatedCollection = $relatedModel->newCollection();
-        array_walk($values, fn ($v) => $relatedCollection->add(
-            tap($relatedModel->newInstance(), fn ($m) => $m->setAttribute($m->getKeyName(), $v))
-        ));
-
-        if ($relatedCollection->isEmpty()) {
-            return $query;
-        }
-
         if ($relationParent) {
-            $query->whereHas($relationParent, fn (Builder $q) => $q->whereBelongsTo($relatedCollection, $relation));
+            $relationObject = $this->getRelationModelFromRelationName(
+                $this->getModelFromRelationName($query->getModel(), $relationParent),
+                $relation
+            );
+            $query->whereHas($relationParent, function (Builder $q) use ($relationObject, $withWhereNull, $valuesWithoutNulls) {
+                $this->applyLastLevelWhere($q, $relationObject, $withWhereNull, $valuesWithoutNulls);
+            });
         } else {
-            $query->whereBelongsTo($relatedCollection, $relation);
+            $relationObject = $this->getRelationModelFromRelationName($query->getModel(), $relation);
+            $this->applyLastLevelWhere($query, $relationObject, $withWhereNull, $valuesWithoutNulls);
         }
     }
 
-    protected function getRelatedModel(Model $modelQuery, string $relationName, string $relationParent): Model
+    protected function prepareValues($values): array
     {
-        if ($relationParent) {
-            $modelParent = $this->getModelFromRelation($modelQuery, $relationParent);
-        } else {
-            $modelParent = $modelQuery;
-        }
-
-        $relatedModel = $this->getRelatedModelFromRelation($modelParent, $relationName);
-
-        return $relatedModel;
+        return array_values(Arr::wrap($values));
     }
 
-    protected function getRelatedModelFromRelation(Model $model, string  $relationName): ?Model
+    protected function filterNullValues(array $values): array
     {
-        $relationObject = $model->$relationName();
-        if (! is_subclass_of($relationObject, Relation::class)) {
-            throw RelationNotFoundException::make($model, $relationName);
-        }
-
-        $relatedModel = $relationObject->getRelated();
-
-        return $relatedModel;
+        return array_filter(
+            $values,
+            fn ($v) => ! in_array($v, [null, 0, 'null', '0'], true)
+        );
     }
 
-    protected function getModelFromRelation(Model $model, string $relation, int $level = 0): ?Model
+    protected function applyLastLevelWhere(Builder $query, BelongsTo $relation, bool $withWhereNull, array $values)
+    {
+        $relationColumn = $relation->getQualifiedForeignKeyName();
+        $query->where(function (Builder $q) use ($relationColumn, $withWhereNull, $values) {
+            if ($withWhereNull) {
+                $q->orWhereNull($relationColumn);
+            }
+            if (! empty($values)) {
+                $q->orWhereIn($relationColumn, $values);
+            }
+        });
+    }
+
+    protected function getModelFromRelationName(Model $model, string $relation, int $level = 0): Model
     {
         $relationParts = explode('.', $relation);
         if (count($relationParts) == 1) {
-            return $this->getRelatedModelFromRelation($model, $relation);
+            $relationObject = $this->getRelationModelFromRelationName($model, $relation);
+
+            return $relationObject->getRelated();
         }
 
         $firstRelation = $relationParts[0];
-        $firstRelatedModel = $this->getRelatedModelFromRelation($model, $firstRelation);
-        if (! $firstRelatedModel) {
-            return null;
+        $firstRelationObject = $this->getRelationModelFromRelationName($model, $firstRelation);
+
+        // recursion
+        return $this->getModelFromRelationName(
+            $firstRelationObject->getRelated(),
+            implode('.', array_slice($relationParts, 1)),
+            $level + 1
+        );
+    }
+
+    protected function getRelationModelFromRelationName(Model $model, string $relationName): BelongsTo
+    {
+        $relationObject = $model->$relationName();
+        if (! $relationObject instanceof BelongsTo) {
+            throw RelationNotFoundException::make($model, $relationName);
         }
 
-        return $this->getModelFromRelation($firstRelatedModel, implode('.', array_slice($relationParts, 1)), $level + 1);
+        return $relationObject;
     }
 }
