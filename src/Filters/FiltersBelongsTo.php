@@ -51,7 +51,7 @@ class FiltersBelongsTo implements Filter
     {
         return array_filter(
             $values,
-            fn ($v) => ! in_array($v, [null, 0, 'null', '0'], true)
+            fn ($v) => ! in_array($v, [null, 0, 'null', '0', ''], true)
         );
     }
 
