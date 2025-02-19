@@ -71,6 +71,11 @@ class TestCase extends Orchestra
             $table->integer('related_model_id');
             $table->string('name');
         });
+        $app['db']->connection()->getSchemaBuilder()->create('nested_nullable_related_models', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('related_model_id')->nullable();
+            $table->string('name');
+        });
 
         $app['db']->connection()->getSchemaBuilder()->create('pivot_models', function (Blueprint $table) {
             $table->increments('id');
