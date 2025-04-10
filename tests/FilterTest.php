@@ -15,6 +15,7 @@ use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\Tests\TestClasses\Models\NestedNullableRelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\NestedRelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
@@ -294,6 +295,31 @@ it('can filter results by belongs to', function () {
         ->get();
 
     expect($modelsResult)->toHaveCount(1);
+});
+
+it('can filter results by belongs to with null', function () {
+    $relatedModel = RelatedModel::create(['name' => 'John Related Doe', 'test_model_id' => 0]);
+    $nestedModel = NestedNullableRelatedModel::create(['name' => 'John Nested Doe', 'related_model_id' => $relatedModel->id]);
+    $nestedNullModel = NestedNullableRelatedModel::create(['name' => 'John Nested Doe']);
+
+    $modelsResult = createQueryFromFilterRequest(['relatedModel' => [null]], NestedNullableRelatedModel::class)
+        ->allowedFilters(AllowedFilter::belongsTo('relatedModel'))
+        ->get();
+
+    expect($modelsResult)->toHaveCount(1);
+
+    $modelsResult = createQueryFromFilterRequest(['relatedModel' => [0]], NestedNullableRelatedModel::class)
+        ->allowedFilters(AllowedFilter::belongsTo('relatedModel'))
+        ->get();
+
+    expect($modelsResult)->toHaveCount(1);
+
+
+    $modelsResult = createQueryFromFilterRequest(['relatedModel' => [$relatedModel->id, null]], NestedNullableRelatedModel::class)
+        ->allowedFilters(AllowedFilter::belongsTo('relatedModel'))
+        ->get();
+
+    expect($modelsResult)->toHaveCount(2);
 });
 
 it('can filter results by belongs to no match', function () {
