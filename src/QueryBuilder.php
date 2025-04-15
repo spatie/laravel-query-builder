@@ -82,9 +82,14 @@ class QueryBuilder implements ArrayAccess
         return $result;
     }
 
+    /**
+     * @return static<TModel>
+     */
     public function clone(): static
     {
-        return clone $this;
+        /** @var static<TModel> $cloned */
+        $cloned = clone $this;
+        return $cloned;
     }
 
     public function __clone()
