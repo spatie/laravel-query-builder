@@ -50,9 +50,6 @@ class QueryBuilder implements ArrayAccess
         return $this->subject;
     }
 
-    /**
-     * @return static<TModel>
-     */
     public static function for(
         EloquentBuilder|Relation|string $subject,
         ?Request $request = null
@@ -82,14 +79,9 @@ class QueryBuilder implements ArrayAccess
         return $result;
     }
 
-    /**
-     * @return static<TModel>
-     */
     public function clone(): static
     {
-        /** @var static<TModel> $cloned */
-        $cloned = clone $this;
-        return $cloned;
+        return clone $this;
     }
 
     public function __clone()
