@@ -14,7 +14,8 @@ use Spatie\QueryBuilder\Concerns\FiltersQuery;
 use Spatie\QueryBuilder\Concerns\SortsQuery;
 
 /**
- * @mixin EloquentBuilder
+ * @template TModel of Model
+ * @mixin EloquentBuilder<TModel>
  */
 class QueryBuilder implements ArrayAccess
 {
@@ -57,7 +58,10 @@ class QueryBuilder implements ArrayAccess
             $subject = $subject::query();
         }
 
-        return new static($subject, $request);
+        /** @var static<TModel> $queryBuilder */
+        $queryBuilder = new static($subject, $request);
+
+        return $queryBuilder;
     }
 
     public function __call($name, $arguments)
