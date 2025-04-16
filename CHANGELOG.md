@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.3.2 - 2025-04-16
+
+### What's Changed
+
+* Enhance QueryBuilder with generics support for better type inference by @alexkart in https://github.com/spatie/laravel-query-builder/pull/1002
+
+### New Contributors
+
+* @alexkart made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1002
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/6.3.1...6.3.2
+
 ## 6.3.1 - 2025-02-21
 
 ### What's Changed
