@@ -67,6 +67,7 @@ class FiltersExact implements Filter
             ]);
 
         $query->whereHas($relation, function (Builder $query) use ($property, $value) {
+            /** @var Builder<TModelClass> $query */
             $this->relationConstraints[] = $property = $query->qualifyColumn($property);
 
             $this->__invoke($query, $value, $property);
