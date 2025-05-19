@@ -169,7 +169,7 @@ QueryBuilder::for(User::class)
 
 ## Selecting included fields
 
-You can select only some fields to be included using the [`allowedFields` method on the query builder](https://spatie.be/docs/laravel-query-builder/v5/features/selecting-fields/).
+You can select only some fields to be included using the [`allowedFields` method on the query builder](https://spatie.be/docs/laravel-query-builder/v6/features/selecting-fields/).
 
 ⚠️ `allowedFields` must be called before `allowedIncludes`. Otherwise the query builder wont know what fields to include for the requested includes and an exception will be thrown.
 
