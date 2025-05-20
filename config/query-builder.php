@@ -62,12 +62,14 @@ return [
     'convert_relation_names_to_snake_case_plural' => true,
 
     /*
-     * By default, the package expects relationship names to be snake case plural when using fields[relationship].
-     * For example, fetching the id and name for a userOwner relation would look like this:
-     * GET /users?fields[user_owner]=id,name
+     * This is an alternative to the previous option if you don't want to use default snake case plural for fields[relationship].
+     * It resolves the table name for the related model using the Laravel model class and, based on your chosen strategy,
+     * matches it with the fields[relationship] provided in the request.
      *
-     * Set this to one of `snake_case`, `camelCase` or `none` if you want to enable table name resolution in addition to the relation name resolution
-     * GET /users?include=topOrders&fields[orders]=id,name
+     * Set this to one of `snake_case`, `camelCase` or `none` if you want to enable table name resolution in addition to the relation name resolution.
+     * `snake_case` => Matches table names like 'topOrders' to `fields[top_orders]`
+     * `camelCase` => Matches table names like 'top_orders' to 'fields[topOrders]'
+     * `none` => Uses the exact table name
      */
     'convert_relation_table_name_strategy' => false,
 
