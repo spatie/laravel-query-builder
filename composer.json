@@ -28,7 +28,7 @@
     },
     "require-dev": {
         "ext-json": "*",
-        "larastan/larastan": "^3.3",
+        "larastan/larastan": "^2.7 || ^3.3",
         "mockery/mockery": "^1.4",
         "orchestra/testbench": "^7.0|^8.0|^10.0",
         "pestphp/pest": "^2.0|^3.7",
