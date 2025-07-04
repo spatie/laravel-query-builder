@@ -479,6 +479,20 @@ it('can allow multiple filters as an array', function () {
     expect($results->pluck('id')->all())->toEqual([$model1->id, $model2->id]);
 });
 
+it('can allow multiple filters as nested array', function () {
+    $model1 = TestModel::create(['name' => 'abcdef']);
+    $model2 = TestModel::create(['name' => 'abcdef']);
+
+    $results = createQueryFromFilterRequest([
+        'name' => 'abc',
+    ])
+        ->allowedFilters([['name'], [AllowedFilter::exact('id')]])
+        ->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('id')->all())->toEqual([$model1->id, $model2->id]);
+});
+
 it('can filter by multiple filters', function () {
     $model1 = TestModel::create(['name' => 'abcdef']);
     $model2 = TestModel::create(['name' => 'abcdef']);
