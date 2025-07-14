@@ -2,6 +2,25 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.3.3 - 2025-07-14
+
+### What's Changed
+
+* update some links so point to v6 docs by @KnudH in https://github.com/spatie/laravel-query-builder/pull/1004
+* Bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot[bot] in https://github.com/spatie/laravel-query-builder/pull/1006
+* Docs: clarify selecting fields for included relations by @amyavari in https://github.com/spatie/laravel-query-builder/pull/1008
+* Add larastan and fix static analysis issue by @alexkart in https://github.com/spatie/laravel-query-builder/pull/1003
+* Bump stefanzweifel/git-auto-commit-action from 5 to 6 by @dependabot[bot] in https://github.com/spatie/laravel-query-builder/pull/1009
+* Allow nested filters by @bambamboole in https://github.com/spatie/laravel-query-builder/pull/1010
+
+### New Contributors
+
+* @KnudH made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1004
+* @amyavari made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1008
+* @bambamboole made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1010
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/6.3.2...6.3.3
+
 ## 6.3.2 - 2025-04-16
 
 ### What's Changed
