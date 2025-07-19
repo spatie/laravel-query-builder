@@ -53,7 +53,7 @@ class QueryBuilder implements ArrayAccess
     /**
      * @template T of Model
      *
-     * @param EloquentBuilder<T>|Relation|class-string<T> $subject
+     * @param EloquentBuilder<T>|Relation<T, *, *>|class-string<T> $subject
      * @return static<T>
      */
     public static function for(
