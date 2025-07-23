@@ -64,7 +64,7 @@ class QueryBuilder implements ArrayAccess
             $subject = $subject::query();
         }
 
-        /** @var static<TModel> $queryBuilder */
+        /** @var static<T> $queryBuilder */
         $queryBuilder = new static($subject, $request);
 
         return $queryBuilder;
