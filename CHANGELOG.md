@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.3.4 - 2025-07-25
+
+### What's Changed
+
+* Improve QueryBuilder Generic Support by @liamduckett in https://github.com/spatie/laravel-query-builder/pull/1012
+
+### New Contributors
+
+* @liamduckett made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1012
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/6.3.3...6.3.4
+
 ## 6.3.3 - 2025-07-14
 
 ### What's Changed
