@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.3.5 - 2025-08-04
+
+### What's Changed
+
+* Make nullable parameter types explicit to avoid deprecation warnings by @zigzagdev in https://github.com/spatie/laravel-query-builder/pull/1013
+
+### New Contributors
+
+* @zigzagdev made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1013
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/6.3.4...6.3.5
+
 ## 6.3.4 - 2025-07-25
 
 ### What's Changed
