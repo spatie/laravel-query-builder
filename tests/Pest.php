@@ -8,7 +8,7 @@ use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 uses(TestCase::class)->in(__DIR__);
 
-function createQueryFromFilterRequest(array $filters, string $model = null): QueryBuilder
+function createQueryFromFilterRequest(array $filters, ?string $model = null): QueryBuilder
 {
     $model ??= TestModel::class;
 
