@@ -10,6 +10,15 @@ trait FiltersQuery
 {
     protected Collection $allowedFilters;
 
+    protected bool $throwFilterExceptions = true;
+
+    public function throwFilterExceptions(bool $throw = true): static
+    {
+        $this->throwFilterExceptions = $throw;
+
+        return $this;
+    }
+
     public function allowedFilters($filters): static
     {
         $filters = is_array($filters) ? $filters : func_get_args();
@@ -60,7 +69,7 @@ trait FiltersQuery
 
     protected function ensureAllFiltersExist(): void
     {
-        if (config('query-builder.disable_invalid_filter_query_exception', false)) {
+        if (config('query-builder.disable_invalid_filter_query_exception', false) || ! $this->throwFilterExceptions) {
             return;
         }
 
