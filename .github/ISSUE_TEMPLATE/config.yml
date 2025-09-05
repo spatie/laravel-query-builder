@@ -1,8 +1,5 @@
 blank_issues_enabled: true
 contact_links:
-    - name: Bug Report
-      url: https://github.com/spatie/laravel-query-builder/issues/new
-      about: Report a bug
     - name: Feature Request
       url: https://github.com/spatie/laravel-query-builder/discussions/new?category_id=3330702
       about: Share ideas for new features
