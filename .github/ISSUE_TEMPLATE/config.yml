@@ -4,5 +4,5 @@ contact_links:
       url: https://github.com/spatie/laravel-query-builder/discussions/new?category_id=3330702
       about: Share ideas for new features
     - name: Ask a Question
-      url: https://github.com/spatie/laravel-query-builder/discussions/new?category_id=3330701
+      url: https://github.com/:vendor_slug/:package_name/discussions/new?category=q-a
       about: Ask the community for help
