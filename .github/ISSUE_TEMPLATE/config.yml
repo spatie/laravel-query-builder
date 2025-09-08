@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
     - name: Feature Request
-      url: https://github.com/spatie/laravel-query-builder/discussions/new?category_id=3330702
+      url: https://github.com/spatie/laravel-query-builder/discussions/new?category=ideas
       about: Share ideas for new features
     - name: Ask a Question
-      url: https://github.com/:vendor_slug/:package_name/discussions/new?category=q-a
+      url: https://github.com/spatie/laravel-query-builder/discussions/new?category=q-a
       about: Ask the community for help
