@@ -76,7 +76,7 @@ trait AddsFieldsToQuery
         } elseif ($strategy === 'camelCase' && $tableName) {
             $possibleRelatedNames[] = Str::camel($tableName);
         } elseif ($strategy === 'none') {
-            $possibleRelatedNames = $tableName;
+            $possibleRelatedNames[] = $tableName;
         }
 
         // Remove any null values

@@ -261,6 +261,31 @@ it('can fetch only requested string columns from an included model jsonApi forma
     $this->assertQueryLogContains('select `related_models`.`name` from `related_models`');
 });
 
+it('can fetch only requested string columns from an included model with relation convert strategy "none"', function () {
+    config(['query-builder.convert_relation_names_to_snake_case_plural' => false]);
+    config(['query-builder.convert_relation_table_name_strategy' => 'none']);
+    RelatedModel::create([
+        'test_model_id' => $this->model->id,
+        'name' => 'related',
+    ]);
+
+    $request = new Request([
+        'fields' => 'id,relatedModels.name',
+        'include' => ['relatedModels'],
+    ]);
+
+    $queryBuilder = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFields('relatedModels.name', 'id')
+        ->allowedIncludes('relatedModels');
+
+    DB::enableQueryLog();
+
+    $queryBuilder->first()->relatedModels;
+
+    $this->assertQueryLogContains('select `test_models`.`id` from `test_models`');
+    $this->assertQueryLogContains('select `related_models`.`name` from `related_models`');
+});
+
 it('can fetch only requested string columns from an included model jsonApi format with field conversion', function () {
     config(['query-builder.convert_field_names_to_snake_case' => true]);
     config(['query-builder.convert_relation_table_name_strategy' => 'camelCase']);
