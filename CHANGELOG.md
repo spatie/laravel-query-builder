@@ -2,6 +2,25 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.3.6 - 2025-10-20
+
+### What's Changed
+
+* Update reference to Laravel Pagination docs by @timmch in https://github.com/spatie/laravel-query-builder/pull/1015
+* Update documentation in the config by @alexkart in https://github.com/spatie/laravel-query-builder/pull/1017
+* Bump actions/checkout from 4 to 5 by @dependabot[bot] in https://github.com/spatie/laravel-query-builder/pull/1016
+* Update issue template by @AlexVanderbist in https://github.com/spatie/laravel-query-builder/pull/1018
+* Test against php 8.5 by @sergiy-petrov in https://github.com/spatie/laravel-query-builder/pull/1020
+* Fix using convert_relation_table_name_strategy of "none" by @wrurik in https://github.com/spatie/laravel-query-builder/pull/1023
+* Bump stefanzweifel/git-auto-commit-action from 6 to 7 by @dependabot[bot] in https://github.com/spatie/laravel-query-builder/pull/1022
+
+### New Contributors
+
+* @timmch made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1015
+* @wrurik made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1023
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/6.3.5...6.3.6
+
 ## 6.3.5 - 2025-08-04
 
 ### What's Changed
