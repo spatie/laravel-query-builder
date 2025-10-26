@@ -908,3 +908,62 @@ it('can filter salary with dynamic array operator filter', function () {
 
     expect($results)->toHaveCount(2);
 });
+
+it('converts snake case filter names to camel case scope by default', function () {
+    Carbon::setTestNow(Carbon::parse('2016-05-05'));
+    TestModel::create(['name' => 'John Testing Doe']);
+
+    // 'created_between' should be converted to 'createdBetween' scope
+    $modelsResult = createQueryFromFilterRequest(['created_between' => '2016-01-01,2017-01-01'])
+        ->allowedFilters(AllowedFilter::scope('created_between'))
+        ->get();
+
+    expect($modelsResult)->toHaveCount(1);
+});
+
+it('respects scope name converter config with none option', function () {
+    $originalConfig = config('query-builder.scope_name_converter');
+    config(['query-builder.scope_name_converter' => 'none']);
+
+    TestModel::create(['name' => 'John Testing Doe']);
+
+    $modelsResult = createQueryFromFilterRequest(['named' => 'John Testing Doe'])
+        ->allowedFilters(AllowedFilter::scope('named'))
+        ->get();
+
+    expect($modelsResult)->toHaveCount(1);
+
+    config(['query-builder.scope_name_converter' => $originalConfig]);
+});
+
+it('uses auto converter to detect exact scope method name', function () {
+    $originalConfig = config('query-builder.scope_name_converter');
+    config(['query-builder.scope_name_converter' => 'auto']);
+
+    TestModel::create(['name' => 'John Testing Doe']);
+
+    $modelsResult = createQueryFromFilterRequest(['named' => 'John Testing Doe'])
+        ->allowedFilters(AllowedFilter::scope('named'))
+        ->get();
+
+    expect($modelsResult)->toHaveCount(1);
+
+    config(['query-builder.scope_name_converter' => $originalConfig]);
+});
+
+it('auto converter falls back to camel case when exact method not found', function () {
+    $originalConfig = config('query-builder.scope_name_converter');
+    config(['query-builder.scope_name_converter' => 'auto']);
+
+    Carbon::setTestNow(Carbon::parse('2016-05-05'));
+    TestModel::create(['name' => 'John Testing Doe']);
+
+    // 'created_between' exact scope doesn't exist, should fallback to 'createdBetween'
+    $modelsResult = createQueryFromFilterRequest(['created_between' => '2016-01-01,2017-01-01'])
+        ->allowedFilters(AllowedFilter::scope('created_between'))
+        ->get();
+
+    expect($modelsResult)->toHaveCount(1);
+
+    config(['query-builder.scope_name_converter' => $originalConfig]);
+});

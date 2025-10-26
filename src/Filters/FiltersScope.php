@@ -24,7 +24,9 @@ class FiltersScope implements Filter
     {
         $propertyParts = collect(explode('.', $property));
 
-        $scope = Str::camel($propertyParts->pop()); // TODO: Make this configurable?
+        $rawScope = $propertyParts->pop();
+
+        $scope = $this->resolveScopeName($query, $rawScope);
 
         $values = array_values(Arr::wrap($values));
         $values = $this->resolveParameters($query, $values, $scope);
@@ -73,6 +75,35 @@ class FiltersScope implements Filter
         }
 
         return $values;
+    }
+
+    protected function resolveScopeName(Builder $query, string $rawScope): string
+    {
+        $converter = config('query-builder.scope_name_converter', 'camel');
+
+        return match ($converter) {
+            'none' => $rawScope,
+            'auto' => $this->autoResolveScopeName($query, $rawScope),
+            default => Str::camel($rawScope),
+        };
+    }
+
+    protected function autoResolveScopeName(Builder $query, string $rawScope): string
+    {
+        $model = $query->getModel();
+
+        $exactMethod = 'scope' . ucfirst($rawScope);
+        if (method_exists($model, $exactMethod)) {
+            return $rawScope;
+        }
+
+        $camelized = Str::camel($rawScope);
+        $camelMethod = 'scope' . ucfirst($camelized);
+        if (method_exists($model, $camelMethod)) {
+            return $camelized;
+        }
+
+        return $camelized;
     }
 
     protected function getClass(ReflectionParameter $parameter): ?ReflectionClass
