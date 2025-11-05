@@ -56,7 +56,7 @@ class FiltersBelongsTo implements Filter
     protected function getRelatedModelFromRelation(Model $model, string  $relationName): ?Model
     {
         $relationObject = $model->$relationName();
-        if (! is_subclass_of($relationObject, Relation::class)) {
+        if (! $relationObject instanceof Relation) {
             throw RelationNotFoundException::make($model, $relationName);
         }
 
