@@ -908,3 +908,96 @@ it('can filter salary with dynamic array operator filter', function () {
 
     expect($results)->toHaveCount(2);
 });
+
+it('can filter by date range using from and to', function () {
+    $model1 = TestModel::create(['name' => 'John', 'created_at' => '2024-01-15 10:00:00']);
+    $model2 = TestModel::create(['name' => 'Jane', 'created_at' => '2024-06-15 10:00:00']);
+    $model3 = TestModel::create(['name' => 'Bob', 'created_at' => '2024-12-15 10:00:00']);
+
+    $results = createQueryFromFilterRequest([
+        'created_at' => [
+            'from' => '2024-01-01',
+            'to' => '2024-06-30',
+        ],
+    ])
+        ->allowedFilters(AllowedFilter::dateRange('created_at'))
+        ->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('id')->toArray())->toContain($model1->id, $model2->id);
+    expect($results->pluck('id')->toArray())->not->toContain($model3->id);
+});
+
+it('can filter by date range using only from', function () {
+    $model1 = TestModel::create(['name' => 'John', 'created_at' => '2024-01-15 10:00:00']);
+    $model2 = TestModel::create(['name' => 'Jane', 'created_at' => '2024-06-15 10:00:00']);
+    $model3 = TestModel::create(['name' => 'Bob', 'created_at' => '2023-12-15 10:00:00']);
+
+    $results = createQueryFromFilterRequest([
+        'created_at' => [
+            'from' => '2024-01-01',
+        ],
+    ])
+        ->allowedFilters(AllowedFilter::dateRange('created_at'))
+        ->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('id')->toArray())->toContain($model1->id, $model2->id);
+    expect($results->pluck('id')->toArray())->not->toContain($model3->id);
+});
+
+it('can filter by date range using only to', function () {
+    $model1 = TestModel::create(['name' => 'John', 'created_at' => '2024-01-15 10:00:00']);
+    $model2 = TestModel::create(['name' => 'Jane', 'created_at' => '2024-06-15 10:00:00']);
+    $model3 = TestModel::create(['name' => 'Bob', 'created_at' => '2024-12-15 10:00:00']);
+
+    $results = createQueryFromFilterRequest([
+        'created_at' => [
+            'to' => '2024-06-30',
+        ],
+    ])
+        ->allowedFilters(AllowedFilter::dateRange('created_at'))
+        ->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('id')->toArray())->toContain($model1->id, $model2->id);
+    expect($results->pluck('id')->toArray())->not->toContain($model3->id);
+});
+
+it('can filter by date range using between syntax', function () {
+    $model1 = TestModel::create(['name' => 'John', 'created_at' => '2024-01-15 10:00:00']);
+    $model2 = TestModel::create(['name' => 'Jane', 'created_at' => '2024-06-15 10:00:00']);
+    $model3 = TestModel::create(['name' => 'Bob', 'created_at' => '2024-12-15 10:00:00']);
+
+    $results = createQueryFromFilterRequest([
+        'created_at' => [
+            'between' => '2024-01-01,2024-06-30',
+        ],
+    ])
+        ->allowedFilters(AllowedFilter::dateRange('created_at'))
+        ->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('id')->toArray())->toContain($model1->id, $model2->id);
+    expect($results->pluck('id')->toArray())->not->toContain($model3->id);
+});
+
+it('can filter by date range on relation property', function () {
+    $testModel1 = TestModel::create(['name' => 'Model 1']);
+    $testModel2 = TestModel::create(['name' => 'Model 2']);
+
+    $related1 = RelatedModel::create(['name' => 'Related 1', 'test_model_id' => $testModel1->id, 'created_at' => '2024-01-15 10:00:00']);
+    $related2 = RelatedModel::create(['name' => 'Related 2', 'test_model_id' => $testModel2->id, 'created_at' => '2024-12-15 10:00:00']);
+
+    $results = createQueryFromFilterRequest([
+        'relatedModels.created_at' => [
+            'from' => '2024-01-01',
+            'to' => '2024-06-30',
+        ],
+    ], TestModel::class)
+        ->allowedFilters(AllowedFilter::dateRange('relatedModels.created_at'))
+        ->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->id)->toBe($testModel1->id);
+});

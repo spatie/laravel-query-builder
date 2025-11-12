@@ -8,6 +8,7 @@ use Spatie\QueryBuilder\Filters\Filter;
 use Spatie\QueryBuilder\Filters\FiltersBeginsWithStrict;
 use Spatie\QueryBuilder\Filters\FiltersBelongsTo;
 use Spatie\QueryBuilder\Filters\FiltersCallback;
+use Spatie\QueryBuilder\Filters\FiltersDateRange;
 use Spatie\QueryBuilder\Filters\FiltersEndsWithStrict;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\Filters\FiltersOperator;
@@ -107,6 +108,13 @@ class AllowedFilter
     public static function trashed(string $name = 'trashed', $internalName = null): static
     {
         return new static($name, new FiltersTrashed(), $internalName);
+    }
+
+    public static function dateRange(string $name, $internalName = null, bool $addRelationConstraint = true, ?string $arrayValueDelimiter = null): static
+    {
+        static::setFilterArrayValueDelimiter($arrayValueDelimiter);
+
+        return new static($name, new FiltersDateRange($addRelationConstraint), $internalName);
     }
 
     public static function custom(string $name, Filter $filterClass, $internalName = null, ?string $arrayValueDelimiter = null): static
