@@ -38,8 +38,13 @@ class TestCase extends Orchestra
             $table->timestamps();
             $table->string('name')->nullable();
             $table->string('full_name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('status')->nullable();
+            $table->string('role')->nullable();
             $table->double('salary')->nullable();
             $table->boolean('is_visible')->default(true);
+            $table->json('metadata')->nullable();
+            $table->json('tags')->nullable();
         });
 
         $app['db']->connection()->getSchemaBuilder()->create('append_models', function (Blueprint $table) {

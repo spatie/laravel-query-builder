@@ -30,6 +30,13 @@ class FiltersExact implements Filter
             }
         }
 
+        // Check if this is a JSON column filter (contains ->)
+        if ($this->isJsonColumn($property)) {
+            $this->applyJsonColumnFilter($query, $value, $property);
+
+            return;
+        }
+
         if (is_array($value)) {
             $query->whereIn($query->qualifyColumn($property), $value);
 
@@ -37,6 +44,44 @@ class FiltersExact implements Filter
         }
 
         $query->where($query->qualifyColumn($property), '=', $value);
+    }
+
+    protected function isJsonColumn(string $property): bool
+    {
+        return Str::contains($property, '->');
+    }
+
+    protected function applyJsonColumnFilter(Builder $query, mixed $value, string $property): void
+    {
+        // For JSON columns, Laravel's where() method handles the -> syntax automatically
+        // For arrays, use whereJsonContains
+        if (is_array($value)) {
+            $query->where(function (Builder $query) use ($value, $property) {
+                foreach ($value as $item) {
+                    // Check if property ends with array index (e.g., tags->0)
+                    if (preg_match('/->\d+$/', $property)) {
+                        // Extract the base path (e.g., tags->0 becomes tags)
+                        $basePath = preg_replace('/->\d+$/', '', $property);
+                        $query->orWhereJsonContains($query->qualifyColumn($basePath), $item);
+                    } else {
+                        // For JSON object paths, use where with -> syntax
+                        $query->orWhere($query->qualifyColumn($property), '=', $item);
+                    }
+                }
+            });
+
+            return;
+        }
+
+        // Check if property ends with array index (e.g., tags->0)
+        if (preg_match('/->\d+$/', $property)) {
+            // Extract the base path (e.g., tags->0 becomes tags)
+            $basePath = preg_replace('/->\d+$/', '', $property);
+            $query->whereJsonContains($query->qualifyColumn($basePath), $value);
+        } else {
+            // For JSON object paths, use where with -> syntax
+            $query->where($query->qualifyColumn($property), '=', $value);
+        }
     }
 
     protected function isRelationProperty(Builder $query, string $property): bool

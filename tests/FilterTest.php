@@ -908,3 +908,103 @@ it('can filter salary with dynamic array operator filter', function () {
 
     expect($results)->toHaveCount(2);
 });
+
+it('can filter by JSON column using exact filter', function () {
+    TestModel::create(['name' => 'John', 'metadata' => json_encode(['theme' => 'dark', 'language' => 'en'])]);
+    TestModel::create(['name' => 'Jane', 'metadata' => json_encode(['theme' => 'light', 'language' => 'fr'])]);
+
+    $results = createQueryFromFilterRequest([
+        'metadata->theme' => 'dark',
+    ])
+        ->allowedFilters(AllowedFilter::exact('metadata->theme'))
+        ->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->name)->toBe('John');
+});
+
+it('can filter by JSON column using partial filter', function () {
+    TestModel::create(['name' => 'John', 'metadata' => json_encode(['description' => 'Software developer'])]);
+    TestModel::create(['name' => 'Jane', 'metadata' => json_encode(['description' => 'Designer'])]);
+    TestModel::create(['name' => 'Bob', 'metadata' => json_encode(['description' => 'Manager'])]);
+
+    $results = createQueryFromFilterRequest([
+        'metadata->description' => 'developer',
+    ])
+        ->allowedFilters(AllowedFilter::partial('metadata->description'))
+        ->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->name)->toBe('John');
+});
+
+it('can filter by JSON array using exact filter', function () {
+    TestModel::create(['name' => 'John', 'tags' => json_encode(['php', 'laravel'])]);
+    TestModel::create(['name' => 'Jane', 'tags' => json_encode(['javascript', 'react'])]);
+
+    $results = createQueryFromFilterRequest([
+        'tags->0' => 'php',
+    ])
+        ->allowedFilters(AllowedFilter::exact('tags->0'))
+        ->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->name)->toBe('John');
+});
+
+it('can filter with OR groups', function () {
+    TestModel::create(['name' => 'John', 'email' => 'john@example.com']);
+    TestModel::create(['name' => 'Jane', 'email' => 'jane@example.com']);
+    TestModel::create(['name' => 'Bob', 'email' => 'bob@example.com']);
+
+    $results = createQueryFromFilterRequest([
+        'or' => [
+            'name' => 'John',
+            'email' => 'jane@example.com',
+        ],
+    ])
+        ->allowedFilters('name', 'email')
+        ->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('name')->toArray())->toContain('John', 'Jane');
+});
+
+it('can filter with AND groups', function () {
+    TestModel::create(['name' => 'John', 'status' => 'active']);
+    TestModel::create(['name' => 'Jane', 'status' => 'active']);
+    TestModel::create(['name' => 'Bob', 'status' => 'inactive']);
+
+    $results = createQueryFromFilterRequest([
+        'and' => [
+            'status' => 'active',
+        ],
+        'name' => 'John',
+    ])
+        ->allowedFilters('name', 'status')
+        ->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->name)->toBe('John');
+});
+
+it('can filter with mixed AND and OR groups', function () {
+    TestModel::create(['name' => 'John', 'status' => 'active', 'role' => 'admin']);
+    TestModel::create(['name' => 'Jane', 'status' => 'active', 'role' => 'moderator']);
+    TestModel::create(['name' => 'Bob', 'status' => 'inactive', 'role' => 'user']);
+
+    $results = createQueryFromFilterRequest([
+        'and' => [
+            'status' => 'active',
+        ],
+        'or' => [
+            'role' => 'admin',
+            'role' => 'moderator',
+        ],
+    ])
+        ->allowedFilters('name', 'status', 'role')
+        ->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('name')->toArray())->toContain('John', 'Jane');
+});

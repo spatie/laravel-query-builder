@@ -118,7 +118,58 @@ class QueryBuilderRequest extends Request
 
         $filters = collect($filterParts);
 
-        return $filters->map(function ($value) {
+        // Extract regular filters (not in 'or' or 'and' groups)
+        $regularFilters = $filters->except(['or', 'and']);
+
+        return $regularFilters->map(function ($value) {
+            return $this->getFilterValue($value);
+        });
+    }
+
+    /**
+     * Get OR filter groups
+     * Returns filters grouped by OR logic: ['name' => 'John', 'email' => 'john@example.com']
+     */
+    public function orFilters(): Collection
+    {
+        $filterParameterName = config('query-builder.parameters.filter', 'filter');
+        $filterParts = $this->getRequestData($filterParameterName, []);
+
+        if (is_string($filterParts) || ! is_array($filterParts)) {
+            return collect();
+        }
+
+        $orFilters = $filterParts['or'] ?? [];
+
+        if (! is_array($orFilters)) {
+            return collect();
+        }
+
+        return collect($orFilters)->map(function ($value) {
+            return $this->getFilterValue($value);
+        });
+    }
+
+    /**
+     * Get AND filter groups
+     * Returns filters grouped by AND logic: ['status' => 'active']
+     */
+    public function andFilters(): Collection
+    {
+        $filterParameterName = config('query-builder.parameters.filter', 'filter');
+        $filterParts = $this->getRequestData($filterParameterName, []);
+
+        if (is_string($filterParts) || ! is_array($filterParts)) {
+            return collect();
+        }
+
+        $andFilters = $filterParts['and'] ?? [];
+
+        if (! is_array($andFilters)) {
+            return collect();
+        }
+
+        return collect($andFilters)->map(function ($value) {
             return $this->getFilterValue($value);
         });
     }
