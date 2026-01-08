@@ -81,4 +81,18 @@ return [
      * Set this to `true` if you want to convert the firstName into first_name for the underlying query
      */
     'convert_field_names_to_snake_case' => false,
+
+    /*
+     * Determines how filter property names are converted to scope method names.
+     *
+     * Available strategies:
+     * - 'camel': Converts 'published_in_year' to 'publishedInYear' (default)
+     * - 'none': Uses the exact name without conversion
+     * - 'auto': Tries exact match first, falls back to camelCase
+     *
+     * Example: GET /posts?filter[published_in_year]=2023
+     * - 'camel' calls: scopePublishedInYear()
+     * - 'none' calls: scopePublished_in_year()
+     */
+    'scope_name_converter' => 'camel',
 ];
