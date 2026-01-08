@@ -52,6 +52,7 @@ class FiltersScope implements Filter
         $scopeMethod = method_exists($query->getModel(), 'scope' . ucfirst($scope))
             ? 'scope' . ucfirst($scope)
             : $scope;
+
         try {
             $parameters = $reflectionObject->getMethod($scopeMethod)
                 ->getParameters();
