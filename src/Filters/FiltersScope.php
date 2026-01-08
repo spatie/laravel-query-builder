@@ -45,9 +45,15 @@ class FiltersScope implements Filter
 
     protected function resolveParameters(Builder $query, $values, string $scope): array
     {
+        if (! $query->getModel()->hasNamedScope($scope)) {
+            return $values;
+        }
+        $reflectionObject = new ReflectionObject($query->getModel());
+        $scopeMethod = method_exists($query->getModel(), 'scope' . ucfirst($scope))
+            ? 'scope' . ucfirst($scope)
+            : $scope;
         try {
-            $parameters = (new ReflectionObject($query->getModel()))
-                ->getMethod('scope' . ucfirst($scope))
+            $parameters = $reflectionObject->getMethod($scopeMethod)
                 ->getParameters();
         } catch (ReflectionException) {
             return $values;
