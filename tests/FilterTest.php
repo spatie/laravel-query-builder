@@ -398,6 +398,16 @@ it('can filter results by type hinted scope', function () {
     expect($modelsResult)->toHaveCount(1);
 });
 
+it('can filter results by type hinted Laravel 12 style scope', function () {
+    TestModel::create(['name' => 'John Testing Doe']);
+
+    $modelsResult = createQueryFromFilterRequest(['userNewStyle' => 1])
+        ->allowedFilters(AllowedFilter::scope('userNewStyle'))
+        ->get();
+
+    expect($modelsResult)->toHaveCount(1);
+})->skip(! class_exists('Illuminate\Database\Eloquent\Attributes\Scope'));
+
 it('can filter results by regular and type hinted scope', function () {
     TestModel::create(['id' => 1000, 'name' => 'John Testing Doe']);
 

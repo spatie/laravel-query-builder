@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Tests\TestClasses\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -67,6 +68,12 @@ class TestModel extends Model
     }
 
     public function scopeUser(Builder $query, self $user): Builder
+    {
+        return $query->where('id', $user->id);
+    }
+
+    #[Scope]
+    public function userNewStyle(Builder $query, self $user): Builder
     {
         return $query->where('id', $user->id);
     }
