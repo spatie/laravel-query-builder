@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\RelationNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Pest\Expectation;
 
-use function PHPUnit\Framework\assertObjectHasProperty;
-
 use Spatie\QueryBuilder\AllowedFilter;
+
 use Spatie\QueryBuilder\Enums\FilterOperator;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
@@ -18,6 +18,8 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\NestedRelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+
+use function PHPUnit\Framework\assertObjectHasProperty;
 
 beforeEach(function () {
     $this->models = TestModel::factory()->count(5)->create();
@@ -918,3 +920,24 @@ it('can filter salary with dynamic array operator filter', function () {
 
     expect($results)->toHaveCount(2);
 });
+
+it('throws RelationNotFoundException when the relation method exists but does not return an Eloquent Relation', function () {
+    $ModelWithNonRelationMethod = new class () extends TestModel {
+        protected $table = 'test_models';
+
+        public function nonRelationMethod()
+        {
+            return new stdClass();
+        }
+    };
+
+    $ModelWithNonRelationMethod::create(['name' => 'test_user']);
+
+    $request = new Request([
+        'filter' => ['author' => '1'],
+    ]);
+
+    QueryBuilder::for($ModelWithNonRelationMethod::query(), $request)
+        ->allowedFilters(AllowedFilter::belongsTo('author', 'nonRelationMethod'))
+        ->get();
+})->throws(RelationNotFoundException::class);
