@@ -7,8 +7,9 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Pest\Expectation;
 
-use Spatie\QueryBuilder\AllowedFilter;
+use function PHPUnit\Framework\assertObjectHasProperty;
 
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Enums\FilterOperator;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
@@ -18,8 +19,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\NestedRelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
-
-use function PHPUnit\Framework\assertObjectHasProperty;
 
 beforeEach(function () {
     $this->models = TestModel::factory()->count(5)->create();
