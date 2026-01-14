@@ -1,5 +1,6 @@
 <?php
 
+
 namespace Spatie\QueryBuilder\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
