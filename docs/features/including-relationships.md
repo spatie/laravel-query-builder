@@ -15,7 +15,7 @@ $users = QueryBuilder::for(User::class)
     ->allowedIncludes(['posts'])
     ->get();
 
-// $users will have all their their `posts()` related models loaded
+// $users will have all their `posts()` related models loaded
 ```
 
 You can load multiple relationships by separating them with a comma:
