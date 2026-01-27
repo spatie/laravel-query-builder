@@ -2,6 +2,16 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.4.1 - 2026-01-27
+
+### What's Changed
+
+#### Fixed
+
+- Fix typo in docs by @zigzagdev in https://github.com/spatie/laravel-query-builder/pull/1040
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/6.4.0...6.4.1
+
 ## 6.4.0 - 2026-01-09
 
 ### What's Changed
