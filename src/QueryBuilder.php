@@ -27,6 +27,9 @@ class QueryBuilder implements ArrayAccess
 
     protected QueryBuilderRequest $request;
 
+    /**
+     * @param  EloquentBuilder<TModel>|Relation<TModel, *, *>  $subject
+     */
     public function __construct(
         protected EloquentBuilder|Relation $subject,
         ?Request $request = null
@@ -36,6 +39,9 @@ class QueryBuilder implements ArrayAccess
             : app(QueryBuilderRequest::class);
     }
 
+    /**
+     * @return EloquentBuilder<TModel>
+     */
     public function getEloquentBuilder(): EloquentBuilder
     {
         if ($this->subject instanceof EloquentBuilder) {
@@ -45,6 +51,9 @@ class QueryBuilder implements ArrayAccess
         return $this->subject->getQuery();
     }
 
+    /**
+     * @return Relation<TModel, *, *>|EloquentBuilder<TModel>
+     */
     public function getSubject(): Relation|EloquentBuilder
     {
         return $this->subject;
