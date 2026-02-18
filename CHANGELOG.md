@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.4.2 - 2026-02-18
+
+- Add generics to QueryBuilder class (#1044)
+
 ## 6.4.1 - 2026-01-27
 
 ### What's Changed
