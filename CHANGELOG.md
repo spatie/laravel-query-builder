@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.4.3 - 2026-02-21
+
+Add Laravel 13 support
+
 ## 6.4.2 - 2026-02-18
 
 - Add generics to QueryBuilder class (#1044)
