@@ -920,6 +920,20 @@ it('can filter salary with dynamic array operator filter', function () {
     expect($results)->toHaveCount(2);
 });
 
+it('can filter with nullable operator filter when value is null', function () {
+    TestModel::create(['name' => null, 'salary' => 1000]);
+    TestModel::create(['name' => 'John', 'salary' => 2000]);
+
+    $results = createQueryFromFilterRequest([
+        'name' => null,
+    ])
+        ->allowedFilters(AllowedFilter::operator('name', FilterOperator::EQUAL)->nullable())
+        ->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->name)->toBeNull();
+});
+
 it('throws RelationNotFoundException when the relation method exists but does not return an Eloquent Relation', function () {
     $ModelWithNonRelationMethod = new class () extends TestModel {
         protected $table = 'test_models';
