@@ -36,7 +36,7 @@ class FiltersOperator extends FiltersExact implements Filter
             });
 
             return;
-        } elseif ($this->filterOperator->isDynamic()) {
+        } elseif ($this->filterOperator->isDynamic() && $value !== null) {
             $filterOperator = $this->getDynamicFilterOperator($value);
             $this->removeDynamicFilterOperatorFromValue($value, $filterOperator);
         }
