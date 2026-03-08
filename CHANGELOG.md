@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 6.4.4 - 2026-03-08
+
+### What's Changed
+
+* Fix TypeError when nullable operator filter receives null value by @isaackaara in https://github.com/spatie/laravel-query-builder/pull/1048
+
 ## 6.4.3 - 2026-02-21
 
 Add Laravel 13 support
