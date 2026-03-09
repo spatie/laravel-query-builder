@@ -44,11 +44,9 @@ it('does not require includes', function () {
 
 it('can handle empty includes', function () {
     $models = QueryBuilder::for(TestModel::class, new Request())
-        ->allowedIncludes([
-            null,
-            [],
+        ->allowedIncludes(
             '',
-        ])
+        )
         ->get();
 
     expect($models)->toHaveCount(TestModel::count());
@@ -72,9 +70,9 @@ it('can include model relations by alias', function () {
 
 it('can include an includes callback', function () {
     $models = createQueryFromIncludeRequest('relatedModels')
-        ->allowedIncludes([
+        ->allowedIncludes(
             AllowedInclude::callback('relatedModels', fn ($query) => $query->whereKey(RelatedModel::first())),
-        ])
+        )
         ->get();
 
     assertRelationLoaded($models, 'relatedModels');
@@ -237,7 +235,7 @@ it('guards against invalid includes', function () {
 });
 
 it('does not throw invalid include query exception when disable in config', function () {
-    config(['query-builder.disable_invalid_includes_query_exception' => true]);
+    config(['query-builder.disable_invalid_include_query_exception' => true]);
 
     createQueryFromIncludeRequest('random-model')
         ->allowedIncludes('relatedModels');
@@ -255,7 +253,7 @@ it('can allow multiple includes', function () {
 
 it('can allow multiple includes as an array', function () {
     $models = createQueryFromIncludeRequest('relatedModels')
-        ->allowedIncludes(['relatedModels', 'otherRelatedModels'])
+        ->allowedIncludes('relatedModels', 'otherRelatedModels')
         ->get();
 
     assertRelationLoaded($models, 'relatedModels');
@@ -279,7 +277,7 @@ it('can remove duplicate includes from nested includes', function () {
 
 it('can include multiple model relations', function () {
     $models = createQueryFromIncludeRequest('relatedModels,otherRelatedModels')
-        ->allowedIncludes(['relatedModels', 'otherRelatedModels'])
+        ->allowedIncludes('relatedModels', 'otherRelatedModels')
         ->get();
 
     assertRelationLoaded($models, 'relatedModels');
@@ -322,10 +320,10 @@ it('can alias multiple allowed includes', function () {
     ]);
 
     $models = QueryBuilder::for(TestModel::class, $request)
-        ->allowedIncludes([
+        ->allowedIncludes(
             AllowedInclude::count('relatedModelsCount'),
             AllowedInclude::relationship('relationShipAlias', 'otherRelatedModels'),
-        ])
+        )
         ->get();
 
     assertRelationLoaded($models, 'otherRelatedModels');
@@ -336,12 +334,9 @@ it('can alias multiple allowed includes', function () {
 
 it('can include custom include class', function () {
     $includeClass = new class () implements IncludeInterface {
-        public function __invoke(Builder $query, string $include): Builder
+        public function __invoke(Builder $query, string $include): void
         {
-            // TODO:
-            // when drop laravel 6 and 7
-            // use withAggregate instead withCount
-            return $query->withCount($include);
+            $query->withCount($include);
         }
     };
 
@@ -354,12 +349,9 @@ it('can include custom include class', function () {
 
 it('can include custom include class by alias', function () {
     $includeClass = new class () implements IncludeInterface {
-        public function __invoke(Builder $query, string $include): Builder
+        public function __invoke(Builder $query, string $include): void
         {
-            // TODO:
-            // when drop laravel 6 and 7
-            // use withAggregate instead withCount
-            return $query->withCount($include);
+            $query->withCount($include);
         }
     };
 
@@ -373,10 +365,8 @@ it('can include custom include class by alias', function () {
 it('can take an argument for custom column name resolution', function () {
     $include = AllowedInclude::custom('property_name', new IncludedCount(), 'property_column_name');
 
-    expect($include)->toBeInstanceOf(Collection::class);
-    expect($include->first())->toBeInstanceOf(AllowedInclude::class);
-    assertObjectHasProperty('internalName', $include->first());
-    assertObjectHasProperty('internalName', $include->first());
+    expect($include)->toBeInstanceOf(AllowedInclude::class);
+    assertObjectHasProperty('internalName', $include);
 });
 
 it('can include a custom base query with select', function () {
@@ -389,6 +379,67 @@ it('can include a custom base query with select', function () {
         ->first();
 
     $this->assertNotNull($modelResult->related_models_count);
+});
+
+it('can include an aggregate min', function () {
+    DB::enableQueryLog();
+
+    $model = createQueryFromIncludeRequest('relatedModelsIdMin')
+        ->allowedIncludes(AllowedInclude::min('relatedModelsIdMin', 'relatedModels', 'id'))
+        ->first();
+
+    $this->assertQueryLogContains('min(`related_models`.`id`)');
+    $this->assertNotNull($model->related_models_min_id);
+});
+
+it('can include an aggregate max', function () {
+    DB::enableQueryLog();
+
+    $model = createQueryFromIncludeRequest('relatedModelsIdMax')
+        ->allowedIncludes(AllowedInclude::max('relatedModelsIdMax', 'relatedModels', 'id'))
+        ->first();
+
+    $this->assertQueryLogContains('max(`related_models`.`id`)');
+    $this->assertNotNull($model->related_models_max_id);
+});
+
+it('can include an aggregate sum', function () {
+    DB::enableQueryLog();
+
+    $model = createQueryFromIncludeRequest('relatedModelsIdSum')
+        ->allowedIncludes(AllowedInclude::sum('relatedModelsIdSum', 'relatedModels', 'id'))
+        ->first();
+
+    $this->assertQueryLogContains('sum(`related_models`.`id`)');
+    $this->assertNotNull($model->related_models_sum_id);
+});
+
+it('can include an aggregate avg', function () {
+    DB::enableQueryLog();
+
+    $model = createQueryFromIncludeRequest('relatedModelsIdAvg')
+        ->allowedIncludes(AllowedInclude::avg('relatedModelsIdAvg', 'relatedModels', 'id'))
+        ->first();
+
+    $this->assertQueryLogContains('avg(`related_models`.`id`)');
+    $this->assertNotNull($model->related_models_avg_id);
+});
+
+it('can allow all includes using a wildcard', function () {
+    $models = createQueryFromIncludeRequest('relatedModels')
+        ->allowedIncludes('*')
+        ->get();
+
+    assertRelationLoaded($models, 'relatedModels');
+});
+
+it('can allow all includes using a wildcard with multiple includes', function () {
+    $models = createQueryFromIncludeRequest('relatedModels,morphModels')
+        ->allowedIncludes('*')
+        ->get();
+
+    assertRelationLoaded($models, 'relatedModels');
+    assertRelationLoaded($models, 'morphModels');
 });
 
 // Helpers

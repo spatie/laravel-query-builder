@@ -13,7 +13,7 @@ By default the query parameters wont be added to the pagination json. You can ap
 
 ```php
 $users = QueryBuilder::for(User::class)
-    ->allowedFilters(['name', 'email'])
+    ->allowedFilters('name', 'email')
     ->paginate()
     ->appends(request()->query());
 ```

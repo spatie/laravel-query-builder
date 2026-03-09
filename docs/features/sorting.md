@@ -5,7 +5,7 @@ weight: 2
 
 The `sort` query parameter is used to determine by which property the results collection will be ordered. Sorting is ascending by default and can be reversed by adding a hyphen (`-`) to the start of the property name.
 
-All sorts have to be explicitly allowed by passing an array to the `allowedSorts()` method. The `allowedSorts` method takes an array of column names as strings or instances of `AllowedSorts`.
+All sorts have to be explicitly allowed using the `allowedSorts()` method. The `allowedSorts` method takes column names as strings or instances of `AllowedSort`.
 
 For more advanced use cases, [custom sorts](#content-custom-sorts) can be used.
 
@@ -63,7 +63,7 @@ You can sort by multiple properties by separating them with a comma:
 // GET /users?sort=name,-street
 
 $users = QueryBuilder::for(User::class)
-    ->allowedSorts(['name', 'street'])
+    ->allowedSorts('name', 'street')
     ->get();
 
 // $users will be sorted by name in ascending order with a secondary sort on street in descending order.
@@ -76,7 +76,7 @@ When trying to sort by a property that's not specified in `allowedSorts()` an `I
 ```php
 // GET /users?sort=password
 $users = QueryBuilder::for(User::class)
-    ->allowedSorts(['name'])
+    ->allowedSorts('name')
     ->get();
 
 // Will throw an `InvalidSortQuery` exception as `password` is not an allowed sorting property
@@ -106,9 +106,9 @@ The custom `StringLengthSort` sort class can then be used like this to sort by t
 // GET /users?sort=name-length
 
 $users = QueryBuilder::for(User::class)
-    ->allowedSorts([
+    ->allowedSorts(
         AllowedSort::custom('name-length', new StringLengthSort(), 'name'),
-    ])
+    )
     ->get();
 
 // The requested `name-length` sort alias will invoke `StringLengthSort` with the `name` column name. 
@@ -117,7 +117,7 @@ $users = QueryBuilder::for(User::class)
 To change the default direction of the a sort you can use `defaultDirection` :
 
 ```php
-$customSort = AllowedSort::custom('custom-sort', new SentSort())->defaultDirection(SortDirection::DESCENDING);
+$customSort = AllowedSort::custom('custom-sort', new SentSort())->defaultDirection(SortDirection::Descending);
 
 $users = QueryBuilder::for(User::class)
             ->allowedSorts($customSort)
@@ -136,8 +136,24 @@ The column name can be passed as optional parameter and defaults to the property
 ```php
  // GET /users?sort=-street
  $users = QueryBuilder::for(User::class)
-    ->allowedSorts([
+    ->allowedSorts(
         AllowedSort::field('street', 'actual_column_street'),
-    ])
+    )
     ->get();
  ```
+
+## Allowing all sorts
+
+If you want to allow any sort that is present in the request without explicitly listing them, you can pass `'*'` as the argument to `allowedSorts()`. This will skip validation and dynamically allow all requested sorts using `AllowedSort::field()`.
+
+```php
+// GET /users?sort=-name
+
+$users = QueryBuilder::for(User::class)
+    ->allowedSorts('*')
+    ->get();
+
+// All sorts from the request will be applied
+```
+
+**Security warning:** Using the wildcard allows sorting on any database column, which can expose internal structure. For this reason, the wildcard is only allowed in `local` and `testing` environments. A `WildcardNotAllowedInEnvironment` exception will be thrown in any other environment.

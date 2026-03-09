@@ -8,26 +8,7 @@ use Illuminate\Support\Str;
 
 class QueryBuilderRequest extends Request
 {
-    protected static string $includesArrayValueDelimiter = ',';
-
-    protected static string $appendsArrayValueDelimiter = ',';
-
-    protected static string $fieldsArrayValueDelimiter = ',';
-
-    protected static string $sortsArrayValueDelimiter = ',';
-
-    protected static string $filterArrayValueDelimiter = ',';
-
-    public static function setArrayValueDelimiter(string $delimiter): void
-    {
-        static::$filterArrayValueDelimiter = $delimiter;
-        static::$includesArrayValueDelimiter = $delimiter;
-        static::$appendsArrayValueDelimiter = $delimiter;
-        static::$fieldsArrayValueDelimiter = $delimiter;
-        static::$sortsArrayValueDelimiter = $delimiter;
-    }
-
-    public static function fromRequest(Request $request): self
+    public static function fromRequest(Request $request): static
     {
         return static::createFrom($request, new static());
     }
@@ -39,7 +20,7 @@ class QueryBuilderRequest extends Request
         $includeParts = $this->getRequestData($includeParameterName);
 
         if (is_string($includeParts)) {
-            $includeParts = explode(static::getIncludesArrayValueDelimiter(), $includeParts);
+            $includeParts = explode($this->delimiter(), $includeParts);
         }
 
         return collect($includeParts)->filter();
@@ -52,7 +33,7 @@ class QueryBuilderRequest extends Request
         $appendParts = $this->getRequestData($appendParameterName);
 
         if (! is_array($appendParts) && ! is_null($appendParts)) {
-            $appendParts = explode(static::getAppendsArrayValueDelimiter(), $appendParts);
+            $appendParts = explode($this->delimiter(), $appendParts);
         }
 
         return collect($appendParts)->filter();
@@ -63,7 +44,7 @@ class QueryBuilderRequest extends Request
         $fieldsParameterName = config('query-builder.parameters.fields', 'fields');
         $fieldsData = $this->getRequestData($fieldsParameterName);
 
-        $fieldsPerTable = collect(is_string($fieldsData) ? explode(static::getFieldsArrayValueDelimiter(), $fieldsData) : $fieldsData);
+        $fieldsPerTable = collect(is_string($fieldsData) ? explode($this->delimiter(), $fieldsData) : $fieldsData);
 
         if ($fieldsPerTable->isEmpty()) {
             return collect();
@@ -73,8 +54,6 @@ class QueryBuilderRequest extends Request
 
         $fieldsPerTable->each(function ($tableFields, $model) use (&$fields) {
             if (is_numeric($model)) {
-                // If the field is in dot notation, we'll grab the table without the field.
-                // If the field isn't in dot notation we want the base table. We'll use `_` and replace it later.
                 $model = Str::contains($tableFields, '.') ? Str::beforeLast($tableFields, '.') : '_';
             }
 
@@ -82,10 +61,9 @@ class QueryBuilderRequest extends Request
                 $fields[$model] = [];
             }
 
-            // If the field is in dot notation, we'll grab the field without the tables:
             $tableFields = array_map(function (string $field) {
                 return Str::afterLast($field, '.');
-            }, explode(static::getFieldsArrayValueDelimiter(), $tableFields));
+            }, explode($this->delimiter(), $tableFields));
 
             $fields[$model] = array_merge($fields[$model], $tableFields);
         });
@@ -100,7 +78,7 @@ class QueryBuilderRequest extends Request
         $sortParts = $this->getRequestData($sortParameterName);
 
         if (is_string($sortParts)) {
-            $sortParts = explode(static::getSortsArrayValueDelimiter(), $sortParts);
+            $sortParts = explode($this->delimiter(), $sortParts);
         }
 
         return collect($sortParts)->filter();
@@ -123,7 +101,6 @@ class QueryBuilderRequest extends Request
         });
     }
 
-    /** @return array|float|int|string|bool|null */
     protected function getFilterValue(mixed $value): mixed
     {
         if (empty($value)) {
@@ -136,8 +113,8 @@ class QueryBuilderRequest extends Request
             })->all();
         }
 
-        if (Str::contains($value, static::getFilterArrayValueDelimiter())) {
-            return explode(static::getFilterArrayValueDelimiter(), $value);
+        if (Str::contains($value, $this->delimiter())) {
+            return explode($this->delimiter(), $value);
         }
 
         if ($value === 'true') {
@@ -151,67 +128,13 @@ class QueryBuilderRequest extends Request
         return $value;
     }
 
-    protected function getRequestData(?string $key = null, $default = null)
+    protected function getRequestData(?string $key = null, mixed $default = null): mixed
     {
         return $this->input($key, $default);
     }
 
-    public static function setIncludesArrayValueDelimiter(string $includesArrayValueDelimiter): void
+    protected function delimiter(): string
     {
-        static::$includesArrayValueDelimiter = $includesArrayValueDelimiter;
-    }
-
-    public static function setAppendsArrayValueDelimiter(string $appendsArrayValueDelimiter): void
-    {
-        static::$appendsArrayValueDelimiter = $appendsArrayValueDelimiter;
-    }
-
-    public static function setFieldsArrayValueDelimiter(string $fieldsArrayValueDelimiter): void
-    {
-        static::$fieldsArrayValueDelimiter = $fieldsArrayValueDelimiter;
-    }
-
-    public static function setSortsArrayValueDelimiter(string $sortsArrayValueDelimiter): void
-    {
-        static::$sortsArrayValueDelimiter = $sortsArrayValueDelimiter;
-    }
-
-    public static function setFilterArrayValueDelimiter(string $filterArrayValueDelimiter): void
-    {
-        static::$filterArrayValueDelimiter = $filterArrayValueDelimiter;
-    }
-
-    public static function getIncludesArrayValueDelimiter(): string
-    {
-        return static::$includesArrayValueDelimiter;
-    }
-
-    public static function getAppendsArrayValueDelimiter(): string
-    {
-        return static::$appendsArrayValueDelimiter;
-    }
-
-    public static function getFieldsArrayValueDelimiter(): string
-    {
-        return static::$fieldsArrayValueDelimiter;
-    }
-
-    public static function getSortsArrayValueDelimiter(): string
-    {
-        return static::$sortsArrayValueDelimiter;
-    }
-
-    public static function getFilterArrayValueDelimiter(): string
-    {
-        return static::$filterArrayValueDelimiter;
-    }
-
-    public static function resetDelimiters(): void
-    {
-        self::$includesArrayValueDelimiter = ',';
-        self::$appendsArrayValueDelimiter = ',';
-        self::$fieldsArrayValueDelimiter = ',';
-        self::$sortsArrayValueDelimiter = ',';
-        self::$filterArrayValueDelimiter = ',';
+        return config('query-builder.delimiter', ',');
     }
 }

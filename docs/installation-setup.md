@@ -41,6 +41,12 @@ return [
     ],
 
     /*
+     * The delimiter used to split array values in query parameters.
+     * For example: ?filter[name]=John,Jane uses ',' as delimiter.
+     */
+    'delimiter' => ',',
+
+    /*
      * Related model counts are included using the relationship name suffixed with this string.
      * For example: GET /users?include=postsCount
      */
@@ -68,7 +74,7 @@ return [
      * By default the package will throw an `InvalidIncludeQuery` exception when an include in the
      * URL is not allowed in the `allowedIncludes()` method.
      */
-    'disable_invalid_includes_query_exception' => false,
+    'disable_invalid_include_query_exception' => false,
 
     /*
      * By default, the package expects relationship names to be snake case plural when using fields[relationship].
@@ -91,7 +97,7 @@ return [
      * `camelCase` => Matches table names like 'top_orders' to 'fields[topOrders]'
      * `none` => Uses the exact table name
      */
-    'convert_relation_table_name_strategy' => false,
+    'convert_relation_table_name_strategy' => null,
 
     /*
      * By default, the package expects the field names to match the database names

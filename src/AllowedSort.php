@@ -10,12 +10,15 @@ use Spatie\QueryBuilder\Sorts\SortsField;
 
 class AllowedSort
 {
-    protected string $defaultDirection;
+    protected SortDirection $defaultDirection;
 
     protected string $internalName;
 
-    public function __construct(protected string $name, protected Sort $sortClass, ?string $internalName = null)
-    {
+    public function __construct(
+        protected string $name,
+        protected Sort $sortClass,
+        ?string $internalName = null,
+    ) {
         $this->name = ltrim($name, '-');
 
         $this->defaultDirection = static::parseSortDirection($name);
@@ -23,29 +26,29 @@ class AllowedSort
         $this->internalName = $internalName ?? $this->name;
     }
 
-    public static function parseSortDirection(string $name): string
+    public static function parseSortDirection(string $name): SortDirection
     {
-        return str_starts_with($name, '-') ? SortDirection::DESCENDING : SortDirection::ASCENDING;
+        return str_starts_with($name, '-') ? SortDirection::Descending : SortDirection::Ascending;
     }
 
     public function sort(QueryBuilder $query, ?bool $descending = null): void
     {
-        $descending = $descending ?? ($this->defaultDirection === SortDirection::DESCENDING);
+        $descending = $descending ?? ($this->defaultDirection === SortDirection::Descending);
 
         ($this->sortClass)($query->getEloquentBuilder(), $descending, $this->internalName);
     }
 
-    public static function field(string $name, ?string $internalName = null): self
+    public static function field(string $name, ?string $internalName = null): static
     {
         return new static($name, new SortsField(), $internalName);
     }
 
-    public static function custom(string $name, Sort $sortClass, ?string $internalName = null): self
+    public static function custom(string $name, Sort $sortClass, ?string $internalName = null): static
     {
         return new static($name, $sortClass, $internalName);
     }
 
-    public static function callback(string $name, $callback, ?string $internalName = null): self
+    public static function callback(string $name, callable $callback, ?string $internalName = null): static
     {
         return new static($name, new SortsCallback($callback), $internalName);
     }
@@ -65,15 +68,8 @@ class AllowedSort
         return $this->internalName;
     }
 
-    public function defaultDirection(string $defaultDirection): static
+    public function defaultDirection(SortDirection $defaultDirection): static
     {
-        if (! in_array($defaultDirection, [
-            SortDirection::ASCENDING,
-            SortDirection::DESCENDING,
-        ])) {
-            throw InvalidDirection::make($defaultDirection);
-        }
-
         $this->defaultDirection = $defaultDirection;
 
         return $this;

@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class IncludedExists implements IncludeInterface
 {
-    public function __invoke(Builder $query, string $exists)
+    public function __invoke(Builder $query, string $exists): void
     {
         $exists = Str::before($exists, config('query-builder.exists_suffix', 'Exists'));
 

@@ -426,13 +426,13 @@ it('can get the append query params from the request body', function () {
 });
 
 it('takes custom delimiters for splitting request parameters', function () {
+    config()->set('query-builder.delimiter', '|');
+
     $request = new QueryBuilderRequest([
         'filter' => [
             'foo' => 'values, contain, commas|and are split on vertical| lines',
         ],
     ]);
-
-    QueryBuilderRequest::setArrayValueDelimiter('|');
 
     $expected = ['foo' => ['values, contain, commas', 'and are split on vertical', ' lines']];
 

@@ -197,63 +197,63 @@ test('falsy values are not ignored when applying a partial filter', function () 
     $this->assertQueryLogContains("select * from `test_models` where (LOWER(`test_models`.`id`) LIKE ?)");
 });
 
-test('falsy values are not ignored when applying a begins with strict filter', function () {
+test('falsy values are not ignored when applying a begins with filter', function () {
     DB::enableQueryLog();
 
     createQueryFromFilterRequest([
         'id' => [0],
     ])
-        ->allowedFilters(AllowedFilter::beginsWithStrict('id'))
+        ->allowedFilters(AllowedFilter::beginsWith('id'))
         ->get();
 
     $this->assertQueryLogContains("select * from `test_models` where (`test_models`.`id` LIKE ?)");
 });
 
-test('falsy values are not ignored when applying a ends with strict filter', function () {
+test('falsy values are not ignored when applying a ends with filter', function () {
     DB::enableQueryLog();
 
     createQueryFromFilterRequest([
         'id' => [0],
     ])
-        ->allowedFilters(AllowedFilter::endsWithStrict('id'))
+        ->allowedFilters(AllowedFilter::endsWith('id'))
         ->get();
 
     $this->assertQueryLogContains("select * from `test_models` where (`test_models`.`id` LIKE ?)");
 });
 
-it('can filter partial using begins with strict', function () {
+it('can filter partial using begins with', function () {
     TestModel::create([
         'name' => 'John Doe',
     ]);
 
     $models = createQueryFromFilterRequest(['name' => 'john'])
-        ->allowedFilters([
-            AllowedFilter::beginsWithStrict('name'),
-        ]);
+        ->allowedFilters(
+            AllowedFilter::beginsWith('name'),
+        );
 
     $models2 = createQueryFromFilterRequest(['name' => 'doe'])
-        ->allowedFilters([
-            AllowedFilter::beginsWithStrict('name'),
-        ]);
+        ->allowedFilters(
+            AllowedFilter::beginsWith('name'),
+        );
 
     expect($models->count())->toBe(1);
     expect($models2->count())->toBe(0);
 });
 
-it('can filter partial using ends with strict', function () {
+it('can filter partial using ends with', function () {
     TestModel::create([
         'name' => 'John Doe',
     ]);
 
     $models = createQueryFromFilterRequest(['name' => 'doe'])
-        ->allowedFilters([
-            AllowedFilter::endsWithStrict('name'),
-        ]);
+        ->allowedFilters(
+            AllowedFilter::endsWith('name'),
+        );
 
     $models2 = createQueryFromFilterRequest(['name' => 'john'])
-        ->allowedFilters([
-            AllowedFilter::endsWithStrict('name'),
-        ]);
+        ->allowedFilters(
+            AllowedFilter::endsWith('name'),
+        );
 
     expect($models->count())->toBe(1);
     expect($models2->count())->toBe(0);
@@ -447,9 +447,9 @@ it('can filter results by a custom filter class', function () {
     $testModel = $this->models->first();
 
     $filterClass = new class () implements FilterInterface {
-        public function __invoke(Builder $query, $value, string $property): Builder
+        public function __invoke(Builder $query, mixed $value, string $property): void
         {
-            return $query->where('name', $value);
+            $query->where('name', $value);
         }
     };
 
@@ -483,7 +483,7 @@ it('can allow multiple filters as an array', function () {
     $results = createQueryFromFilterRequest([
         'name' => 'abc',
     ])
-        ->allowedFilters(['name', AllowedFilter::exact('id')])
+        ->allowedFilters(...['name', AllowedFilter::exact('id')])
         ->get();
 
     expect($results)->toHaveCount(2);
@@ -497,7 +497,7 @@ it('can allow multiple filters as nested array', function () {
     $results = createQueryFromFilterRequest([
         'name' => 'abc',
     ])
-        ->allowedFilters([['name'], [AllowedFilter::exact('id')]])
+        ->allowedFilters('name', AllowedFilter::exact('id'))
         ->get();
 
     expect($results)->toHaveCount(2);
@@ -545,9 +545,8 @@ it('can create a custom filter with an instantiated filter', function () {
             $this->filter = $filter;
         }
 
-        public function __invoke(Builder $query, $value, string $property): Builder
+        public function __invoke(Builder $query, mixed $value, string $property): void
         {
-            return $query;
         }
     };
 
@@ -790,21 +789,25 @@ it('can override the array value delimiter for single filters', function () {
         ->get();
     expect($models->count())->toEqual(2);
 
-    // Custom delimiter
+    // Custom delimiter via config
+    config()->set('query-builder.delimiter', '|');
     $models = createQueryFromFilterRequest([
         'ref_id' => 'h4S4MG3(+>azv4z/I<o>|>XZII/Q1On',
     ])
-        ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true, '|'))
+        ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true))
         ->get();
     expect($models->count())->toEqual(2);
 
-    // Custom delimiter, but default in request
+    // Custom delimiter via config, but default delimiter in request
     $models = createQueryFromFilterRequest([
         'ref_id' => 'h4S4MG3(+>azv4z/I<o>,>XZII/Q1On',
     ])
-        ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true, '|'))
+        ->allowedFilters(AllowedFilter::exact('ref_id', 'name', true))
         ->get();
     expect($models->count())->toEqual(0);
+
+    // Reset delimiter
+    config()->set('query-builder.delimiter', ',');
 });
 
 it('can filter name with equal operator filter', function () {
@@ -932,6 +935,32 @@ it('can filter with nullable operator filter when value is null', function () {
 
     expect($results)->toHaveCount(1);
     expect($results->first()->name)->toBeNull();
+});
+
+it('can allow all filters using a wildcard', function () {
+    $model = TestModel::create(['name' => 'John Doe']);
+
+    $models = createQueryFromFilterRequest([
+        'name' => 'John Doe',
+    ])
+        ->allowedFilters('*')
+        ->get();
+
+    expect($models)->toHaveCount(1);
+    expect($models->first()->id)->toEqual($model->id);
+});
+
+it('can allow all filters using a wildcard with multiple filters', function () {
+    $model = TestModel::create(['name' => 'John Doe']);
+
+    $models = createQueryFromFilterRequest([
+        'name' => 'John',
+        'id' => $model->id,
+    ])
+        ->allowedFilters('*')
+        ->get();
+
+    expect($models)->toHaveCount(1);
 });
 
 it('throws RelationNotFoundException when the relation method exists but does not return an Eloquent Relation', function () {

@@ -51,7 +51,7 @@ it('can sort a query descending', function () {
 
 it('can sort a query by alias', function () {
     $sortedModels = createQueryFromSortRequest('name-alias')
-        ->allowedSorts([AllowedSort::field('name-alias', 'name')])
+        ->allowedSorts(AllowedSort::field('name-alias', 'name'))
         ->get();
 
     assertQueryExecuted('select * from `test_models` order by `name` asc');
@@ -91,7 +91,7 @@ it('can sort by json property if its an allowed sort', function () {
     TestModel::query()->update(['name' => json_encode(['first' => 'abc'])]);
 
     createQueryFromSortRequest('-name->first')
-        ->allowedSorts(['name->first'])
+        ->allowedSorts('name->first')
         ->get();
 
     $expectedQuery = TestModel::query()->orderByDesc('name->first')->toSql();
@@ -199,9 +199,9 @@ it('doesnt use the default sort parameter when a sort was requested', function (
 
 it('allows default custom sort class parameter', function () {
     $sortClass = new class () implements SortInterface {
-        public function __invoke(Builder $query, bool $descending, string $property): Builder
+        public function __invoke(Builder $query, bool $descending, string $property): void
         {
-            return $query->orderBy('name', $descending ? 'desc' : 'asc');
+            $query->orderBy('name', $descending ? 'desc' : 'asc');
         }
     };
 
@@ -226,9 +226,9 @@ it('uses default descending sort parameter', function () {
 
 it('allows multiple default sort parameters', function () {
     $sortClass = new class () implements SortInterface {
-        public function __invoke(Builder $query, $descending, string $property): Builder
+        public function __invoke(Builder $query, $descending, string $property): void
         {
-            return $query->orderBy('name', $descending ? 'desc' : 'asc');
+            $query->orderBy('name', $descending ? 'desc' : 'asc');
         }
     };
 
@@ -243,15 +243,15 @@ it('allows multiple default sort parameters', function () {
 
 it('allows multiple default sort parameters in an array', function () {
     $sortClass = new class () implements SortInterface {
-        public function __invoke(Builder $query, $descending, string $property): Builder
+        public function __invoke(Builder $query, $descending, string $property): void
         {
-            return $query->orderBy('name', $descending ? 'desc' : 'asc');
+            $query->orderBy('name', $descending ? 'desc' : 'asc');
         }
     };
 
     $sortedModels = QueryBuilder::for(TestModel::class, new Request())
         ->allowedSorts(AllowedSort::custom('custom_name', $sortClass), 'id')
-        ->defaultSort([AllowedSort::custom('custom_name', $sortClass), '-id'])
+        ->defaultSort(AllowedSort::custom('custom_name', $sortClass), '-id')
         ->get();
 
     assertQueryExecuted('select * from `test_models` order by `name` asc, `id` desc');
@@ -270,7 +270,7 @@ it('can allow multiple sort parameters', function () {
 
 it('can allow multiple sort parameters as an array', function () {
     $sortedModels = createQueryFromSortRequest('name')
-        ->allowedSorts(['id', 'name'])
+        ->allowedSorts('id', 'name')
         ->get();
 
     $this->assertSortedAscending($sortedModels, 'name');
@@ -290,9 +290,9 @@ it('can sort by multiple columns', function () {
 
 it('can sort by a custom sort class', function () {
     $sortClass = new class () implements SortInterface {
-        public function __invoke(Builder $query, $descending, string $property): Builder
+        public function __invoke(Builder $query, $descending, string $property): void
         {
-            return $query->orderBy('name', $descending ? 'desc' : 'asc');
+            $query->orderBy('name', $descending ? 'desc' : 'asc');
         }
     };
 
@@ -367,9 +367,9 @@ test('late specified sorts still check for allowance', function () {
 
 it('can sort and use scoped filters at the same time', function () {
     $sortClass = new class () implements SortInterface {
-        public function __invoke(Builder $query, $descending, string $property): Builder
+        public function __invoke(Builder $query, $descending, string $property): void
         {
-            return $query->orderBy('name', $descending ? 'desc' : 'asc');
+            $query->orderBy('name', $descending ? 'desc' : 'asc');
         }
     };
 
@@ -380,13 +380,13 @@ it('can sort and use scoped filters at the same time', function () {
         ],
         'sort' => '-custom',
     ]))
-        ->allowedFilters([
+        ->allowedFilters(
             AllowedFilter::scope('name', 'named'),
             AllowedFilter::scope('between', 'createdBetween'),
-        ])
-        ->allowedSorts([
+        )
+        ->allowedSorts(
             AllowedSort::custom('custom', $sortClass),
-        ])
+        )
         ->defaultSort('foo')
         ->get();
 
@@ -414,15 +414,33 @@ test('raw sorts do not get purged when specifying allowed sorts', function () {
 
 test('the default direction of an allow sort can be set', function () {
     $sortClass = new class () implements SortInterface {
-        public function __invoke(Builder $query, bool $descending, string $property): Builder
+        public function __invoke(Builder $query, bool $descending, string $property): void
         {
-            return $query->orderBy('name', $descending ? 'desc' : 'asc');
+            $query->orderBy('name', $descending ? 'desc' : 'asc');
         }
     };
 
     $sortedModels = QueryBuilder::for(TestModel::class, new Request())
         ->allowedSorts(AllowedSort::custom('custom_name', $sortClass))
-        ->defaultSort(AllowedSort::custom('custom_name', $sortClass)->defaultDirection(SortDirection::DESCENDING))
+        ->defaultSort(AllowedSort::custom('custom_name', $sortClass)->defaultDirection(SortDirection::Descending))
+        ->get();
+
+    assertQueryExecuted('select * from `test_models` order by `name` desc');
+    $this->assertSortedDescending($sortedModels, 'name');
+});
+
+it('can allow all sorts using a wildcard', function () {
+    $sortedModels = createQueryFromSortRequest('name')
+        ->allowedSorts('*')
+        ->get();
+
+    assertQueryExecuted('select * from `test_models` order by `name` asc');
+    $this->assertSortedAscending($sortedModels, 'name');
+});
+
+it('can allow all sorts using a wildcard descending', function () {
+    $sortedModels = createQueryFromSortRequest('-name')
+        ->allowedSorts('*')
         ->get();
 
     assertQueryExecuted('select * from `test_models` order by `name` desc');

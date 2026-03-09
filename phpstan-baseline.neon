@@ -1,31 +1,595 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Parameter \\#1 \\$keys of method Illuminate\\\\Support\\\\Collection\\<int,string\\>\\:\\:except\\(\\) expects array\\<int\\>\\|Illuminate\\\\Support\\\\Enumerable\\<\\(int\\|string\\), int\\>\\|string, int\\<\\-1, max\\> given\\.$#"
+			message: '#^Class Spatie\\QueryBuilder\\Database\\Factories\\AppendModelFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: database/factories/AppendModelFactory.php
+
+		-
+			message: '#^Class Spatie\\QueryBuilder\\Database\\Factories\\SoftDeleteModelFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: database/factories/SoftDeleteModelFactory.php
+
+		-
+			message: '#^Class Spatie\\QueryBuilder\\Database\\Factories\\TestModelFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: database/factories/TestModelFactory.php
+
+		-
+			message: '#^Cannot unset property Spatie\\QueryBuilder\\AllowedFilter\:\:\$default because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: src/AllowedFilter.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\AllowedFilter\:\:__construct\(\) has parameter \$filterClass with generic interface Spatie\\QueryBuilder\\Filters\\Filter but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/AllowedFilter.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\AllowedFilter\:\:custom\(\) has parameter \$filterClass with generic interface Spatie\\QueryBuilder\\Filters\\Filter but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/AllowedFilter.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\AllowedFilter\:\:filter\(\) has parameter \$query with generic class Spatie\\QueryBuilder\\QueryBuilder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/AllowedFilter.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\AllowedFilter\:\:getFilterClass\(\) return type with generic interface Spatie\\QueryBuilder\\Filters\\Filter does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/AllowedFilter.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\AllowedFilter\:\:getIgnored\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/AllowedFilter.php
+
+		-
+			message: '#^Property Spatie\\QueryBuilder\\AllowedFilter\:\:\$ignored with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/AllowedFilter.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\AllowedInclude\:\:__construct\(\) has parameter \$includeClass with generic interface Spatie\\QueryBuilder\\Includes\\IncludeInterface but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/AllowedInclude.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\AllowedInclude\:\:custom\(\) has parameter \$includeClass with generic interface Spatie\\QueryBuilder\\Includes\\IncludeInterface but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/AllowedInclude.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\AllowedInclude\:\:include\(\) has parameter \$query with generic class Spatie\\QueryBuilder\\QueryBuilder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/AllowedInclude.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\AllowedSort\:\:sort\(\) has parameter \$query with generic class Spatie\\QueryBuilder\\QueryBuilder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/AllowedSort.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Enums\\FilterOperator\:\:isDynamic\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Enums/FilterOperator.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidAppendQuery\:\:__construct\(\) has parameter \$allowedAppends with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidAppendQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidAppendQuery\:\:__construct\(\) has parameter \$appendsNotAllowed with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidAppendQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidAppendQuery\:\:appendsNotAllowed\(\) has parameter \$allowedAppends with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidAppendQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidAppendQuery\:\:appendsNotAllowed\(\) has parameter \$appendsNotAllowed with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidAppendQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFieldQuery\:\:__construct\(\) has parameter \$allowedFields with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidFieldQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFieldQuery\:\:__construct\(\) has parameter \$unknownFields with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidFieldQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFieldQuery\:\:fieldsNotAllowed\(\) has parameter \$allowedFields with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidFieldQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFieldQuery\:\:fieldsNotAllowed\(\) has parameter \$unknownFields with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidFieldQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFilterQuery\:\:__construct\(\) has parameter \$allowedFilters with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidFilterQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFilterQuery\:\:__construct\(\) has parameter \$unknownFilters with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidFilterQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFilterQuery\:\:filtersNotAllowed\(\) has parameter \$allowedFilters with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidFilterQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFilterQuery\:\:filtersNotAllowed\(\) has parameter \$unknownFilters with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidFilterQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFilterValue\:\:make\(\) has parameter \$value with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Exceptions/InvalidFilterValue.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidIncludeQuery\:\:__construct\(\) has parameter \$allowedIncludes with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidIncludeQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidIncludeQuery\:\:__construct\(\) has parameter \$unknownIncludes with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidIncludeQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidIncludeQuery\:\:includesNotAllowed\(\) has parameter \$allowedIncludes with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidIncludeQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidIncludeQuery\:\:includesNotAllowed\(\) has parameter \$unknownIncludes with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidIncludeQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidSortQuery\:\:__construct\(\) has parameter \$allowedSorts with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidSortQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidSortQuery\:\:__construct\(\) has parameter \$unknownSorts with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidSortQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidSortQuery\:\:sortsNotAllowed\(\) has parameter \$allowedSorts with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidSortQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidSortQuery\:\:sortsNotAllowed\(\) has parameter \$unknownSorts with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/InvalidSortQuery.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\UnknownIncludedFieldsQuery\:\:__construct\(\) has parameter \$unknownFields with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Exceptions/UnknownIncludedFieldsQuery.php
+
+		-
+			message: '#^Property Spatie\\QueryBuilder\\Exceptions\\UnknownIncludedFieldsQuery\:\:\$unknownFields with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Exceptions/UnknownIncludedFieldsQuery.php
+
+		-
+			message: '#^Class Spatie\\QueryBuilder\\Filters\\FiltersBeginsWith extends generic class Spatie\\QueryBuilder\\Filters\\FiltersPartial but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Filters/FiltersBeginsWith.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersBeginsWith\:\:getWhereRawParameters\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Filters/FiltersBeginsWith.php
+
+		-
+			message: '#^Class Spatie\\QueryBuilder\\Filters\\FiltersEndsWith extends generic class Spatie\\QueryBuilder\\Filters\\FiltersPartial but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Filters/FiltersEndsWith.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersEndsWith\:\:getWhereRawParameters\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Filters/FiltersEndsWith.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersExact\:\:isRelationProperty\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
 			count: 1
 			path: src/Filters/FiltersExact.php
 
 		-
-			message: "#^Call to an undefined method ReflectionType\\:\\:getName\\(\\)\\.$#"
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersExact\:\:withRelationConstraint\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Filters/FiltersExact.php
+
+		-
+			message: '#^Parameter \#1 \$keys of method Illuminate\\Support\\Collection\<int,string\>\:\:except\(\) expects array\<int\>\|Illuminate\\Support\\Enumerable\<\(int\|string\), int\>\|string, int\<\-1, max\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Filters/FiltersExact.php
+
+		-
+			message: '#^Parameter \#1 \$query of method Spatie\\QueryBuilder\\Filters\\FiltersExact\<TModelClass of Illuminate\\Database\\Eloquent\\Model\>\:\:__invoke\(\) expects Illuminate\\Database\\Eloquent\\Builder\<TModelClass of Illuminate\\Database\\Eloquent\\Model\>, Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Filters/FiltersExact.php
+
+		-
+			message: '#^Property Spatie\\QueryBuilder\\Filters\\FiltersExact\:\:\$relationConstraints type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Filters/FiltersExact.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersOperator\:\:isRelationProperty\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Filters/FiltersOperator.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersOperator\:\:withRelationConstraint\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Filters/FiltersOperator.php
+
+		-
+			message: '#^Parameter \#1 \$keys of method Illuminate\\Support\\Collection\<int,string\>\:\:except\(\) expects array\<int\>\|Illuminate\\Support\\Enumerable\<\(int\|string\), int\>\|string, int\<\-1, max\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Filters/FiltersOperator.php
+
+		-
+			message: '#^Parameter \#1 \$query of method Spatie\\QueryBuilder\\Filters\\FiltersOperator\<TModelClass of Illuminate\\Database\\Eloquent\\Model\>\:\:__invoke\(\) expects Illuminate\\Database\\Eloquent\\Builder\<TModelClass of Illuminate\\Database\\Eloquent\\Model\>, Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Filters/FiltersOperator.php
+
+		-
+			message: '#^Property Spatie\\QueryBuilder\\Filters\\FiltersOperator\:\:\$relationConstraints type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Filters/FiltersOperator.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersPartial\:\:getDatabaseDriver\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Filters/FiltersPartial.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersPartial\:\:getWhereRawParameters\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Filters/FiltersPartial.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersPartial\:\:isRelationProperty\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Filters/FiltersPartial.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersPartial\:\:withRelationConstraint\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Filters/FiltersPartial.php
+
+		-
+			message: '#^Parameter \#1 \$keys of method Illuminate\\Support\\Collection\<int,string\>\:\:except\(\) expects array\<int\>\|Illuminate\\Support\\Enumerable\<\(int\|string\), int\>\|string, int\<\-1, max\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Filters/FiltersPartial.php
+
+		-
+			message: '#^Parameter \#1 \$query of method Spatie\\QueryBuilder\\Filters\\FiltersPartial\<TModelClass of Illuminate\\Database\\Eloquent\\Model\>\:\:__invoke\(\) expects Illuminate\\Database\\Eloquent\\Builder\<TModelClass of Illuminate\\Database\\Eloquent\\Model\>, Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Filters/FiltersPartial.php
+
+		-
+			message: '#^Property Spatie\\QueryBuilder\\Filters\\FiltersPartial\:\:\$relationConstraints type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Filters/FiltersPartial.php
+
+		-
+			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: src/Filters/FiltersScope.php
 
 		-
-			message: "#^Call to an undefined method ReflectionType\\:\\:isBuiltin\\(\\)\\.$#"
+			message: '#^Call to an undefined method ReflectionType\:\:isBuiltin\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Filters/FiltersScope.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<TModelClass of Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:onlyTrashed\\(\\)\\.$#"
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersScope\:\:getClass\(\) return type with generic class ReflectionClass does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Filters/FiltersScope.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersScope\:\:resolveParameters\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Filters/FiltersScope.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersScope\:\:resolveParameters\(\) has parameter \$values with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Filters/FiltersScope.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Filters\\FiltersScope\:\:resolveParameters\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Filters/FiltersScope.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<TModelClass of Illuminate\\Database\\Eloquent\\Model\>\:\:onlyTrashed\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Filters/FiltersTrashed.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<TModelClass of Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:withTrashed\\(\\)\\.$#"
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<TModelClass of Illuminate\\Database\\Eloquent\\Model\>\:\:withTrashed\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Filters/FiltersTrashed.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<TModelClass of Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:withoutTrashed\\(\\)\\.$#"
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<TModelClass of Illuminate\\Database\\Eloquent\\Model\>\:\:withoutTrashed\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Filters/FiltersTrashed.php
+
+		-
+			message: '#^Class Spatie\\QueryBuilder\\Includes\\IncludedCallback implements generic interface Spatie\\QueryBuilder\\Includes\\IncludeInterface but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Includes/IncludedCallback.php
+
+		-
+			message: '#^Class Spatie\\QueryBuilder\\Includes\\IncludedCount implements generic interface Spatie\\QueryBuilder\\Includes\\IncludeInterface but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Includes/IncludedCount.php
+
+		-
+			message: '#^Class Spatie\\QueryBuilder\\Includes\\IncludedExists implements generic interface Spatie\\QueryBuilder\\Includes\\IncludeInterface but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Includes/IncludedExists.php
+
+		-
+			message: '#^Class Spatie\\QueryBuilder\\Includes\\IncludedRelationship implements generic interface Spatie\\QueryBuilder\\Includes\\IncludeInterface but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Includes/IncludedRelationship.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Includes\\IncludedRelationship\:\:getIndividualRelationshipPathsFromInclude\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Includes/IncludedRelationship.php
+
+		-
+			message: '#^Class Spatie\\QueryBuilder\\QueryBuilder implements generic interface ArrayAccess but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilder\:\:__call\(\) has parameter \$arguments with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilder\:\:addIncludesToQuery\(\) has parameter \$includes with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilder\:\:filterNonExistingIncludes\(\) has parameter \$includes with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilder\:\:filterNonExistingIncludes\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilder\:\:generateIncludesFromString\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilder\:\:getRequestedFieldsForRelatedTable\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilder\:\:prependFieldsWithTableName\(\) has parameter \$fields with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilder\:\:prependFieldsWithTableName\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Property Spatie\\QueryBuilder\\QueryBuilder\:\:\$allowedFields with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Property Spatie\\QueryBuilder\\QueryBuilder\:\:\$allowedFilters with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Property Spatie\\QueryBuilder\\QueryBuilder\:\:\$allowedIncludes with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Property Spatie\\QueryBuilder\\QueryBuilder\:\:\$allowedSorts with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Unable to resolve the template type TKey in call to function collect$#'
+			identifier: argument.templateType
+			count: 2
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 2
+			path: src/QueryBuilder.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilderRequest\:\:appends\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/QueryBuilderRequest.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilderRequest\:\:fields\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/QueryBuilderRequest.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilderRequest\:\:filters\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/QueryBuilderRequest.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilderRequest\:\:includes\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/QueryBuilderRequest.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilderRequest\:\:sorts\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/QueryBuilderRequest.php
+
+		-
+			message: '#^Unable to resolve the template type TKey in call to function collect$#'
+			identifier: argument.templateType
+			count: 4
+			path: src/QueryBuilderRequest.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 4
+			path: src/QueryBuilderRequest.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\QueryBuilderServiceProvider\:\:provides\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/QueryBuilderServiceProvider.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Sorts\\Sort\:\:__invoke\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Sorts/Sort.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Sorts\\SortsCallback\:\:__invoke\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Sorts/SortsCallback.php
+
+		-
+			message: '#^Method Spatie\\QueryBuilder\\Sorts\\SortsField\:\:__invoke\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Sorts/SortsField.php

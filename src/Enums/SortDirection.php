@@ -2,9 +2,8 @@
 
 namespace Spatie\QueryBuilder\Enums;
 
-class SortDirection
+enum SortDirection: string
 {
-    public const DESCENDING = 'desc';
-
-    public const ASCENDING = 'asc';
+    case Descending = 'desc';
+    case Ascending = 'asc';
 }

@@ -12,8 +12,8 @@ use Spatie\QueryBuilder\Filters\Filter;
 class FiltersTestModels implements Filter
 {
     /** {@inheritdoc} */
-    public function __invoke(Builder $query, $value, string $property): Builder
+    public function __invoke(Builder $query, mixed $value, string $property): void
     {
-        return $query->where($property, $value);
+        $query->where($property, $value);
     }
 }

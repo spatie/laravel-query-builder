@@ -13,7 +13,7 @@ The following example fetches only the users' `id` and `name`:
 // GET /users?fields[users]=id,name
 
 $users = QueryBuilder::for(User::class)
-    ->allowedFields(['id', 'name'])
+    ->allowedFields('id', 'name')
     ->toSql();
 ```
 
@@ -53,6 +53,4 @@ QueryBuilder::for(Post::class)
 ⚠️ **Note:** In `allowedFields`, you must always use the _snake case plural_ of your relation name. If you want to change this behavior, you can change the settings in the [configuration file](https://spatie.be/docs/laravel-query-builder/v6/installation-setup)
 
 ⚠️ Keep in mind that the fields query will completely override the `SELECT` part of the query. This means that you'll need to manually specify any columns required for Eloquent relationships to work, in the above example `author.id`. See issue [#175](https://github.com/spatie/laravel-query-builder/issues/175) as well.
-
-⚠️ `allowedFields` must be called before `allowedIncludes`. Otherwise the query builder won't know what fields to include for the requested includes and an exception will be thrown.
 

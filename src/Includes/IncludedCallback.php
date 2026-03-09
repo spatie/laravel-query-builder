@@ -11,7 +11,7 @@ class IncludedCallback implements IncludeInterface
     {
     }
 
-    public function __invoke(Builder $query, string $relation)
+    public function __invoke(Builder $query, string $relation): void
     {
         $query->with([
             $relation => $this->callback,

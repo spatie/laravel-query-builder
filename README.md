@@ -70,7 +70,7 @@ $userQuery = QueryBuilder::for($query) // start from an existing Builder instanc
 
 ```php
 $users = QueryBuilder::for(User::class)
-    ->allowedFields(['id', 'email'])
+    ->allowedFields('id', 'email')
     ->get();
 
 // the fetched `User`s will only have their id & email set

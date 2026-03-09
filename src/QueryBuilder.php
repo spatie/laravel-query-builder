@@ -19,20 +19,20 @@ use Spatie\QueryBuilder\Concerns\SortsQuery;
  */
 class QueryBuilder implements ArrayAccess
 {
-    use FiltersQuery;
-    use SortsQuery;
-    use AddsIncludesToQuery;
     use AddsFieldsToQuery;
+    use AddsIncludesToQuery;
+    use FiltersQuery;
     use ForwardsCalls;
+    use SortsQuery;
 
     protected QueryBuilderRequest $request;
 
     /**
-     * @param  EloquentBuilder<TModel>|Relation<TModel, *, *>  $subject
+     * @param EloquentBuilder<TModel>|Relation<TModel, *, *> $subject
      */
     public function __construct(
         protected EloquentBuilder|Relation $subject,
-        ?Request $request = null
+        ?Request $request = null,
     ) {
         $this->request = $request
             ? QueryBuilderRequest::fromRequest($request)
@@ -67,7 +67,7 @@ class QueryBuilder implements ArrayAccess
      */
     public static function for(
         EloquentBuilder|Relation|string $subject,
-        ?Request $request = null
+        ?Request $request = null,
     ): static {
         if (is_subclass_of($subject, Model::class)) {
             $subject = $subject::query();
@@ -79,14 +79,10 @@ class QueryBuilder implements ArrayAccess
         return $queryBuilder;
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments): mixed
     {
         $result = $this->forwardCallTo($this->subject, $name, $arguments);
 
-        /*
-         * If the forwarded method call is part of a chain we can return $this
-         * instead of the actual $result to keep the chain going.
-         */
         if ($result === $this->subject) {
             return $this;
         }
@@ -104,32 +100,32 @@ class QueryBuilder implements ArrayAccess
         $this->subject = clone $this->subject;
     }
 
-    public function __get($name)
+    public function __get(string $name): mixed
     {
         return $this->subject->{$name};
     }
 
-    public function __set($name, $value)
+    public function __set(string $name, mixed $value): void
     {
         $this->subject->{$name} = $value;
     }
 
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->subject[$offset]);
     }
 
-    public function offsetGet($offset): bool
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->subject[$offset];
     }
 
-    public function offsetSet($offset, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->subject[$offset] = $value;
     }
 
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->subject[$offset]);
     }
