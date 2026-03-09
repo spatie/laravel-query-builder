@@ -8,7 +8,6 @@ use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 use Spatie\QueryBuilder\Exceptions\WildcardNotAllowedInEnvironment;
 use Spatie\QueryBuilder\Includes\IncludedRelationship;
-use Spatie\QueryBuilder\Includes\IncludeInterface;
 
 trait AddsIncludesToQuery
 {
