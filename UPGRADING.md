@@ -98,6 +98,24 @@ The `convert_relation_table_name_strategy` config now uses `null` instead of `fa
 
 A new `delimiter` config key has been added (default: `','`).
 
+The `count_suffix` and `exists_suffix` config keys have been consolidated into a single `suffixes` array, which also includes the new aggregate suffixes:
+
+```php
+// Before
+'count_suffix' => 'Count',
+'exists_suffix' => 'Exists',
+
+// After
+'suffixes' => [
+    'count' => 'Count',
+    'exists' => 'Exists',
+    'min' => 'Min',
+    'max' => 'Max',
+    'sum' => 'Sum',
+    'avg' => 'Avg',
+],
+```
+
 ### Filter interface return type
 
 The `Filter` interface's `__invoke` method now has an explicit `void` return type. If you have custom filter classes, update them:
