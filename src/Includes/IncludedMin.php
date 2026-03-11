@@ -9,7 +9,8 @@ class IncludedMin implements IncludeInterface
     public function __construct(
         protected string $relation,
         protected string $column,
-    ) {}
+    ) {
+    }
 
     public function __invoke(Builder $query, string $include): void
     {
