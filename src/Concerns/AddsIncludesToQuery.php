@@ -53,8 +53,8 @@ trait AddsIncludesToQuery
 
     protected function generateIncludesFromString(string $include): array
     {
-        $countSuffix = config('query-builder.count_suffix', 'Count');
-        $existsSuffix = config('query-builder.exists_suffix', 'Exists');
+        $countSuffix = config('query-builder.suffixes.count', 'Count');
+        $existsSuffix = config('query-builder.suffixes.exists', 'Exists');
 
         if (Str::endsWith($include, $countSuffix)) {
             return [AllowedInclude::count($include)];

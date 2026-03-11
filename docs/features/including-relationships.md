@@ -124,7 +124,7 @@ AllowedInclude::avg('postsViewsAvg', 'posts', 'views');  // adds withAvg('posts'
 
 The resulting attribute names follow Laravel's convention: `{relation}_{function}_{column}` (e.g. `posts_sum_views`).
 
-The suffixes used for matching include names can be customized in the `query-builder` config file using the `min_suffix`, `max_suffix`, `sum_suffix`, and `avg_suffix` keys.
+The suffixes used for matching include names can be customized in the `query-builder` config file using the `suffixes` array.
 
 ## Include aliases
 

@@ -23,40 +23,17 @@ return [
     'delimiter' => ',',
 
     /*
-     * Related model counts are included using the relationship name suffixed with this string.
-     * For example: GET /users?include=postsCount
+     * Related model aggregates are included using the relationship name suffixed with these strings.
+     * For example: GET /users?include=postsCount or GET /users?include=postsViewsSum
      */
-    'count_suffix' => 'Count',
-
-    /*
-     * Related model exists are included using the relationship name suffixed with this string.
-     * For example: GET /users?include=postsExists
-     */
-    'exists_suffix' => 'Exists',
-
-    /*
-     * Related model min aggregate is included using the relationship name suffixed with this string.
-     * For example: GET /users?include=postsViewsMin
-     */
-    'min_suffix' => 'Min',
-
-    /*
-     * Related model max aggregate is included using the relationship name suffixed with this string.
-     * For example: GET /users?include=postsViewsMax
-     */
-    'max_suffix' => 'Max',
-
-    /*
-     * Related model sum aggregate is included using the relationship name suffixed with this string.
-     * For example: GET /users?include=postsViewsSum
-     */
-    'sum_suffix' => 'Sum',
-
-    /*
-     * Related model avg aggregate is included using the relationship name suffixed with this string.
-     * For example: GET /users?include=postsViewsAvg
-     */
-    'avg_suffix' => 'Avg',
+    'suffixes' => [
+        'count' => 'Count',
+        'exists' => 'Exists',
+        'min' => 'Min',
+        'max' => 'Max',
+        'sum' => 'Sum',
+        'avg' => 'Avg',
+    ],
 
     /*
      * By default the package will throw an `InvalidFilterQuery` exception when a filter in the
