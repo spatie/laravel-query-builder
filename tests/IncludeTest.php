@@ -507,23 +507,6 @@ it('can include an aggregate avg with a constraint', function () {
     $this->assertNotNull($model->related_models_avg_id);
 });
 
-it('can allow all includes using a wildcard', function () {
-    $models = createQueryFromIncludeRequest('relatedModels')
-        ->allowedIncludes('*')
-        ->get();
-
-    assertRelationLoaded($models, 'relatedModels');
-});
-
-it('can allow all includes using a wildcard with multiple includes', function () {
-    $models = createQueryFromIncludeRequest('relatedModels,morphModels')
-        ->allowedIncludes('*')
-        ->get();
-
-    assertRelationLoaded($models, 'relatedModels');
-    assertRelationLoaded($models, 'morphModels');
-});
-
 // Helpers
 function createQueryFromIncludeRequest(string $includes): QueryBuilder
 {

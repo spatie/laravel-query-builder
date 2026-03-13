@@ -5,7 +5,6 @@ namespace Spatie\QueryBuilder\Concerns;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
-use Spatie\QueryBuilder\Exceptions\WildcardNotAllowedInEnvironment;
 
 trait FiltersQuery
 {
@@ -13,20 +12,6 @@ trait FiltersQuery
 
     public function allowedFilters(AllowedFilter|string ...$filters): static
     {
-        if (count($filters) === 1 && $filters[0] === '*') {
-            if (! app()->environment('local', 'testing')) {
-                throw WildcardNotAllowedInEnvironment::create(app()->environment());
-            }
-
-            $this->allowedFilters = $this->request->filters()->keys()->map(
-                fn (string $filter) => AllowedFilter::partial($filter)
-            );
-
-            $this->addFiltersToQuery();
-
-            return $this;
-        }
-
         $this->allowedFilters = collect($filters)->map(function ($filter) {
             if ($filter instanceof AllowedFilter) {
                 return $filter;

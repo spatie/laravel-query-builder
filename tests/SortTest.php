@@ -429,24 +429,6 @@ test('the default direction of an allow sort can be set', function () {
     $this->assertSortedDescending($sortedModels, 'name');
 });
 
-it('can allow all sorts using a wildcard', function () {
-    $sortedModels = createQueryFromSortRequest('name')
-        ->allowedSorts('*')
-        ->get();
-
-    assertQueryExecuted('select * from `test_models` order by `name` asc');
-    $this->assertSortedAscending($sortedModels, 'name');
-});
-
-it('can allow all sorts using a wildcard descending', function () {
-    $sortedModels = createQueryFromSortRequest('-name')
-        ->allowedSorts('*')
-        ->get();
-
-    assertQueryExecuted('select * from `test_models` order by `name` desc');
-    $this->assertSortedDescending($sortedModels, 'name');
-});
-
 // Helpers
 function createQueryFromSortRequest(?string $sort = null): QueryBuilder
 {

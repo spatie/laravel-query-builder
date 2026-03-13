@@ -142,18 +142,3 @@ The column name can be passed as optional parameter and defaults to the property
     ->get();
  ```
 
-## Allowing all sorts
-
-If you want to allow any sort that is present in the request without explicitly listing them, you can pass `'*'` as the argument to `allowedSorts()`. This will skip validation and dynamically allow all requested sorts using `AllowedSort::field()`.
-
-```php
-// GET /users?sort=-name
-
-$users = QueryBuilder::for(User::class)
-    ->allowedSorts('*')
-    ->get();
-
-// All sorts from the request will be applied
-```
-
-**Security warning:** Using the wildcard allows sorting on any database column, which can expose internal structure. For this reason, the wildcard is only allowed in `local` and `testing` environments. A `WildcardNotAllowedInEnvironment` exception will be thrown in any other environment.

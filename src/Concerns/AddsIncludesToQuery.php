@@ -6,7 +6,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
-use Spatie\QueryBuilder\Exceptions\WildcardNotAllowedInEnvironment;
 use Spatie\QueryBuilder\Includes\IncludedRelationship;
 
 trait AddsIncludesToQuery
@@ -15,21 +14,6 @@ trait AddsIncludesToQuery
 
     public function allowedIncludes(AllowedInclude|string ...$includes): static
     {
-        if (count($includes) === 1 && $includes[0] === '*') {
-            if (! app()->environment('local', 'testing')) {
-                throw WildcardNotAllowedInEnvironment::create(app()->environment());
-            }
-
-            $this->allowedIncludes = $this->request->includes()
-                ->flatMap(fn (string $include) => $this->generateIncludesFromString($include))
-                ->unique(fn (AllowedInclude $include) => $include->getName());
-
-            $includes = $this->request->includes();
-            $this->addIncludesToQuery($includes);
-
-            return $this;
-        }
-
         $this->allowedIncludes = collect($includes)
             ->reject(fn ($include) => empty($include))
             ->flatMap(function ($include): array {

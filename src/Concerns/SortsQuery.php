@@ -5,7 +5,6 @@ namespace Spatie\QueryBuilder\Concerns;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
-use Spatie\QueryBuilder\Exceptions\WildcardNotAllowedInEnvironment;
 
 trait SortsQuery
 {
@@ -13,20 +12,6 @@ trait SortsQuery
 
     public function allowedSorts(AllowedSort|string ...$sorts): static
     {
-        if (count($sorts) === 1 && $sorts[0] === '*') {
-            if (! app()->environment('local', 'testing')) {
-                throw WildcardNotAllowedInEnvironment::create(app()->environment());
-            }
-
-            $this->allowedSorts = $this->request->sorts()->map(
-                fn (string $sort) => AllowedSort::field(ltrim($sort, '-'))
-            );
-
-            $this->addRequestedSortsToQuery();
-
-            return $this;
-        }
-
         $this->allowedSorts = collect($sorts)->map(function ($sort) {
             if ($sort instanceof AllowedSort) {
                 return $sort;

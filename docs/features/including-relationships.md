@@ -207,22 +207,6 @@ You can select only some fields to be included using the [`allowedFields` method
 
 Relation/include names will be passed from request URL to the query directly. This means `/users?include=blog-posts` will try to load `blog-posts` relationship and  `/users?include=blogPosts` will try to load the `blogPosts()` relationship.
 
-## Allowing all includes
-
-If you want to allow any include that is present in the request without explicitly listing them, you can pass `'*'` as the argument to `allowedIncludes()`. This will skip validation and dynamically allow all requested includes using `AllowedInclude::relationship()`, automatically generating count and exists variants for non nested includes.
-
-```php
-// GET /users?include=posts,permissions
-
-$users = QueryBuilder::for(User::class)
-    ->allowedIncludes('*')
-    ->get();
-
-// All includes from the request will be loaded
-```
-
-**Security warning:** Using the wildcard allows loading any relationship, which can expose sensitive data or cause performance issues. For this reason, the wildcard is only allowed in `local` and `testing` environments. A `WildcardNotAllowedInEnvironment` exception will be thrown in any other environment.
-
 ## Eloquent API resources
 
 Once the relationships are included, we'd recommend including them in your response by using [Eloquent API resources and conditional relationships](https://laravel.com/docs/master/eloquent-resources#conditional-relationships).

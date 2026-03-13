@@ -417,18 +417,3 @@ QueryBuilder::for(User::class)
     ->get();
 ```
 
-## Allowing all filters
-
-If you want to allow any filter that is present in the request without explicitly listing them, you can pass `'*'` as the argument to `allowedFilters()`. This will skip validation and dynamically allow all requested filters using `AllowedFilter::partial()` by default.
-
-```php
-// GET /users?filter[name]=john&filter[email]=gmail
-
-$users = QueryBuilder::for(User::class)
-    ->allowedFilters('*')
-    ->get();
-
-// All filters from the request will be applied as partial filters
-```
-
-**Security warning:** Using the wildcard allows filtering on any database column, which can expose sensitive data or internal structure. For this reason, the wildcard is only allowed in `local` and `testing` environments. A `WildcardNotAllowedInEnvironment` exception will be thrown in any other environment.

@@ -4,10 +4,22 @@
 
 ### Requirements
 
-- PHP 8.2+
+- PHP 8.3+
 - Laravel 12 or 13
 
 Support for Laravel 10 and 11 has been dropped.
+
+### Wildcard support removed
+
+The wildcard (`'*'`) parameter for `allowedFilters()`, `allowedSorts()`, and `allowedIncludes()` has been removed. You must now explicitly list all allowed filters, sorts, and includes. This prevents accidentally exposing database columns or relationships to API consumers.
+
+```php
+// Before
+QueryBuilder::for(User::class)->allowedFilters('*');
+
+// After
+QueryBuilder::for(User::class)->allowedFilters('name', 'email');
+```
 
 ### Variadic parameters
 

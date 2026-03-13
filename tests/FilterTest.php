@@ -937,32 +937,6 @@ it('can filter with nullable operator filter when value is null', function () {
     expect($results->first()->name)->toBeNull();
 });
 
-it('can allow all filters using a wildcard', function () {
-    $model = TestModel::create(['name' => 'John Doe']);
-
-    $models = createQueryFromFilterRequest([
-        'name' => 'John Doe',
-    ])
-        ->allowedFilters('*')
-        ->get();
-
-    expect($models)->toHaveCount(1);
-    expect($models->first()->id)->toEqual($model->id);
-});
-
-it('can allow all filters using a wildcard with multiple filters', function () {
-    $model = TestModel::create(['name' => 'John Doe']);
-
-    $models = createQueryFromFilterRequest([
-        'name' => 'John',
-        'id' => $model->id,
-    ])
-        ->allowedFilters('*')
-        ->get();
-
-    expect($models)->toHaveCount(1);
-});
-
 it('throws RelationNotFoundException when the relation method exists but does not return an Eloquent Relation', function () {
     $ModelWithNonRelationMethod = new class () extends TestModel {
         protected $table = 'test_models';
