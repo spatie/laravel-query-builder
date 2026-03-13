@@ -30,34 +30,34 @@ class AllowedInclude
         return new static($name, new IncludedRelationship(), $internalName);
     }
 
-    public static function count(string $name, ?string $internalName = null): static
+    public static function count(string $name, ?string $internalName = null, ?Closure $constraint = null): static
     {
-        return new static($name, new IncludedCount(), $internalName);
+        return new static($name, new IncludedCount($constraint), $internalName);
     }
 
-    public static function exists(string $name, ?string $internalName = null): static
+    public static function exists(string $name, ?string $internalName = null, ?Closure $constraint = null): static
     {
-        return new static($name, new IncludedExists(), $internalName);
+        return new static($name, new IncludedExists($constraint), $internalName);
     }
 
-    public static function min(string $name, string $relation, string $column, ?string $internalName = null): static
+    public static function min(string $name, string $relation, string $column, ?string $internalName = null, ?Closure $constraint = null): static
     {
-        return new static($name, new IncludedMin($relation, $column), $internalName);
+        return new static($name, new IncludedMin($relation, $column, $constraint), $internalName);
     }
 
-    public static function max(string $name, string $relation, string $column, ?string $internalName = null): static
+    public static function max(string $name, string $relation, string $column, ?string $internalName = null, ?Closure $constraint = null): static
     {
-        return new static($name, new IncludedMax($relation, $column), $internalName);
+        return new static($name, new IncludedMax($relation, $column, $constraint), $internalName);
     }
 
-    public static function sum(string $name, string $relation, string $column, ?string $internalName = null): static
+    public static function sum(string $name, string $relation, string $column, ?string $internalName = null, ?Closure $constraint = null): static
     {
-        return new static($name, new IncludedSum($relation, $column), $internalName);
+        return new static($name, new IncludedSum($relation, $column, $constraint), $internalName);
     }
 
-    public static function avg(string $name, string $relation, string $column, ?string $internalName = null): static
+    public static function avg(string $name, string $relation, string $column, ?string $internalName = null, ?Closure $constraint = null): static
     {
-        return new static($name, new IncludedAvg($relation, $column), $internalName);
+        return new static($name, new IncludedAvg($relation, $column, $constraint), $internalName);
     }
 
     public static function callback(string $name, Closure $callback, ?string $internalName = null): static

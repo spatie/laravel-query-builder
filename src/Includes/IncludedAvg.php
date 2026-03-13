@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Includes;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 
 class IncludedAvg implements IncludeInterface
@@ -9,11 +10,14 @@ class IncludedAvg implements IncludeInterface
     public function __construct(
         protected string $relation,
         protected string $column,
+        protected ?Closure $constraint = null,
     ) {
     }
 
     public function __invoke(Builder $query, string $include): void
     {
-        $query->withAvg($this->relation, $this->column);
+        $relation = $this->constraint ? [$this->relation => $this->constraint] : $this->relation;
+
+        $query->withAvg($relation, $this->column);
     }
 }

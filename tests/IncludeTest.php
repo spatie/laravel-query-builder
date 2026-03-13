@@ -425,6 +425,88 @@ it('can include an aggregate avg', function () {
     $this->assertNotNull($model->related_models_avg_id);
 });
 
+it('can include a count with a constraint', function () {
+    // Each model has 1 related model with name "Test" from beforeEach
+    // Add an extra related model with a different name to the first model
+    $this->models->first()->relatedModels()->create(['name' => 'Extra']);
+
+    $model = createQueryFromIncludeRequest('relatedModelsCount')
+        ->allowedIncludes(
+            AllowedInclude::count('relatedModelsCount', constraint: fn ($query) => $query->where('name', 'Test')),
+        )
+        ->first();
+
+    expect($model->related_models_count)->toBe(1);
+});
+
+it('can include an exists with a constraint', function () {
+    $model = createQueryFromIncludeRequest('relatedModelsExists')
+        ->allowedIncludes(
+            AllowedInclude::exists('relatedModelsExists', constraint: fn ($query) => $query->where('name', 'nonexistent')),
+        )
+        ->first();
+
+    expect($model->related_models_exists)->toBeFalse();
+});
+
+it('can include an aggregate min with a constraint', function () {
+    $this->models->first()->relatedModels()->create(['name' => 'Extra']);
+
+    DB::enableQueryLog();
+
+    $model = createQueryFromIncludeRequest('relatedModelsIdMin')
+        ->allowedIncludes(
+            AllowedInclude::min('relatedModelsIdMin', 'relatedModels', 'id', constraint: fn ($query) => $query->where('name', 'Test')),
+        )
+        ->first();
+
+    $this->assertQueryLogContains('min(`related_models`.`id`)');
+    $this->assertQueryLogContains('`name` = ?');
+    $this->assertNotNull($model->related_models_min_id);
+});
+
+it('can include an aggregate max with a constraint', function () {
+    DB::enableQueryLog();
+
+    $model = createQueryFromIncludeRequest('relatedModelsIdMax')
+        ->allowedIncludes(
+            AllowedInclude::max('relatedModelsIdMax', 'relatedModels', 'id', constraint: fn ($query) => $query->where('name', 'Test')),
+        )
+        ->first();
+
+    $this->assertQueryLogContains('max(`related_models`.`id`)');
+    $this->assertQueryLogContains('`name` = ?');
+    $this->assertNotNull($model->related_models_max_id);
+});
+
+it('can include an aggregate sum with a constraint', function () {
+    DB::enableQueryLog();
+
+    $model = createQueryFromIncludeRequest('relatedModelsIdSum')
+        ->allowedIncludes(
+            AllowedInclude::sum('relatedModelsIdSum', 'relatedModels', 'id', constraint: fn ($query) => $query->where('name', 'Test')),
+        )
+        ->first();
+
+    $this->assertQueryLogContains('sum(`related_models`.`id`)');
+    $this->assertQueryLogContains('`name` = ?');
+    $this->assertNotNull($model->related_models_sum_id);
+});
+
+it('can include an aggregate avg with a constraint', function () {
+    DB::enableQueryLog();
+
+    $model = createQueryFromIncludeRequest('relatedModelsIdAvg')
+        ->allowedIncludes(
+            AllowedInclude::avg('relatedModelsIdAvg', 'relatedModels', 'id', constraint: fn ($query) => $query->where('name', 'Test')),
+        )
+        ->first();
+
+    $this->assertQueryLogContains('avg(`related_models`.`id`)');
+    $this->assertQueryLogContains('`name` = ?');
+    $this->assertNotNull($model->related_models_avg_id);
+});
+
 it('can allow all includes using a wildcard', function () {
     $models = createQueryFromIncludeRequest('relatedModels')
         ->allowedIncludes('*')

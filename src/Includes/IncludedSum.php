@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder\Includes;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 
 class IncludedSum implements IncludeInterface
@@ -9,11 +10,14 @@ class IncludedSum implements IncludeInterface
     public function __construct(
         protected string $relation,
         protected string $column,
+        protected ?Closure $constraint = null,
     ) {
     }
 
     public function __invoke(Builder $query, string $include): void
     {
-        $query->withSum($this->relation, $this->column);
+        $relation = $this->constraint ? [$this->relation => $this->constraint] : $this->relation;
+
+        $query->withSum($relation, $this->column);
     }
 }

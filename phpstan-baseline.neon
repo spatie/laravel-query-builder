@@ -415,6 +415,12 @@ parameters:
 			path: src/Includes/IncludedCallback.php
 
 		-
+			message: '#^Class Spatie\\QueryBuilder\\Includes\\IncludedAvg implements generic interface Spatie\\QueryBuilder\\Includes\\IncludeInterface but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Includes/IncludedAvg.php
+
+		-
 			message: '#^Class Spatie\\QueryBuilder\\Includes\\IncludedCount implements generic interface Spatie\\QueryBuilder\\Includes\\IncludeInterface but does not specify its types\: TModelClass$#'
 			identifier: missingType.generics
 			count: 1
@@ -425,6 +431,24 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: src/Includes/IncludedExists.php
+
+		-
+			message: '#^Class Spatie\\QueryBuilder\\Includes\\IncludedMax implements generic interface Spatie\\QueryBuilder\\Includes\\IncludeInterface but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Includes/IncludedMax.php
+
+		-
+			message: '#^Class Spatie\\QueryBuilder\\Includes\\IncludedMin implements generic interface Spatie\\QueryBuilder\\Includes\\IncludeInterface but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Includes/IncludedMin.php
+
+		-
+			message: '#^Class Spatie\\QueryBuilder\\Includes\\IncludedSum implements generic interface Spatie\\QueryBuilder\\Includes\\IncludeInterface but does not specify its types\: TModelClass$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Includes/IncludedSum.php
 
 		-
 			message: '#^Class Spatie\\QueryBuilder\\Includes\\IncludedRelationship implements generic interface Spatie\\QueryBuilder\\Includes\\IncludeInterface but does not specify its types\: TModelClass$#'
