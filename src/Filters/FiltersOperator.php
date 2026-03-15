@@ -39,12 +39,11 @@ class FiltersOperator extends FiltersExact implements Filter
         } elseif ($this->filterOperator->isDynamic() && $value !== null) {
             $filterOperator = $this->getDynamicFilterOperator($value);
             $this->removeDynamicFilterOperatorFromValue($value, $filterOperator);
+            if ($value === '') {
+                $value = null;
+            }
         } elseif ($this->filterOperator->isDynamic() && $value === null) {
             $filterOperator = FilterOperator::EQUAL;
-        }
-
-        if ($value === '') {
-            $value = null;
         }
 
         $query->where($query->qualifyColumn($property), $filterOperator->value, $value, $this->boolean);
