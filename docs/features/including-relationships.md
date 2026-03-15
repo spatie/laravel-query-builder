@@ -126,6 +126,35 @@ The resulting attribute names follow Laravel's convention: `{relation}_{function
 
 The suffixes used for matching include names can be customized in the `query-builder` config file using the `suffixes` array.
 
+## Constraining aggregate includes
+
+All aggregate includes (`count`, `exists`, `min`, `max`, `sum`, `avg`) accept an optional constraint closure. This allows you to filter which related models are included in the aggregate calculation.
+
+```php
+use Spatie\QueryBuilder\AllowedInclude;
+use Illuminate\Database\Eloquent\Builder;
+
+$users = QueryBuilder::for(User::class)
+    ->allowedIncludes(
+        AllowedInclude::count('publishedPostsCount', 'posts', fn (Builder $query) => $query->where('published', true)),
+        AllowedInclude::sum('publishedPostsViewsSum', 'posts', 'views', constraint: fn (Builder $query) => $query->where('published', true)),
+    )
+    ->get();
+```
+
+The constraint closure receives a `Builder` instance, allowing you to add any query conditions. This works the same way for all aggregate types:
+
+```php
+AllowedInclude::count('name', 'relation', fn (Builder $query) => $query->where('active', true));
+AllowedInclude::exists('name', 'relation', fn (Builder $query) => $query->where('active', true));
+AllowedInclude::min('name', 'relation', 'column', constraint: fn (Builder $query) => $query->where('active', true));
+AllowedInclude::max('name', 'relation', 'column', constraint: fn (Builder $query) => $query->where('active', true));
+AllowedInclude::sum('name', 'relation', 'column', constraint: fn (Builder $query) => $query->where('active', true));
+AllowedInclude::avg('name', 'relation', 'column', constraint: fn (Builder $query) => $query->where('active', true));
+```
+
+Note that for `min`, `max`, `sum`, and `avg`, the constraint must be passed as a named argument since `$internalName` comes before it in the method signature.
+
 ## Include aliases
 
 It can be useful to specify an alias for an include to enable friendly relationship names. For example, your users table might have a `userProfile` relationship, which might be neater just specified as `profile`. Using aliases you can specify a new, shorter name for this include:
@@ -201,7 +230,7 @@ QueryBuilder::for(User::class)
 
 ## Selecting included fields
 
-You can select only some fields to be included using the [`allowedFields` method on the query builder](https://spatie.be/docs/laravel-query-builder/v6/features/selecting-fields/).
+You can select only some fields to be included using the [`allowedFields` method on the query builder](https://spatie.be/docs/laravel-query-builder/v7/features/selecting-fields/).
 
 ## Include casing
 
