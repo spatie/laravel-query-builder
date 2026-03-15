@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 7.0.0 - 2026-03-15
+
+### What's Changed
+
+* v7: Modernized API and aggregate includes by @freekmurze in https://github.com/spatie/laravel-query-builder/pull/1050
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/6.4.4...7.0.0
+
 ## 6.4.4 - 2026-03-08
 
 ### What's Changed
