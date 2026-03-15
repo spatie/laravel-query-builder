@@ -23,7 +23,7 @@ $users = QueryBuilder::for(User::class)
 // all `User`s that contain the string "John" in their name
 ```
 
-[Read more about filtering features like: partial filters, exact filters, scope filters, custom filters, ignored values, default filter values, ...](https://spatie.be/docs/laravel-query-builder/v6/features/filtering/)
+[Read more about filtering features like: partial filters, exact filters, scope filters, custom filters, ignored values, default filter values, ...](https://spatie.be/docs/laravel-query-builder/v7/features/filtering/)
 
 ### Including relations based on a request: `/users?include=posts`:
 
@@ -35,7 +35,7 @@ $users = QueryBuilder::for(User::class)
 // all `User`s with their `posts` loaded
 ```
 
-[Read more about include features like: including nested relationships, including relationship count, ...](https://spatie.be/docs/laravel-query-builder/v6/features/including-relationships/)
+[Read more about include features like: including nested relationships, including relationship count, ...](https://spatie.be/docs/laravel-query-builder/v7/features/including-relationships/)
 
 ### Sorting a query based on a request: `/users?sort=id`:
 
@@ -47,7 +47,7 @@ $users = QueryBuilder::for(User::class)
 // all `User`s sorted by ascending id
 ```
 
-[Read more about sorting features like: custom sorts, sort direction, ...](https://spatie.be/docs/laravel-query-builder/v6/features/sorting/)
+[Read more about sorting features like: custom sorts, sort direction, ...](https://spatie.be/docs/laravel-query-builder/v7/features/sorting/)
 
 ### Works together nicely with existing queries:
 
@@ -64,20 +64,18 @@ $userQuery = QueryBuilder::for($query) // start from an existing Builder instanc
 
 ```php
 $users = QueryBuilder::for(User::class)
-    ->allowedFields(['id', 'email'])
+    ->allowedFields('id', 'email')
     ->get();
 
 // the fetched `User`s will only have their id & email set
 ```
 
-[Read more about selecting fields.](https://spatie.be/docs/laravel-query-builder/v6/features/selecting-fields/)
+[Read more about selecting fields.](https://spatie.be/docs/laravel-query-builder/v7/features/selecting-fields/)
 
 ## We have badges!
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
-[![Build Status](https://img.shields.io/circleci/project/github/spatie/laravel-query-builder/master.svg?style=flat-square)](https://circleci.com/gh/spatie/laravel-query-builder)
-[![StyleCI](https://styleci.io/repos/117567334/shield?branch=master)](https://styleci.io/repos/117567334)
-[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-query-builder.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-query-builder)
+![Test Status](https://img.shields.io/github/actions/workflow/status/spatie/laravel-query-builder/run-tests.yml?label=tests&branch=main)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
 
 ![Look at all those badges](https://i.imgflip.com/36x6d6.jpg)

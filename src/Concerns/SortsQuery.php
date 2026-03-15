@@ -10,10 +10,8 @@ trait SortsQuery
 {
     protected Collection $allowedSorts;
 
-    public function allowedSorts($sorts): static
+    public function allowedSorts(AllowedSort|string ...$sorts): static
     {
-        $sorts = is_array($sorts) ? $sorts : func_get_args();
-
         $this->allowedSorts = collect($sorts)->map(function ($sort) {
             if ($sort instanceof AllowedSort) {
                 return $sort;
@@ -24,27 +22,21 @@ trait SortsQuery
 
         $this->ensureAllSortsExist();
 
-        $this->addRequestedSortsToQuery(); // allowed is known & request is known, add what we can, if there is no request, -wait
+        $this->addRequestedSortsToQuery();
 
         return $this;
     }
 
-    public function defaultSort(AllowedSort|array|string $sorts): static
+    public function defaultSort(AllowedSort|string ...$sorts): static
     {
-        $sorts = is_array($sorts) ? $sorts : func_get_args();
-
-        return $this->defaultSorts($sorts);
+        return $this->defaultSorts(...$sorts);
     }
 
-    public function defaultSorts(AllowedSort|array|string $sorts): static
+    public function defaultSorts(AllowedSort|string ...$sorts): static
     {
         if ($this->request->sorts()->isNotEmpty()) {
-            // We've got requested sorts. No need to parse defaults.
-
             return $this;
         }
-
-        $sorts = is_array($sorts) ? $sorts : func_get_args();
 
         collect($sorts)
             ->map(function ($sort) {

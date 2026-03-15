@@ -5,7 +5,7 @@ weight: 1
 
 The `filter` query parameters can be used to add `where` clauses to your Eloquent query. Out of the box we support filtering results by partial attribute value, exact attribute value or even if an attribute value exists in a given array of values. For anything more advanced, custom filters can be used.
 
-By default, all filters have to be explicitly allowed using `allowedFilters()`. This method takes an array of strings or `AllowedFilter` instances. An allowed filter can be partial, beginsWithStrict, endsWithStrict, exact, scope or custom. By default, any string values passed to `allowedFilters()` will automatically be converted to `AllowedFilter::partial()` filters.
+By default, all filters have to be explicitly allowed using `allowedFilters()`. This method takes strings or `AllowedFilter` instances as arguments. An allowed filter can be partial, beginsWith, endsWith, exact, scope or custom. By default, any string values passed to `allowedFilters()` will automatically be converted to `AllowedFilter::partial()` filters.
 
 ## Basic usage
 
@@ -13,7 +13,7 @@ By default, all filters have to be explicitly allowed using `allowedFilters()`. 
 // GET /users?filter[name]=john&filter[email]=gmail
 
 $users = QueryBuilder::for(User::class)
-    ->allowedFilters(['name', 'email'])
+    ->allowedFilters('name', 'email')
     ->get();
 
 // $users will contain all users with "john" in their name AND "gmail" in their email address
@@ -25,7 +25,7 @@ You can specify multiple matching filter values by passing a comma separated lis
 // GET /users?filter[name]=seb,freek
 
 $users = QueryBuilder::for(User::class)
-    ->allowedFilters(['name'])
+    ->allowedFilters('name')
     ->get();
 
 // $users will contain all users that contain "seb" OR "freek" in their name
@@ -48,9 +48,9 @@ You can set in configuration file to not throw an InvalidFilterQuery exception w
 
 By default the option is set false.
 
-## Partial, beginsWithStrict and endsWithStrict filters
+## Partial, beginsWith and endsWith filters
 
-By default, all values passed to `allowedFilters` are converted to partial filters. The underlying query will be modified to use a `LIKE LOWER(%value%)` statement. Because this can cause missed indexes, it's often worth considering a `beginsWithStrict` filter for the beginning of the value, or an `endsWithStrict` filter for the end of the value. These filters will use a `LIKE value%` statement and a `LIKE %value` statement respectively, instead of the default partial filter. This can help optimize query performance and index utilization.
+By default, all values passed to `allowedFilters` are converted to partial filters. The underlying query will be modified to use a `LIKE LOWER(%value%)` statement. Because this can cause missed indexes, it's often worth considering a `beginsWith` filter for the beginning of the value, or an `endsWith` filter for the end of the value. These filters will use a `LIKE value%` statement and a `LIKE %value` statement respectively, instead of the default partial filter. This can help optimize query performance and index utilization.
 
 ## Exact filters
 
@@ -63,7 +63,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 
 // GET /users?filter[name]=John%20Doe
 $users = QueryBuilder::for(User::class)
-    ->allowedFilters([AllowedFilter::exact('name')])
+    ->allowedFilters(AllowedFilter::exact('name'))
     ->get();
 
 // only users with the exact name "John Doe"
@@ -77,10 +77,10 @@ use Spatie\QueryBuilder\AllowedFilter;
 // GET /users?filter[id]=1,2,3,4,5&filter[admin]=true
 
 $users = QueryBuilder::for(User::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::exact('id'),
         AllowedFilter::exact('admin'),
-    ])
+    )
     ->get();
 
 // $users will contain all admin users with id 1, 2, 3, 4 or 5
@@ -96,9 +96,9 @@ use Spatie\QueryBuilder\Enums\FilterOperator;
 
 // GET /users?filter[salary]=3000
 $users = QueryBuilder::for(User::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::operator('salary', FilterOperator::GREATER_THAN),
-    ])
+    )
     ->get();
 
 // $users will contain all users with a salary greater than 3000
@@ -112,9 +112,9 @@ use Spatie\QueryBuilder\Enums\FilterOperator;
 
 // GET /users?filter[salary]=>3000
 $users = QueryBuilder::for(User::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::operator('salary', FilterOperator::DYNAMIC),
-    ])
+    )
     ->get();
 
 // $users will contain all users with a salary greater than 3000
@@ -149,18 +149,18 @@ class Comment extends Model
 
 ```php
 QueryBuilder::for(Comment::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::belongsTo('post'),
-    ])
+    )
     ->get();
 ```
 
 Alias
 ```php
 QueryBuilder::for(Comment::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::belongsTo('post_id', 'post'),
-    ])
+    )
     ->get();
 ```
 
@@ -177,9 +177,9 @@ class Post extends Model
 
 ```php
 QueryBuilder::for(Comment::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::belongsTo('author_post_id', 'post.author'),
-    ])
+    )
     ->get();
 ```
 
@@ -202,9 +202,9 @@ To filter based on the `startsBefore` scope, add it to the `allowedFilters` arra
 
 ```php
 QueryBuilder::for(Event::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::scope('starts_before'),
-    ])
+    )
     ->get();
 ```
 
@@ -249,10 +249,10 @@ Scopes are usually not named with query filters in mind. Use [filter aliases](#f
 
 ```php
 QueryBuilder::for(User::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::scope('unconfirmed', 'whereHasUnconfirmedEmail'),
         // `?filter[unconfirmed]=1` will now add the `scopeWhereHasUnconfirmedEmail` to your query
-    ]);
+    );
 ```
 
 ## Trashed filters
@@ -269,9 +269,9 @@ For example:
 
 ```php
 QueryBuilder::for(Booking::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::trashed(),
-    ]);
+    );
 
 // GET /bookings?filter[trashed]=only will only return soft deleted models
 ```
@@ -286,20 +286,20 @@ For example:
 
 ```php
 QueryBuilder::for(User::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::callback('has_posts', function (Builder $query, $value) {
             $query->whereHas('posts');
         }),
-    ]);
+    );
 ```
 
 Using PHP 7.4 this example becomes a lot shorter:
 
 ```php
 QueryBuilder::for(User::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::callback('has_posts', fn (Builder $query) => $query->whereHas('posts')),
-    ]);
+    );
 ```
 
 ## Custom filters
@@ -326,9 +326,9 @@ class FiltersUserPermission implements Filter
 // GET /users?filter[permission]=createPosts
 
 $users = QueryBuilder::for(User::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::custom('permission', new FiltersUserPermission),
-    ])
+    )
     ->get();
 
 // $users will contain all users that have the `createPosts` permission
@@ -354,9 +354,9 @@ You can specify a set of ignored values for every filter. This allows you to not
 
 ```php
 QueryBuilder::for(User::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::exact('name')->ignore(null),
-    ])
+    )
     ->get();
 ```
 
@@ -372,18 +372,18 @@ Given an array of values to filter for, only the subset of non-ignored values ge
 // GET /user?filter[name]=forbidden,John%20Doe
 
 QueryBuilder::for(User::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::exact('name')->ignore('forbidden'),
-    ])
+    )
     ->get();
 // Returns only users where name matches 'John Doe'
 
 // GET /user?filter[name]=ignored,ignored_too
 
 QueryBuilder::for(User::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::exact('name')->ignore(['ignored', 'ignored_too']),
-    ])
+    )
     ->get();
 // Filter does not get applied because all requested values are ignored.
 ```
@@ -394,11 +394,11 @@ QueryBuilder::for(User::class)
  
 ```php
 QueryBuilder::for(User::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::exact('name')->default('Joe'),
         AllowedFilter::scope('deleted')->default(false),
         AllowedFilter::scope('permission')->default(null),
-    ])
+    )
     ->get();
 ```
 
@@ -410,10 +410,10 @@ You can mark a filter nullable if you want to retrieve entries whose filtered va
 // GET /user?filter[name]=&filter[permission]=
 
 QueryBuilder::for(User::class)
-    ->allowedFilters([
+    ->allowedFilters(
         AllowedFilter::exact('name')->nullable(),
         AllowedFilter::scope('permission')->nullable(),
-    ])
+    )
     ->get();
 ```
 

@@ -4,32 +4,35 @@ namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Enums\FilterOperator;
+use Spatie\QueryBuilder\Filters\Concerns\HandlesRelationConstraints;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
- * @template-implements \Spatie\QueryBuilder\Filters\Filter<TModelClass>
+ * @template-implements Filter<TModelClass>
  */
-class FiltersOperator extends FiltersExact implements Filter
+class FiltersOperator implements Filter
 {
-    public function __construct(protected bool $addRelationConstraint, protected FilterOperator $filterOperator, protected string $boolean)
-    {
+    use HandlesRelationConstraints;
+
+    public function __construct(
+        protected bool $addRelationConstraint,
+        protected FilterOperator $filterOperator,
+        protected string $boolean,
+    ) {
     }
 
-    /** {@inheritdoc} */
-    public function __invoke(Builder $query, $value, string $property)
+    public function __invoke(Builder $query, mixed $value, string $property): void
     {
         $filterOperator = $this->filterOperator;
 
-        if ($this->addRelationConstraint) {
-            if ($this->isRelationProperty($query, $property)) {
-                $this->withRelationConstraint($query, $value, $property);
+        if ($this->addRelationConstraint && $this->isRelationProperty($query, $property)) {
+            $this->withRelationConstraint($query, $value, $property);
 
-                return;
-            }
+            return;
         }
 
         if (is_array($value)) {
-            $query->where(function ($query) use ($value, $property) {
+            $query->where(function (Builder $query) use ($value, $property) {
                 foreach ($value as $item) {
                     $this->__invoke($query, $item, $property);
                 }
@@ -57,7 +60,7 @@ class FiltersOperator extends FiltersExact implements Filter
         return $filterOperator;
     }
 
-    protected function removeDynamicFilterOperatorFromValue(string &$value, FilterOperator $filterOperator)
+    protected function removeDynamicFilterOperatorFromValue(string &$value, FilterOperator $filterOperator): void
     {
         if (str_contains($value, $filterOperator->value)) {
             $value = substr_replace($value, '', 0, strlen($filterOperator->value));

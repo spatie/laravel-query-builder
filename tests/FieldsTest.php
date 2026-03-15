@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Exceptions\AllowedFieldsMustBeCalledBeforeAllowedIncludes;
 use Spatie\QueryBuilder\Exceptions\InvalidFieldQuery;
 use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -34,7 +33,7 @@ it('fetches all columns if no field was requested but allowed fields were specif
 it('replaces selected array columns on the query', function () {
     $query = createQueryFromFieldRequest(['test_models' => 'name,id'])
         ->select(['id', 'is_visible'])
-        ->allowedFields(['name', 'id'])
+        ->allowedFields('name', 'id')
         ->toSql();
 
     $expected = TestModel::query()
@@ -48,7 +47,7 @@ it('replaces selected array columns on the query', function () {
 it('replaces selected string columns on the query', function () {
     $query = createQueryFromFieldRequest('name,id')
         ->select(['id', 'is_visible'])
-        ->allowedFields(['name', 'id'])
+        ->allowedFields('name', 'id')
         ->toSql();
 
     $expected = TestModel::query()
@@ -61,7 +60,7 @@ it('replaces selected string columns on the query', function () {
 
 it('can fetch specific array columns', function () {
     $query = createQueryFromFieldRequest(['test_models' => 'name,id'])
-        ->allowedFields(['name', 'id'])
+        ->allowedFields('name', 'id')
         ->toSql();
 
     $expected = TestModel::query()
@@ -73,7 +72,7 @@ it('can fetch specific array columns', function () {
 
 it('can fetch specific string columns', function () {
     $query = createQueryFromFieldRequest('name,id')
-        ->allowedFields(['name', 'id'])
+        ->allowedFields('name', 'id')
         ->toSql();
 
     $expected = TestModel::query()
@@ -88,7 +87,7 @@ it('can fetch specific string columns jsonApi Format', function () {
     config(['query-builder.convert_relation_table_name_strategy' => 'camelCase']);
 
     $query = createQueryFromFieldRequest('firstName,id')
-        ->allowedFields(['firstName', 'id'])
+        ->allowedFields('firstName', 'id')
         ->toSql();
 
     $expected = TestModel::query()
@@ -116,7 +115,7 @@ it('wont fetch a specific string column if its not allowed', function () {
 
 it('can fetch sketchy array columns if they are allowed fields', function () {
     $query = createQueryFromFieldRequest(['test_models' => 'name->first,id'])
-        ->allowedFields(['name->first', 'id'])
+        ->allowedFields('name->first', 'id')
         ->toSql();
 
     $expected = TestModel::query()
@@ -128,7 +127,7 @@ it('can fetch sketchy array columns if they are allowed fields', function () {
 
 it('can fetch sketchy string columns if they are allowed fields', function () {
     $query = createQueryFromFieldRequest('name->first,id')
-        ->allowedFields(['name->first', 'id'])
+        ->allowedFields('name->first', 'id')
         ->toSql();
 
     $expected = TestModel::query()
@@ -412,14 +411,6 @@ it('can fetch requested string columns from included models up to two levels dee
     expect($result->relatedModels->first()->testModel->toArray())->toEqual(['id' => $this->model->id]);
 });
 
-it('throws an exception when calling allowed includes before allowed fields', function () {
-    $this->expectException(AllowedFieldsMustBeCalledBeforeAllowedIncludes::class);
-
-    createQueryFromFieldRequest()
-        ->allowedIncludes('related-models')
-        ->allowedFields('name');
-});
-
 it('throws an exception when calling allowed includes before allowed fields but with requested fields', function () {
     $request = new Request([
         'fields' => [
@@ -458,7 +449,7 @@ it('can allow specific fields on an included model', function () {
     ]);
 
     $queryBuilder = QueryBuilder::for(TestModel::class, $request)
-        ->allowedFields(['related_models.id', 'related_models.name'])
+        ->allowedFields('related_models.id', 'related_models.name')
         ->allowedIncludes('relatedModels');
 
     DB::enableQueryLog();

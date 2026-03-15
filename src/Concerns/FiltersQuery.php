@@ -10,11 +10,9 @@ trait FiltersQuery
 {
     protected Collection $allowedFilters;
 
-    public function allowedFilters($filters): static
+    public function allowedFilters(AllowedFilter|string ...$filters): static
     {
-        $filters = is_array($filters) ? $filters : func_get_args();
-
-        $this->allowedFilters = collect($filters)->flatten(1)->map(function ($filter) {
+        $this->allowedFilters = collect($filters)->map(function ($filter) {
             if ($filter instanceof AllowedFilter) {
                 return $filter;
             }
@@ -48,9 +46,7 @@ trait FiltersQuery
     protected function findFilter(string $property): ?AllowedFilter
     {
         return $this->allowedFilters
-            ->first(function (AllowedFilter $filter) use ($property) {
-                return $filter->isForFilter($property);
-            });
+            ->first(fn (AllowedFilter $filter) => $filter->isForFilter($property));
     }
 
     protected function isFilterRequested(AllowedFilter $allowedFilter): bool
@@ -66,9 +62,7 @@ trait FiltersQuery
 
         $filterNames = $this->request->filters()->keys();
 
-        $allowedFilterNames = $this->allowedFilters->map(function (AllowedFilter $allowedFilter) {
-            return $allowedFilter->getName();
-        });
+        $allowedFilterNames = $this->allowedFilters->map(fn (AllowedFilter $allowedFilter) => $allowedFilter->getName());
 
         $diff = $filterNames->diff($allowedFilterNames);
 

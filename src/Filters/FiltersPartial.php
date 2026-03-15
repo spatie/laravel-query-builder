@@ -3,22 +3,26 @@
 namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\Filters\Concerns\HandlesRelationConstraints;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
- * @template-implements \Spatie\QueryBuilder\Filters\Filter<TModelClass>
+ * @template-implements Filter<TModelClass>
  */
-class FiltersPartial extends FiltersExact implements Filter
+class FiltersPartial implements Filter
 {
-    /** {@inheritdoc} */
-    public function __invoke(Builder $query, $value, string $property)
-    {
-        if ($this->addRelationConstraint) {
-            if ($this->isRelationProperty($query, $property)) {
-                $this->withRelationConstraint($query, $value, $property);
+    use HandlesRelationConstraints;
 
-                return;
-            }
+    public function __construct(protected bool $addRelationConstraint = true)
+    {
+    }
+
+    public function __invoke(Builder $query, mixed $value, string $property): void
+    {
+        if ($this->addRelationConstraint && $this->isRelationProperty($query, $property)) {
+            $this->withRelationConstraint($query, $value, $property);
+
+            return;
         }
 
         $wrappedProperty = $query->getQuery()->getGrammar()->wrap($query->qualifyColumn($property));
@@ -26,7 +30,7 @@ class FiltersPartial extends FiltersExact implements Filter
 
         if (is_array($value)) {
             if (count(array_filter($value, fn ($item) => $item != '')) === 0) {
-                return $query;
+                return;
             }
 
             $query->where(function (Builder $query) use ($value, $wrappedProperty, $databaseDriver) {
@@ -47,7 +51,6 @@ class FiltersPartial extends FiltersExact implements Filter
     {
         return $query->getConnection()->getDriverName(); /** @phpstan-ignore-line */
     }
-
 
     protected function getWhereRawParameters(mixed $value, string $property, string $driver): array
     {
@@ -70,11 +73,10 @@ class FiltersPartial extends FiltersExact implements Filter
 
     /**
      * @param 'sqlite'|'pgsql'|'sqlsrc'|'mysql'|'mariadb' $driver
-     * @return string
      */
     protected static function maybeSpecifyEscapeChar(string $driver): string
     {
-        if (! in_array($driver, ['sqlite','sqlsrv'])) {
+        if (! in_array($driver, ['sqlite', 'sqlsrv'])) {
             return '';
         }
 

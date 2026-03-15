@@ -6,12 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
- * @template-implements \Spatie\QueryBuilder\Filters\Filter<TModelClass>
+ * @template-implements Filter<TModelClass>
  */
 class FiltersTrashed implements Filter
 {
-    /** {@inheritdoc} */
-    public function __invoke(Builder $query, $value, string $property)
+    public function __invoke(Builder $query, mixed $value, string $property): void
     {
         if ($value === 'with') {
             $query->withTrashed();

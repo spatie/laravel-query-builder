@@ -4,7 +4,7 @@ weight: 3
 ---
 
 The `include` query parameter will load any Eloquent relation or relation count on the resulting models.
-All includes must be explicitly allowed using `allowedIncludes()`. This method takes an array of relationship names or `AllowedInclude` instances.
+All includes must be explicitly allowed using `allowedIncludes()`. This method takes relationship names or `AllowedInclude` instances as arguments.
 
 ## Basic usage
 
@@ -12,7 +12,7 @@ All includes must be explicitly allowed using `allowedIncludes()`. This method t
 // GET /users?include=posts
 
 $users = QueryBuilder::for(User::class)
-    ->allowedIncludes(['posts'])
+    ->allowedIncludes('posts')
     ->get();
 
 // $users will have all their `posts()` related models loaded
@@ -23,7 +23,7 @@ You can load multiple relationships by separating them with a comma:
 ```php
 // GET /users?include=posts,permissions
 $users = QueryBuilder::for(User::class)
-    ->allowedIncludes(['posts', 'permissions'])
+    ->allowedIncludes('posts', 'permissions')
     ->get();
 
 // $users will contain all users with their posts and permissions loaded
@@ -35,7 +35,7 @@ There is no way to include relationships by default in this package. Default rel
 
 ```php
 $users = QueryBuilder::for(User::class)
-    ->allowedIncludes(['friends'])
+    ->allowedIncludes('friends')
     ->with('posts') // posts will always by included, friends can be requested
     ->withCount('posts')
     ->withExists('posts')
@@ -54,7 +54,7 @@ You can load nested relationships using the dot `.` notation:
 // GET /users?include=posts.comments,permissions
 
 $users = QueryBuilder::for(User::class)
-    ->allowedIncludes(['posts.comments', 'permissions'])
+    ->allowedIncludes('posts.comments', 'permissions')
     ->get();
 
 // $users will contain all users with their posts, comments on their posts and permissions loaded
@@ -70,10 +70,10 @@ Under the hood this uses Laravel's `withCount method`. [Read more about the `wit
 // GET /users?include=postsCount,friendsCount
 
 $users = QueryBuilder::for(User::class)
-    ->allowedIncludes([
+    ->allowedIncludes(
         'posts', // allows including `posts` or `postsCount` or `postsExists`
         AllowedInclude::count('friendsCount'), // only allows include the number of `friends()` related models
-    ]); 
+    );
 // every user in $users will contain a `posts_count` and `friends_count` property
 ```
 
@@ -87,12 +87,73 @@ Under the hood this uses Laravel's `withExists method`. [Read more about the `wi
 // GET /users?include=postsExists,friendsExists
 
 $users = QueryBuilder::for(User::class)
-    ->allowedIncludes([
+    ->allowedIncludes(
         'posts', // allows including `posts` or `postsCount` or `postsExists`
         AllowedInclude::exists('friendsExists'), // only allows include the existence of `friends()` related models
-    ]); 
+    );
 // every user in $users will contain a `posts_exists` and `friends_exists` property
 ```
+
+## Including aggregate values (min, max, sum, avg)
+
+You can include aggregate values for related models using `AllowedInclude::min()`, `AllowedInclude::max()`, `AllowedInclude::sum()`, and `AllowedInclude::avg()`. These correspond to Laravel's `withMin()`, `withMax()`, `withSum()`, and `withAvg()` methods.
+
+Unlike `count` and `exists` includes, aggregate includes require you to specify both the relationship name and the column to aggregate. This means they cannot be auto-generated from strings and must be defined explicitly.
+
+```php
+// GET /users?include=postsViewsSum,postsViewsAvg
+
+$users = QueryBuilder::for(User::class)
+    ->allowedIncludes(
+        AllowedInclude::sum('postsViewsSum', 'posts', 'views'),
+        AllowedInclude::avg('postsViewsAvg', 'posts', 'views'),
+    )
+    ->get();
+
+// every user in $users will contain a `posts_sum_views` and `posts_avg_views` property
+```
+
+All four aggregate types work the same way:
+
+```php
+AllowedInclude::min('postsViewsMin', 'posts', 'views');  // adds withMin('posts', 'views')
+AllowedInclude::max('postsViewsMax', 'posts', 'views');  // adds withMax('posts', 'views')
+AllowedInclude::sum('postsViewsSum', 'posts', 'views');  // adds withSum('posts', 'views')
+AllowedInclude::avg('postsViewsAvg', 'posts', 'views');  // adds withAvg('posts', 'views')
+```
+
+The resulting attribute names follow Laravel's convention: `{relation}_{function}_{column}` (e.g. `posts_sum_views`).
+
+The suffixes used for matching include names can be customized in the `query-builder` config file using the `suffixes` array.
+
+## Constraining aggregate includes
+
+All aggregate includes (`count`, `exists`, `min`, `max`, `sum`, `avg`) accept an optional constraint closure. This allows you to filter which related models are included in the aggregate calculation.
+
+```php
+use Spatie\QueryBuilder\AllowedInclude;
+use Illuminate\Database\Eloquent\Builder;
+
+$users = QueryBuilder::for(User::class)
+    ->allowedIncludes(
+        AllowedInclude::count('publishedPostsCount', 'posts', fn (Builder $query) => $query->where('published', true)),
+        AllowedInclude::sum('publishedPostsViewsSum', 'posts', 'views', constraint: fn (Builder $query) => $query->where('published', true)),
+    )
+    ->get();
+```
+
+The constraint closure receives a `Builder` instance, allowing you to add any query conditions. This works the same way for all aggregate types:
+
+```php
+AllowedInclude::count('name', 'relation', fn (Builder $query) => $query->where('active', true));
+AllowedInclude::exists('name', 'relation', fn (Builder $query) => $query->where('active', true));
+AllowedInclude::min('name', 'relation', 'column', constraint: fn (Builder $query) => $query->where('active', true));
+AllowedInclude::max('name', 'relation', 'column', constraint: fn (Builder $query) => $query->where('active', true));
+AllowedInclude::sum('name', 'relation', 'column', constraint: fn (Builder $query) => $query->where('active', true));
+AllowedInclude::avg('name', 'relation', 'column', constraint: fn (Builder $query) => $query->where('active', true));
+```
+
+Note that for `min`, `max`, `sum`, and `avg`, the constraint must be passed as a named argument since `$internalName` comes before it in the method signature.
 
 ## Include aliases
 
@@ -142,9 +203,9 @@ class AggregateInclude implements IncludeInterface
 // GET /posts?include=comments_sum_votes
 
 $posts = QueryBuilder::for(Post::class)
-    ->allowedIncludes([
+    ->allowedIncludes(
         AllowedInclude::custom('comments_sum_votes', new AggregateInclude('votes', 'sum'), 'comments'),
-    ])
+    )
     ->get();
 
 // every post in $posts will contain a `comments_sum_votes` property
@@ -160,18 +221,16 @@ For example:
 
 ```php
 QueryBuilder::for(User::class)
-    ->allowedIncludes([
+    ->allowedIncludes(
         AllowedInclude::callback('latest_post', function (Builder $query) {
             $query->latestOfMany();
         }),
-    ]);
+    );
 ```
 
 ## Selecting included fields
 
-You can select only some fields to be included using the [`allowedFields` method on the query builder](https://spatie.be/docs/laravel-query-builder/v6/features/selecting-fields/).
-
-⚠️ `allowedFields` must be called before `allowedIncludes`. Otherwise the query builder wont know what fields to include for the requested includes and an exception will be thrown.
+You can select only some fields to be included using the [`allowedFields` method on the query builder](https://spatie.be/docs/laravel-query-builder/v7/features/selecting-fields/).
 
 ## Include casing
 

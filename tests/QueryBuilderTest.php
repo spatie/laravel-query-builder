@@ -164,9 +164,9 @@ it('can query local scopes', function () {
 
 it('executes the same query regardless of the order of applied filters or sorts', function () {
     $customSort = new class () implements Sort {
-        public function __invoke(Builder $query, $descending, string $property): Builder
+        public function __invoke(Builder $query, $descending, string $property): void
         {
-            return $query->join(
+            $query->join(
                 'related_models',
                 'test_models.id',
                 '=',
@@ -195,9 +195,9 @@ it('executes the same query regardless of the order of applied filters or sorts'
 
 it('can filter when sorting by joining a related model which contains the same field name', function () {
     $customSort = new class () implements Sort {
-        public function __invoke(Builder $query, $descending, string $property): Builder
+        public function __invoke(Builder $query, $descending, string $property): void
         {
-            return $query->join(
+            $query->join(
                 'related_models',
                 'nested_related_models.related_model_id',
                 '=',

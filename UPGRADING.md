@@ -1,5 +1,155 @@
 # Upgrading
 
+## From v6 to v7
+
+### Requirements
+
+- PHP 8.3+
+- Laravel 12 or 13
+
+Support for Laravel 10 and 11 has been dropped.
+
+### Wildcard support removed
+
+The wildcard (`'*'`) parameter for `allowedFilters()`, `allowedSorts()`, and `allowedIncludes()` has been removed. You must now explicitly list all allowed filters, sorts, and includes. This prevents accidentally exposing database columns or relationships to API consumers.
+
+```php
+// Before
+QueryBuilder::for(User::class)->allowedFilters('*');
+
+// After
+QueryBuilder::for(User::class)->allowedFilters('name', 'email');
+```
+
+### Variadic parameters
+
+The `allowedFilters()`, `allowedSorts()`, `allowedIncludes()`, `allowedFields()`, `defaultSort()`, and `defaultSorts()` methods now accept variadic arguments instead of arrays.
+
+```php
+// Before
+QueryBuilder::for(User::class)
+    ->allowedFilters(['name', 'email'])
+    ->allowedSorts(['name'])
+    ->allowedIncludes(['posts'])
+    ->allowedFields(['id', 'name']);
+
+// After
+QueryBuilder::for(User::class)
+    ->allowedFilters('name', 'email')
+    ->allowedSorts('name')
+    ->allowedIncludes('posts')
+    ->allowedFields('id', 'name');
+```
+
+If you have dynamic arrays, use the spread operator:
+
+```php
+$filters = ['name', 'email'];
+QueryBuilder::for(User::class)->allowedFilters(...$filters);
+```
+
+### `SortDirection` is now an enum
+
+The `SortDirection` class with string constants has been replaced with a proper PHP enum.
+
+```php
+// Before
+use Spatie\QueryBuilder\Enums\SortDirection;
+
+AllowedSort::field('name')->defaultDirection(SortDirection::DESCENDING);
+
+// After
+use Spatie\QueryBuilder\Enums\SortDirection;
+
+AllowedSort::field('name')->defaultDirection(SortDirection::Descending);
+```
+
+The `AllowedSort::defaultDirection()` method now requires a `SortDirection` enum value instead of a string.
+
+### Filter renames
+
+`AllowedFilter::beginsWithStrict()` has been renamed to `AllowedFilter::beginsWith()`.
+`AllowedFilter::endsWithStrict()` has been renamed to `AllowedFilter::endsWith()`.
+
+```php
+// Before
+AllowedFilter::beginsWithStrict('name');
+AllowedFilter::endsWithStrict('name');
+
+// After
+AllowedFilter::beginsWith('name');
+AllowedFilter::endsWith('name');
+```
+
+### `AllowedInclude` factory methods now return `self` instead of `Collection`
+
+`AllowedInclude::relationship()`, `AllowedInclude::count()`, `AllowedInclude::exists()`, `AllowedInclude::callback()`, and `AllowedInclude::custom()` now return a single `AllowedInclude` instance instead of a `Collection`. This should not affect most usage since you typically pass them to `allowedIncludes()`.
+
+### Static delimiter methods removed
+
+The static delimiter methods on `QueryBuilderRequest` have been removed (`setArrayValueDelimiter`, `setFilterArrayValueDelimiter`, `setSortsArrayValueDelimiter`, `setIncludesArrayValueDelimiter`, `setFieldsArrayValueDelimiter`, `setAppendsArrayValueDelimiter`, `resetDelimiters`).
+
+Delimiters are now configured via the `delimiter` key in the config file:
+
+```php
+// config/query-builder.php
+'delimiter' => ',',
+```
+
+The `$arrayValueDelimiter` parameter has also been removed from all `AllowedFilter` factory methods.
+
+### `allowedFields()` no longer needs to be called before `allowedIncludes()`
+
+The `AllowedFieldsMustBeCalledBeforeAllowedIncludes` exception has been removed. You can now call `allowedFields()` and `allowedIncludes()` in any order.
+
+### Config changes
+
+The `disable_invalid_includes_query_exception` config key has been renamed to `disable_invalid_include_query_exception` (singular "include").
+
+The `convert_relation_table_name_strategy` config now uses `null` instead of `false` as its default/disabled value.
+
+A new `delimiter` config key has been added (default: `','`).
+
+The `count_suffix` and `exists_suffix` config keys have been consolidated into a single `suffixes` array, which also includes the new aggregate suffixes:
+
+```php
+// Before
+'count_suffix' => 'Count',
+'exists_suffix' => 'Exists',
+
+// After
+'suffixes' => [
+    'count' => 'Count',
+    'exists' => 'Exists',
+    'min' => 'Min',
+    'max' => 'Max',
+    'sum' => 'Sum',
+    'avg' => 'Avg',
+],
+```
+
+### Filter interface return type
+
+The `Filter` interface's `__invoke` method now has an explicit `void` return type. If you have custom filter classes, update them:
+
+```php
+// Before
+public function __invoke(Builder $query, $value, string $property)
+
+// After
+public function __invoke(Builder $query, mixed $value, string $property): void
+```
+
+The same applies to the `Sort` interface and `IncludeInterface`.
+
+### Filter class hierarchy refactored
+
+`FiltersPartial` no longer extends `FiltersExact`, and `FiltersOperator` no longer extends `FiltersExact`. If you were extending these classes and relying on the inheritance chain, note that relation constraint handling is now provided via the `HandlesRelationConstraints` trait in `Spatie\QueryBuilder\Filters\Concerns`.
+
+### PHPStan level raised to 6
+
+The PHPStan analysis level has been bumped from 5 to 6.
+
 ## From v5 to v6
 
 A lot of the query builder classes now have typed properties and method parameters. If you have any custom sorts, includes, or filters, you will need to specify the property and parameter types used.
