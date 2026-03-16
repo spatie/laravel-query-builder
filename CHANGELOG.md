@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 7.0.1 - 2026-03-16
+
+- Fix nullable filter edge cases for empty and not-null values with dynamic operators (#1051)
+
 ## 7.0.0 - 2026-03-15
 
 ### What's Changed
