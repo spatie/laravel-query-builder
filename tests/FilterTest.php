@@ -937,6 +937,35 @@ it('can filter with nullable operator filter when value is null', function () {
     expect($results->first()->name)->toBeNull();
 });
 
+it('can filter with dynamic operator filter when value is empty string', function () {
+    TestModel::create(['name' => null, 'salary' => 1000]);
+    TestModel::create(['name' => 'John', 'salary' => 2000]);
+
+    $results = createQueryFromFilterRequest([
+        'name' => '',
+    ])
+        ->allowedFilters(AllowedFilter::operator('name', FilterOperator::DYNAMIC)->nullable())
+        ->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->name)->toBeNull();
+});
+
+it('can filter with not-equal dynamic operator filter when value is empty after operator', function () {
+    TestModel::create(['name' => null, 'salary' => 1000]);
+    TestModel::create(['name' => 'John', 'salary' => 2000]);
+
+    $results = createQueryFromFilterRequest([
+        'name' => '<>',
+    ])
+        ->allowedFilters(AllowedFilter::operator('name', FilterOperator::DYNAMIC)->nullable())
+        ->get();
+
+    // Empty value after <> produces IS NOT NULL: null-name model excluded, named model included
+    expect($results->pluck('name')->contains(null))->toBeFalse();
+    expect($results->where('salary', 2000)->first()?->name)->toBe('John');
+});
+
 it('throws RelationNotFoundException when the relation method exists but does not return an Eloquent Relation', function () {
     $ModelWithNonRelationMethod = new class () extends TestModel {
         protected $table = 'test_models';
