@@ -777,7 +777,7 @@ it('should apply a filter with a multi-dimensional array value', function () {
     expect($models->count())->toEqual(1);
 });
 
-it('can override the array value delimiter for single filters', function () {
+it('can override the array value delimiter via config', function () {
     TestModel::create(['name' => '>XZII/Q1On']);
     TestModel::create(['name' => 'h4S4MG3(+>azv4z/I<o>']);
 
@@ -807,6 +807,94 @@ it('can override the array value delimiter for single filters', function () {
     expect($models->count())->toEqual(0);
 
     // Reset delimiter
+    config()->set('query-builder.delimiter', ',');
+});
+
+it('can set a per-filter delimiter using the delimiter method', function () {
+    TestModel::create(['name' => 'value_one']);
+    TestModel::create(['name' => 'value_two']);
+
+    $models = createQueryFromFilterRequest([
+        'name' => 'value_one|value_two',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->delimiter('|'))
+        ->get();
+
+    expect($models->count())->toEqual(2);
+});
+
+it('per-filter delimiter does not affect other filters', function () {
+    TestModel::create(['name' => 'foo,bar', 'full_name' => 'baz']);
+
+    // name uses | as delimiter, so "foo,bar" is NOT split and matches as-is
+    // full_name uses default comma delimiter, so "baz" matches normally
+    $models = createQueryFromFilterRequest([
+        'name' => 'foo,bar',
+        'full_name' => 'baz',
+    ])
+        ->allowedFilters(
+            AllowedFilter::exact('name')->delimiter('|'),
+            AllowedFilter::exact('full_name'),
+        )
+        ->get();
+
+    expect($models->count())->toEqual(1);
+    expect($models->first()->name)->toEqual('foo,bar');
+});
+
+it('can disable delimiter splitting with an empty string delimiter', function () {
+    TestModel::create(['name' => 'value_one,value_two']);
+
+    $models = createQueryFromFilterRequest([
+        'name' => 'value_one,value_two',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->delimiter(''))
+        ->get();
+
+    expect($models->count())->toEqual(1);
+    expect($models->first()->name)->toEqual('value_one,value_two');
+});
+
+it('uses the config delimiter as the default for filters', function () {
+    config()->set('query-builder.delimiter', '|');
+
+    TestModel::create(['name' => 'value_one']);
+    TestModel::create(['name' => 'value_two']);
+
+    $models = createQueryFromFilterRequest([
+        'name' => 'value_one|value_two',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name'))
+        ->get();
+
+    expect($models->count())->toEqual(2);
+
+    config()->set('query-builder.delimiter', ',');
+});
+
+it('per-filter delimiter overrides the config delimiter', function () {
+    config()->set('query-builder.delimiter', '|');
+
+    TestModel::create(['name' => 'one,two']);
+
+    $models = createQueryFromFilterRequest([
+        'name' => 'one,two',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->delimiter(','))
+        ->get();
+
+    // The filter uses comma as delimiter, so "one,two" becomes ["one", "two"]
+    expect($models->count())->toEqual(0);
+
+    // Now test that it matches when not split
+    $models = createQueryFromFilterRequest([
+        'name' => 'one,two',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->delimiter(''))
+        ->get();
+
+    expect($models->count())->toEqual(1);
+
     config()->set('query-builder.delimiter', ',');
 });
 

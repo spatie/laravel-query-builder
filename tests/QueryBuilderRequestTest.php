@@ -160,7 +160,7 @@ it('can use different filter query parameter name', function () {
 
     $expected = collect([
         'foo' => 'bar',
-        'baz' => ['qux', 'lex'],
+        'baz' => 'qux,lex',
     ]);
 
     expect($request->filters())->toEqual($expected);
@@ -176,7 +176,7 @@ it('can use null as the filter query parameter name', function () {
 
     $expected = collect([
         'foo' => 'bar',
-        'baz' => ['qux', 'lex'],
+        'baz' => 'qux,lex',
     ]);
 
     expect($request->filters())->toEqual($expected);
@@ -226,19 +226,19 @@ it('will map true and false as booleans when given in a filter query string', fu
     expect($request->filters())->toEqual($expected);
 });
 
-it('will map comma separated values as arrays when given in a filter query string', function () {
+it('will not split comma separated filter values in the request', function () {
     $request = new QueryBuilderRequest([
         'filter' => [
             'foo' => 'bar,baz',
         ],
     ]);
 
-    $expected = collect(['foo' => ['bar', 'baz']]);
+    $expected = collect(['foo' => 'bar,baz']);
 
     expect($request->filters())->toEqual($expected);
 });
 
-it('will map array in filter recursively when given in a filter query string', function () {
+it('will preserve nested arrays in filter values', function () {
     $request = new QueryBuilderRequest([
         'filter' => [
             'foo' => 'bar,baz',
@@ -248,21 +248,9 @@ it('will map array in filter recursively when given in a filter query string', f
         ],
     ]);
 
-    $expected = collect(['foo' => ['bar', 'baz'], 'bar' => ['foobar' => ['baz', 'bar']]]);
+    $expected = collect(['foo' => 'bar,baz', 'bar' => ['foobar' => 'baz,bar']]);
 
     expect($request->filters())->toEqual($expected);
-});
-
-it('will map comma separated values as arrays when given in a filter query string and get those by key', function () {
-    $request = new QueryBuilderRequest([
-        'filter' => [
-            'foo' => 'bar,baz',
-        ],
-    ]);
-
-    $expected = ['foo' => ['bar', 'baz']];
-
-    expect($request->filters()->toArray())->toEqual($expected);
 });
 
 it('can get the include query params from the request', function () {
@@ -429,12 +417,20 @@ it('takes custom delimiters for splitting request parameters', function () {
     config()->set('query-builder.delimiter', '|');
 
     $request = new QueryBuilderRequest([
+        'include' => 'foo|bar|baz',
+    ]);
+
+    expect($request->includes()->toArray())->toEqual(['foo', 'bar', 'baz']);
+});
+
+it('returns raw filter values without splitting by delimiter', function () {
+    $request = new QueryBuilderRequest([
         'filter' => [
             'foo' => 'values, contain, commas|and are split on vertical| lines',
         ],
     ]);
 
-    $expected = ['foo' => ['values, contain, commas', 'and are split on vertical', ' lines']];
+    $expected = ['foo' => 'values, contain, commas|and are split on vertical| lines'];
 
     expect($request->filters()->toArray())->toEqual($expected);
 });

@@ -96,7 +96,21 @@ Delimiters are now configured via the `delimiter` key in the config file:
 'delimiter' => ',',
 ```
 
-The `$arrayValueDelimiter` parameter has also been removed from all `AllowedFilter` factory methods.
+The `$arrayValueDelimiter` parameter has also been removed from all `AllowedFilter` factory methods. Instead, you can use the fluent `delimiter()` method to set a per-filter delimiter:
+
+```php
+// Before
+AllowedFilter::exact('voltage', null, true, '|');
+
+// After
+AllowedFilter::exact('voltage')->delimiter('|');
+```
+
+To disable delimiter splitting entirely for a filter, pass an empty string:
+
+```php
+AllowedFilter::exact('external_id')->delimiter('');
+```
 
 ### `allowedFields()` no longer needs to be called before `allowedIncludes()`
 

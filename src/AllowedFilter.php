@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\Enums\FilterOperator;
 use Spatie\QueryBuilder\Filters\Filter;
 use Spatie\QueryBuilder\Filters\FiltersBeginsWith;
@@ -27,6 +28,8 @@ class AllowedFilter
 
     protected bool $nullable = false;
 
+    protected ?string $arrayValueDelimiter = null;
+
     public function __construct(
         protected string $name,
         protected Filter $filterClass,
@@ -39,6 +42,8 @@ class AllowedFilter
 
     public function filter(QueryBuilder $query, mixed $value): void
     {
+        $value = $this->splitFilterValue($value);
+
         $valueToFilter = $this->resolveValueForFiltering($value);
 
         if (! $this->nullable && is_null($valueToFilter)) {
@@ -46,6 +51,18 @@ class AllowedFilter
         }
 
         ($this->filterClass)($query->getEloquentBuilder(), $valueToFilter, $this->internalName);
+    }
+
+    public function delimiter(string $delimiter): static
+    {
+        $this->arrayValueDelimiter = $delimiter;
+
+        return $this;
+    }
+
+    public function getDelimiter(): string
+    {
+        return $this->arrayValueDelimiter ?? config('query-builder.delimiter', ',');
     }
 
     public static function exact(string $name, ?string $internalName = null, bool $addRelationConstraint = true): static
@@ -172,6 +189,25 @@ class AllowedFilter
         unset($this->default);
 
         return $this;
+    }
+
+    protected function splitFilterValue(mixed $value): mixed
+    {
+        $delimiter = $this->getDelimiter();
+
+        if ($delimiter === '') {
+            return $value;
+        }
+
+        if (is_array($value)) {
+            return array_map(fn ($v) => $this->splitFilterValue($v), $value);
+        }
+
+        if (is_string($value) && Str::contains($value, $delimiter)) {
+            return explode($delimiter, $value);
+        }
+
+        return $value;
     }
 
     protected function resolveValueForFiltering(mixed $value): mixed

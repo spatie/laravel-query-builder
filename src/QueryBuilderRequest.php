@@ -113,10 +113,6 @@ class QueryBuilderRequest extends Request
             })->all();
         }
 
-        if (Str::contains($value, $this->delimiter())) {
-            return explode($this->delimiter(), $value);
-        }
-
         if ($value === 'true') {
             return true;
         }
