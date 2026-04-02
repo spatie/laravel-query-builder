@@ -423,22 +423,14 @@ it('takes custom delimiters for splitting request parameters', function () {
     expect($request->includes()->toArray())->toEqual(['foo', 'bar', 'baz']);
 });
 
-it('uses the global filter value splitting config', function () {
-    config()->set('query-builder.filter_value_splitting_enabled', false);
-
-    expect(config('query-builder.filter_value_splitting_enabled'))->toBeFalse();
-
-    config()->set('query-builder.filter_value_splitting_enabled', true);
-
-    expect(config('query-builder.filter_value_splitting_enabled'))->toBeTrue();
-});
-
 it('does not affect include splitting when the filter delimiter is disabled', function () {
     config()->set('query-builder.filter_value_splitting_enabled', false);
 
     $request = new QueryBuilderRequest([
         'include' => 'foo,bar,baz',
     ]);
+
+    expect(config()->get('query-builder.delimiter'))->toEqual(',');
 
     expect($request->includes()->toArray())->toEqual(['foo', 'bar', 'baz']);
 });
