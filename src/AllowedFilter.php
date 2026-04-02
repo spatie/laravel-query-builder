@@ -62,15 +62,7 @@ class AllowedFilter
 
     public function getDelimiter(): string
     {
-        if ($this->arrayValueDelimiter !== null) {
-            return $this->arrayValueDelimiter;
-        }
-
-        if (! QueryBuilderRequest::filterValueSplittingEnabled()) {
-            return '';
-        }
-
-        return config('query-builder.delimiter', ',');
+        return $this->arrayValueDelimiter ?? config('query-builder.delimiter', ',');
     }
 
     public static function exact(string $name, ?string $internalName = null, bool $addRelationConstraint = true): static
@@ -201,6 +193,10 @@ class AllowedFilter
 
     protected function splitFilterValue(mixed $value): mixed
     {
+        if ($this->filterValueSplittingDisabled()) {
+            return $value;
+        }
+
         $delimiter = $this->getDelimiter();
 
         if ($delimiter === '') {
@@ -227,5 +223,11 @@ class AllowedFilter
         }
 
         return ! $this->ignored->contains($value) ? $value : null;
+    }
+
+    protected function filterValueSplittingDisabled(): bool
+    {
+        return \is_null($this->arrayValueDelimiter)
+            && ! QueryBuilderRequest::filterValueSplittingEnabled();
     }
 }
