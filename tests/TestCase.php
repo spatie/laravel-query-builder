@@ -23,8 +23,6 @@ class TestCase extends Orchestra
 
         $this->setUpDatabase($this->app);
 
-        config()->set('query-builder.filter_value_splitting_enabled', true);
-
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Spatie\\QueryBuilder\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
