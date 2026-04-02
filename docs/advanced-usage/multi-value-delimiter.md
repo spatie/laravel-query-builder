@@ -23,21 +23,15 @@ __Note that this applies to ALL values for filters, includes and sorts.__
 
 ## Disable filter splitting globally
 
-If you need filter values to stay intact globally, you can disable filter delimiter splitting:
+If you need filter values to stay intact globally, you can disable filter delimiter splitting in config:
 
 ```php
-use Spatie\QueryBuilder\QueryBuilderRequest;
+// config/query-builder.php
 
-QueryBuilderRequest::disableFilterValueSplitting();
+'filter_value_splitting_enabled' => false,
 ```
 
-You can enable it again later with:
-
-```php
-QueryBuilderRequest::enableFilterValueSplitting();
-```
-
-This only affects filter values. Includes, sorts, fields, and appends will continue using the configured global delimiter.
+This only affects filter values. Includes, sorts, fields, and appends will continue using the configured global delimiter. The default value is `true`.
 
 ## Per filter delimiter
 

@@ -16,7 +16,6 @@ use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\QueryBuilderRequest;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\NestedRelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
@@ -856,8 +855,8 @@ it('can disable delimiter splitting with an empty string delimiter', function ()
     expect($models->first()->name)->toEqual('value_one,value_two');
 });
 
-it('can disable filter delimiter splitting globally', function () {
-    QueryBuilderRequest::disableFilterValueSplitting();
+it('can disable filter delimiter splitting globally via config', function () {
+    config()->set('query-builder.filter_value_splitting_enabled', false);
 
     TestModel::create(['name' => 'value_one,value_two']);
 
@@ -872,8 +871,8 @@ it('can disable filter delimiter splitting globally', function () {
 });
 
 it('can re-enable filter delimiter splitting globally', function () {
-    QueryBuilderRequest::disableFilterValueSplitting();
-    QueryBuilderRequest::enableFilterValueSplitting();
+    config()->set('query-builder.filter_value_splitting_enabled', false);
+    config()->set('query-builder.filter_value_splitting_enabled', true);
 
     TestModel::create(['name' => 'value_one']);
     TestModel::create(['name' => 'value_two']);
@@ -888,7 +887,7 @@ it('can re-enable filter delimiter splitting globally', function () {
 });
 
 it('uses a per-filter delimiter when the global filter delimiter is disabled', function () {
-    QueryBuilderRequest::disableFilterValueSplitting();
+    config()->set('query-builder.filter_value_splitting_enabled', false);
 
     TestModel::create(['name' => 'value_one']);
     TestModel::create(['name' => 'value_two']);

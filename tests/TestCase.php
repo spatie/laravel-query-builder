@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\LaravelRay\RayServiceProvider;
-use Spatie\QueryBuilder\QueryBuilderRequest;
 use Spatie\QueryBuilder\QueryBuilderServiceProvider;
 
 class TestCase extends Orchestra
@@ -24,7 +23,7 @@ class TestCase extends Orchestra
 
         $this->setUpDatabase($this->app);
 
-        QueryBuilderRequest::enableFilterValueSplitting();
+        config()->set('query-builder.filter_value_splitting_enabled', true);
 
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Spatie\\QueryBuilder\\Database\\Factories\\'.class_basename($modelName).'Factory'

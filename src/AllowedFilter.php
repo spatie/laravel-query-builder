@@ -228,6 +228,6 @@ class AllowedFilter
     protected function filterValueSplittingDisabled(): bool
     {
         return \is_null($this->arrayValueDelimiter)
-            && ! QueryBuilderRequest::filterValueSplittingEnabled();
+            && ! config('query-builder.filter_value_splitting_enabled', true);
     }
 }
