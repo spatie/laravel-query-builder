@@ -16,6 +16,7 @@ use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 use Spatie\QueryBuilder\Filters\FiltersExact;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\QueryBuilderRequest;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\NestedRelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
@@ -853,6 +854,52 @@ it('can disable delimiter splitting with an empty string delimiter', function ()
 
     expect($models->count())->toEqual(1);
     expect($models->first()->name)->toEqual('value_one,value_two');
+});
+
+it('can disable filter delimiter splitting globally', function () {
+    QueryBuilderRequest::disableFilterArrayValueDelimiter();
+
+    TestModel::create(['name' => 'value_one,value_two']);
+
+    $models = createQueryFromFilterRequest([
+        'name' => 'value_one,value_two',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name'))
+        ->get();
+
+    expect($models->count())->toEqual(1);
+    expect($models->first()->name)->toEqual('value_one,value_two');
+});
+
+it('can re-enable filter delimiter splitting globally', function () {
+    QueryBuilderRequest::disableFilterArrayValueDelimiter();
+    QueryBuilderRequest::enableFilterArrayValueDelimiter();
+
+    TestModel::create(['name' => 'value_one']);
+    TestModel::create(['name' => 'value_two']);
+
+    $models = createQueryFromFilterRequest([
+        'name' => 'value_one,value_two',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name'))
+        ->get();
+
+    expect($models->count())->toEqual(2);
+});
+
+it('uses a per-filter delimiter when the global filter delimiter is disabled', function () {
+    QueryBuilderRequest::disableFilterArrayValueDelimiter();
+
+    TestModel::create(['name' => 'value_one']);
+    TestModel::create(['name' => 'value_two']);
+
+    $models = createQueryFromFilterRequest([
+        'name' => 'value_one|value_two',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->delimiter('|'))
+        ->get();
+
+    expect($models->count())->toEqual(2);
 });
 
 it('uses the config delimiter as the default for filters', function () {

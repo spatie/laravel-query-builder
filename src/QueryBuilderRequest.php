@@ -8,9 +8,26 @@ use Illuminate\Support\Str;
 
 class QueryBuilderRequest extends Request
 {
+    protected static bool $filterArrayValueDelimiterEnabled = true;
+
     public static function fromRequest(Request $request): static
     {
         return static::createFrom($request, new static());
+    }
+
+    public static function disableFilterArrayValueDelimiter(): void
+    {
+        static::$filterArrayValueDelimiterEnabled = false;
+    }
+
+    public static function enableFilterArrayValueDelimiter(): void
+    {
+        static::$filterArrayValueDelimiterEnabled = true;
+    }
+
+    public static function filterArrayValueDelimiterEnabled(): bool
+    {
+        return static::$filterArrayValueDelimiterEnabled;
     }
 
     public function includes(): Collection

@@ -62,7 +62,15 @@ class AllowedFilter
 
     public function getDelimiter(): string
     {
-        return $this->arrayValueDelimiter ?? config('query-builder.delimiter', ',');
+        if ($this->arrayValueDelimiter !== null) {
+            return $this->arrayValueDelimiter;
+        }
+
+        if (! QueryBuilderRequest::filterArrayValueDelimiterEnabled()) {
+            return '';
+        }
+
+        return config('query-builder.delimiter', ',');
     }
 
     public static function exact(string $name, ?string $internalName = null, bool $addRelationConstraint = true): static

@@ -21,6 +21,24 @@ With this configuration, a request like `GET /api/endpoint?filter[voltage]=12,4V
 
 __Note that this applies to ALL values for filters, includes and sorts.__
 
+## Disable filter splitting globally
+
+If you need filter values to stay intact globally, you can disable filter delimiter splitting:
+
+```php
+use Spatie\QueryBuilder\QueryBuilderRequest;
+
+QueryBuilderRequest::disableFilterArrayValueDelimiter();
+```
+
+You can enable it again later with:
+
+```php
+QueryBuilderRequest::enableFilterArrayValueDelimiter();
+```
+
+This only affects filter values. Includes, sorts, fields, and appends will continue using the configured global delimiter.
+
 ## Per filter delimiter
 
 You can override the delimiter for a specific filter using the `delimiter()` method. This is useful when a filter value may contain the default delimiter character.
@@ -35,6 +53,8 @@ QueryBuilder::for(Model::class)
     )
     ->get();
 ```
+
+Per-filter delimiters still take precedence when filter delimiter splitting has been disabled globally.
 
 To disable splitting entirely for a filter, set the delimiter to an empty string:
 
