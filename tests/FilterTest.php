@@ -859,6 +859,8 @@ it('can disable filter delimiter splitting globally via config', function () {
     config()->set('query-builder.filter_value_splitting_enabled', false);
 
     TestModel::create(['name' => 'value_one,value_two']);
+    TestModel::create(['name' => 'value_one']);
+    TestModel::create(['name' => 'value_two']);
 
     $models = createQueryFromFilterRequest([
         'name' => 'value_one,value_two',
@@ -866,8 +868,7 @@ it('can disable filter delimiter splitting globally via config', function () {
         ->allowedFilters(AllowedFilter::exact('name'))
         ->get();
 
-    expect($models->count())->toEqual(1);
-    expect($models->first()->name)->toEqual('value_one,value_two');
+    expect($models->sole()->name)->toEqual('value_one,value_two');
 });
 
 it('can re-enable filter delimiter splitting globally', function () {
