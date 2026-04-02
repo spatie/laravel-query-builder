@@ -857,7 +857,7 @@ it('can disable delimiter splitting with an empty string delimiter', function ()
 });
 
 it('can disable filter delimiter splitting globally', function () {
-    QueryBuilderRequest::disableFilterArrayValueDelimiter();
+    QueryBuilderRequest::disableFilterValueSplitting();
 
     TestModel::create(['name' => 'value_one,value_two']);
 
@@ -872,8 +872,8 @@ it('can disable filter delimiter splitting globally', function () {
 });
 
 it('can re-enable filter delimiter splitting globally', function () {
-    QueryBuilderRequest::disableFilterArrayValueDelimiter();
-    QueryBuilderRequest::enableFilterArrayValueDelimiter();
+    QueryBuilderRequest::disableFilterValueSplitting();
+    QueryBuilderRequest::enableFilterValueSplitting();
 
     TestModel::create(['name' => 'value_one']);
     TestModel::create(['name' => 'value_two']);
@@ -888,7 +888,7 @@ it('can re-enable filter delimiter splitting globally', function () {
 });
 
 it('uses a per-filter delimiter when the global filter delimiter is disabled', function () {
-    QueryBuilderRequest::disableFilterArrayValueDelimiter();
+    QueryBuilderRequest::disableFilterValueSplitting();
 
     TestModel::create(['name' => 'value_one']);
     TestModel::create(['name' => 'value_two']);

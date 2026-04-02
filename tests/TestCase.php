@@ -24,7 +24,7 @@ class TestCase extends Orchestra
 
         $this->setUpDatabase($this->app);
 
-        QueryBuilderRequest::enableFilterArrayValueDelimiter();
+        QueryBuilderRequest::enableFilterValueSplitting();
 
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Spatie\\QueryBuilder\\Database\\Factories\\'.class_basename($modelName).'Factory'

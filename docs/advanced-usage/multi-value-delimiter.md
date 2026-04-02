@@ -28,13 +28,13 @@ If you need filter values to stay intact globally, you can disable filter delimi
 ```php
 use Spatie\QueryBuilder\QueryBuilderRequest;
 
-QueryBuilderRequest::disableFilterArrayValueDelimiter();
+QueryBuilderRequest::disableFilterValueSplitting();
 ```
 
 You can enable it again later with:
 
 ```php
-QueryBuilderRequest::enableFilterArrayValueDelimiter();
+QueryBuilderRequest::enableFilterValueSplitting();
 ```
 
 This only affects filter values. Includes, sorts, fields, and appends will continue using the configured global delimiter.

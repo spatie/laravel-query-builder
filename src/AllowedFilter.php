@@ -66,7 +66,7 @@ class AllowedFilter
             return $this->arrayValueDelimiter;
         }
 
-        if (! QueryBuilderRequest::filterArrayValueDelimiterEnabled()) {
+        if (! QueryBuilderRequest::filterValueSplittingEnabled()) {
             return '';
         }
 
