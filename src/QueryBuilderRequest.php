@@ -13,7 +13,7 @@ class QueryBuilderRequest extends Request
         return static::createFrom($request, new static());
     }
 
-    protected function maybeExplode(mixed $parts): array
+    protected function toParameterArray(mixed $parts): array
     {
         if (is_array($parts)) {
             return $parts;
@@ -38,7 +38,7 @@ class QueryBuilderRequest extends Request
 
         $includeParts = $this->getRequestData($includeParameterName);
 
-        return collect($this->maybeExplode($includeParts))->filter();
+        return collect($this->toParameterArray($includeParts))->filter();
     }
 
     public function appends(): Collection
@@ -47,7 +47,7 @@ class QueryBuilderRequest extends Request
 
         $appendParts = $this->getRequestData($appendParameterName);
 
-        return collect($this->maybeExplode($appendParts))->filter();
+        return collect($this->toParameterArray($appendParts))->filter();
     }
 
     public function fields(): Collection
@@ -55,7 +55,7 @@ class QueryBuilderRequest extends Request
         $fieldsParameterName = config('query-builder.parameters.fields', 'fields');
         $fieldsData = $this->getRequestData($fieldsParameterName);
 
-        $fieldsPerTable = collect($this->maybeExplode($fieldsData));
+        $fieldsPerTable = collect($this->toParameterArray($fieldsData));
 
         if ($fieldsPerTable->isEmpty()) {
             return collect();
@@ -74,7 +74,7 @@ class QueryBuilderRequest extends Request
 
             $tableFields = array_map(function (string $field) {
                 return Str::afterLast($field, '.');
-            }, $this->maybeExplode($tableFields));
+            }, $this->toParameterArray($tableFields));
 
             $fields[$model] = array_merge($fields[$model], $tableFields);
         });
@@ -88,7 +88,7 @@ class QueryBuilderRequest extends Request
 
         $sortParts = $this->getRequestData($sortParameterName);
 
-        return collect($this->maybeExplode($sortParts))->filter();
+        return collect($this->toParameterArray($sortParts))->filter();
     }
 
     public function filters(): Collection
