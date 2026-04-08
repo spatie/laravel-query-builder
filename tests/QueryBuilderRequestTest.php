@@ -434,3 +434,22 @@ it('returns raw filter values without splitting by delimiter', function () {
 
     expect($request->filters()->toArray())->toEqual($expected);
 });
+
+it("handles empty delimiter gracefully", function() {
+    config()->set('query-builder.delimiter', '');
+
+    $request = new QueryBuilderRequest([
+        'include' => 'foo',
+        'append' => 'bar',
+        'fields' => ['table'=>['foo', 'bar']],
+        'filter' => [
+            'foo' => 'values',
+        ],
+        'sort' => 'bar',
+    ]);
+
+    expect($request->includes()->toArray())->toEqual(['foo']);
+    expect($request->appends()->toArray())->toEqual(['bar']);
+    expect($request->fields()->toArray())->toEqual(['table' => ['foo', 'bar']]);
+    expect($request->sorts()->toArray())->toEqual(['bar']);
+});
