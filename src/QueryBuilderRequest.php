@@ -13,17 +13,32 @@ class QueryBuilderRequest extends Request
         return static::createFrom($request, new static());
     }
 
+    protected function toParameterArray(mixed $parts): array
+    {
+        if (is_array($parts)) {
+            return $parts;
+        }
+
+        if (is_null($parts) || $parts === '') {
+            return [];
+        }
+
+        $delimiter = $this->delimiter();
+
+        if ($delimiter === '') {
+            return [(string) $parts];
+        }
+
+        return explode($delimiter, (string) $parts);
+    }
+
     public function includes(): Collection
     {
         $includeParameterName = config('query-builder.parameters.include', 'include');
 
         $includeParts = $this->getRequestData($includeParameterName);
 
-        if (is_string($includeParts)) {
-            $includeParts = explode($this->delimiter(), $includeParts);
-        }
-
-        return collect($includeParts)->filter();
+        return collect($this->toParameterArray($includeParts))->filter();
     }
 
     public function appends(): Collection
@@ -32,11 +47,7 @@ class QueryBuilderRequest extends Request
 
         $appendParts = $this->getRequestData($appendParameterName);
 
-        if (! is_array($appendParts) && ! is_null($appendParts)) {
-            $appendParts = explode($this->delimiter(), $appendParts);
-        }
-
-        return collect($appendParts)->filter();
+        return collect($this->toParameterArray($appendParts))->filter();
     }
 
     public function fields(): Collection
@@ -44,7 +55,7 @@ class QueryBuilderRequest extends Request
         $fieldsParameterName = config('query-builder.parameters.fields', 'fields');
         $fieldsData = $this->getRequestData($fieldsParameterName);
 
-        $fieldsPerTable = collect(is_string($fieldsData) ? explode($this->delimiter(), $fieldsData) : $fieldsData);
+        $fieldsPerTable = collect($this->toParameterArray($fieldsData));
 
         if ($fieldsPerTable->isEmpty()) {
             return collect();
@@ -63,7 +74,7 @@ class QueryBuilderRequest extends Request
 
             $tableFields = array_map(function (string $field) {
                 return Str::afterLast($field, '.');
-            }, explode($this->delimiter(), $tableFields));
+            }, $this->toParameterArray($tableFields));
 
             $fields[$model] = array_merge($fields[$model], $tableFields);
         });
@@ -77,11 +88,7 @@ class QueryBuilderRequest extends Request
 
         $sortParts = $this->getRequestData($sortParameterName);
 
-        if (is_string($sortParts)) {
-            $sortParts = explode($this->delimiter(), $sortParts);
-        }
-
-        return collect($sortParts)->filter();
+        return collect($this->toParameterArray($sortParts))->filter();
     }
 
     public function filters(): Collection

@@ -434,3 +434,59 @@ it('returns raw filter values without splitting by delimiter', function () {
 
     expect($request->filters()->toArray())->toEqual($expected);
 });
+
+it('does not split values when the global delimiter is empty', function () {
+    config()->set('query-builder.delimiter', '');
+
+    $request = new QueryBuilderRequest([
+        'include' => 'foo,bar',
+        'append' => 'baz,qux',
+        'fields' => ['table' => ['foo', 'bar']],
+        'filter' => [
+            'foo' => 'values',
+        ],
+        'sort' => 'bar,-created_at',
+    ]);
+
+    expect($request->includes()->toArray())->toEqual(['foo,bar']);
+    expect($request->appends()->toArray())->toEqual(['baz,qux']);
+    expect($request->fields()->toArray())->toEqual(['table' => ['foo', 'bar']]);
+    expect($request->sorts()->toArray())->toEqual(['bar,-created_at']);
+});
+
+it('does not split string fields when the global delimiter is empty', function () {
+    config()->set('query-builder.delimiter', '');
+
+    $request = new QueryBuilderRequest([
+        'fields' => [
+            'table' => 'name,email',
+        ],
+    ]);
+
+    expect($request->fields()->toArray())->toEqual(['table' => ['name,email']]);
+});
+
+it('returns empty collections for omitted parameters when the global delimiter is empty', function () {
+    config()->set('query-builder.delimiter', '');
+
+    $request = new QueryBuilderRequest();
+
+    expect($request->includes())->toBeEmpty();
+    expect($request->appends())->toBeEmpty();
+    expect($request->sorts())->toBeEmpty();
+    expect($request->fields())->toBeEmpty();
+});
+
+it('returns empty collections for empty string parameters when the global delimiter is empty', function () {
+    config()->set('query-builder.delimiter', '');
+
+    $request = new QueryBuilderRequest([
+        'include' => '',
+        'append' => '',
+        'sort' => '',
+    ]);
+
+    expect($request->includes())->toBeEmpty();
+    expect($request->appends())->toBeEmpty();
+    expect($request->sorts())->toBeEmpty();
+});

@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## Unreleased
+
+- Fix empty global delimiter causing a `ValueError` in query parameter parsing (#1055)
+
 ## 7.1.0 - 2026-03-29
 
 - Add per-filter delimiter support via fluent `delimiter()` method on `AllowedFilter`

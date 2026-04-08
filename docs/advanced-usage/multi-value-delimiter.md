@@ -21,6 +21,16 @@ With this configuration, a request like `GET /api/endpoint?filter[voltage]=12,4V
 
 __Note that this applies to ALL values for filters, includes and sorts.__
 
+To disable splitting entirely for all parameters, set the global delimiter to an empty string:
+
+```php
+// config/query-builder.php
+
+return [
+    'delimiter' => '',
+];
+```
+
 ## Per filter delimiter
 
 You can override the delimiter for a specific filter using the `delimiter()` method. This is useful when a filter value may contain the default delimiter character.
