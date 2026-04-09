@@ -193,6 +193,10 @@ class AllowedFilter
 
     protected function splitFilterValue(mixed $value): mixed
     {
+        if ($this->filterValueSplittingDisabled()) {
+            return $value;
+        }
+
         $delimiter = $this->getDelimiter();
 
         if ($delimiter === '') {
@@ -219,5 +223,11 @@ class AllowedFilter
         }
 
         return ! $this->ignored->contains($value) ? $value : null;
+    }
+
+    protected function filterValueSplittingDisabled(): bool
+    {
+        return \is_null($this->arrayValueDelimiter)
+            && ! config('query-builder.filter_value_splitting_enabled', true);
     }
 }

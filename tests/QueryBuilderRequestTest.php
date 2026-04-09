@@ -423,6 +423,18 @@ it('takes custom delimiters for splitting request parameters', function () {
     expect($request->includes()->toArray())->toEqual(['foo', 'bar', 'baz']);
 });
 
+it('does not affect include splitting when the filter delimiter is disabled', function () {
+    config()->set('query-builder.filter_value_splitting_enabled', false);
+
+    $request = new QueryBuilderRequest([
+        'include' => 'foo,bar,baz',
+    ]);
+
+    expect(config()->get('query-builder.delimiter'))->toEqual(',');
+
+    expect($request->includes()->toArray())->toEqual(['foo', 'bar', 'baz']);
+});
+
 it('returns raw filter values without splitting by delimiter', function () {
     $request = new QueryBuilderRequest([
         'filter' => [
