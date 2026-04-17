@@ -36,7 +36,7 @@ class FiltersPartial implements Filter
             $query->where(function (Builder $query) use ($value, $wrappedProperty, $databaseDriver) {
                 foreach (array_filter($value, fn ($item) => $item != '') as $partialValue) {
                     [$sql, $bindings] = $this->getWhereRawParameters($partialValue, $wrappedProperty, $databaseDriver);
-                    $query->orWhereRaw($sql, $bindings);
+                    $query->orWhereRaw($sql, $bindings); /** @phpstan-ignore-line */
                 }
             });
 
