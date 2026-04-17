@@ -13,6 +13,9 @@ class QueryBuilderRequest extends Request
         return static::createFrom($request, new static());
     }
 
+    /**
+     * @return array<mixed>
+     */
     protected function toParameterArray(mixed $parts): array
     {
         if (is_array($parts)) {
