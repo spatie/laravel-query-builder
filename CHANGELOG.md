@@ -2,6 +2,19 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 7.2.1 - 2026-04-17
+
+### What's Changed
+
+* Add support for disabling global filter value splitting by @paulandroshchuk in https://github.com/spatie/laravel-query-builder/pull/1056
+* Fix PHPStan errors on main by @freekmurze in https://github.com/spatie/laravel-query-builder/pull/1057
+
+### New Contributors
+
+* @paulandroshchuk made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1056
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/7.2.0...7.2.1
+
 ## 7.2.0 - 2026-04-08
 
 - Fix empty global delimiter causing a `ValueError` in query parameter parsing (#1055)
