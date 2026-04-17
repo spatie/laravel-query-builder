@@ -31,6 +31,16 @@ return [
 ];
 ```
 
+If you need only filter values to stay intact globally, you can disable filter delimiter splitting in config:
+
+```php
+// config/query-builder.php
+
+'filter_value_splitting_enabled' => false,
+```
+
+This only affects filter values. Includes, sorts, fields, and appends will continue using the configured global delimiter. The default value is `true`. 
+
 ## Per filter delimiter
 
 You can override the delimiter for a specific filter using the `delimiter()` method. This is useful when a filter value may contain the default delimiter character.

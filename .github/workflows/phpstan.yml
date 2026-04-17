@@ -5,6 +5,10 @@ on:
         paths:
             - '**.php'
             - 'phpstan.neon.dist'
+    pull_request:
+        paths:
+            - '**.php'
+            - 'phpstan.neon.dist'
 
 jobs:
     phpstan:

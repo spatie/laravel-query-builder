@@ -47,6 +47,11 @@ return [
     'delimiter' => ',',
 
     /*
+     * Whether filter values should be split by the configured delimiter.
+     */
+    'filter_value_splitting_enabled' => true,
+
+    /*
      * Related model aggregates are included using the relationship name suffixed with these strings.
      * For example: GET /users?include=postsCount or GET /users?include=postsViewsSum
      */
