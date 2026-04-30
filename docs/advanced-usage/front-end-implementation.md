@@ -12,3 +12,4 @@ Pascal Baljet](https://github.com/pascalbaljet).
 - React: [cogent-js package](https://www.npmjs.com/package/cogent-js) by [Joel Male](https://github.com/joelwmale).
 - Typescript: [query-builder-ts package](https://www.npmjs.com/package/@vortechron/query-builder-ts) by [Amirul Adli](https://www.npmjs.com/~vortechron)
 - Typescript + React [react-query-builder](https://www.npmjs.com/package/@cgarciagarcia/react-query-builder) by [Carlos Garcia](https://github.com/cgarciagarcia)
+- Angular: [ng-qubee](https://www.npmjs.com/package/ng-qubee) by [Andrea](https://github.com/AndreaAlhena).
