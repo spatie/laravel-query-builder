@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Filters\Filter;
@@ -215,4 +216,24 @@ it('applies different filter types per member when shorthand is broadcast', func
         ->toContain($partialMatch->id)
         ->toContain($exactMatch->id)
         ->toHaveCount(2);
+});
+
+it('emits the expected SQL shape for a groupOr combined with a top-level filter', function () {
+    DB::enableQueryLog();
+
+    $request = new Request(['filter' => ['name' => 'ali', 'q' => 'birtan']]);
+
+    QueryBuilder::for(TestModel::class, $request)
+        ->allowedFilters(
+            AllowedFilter::partial('name'),
+            AllowedFilter::groupOr('q', [
+                AllowedFilter::partial('name'),
+                AllowedFilter::partial('full_name'),
+            ]),
+        )
+        ->get();
+
+    assertQueryExecuted(
+        'select * from `test_models` where LOWER(`test_models`.`name`) LIKE ? and ((LOWER(`test_models`.`name`) LIKE ?) or (LOWER(`test_models`.`full_name`) LIKE ?))'
+    );
 });
