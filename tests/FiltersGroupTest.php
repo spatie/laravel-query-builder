@@ -129,3 +129,20 @@ it('integrates with QueryBuilder via AllowedFilter::groupAnd', function () {
 
     expect($results->pluck('id')->all())->toEqual([$shouldMatch->id]);
 });
+
+it('skips the group entirely when the shorthand filter is absent from the URL', function () {
+    TestModel::factory()->count(3)->create();
+
+    $request = new Request(['filter' => []]);
+
+    $results = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFilters(
+            AllowedFilter::groupOr('q', [
+                AllowedFilter::partial('name'),
+                AllowedFilter::partial('full_name'),
+            ]),
+        )
+        ->get();
+
+    expect($results->count())->toBe(3);
+});
