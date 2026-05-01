@@ -39,5 +39,18 @@ class FiltersGroup implements Filter
 
     public function __invoke(Builder $query, mixed $value, string $property): void
     {
+        $query->where(function (Builder $sub) use ($value) {
+            foreach ($this->members as $member) {
+                if ($this->conjunction === 'or') {
+                    $sub->orWhere(function (Builder $inner) use ($member, $value) {
+                        $member->applyTo($inner, $value);
+                    });
+                } else {
+                    $sub->where(function (Builder $inner) use ($member, $value) {
+                        $member->applyTo($inner, $value);
+                    });
+                }
+            }
+        });
     }
 }
