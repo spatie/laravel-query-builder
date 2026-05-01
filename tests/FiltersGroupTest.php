@@ -194,3 +194,25 @@ it('joins multiple independent groups with AND between them', function () {
 
     expect($results->pluck('id')->all())->toEqual([$shouldMatch->id]);
 });
+
+it('applies different filter types per member when shorthand is broadcast', function () {
+    $partialMatch = TestModel::factory()->create(['name' => 'mixedTOKEN partial substring', 'full_name' => 'no']);
+    $exactMatch = TestModel::factory()->create(['name' => 'no', 'full_name' => 'mixedTOKEN']);
+    TestModel::factory()->create(['name' => 'no', 'full_name' => 'mixedTOKEN with extra']);
+
+    $request = new Request(['filter' => ['q' => 'mixedTOKEN']]);
+
+    $results = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFilters(
+            AllowedFilter::groupOr('q', [
+                AllowedFilter::partial('name'),
+                AllowedFilter::exact('full_name'),
+            ]),
+        )
+        ->get();
+
+    expect($results->pluck('id')->all())
+        ->toContain($partialMatch->id)
+        ->toContain($exactMatch->id)
+        ->toHaveCount(2);
+});
