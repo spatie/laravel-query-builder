@@ -65,3 +65,24 @@ it('groupOr returns matches even when only one member condition is satisfied', f
 
     expect($ids)->toContain($onlyName->id)->not->toContain($unrelated->id);
 });
+
+it('groupAnd applies all member conditions with AND semantics', function () {
+    $bothMatch = TestModel::factory()->create(['name' => 'sharedTOKEN here', 'full_name' => 'sharedTOKEN there']);
+    $onlyName = TestModel::factory()->create(['name' => 'sharedTOKEN solo', 'full_name' => 'unrelated']);
+    $onlyFullName = TestModel::factory()->create(['name' => 'unrelated', 'full_name' => 'sharedTOKEN solo']);
+
+    $group = new FiltersGroup('and', [
+        AllowedFilter::partial('name'),
+        AllowedFilter::partial('full_name'),
+    ]);
+
+    $query = TestModel::query();
+    $group($query, 'sharedTOKEN', 'g');
+
+    $ids = $query->get()->pluck('id')->all();
+
+    expect($ids)
+        ->toContain($bothMatch->id)
+        ->not->toContain($onlyName->id)
+        ->not->toContain($onlyFullName->id);
+});
