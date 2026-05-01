@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\Enums\FilterOperator;
@@ -42,6 +43,11 @@ class AllowedFilter
 
     public function filter(QueryBuilder $query, mixed $value): void
     {
+        $this->applyTo($query->getEloquentBuilder(), $value);
+    }
+
+    public function applyTo(Builder $builder, mixed $value): void
+    {
         $value = $this->splitFilterValue($value);
 
         $valueToFilter = $this->resolveValueForFiltering($value);
@@ -50,7 +56,7 @@ class AllowedFilter
             return;
         }
 
-        ($this->filterClass)($query->getEloquentBuilder(), $valueToFilter, $this->internalName);
+        ($this->filterClass)($builder, $valueToFilter, $this->internalName);
     }
 
     public function delimiter(string $delimiter): static
