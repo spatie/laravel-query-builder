@@ -146,3 +146,23 @@ it('skips the group entirely when the shorthand filter is absent from the URL', 
 
     expect($results->count())->toBe(3);
 });
+
+it('combines a group filter with a top-level filter using AND', function () {
+    $shouldMatch = TestModel::factory()->create(['name' => 'Ali special', 'full_name' => 'birtan@somewhere']);
+    TestModel::factory()->create(['name' => 'Ali other', 'full_name' => 'no token']);
+    TestModel::factory()->create(['name' => 'Bob', 'full_name' => 'birtan@somewhere']);
+
+    $request = new Request(['filter' => ['name' => 'Ali', 'q' => 'birtan']]);
+
+    $results = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFilters(
+            AllowedFilter::partial('name'),
+            AllowedFilter::groupOr('q', [
+                AllowedFilter::partial('name'),
+                AllowedFilter::partial('full_name'),
+            ]),
+        )
+        ->get();
+
+    expect($results->pluck('id')->all())->toEqual([$shouldMatch->id]);
+});
