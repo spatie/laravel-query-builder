@@ -417,3 +417,112 @@ QueryBuilder::for(User::class)
     ->get();
 ```
 
+
+## Filter groups (OR / AND conjunction)
+
+Group multiple filters under a single URL parameter with an explicit conjunction.
+Anchored on the [JSON:API Fancy Filters](https://gist.github.com/e0ipso/efcc4e96ca2aed58e32948e4f70c2460)
+extension recommendation; the JSON:API base spec's `filter` parameter family is
+intentionally extension-friendly.
+
+### Basic usage
+
+```php
+use Spatie\QueryBuilder\AllowedFilter;
+
+QueryBuilder::for(User::class)
+    ->allowedFilters(
+        AllowedFilter::groupOr('q', [
+            AllowedFilter::partial('name'),
+            AllowedFilter::partial('full_name'),
+        ]),
+    );
+```
+
+`/users?filter[q]=John` →
+
+```sql
+WHERE (name LIKE '%John%' OR full_name LIKE '%John%')
+```
+
+### `groupAnd`
+
+```php
+AllowedFilter::groupAnd('match', [
+    AllowedFilter::partial('name'),
+    AllowedFilter::partial('full_name'),
+]);
+```
+
+`/users?filter[match]=John` →
+
+```sql
+WHERE (name LIKE '%John%' AND full_name LIKE '%John%')
+```
+
+### Multiple independent groups
+
+Groups are AND-joined to each other:
+
+```php
+->allowedFilters(
+    AllowedFilter::groupOr('q', [
+        AllowedFilter::partial('name'),
+        AllowedFilter::partial('full_name'),
+    ]),
+    AllowedFilter::groupOr('loc', [
+        AllowedFilter::partial('city'),
+        AllowedFilter::partial('country'),
+    ]),
+)
+```
+
+`/users?filter[q]=John&filter[loc]=ist` →
+
+```sql
+WHERE (name LIKE '%John%' OR full_name LIKE '%John%')
+  AND (city LIKE '%ist%' OR country LIKE '%ist%')
+```
+
+### Combining with top-level filters
+
+If a member's name is also registered as a top-level filter, both apply (AND-joined):
+
+```php
+->allowedFilters(
+    AllowedFilter::partial('name'),
+    AllowedFilter::groupOr('q', [
+        AllowedFilter::partial('name'),
+        AllowedFilter::partial('full_name'),
+    ]),
+)
+```
+
+`/users?filter[name]=Ali&filter[q]=John` →
+
+```sql
+WHERE name LIKE '%Ali%'
+  AND (name LIKE '%John%' OR full_name LIKE '%John%')
+```
+
+### Mixed member types
+
+Members can be any filter type. The shorthand value is broadcast to every member as-is:
+
+```php
+AllowedFilter::groupOr('q', [
+    AllowedFilter::partial('name'),    // LIKE %value%
+    AllowedFilter::exact('status'),    // = value
+    AllowedFilter::scope('active'),    // User::active(value)
+])
+```
+
+It's the consumer's responsibility to ensure the broadcast value makes sense for every member.
+For boolean scopes or other type-specific filters, prefer registering them as separate top-level filters instead.
+
+### Validation
+
+- Members must be a non-empty array of `AllowedFilter` instances.
+- Conjunction must be `'or'` or `'and'`.
+
+Both violations throw `InvalidArgumentException` at registration time, not at query execution.
