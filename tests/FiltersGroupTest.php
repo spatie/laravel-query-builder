@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Filters\Filter;
 use Spatie\QueryBuilder\Filters\FiltersGroup;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
@@ -85,4 +87,45 @@ it('groupAnd applies all member conditions with AND semantics', function () {
         ->toContain($bothMatch->id)
         ->not->toContain($onlyName->id)
         ->not->toContain($onlyFullName->id);
+});
+
+it('integrates with QueryBuilder via AllowedFilter::groupOr', function () {
+    $a = TestModel::factory()->create(['name' => 'integTOKEN-A', 'full_name' => 'irrelevant']);
+    $b = TestModel::factory()->create(['name' => 'irrelevant', 'full_name' => 'integTOKEN-B']);
+    TestModel::factory()->create(['name' => 'unrelated', 'full_name' => 'unrelated']);
+
+    $request = new Request(['filter' => ['q' => 'integTOKEN']]);
+
+    $results = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFilters(
+            AllowedFilter::groupOr('q', [
+                AllowedFilter::partial('name'),
+                AllowedFilter::partial('full_name'),
+            ]),
+        )
+        ->get();
+
+    expect($results->pluck('id')->all())
+        ->toContain($a->id)
+        ->toContain($b->id)
+        ->toHaveCount(2);
+});
+
+it('integrates with QueryBuilder via AllowedFilter::groupAnd', function () {
+    $shouldMatch = TestModel::factory()->create(['name' => 'andTOKEN A', 'full_name' => 'andTOKEN B']);
+    TestModel::factory()->create(['name' => 'andTOKEN solo', 'full_name' => 'no']);
+    TestModel::factory()->create(['name' => 'no', 'full_name' => 'andTOKEN solo']);
+
+    $request = new Request(['filter' => ['g' => 'andTOKEN']]);
+
+    $results = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFilters(
+            AllowedFilter::groupAnd('g', [
+                AllowedFilter::partial('name'),
+                AllowedFilter::partial('full_name'),
+            ]),
+        )
+        ->get();
+
+    expect($results->pluck('id')->all())->toEqual([$shouldMatch->id]);
 });

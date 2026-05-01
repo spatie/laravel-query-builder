@@ -12,6 +12,7 @@ use Spatie\QueryBuilder\Filters\FiltersBelongsTo;
 use Spatie\QueryBuilder\Filters\FiltersCallback;
 use Spatie\QueryBuilder\Filters\FiltersEndsWith;
 use Spatie\QueryBuilder\Filters\FiltersExact;
+use Spatie\QueryBuilder\Filters\FiltersGroup;
 use Spatie\QueryBuilder\Filters\FiltersOperator;
 use Spatie\QueryBuilder\Filters\FiltersPartial;
 use Spatie\QueryBuilder\Filters\FiltersScope;
@@ -124,6 +125,22 @@ class AllowedFilter
         bool $addRelationConstraint = true,
     ): static {
         return new static($name, new FiltersOperator($addRelationConstraint, $filterOperator, $boolean), $internalName);
+    }
+
+    /**
+     * @param  AllowedFilter[]  $members
+     */
+    public static function groupOr(string $name, array $members): static
+    {
+        return new static($name, new FiltersGroup('or', $members));
+    }
+
+    /**
+     * @param  AllowedFilter[]  $members
+     */
+    public static function groupAnd(string $name, array $members): static
+    {
+        return new static($name, new FiltersGroup('and', $members));
     }
 
     public function getFilterClass(): Filter
