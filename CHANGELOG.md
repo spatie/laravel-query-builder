@@ -4,7 +4,7 @@ All notable changes to `laravel-query-builder` will be documented in this file
 
 ## Unreleased
 
-- Added `AllowedFilter::groupOr()` and `AllowedFilter::groupAnd()` for grouping multiple filters under a single URL parameter with an explicit AND/OR conjunction. Anchored on the [JSON:API Fancy Filters](https://gist.github.com/e0ipso/efcc4e96ca2aed58e32948e4f70c2460) recommendation. Members can be any existing `AllowedFilter` type (`partial`, `exact`, `scope`, `callback`, `custom`). Multiple independent groups are supported, AND-joined to each other.
+- Added `AllowedFilter::groupOr()` and `AllowedFilter::groupAnd()` for grouping multiple filters under a single URL parameter with an explicit AND/OR conjunction. Anchored on the [JSON:API Fancy Filters](https://gist.github.com/e0ipso/efcc4e96ca2aed58e32948e4f70c2460) recommendation. Members can be any `AllowedFilter` type. Multiple independent groups are supported, AND-joined to each other.
 - Added `AllowedFilter::applyTo(Builder $builder, mixed $value)` public primitive. `AllowedFilter::filter()` is refactored to delegate to it (behavior is byte-identical).
 
 ## 7.2.1 - 2026-04-17
