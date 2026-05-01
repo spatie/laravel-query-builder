@@ -166,3 +166,31 @@ it('combines a group filter with a top-level filter using AND', function () {
 
     expect($results->pluck('id')->all())->toEqual([$shouldMatch->id]);
 });
+
+it('joins multiple independent groups with AND between them', function () {
+    $shouldMatch = TestModel::factory()->create(['name' => 'tokenA found', 'full_name' => 'tokenB present']);
+    TestModel::factory()->create(['name' => 'tokenA only', 'full_name' => 'no']);
+    TestModel::factory()->create(['name' => 'no', 'full_name' => 'tokenB only']);
+
+    $request = new Request([
+        'filter' => [
+            'g1' => 'tokenA',
+            'g2' => 'tokenB',
+        ],
+    ]);
+
+    $results = QueryBuilder::for(TestModel::class, $request)
+        ->allowedFilters(
+            AllowedFilter::groupOr('g1', [
+                AllowedFilter::partial('name'),
+                AllowedFilter::partial('full_name'),
+            ]),
+            AllowedFilter::groupOr('g2', [
+                AllowedFilter::partial('full_name'),
+                AllowedFilter::partial('name'),
+            ]),
+        )
+        ->get();
+
+    expect($results->pluck('id')->all())->toEqual([$shouldMatch->id]);
+});
