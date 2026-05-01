@@ -3,9 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Filters\Filter;
 use Spatie\QueryBuilder\Filters\FiltersGroup;
+use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
 it('FiltersGroup is a Filter', function () {
