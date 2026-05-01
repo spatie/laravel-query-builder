@@ -47,6 +47,9 @@ class AllowedFilter
         $this->applyTo($query->getEloquentBuilder(), $value);
     }
 
+    /**
+     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     */
     public function applyTo(Builder $builder, mixed $value): void
     {
         $value = $this->splitFilterValue($value);

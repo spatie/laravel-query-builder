@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Builder;
 use InvalidArgumentException;
 use Spatie\QueryBuilder\AllowedFilter;
 
+/**
+ * @template-implements Filter<\Illuminate\Database\Eloquent\Model>
+ */
 class FiltersGroup implements Filter
 {
     /** @var AllowedFilter[] */
