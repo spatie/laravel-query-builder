@@ -55,13 +55,9 @@ $users = QueryBuilder::for(User::class)
 //   → WHERE name LIKE '%Doe%' AND (name LIKE '%John%' OR full_name LIKE '%John%')
 ```
 
-`AllowedFilter::groupAnd()` is also available. Members can be any `AllowedFilter` type
-(`partial`, `exact`, `scope`, `callback`, `custom`). The shorthand value is broadcast to every member.
+`AllowedFilter::groupAnd()` is also available. Members can be any `AllowedFilter` type and the shorthand value is broadcast to every member.
 
-This feature is anchored on the [JSON:API Fancy Filters](https://gist.github.com/e0ipso/efcc4e96ca2aed58e32948e4f70c2460)
-recommendation, which formalizes the `groups` and `conditions` model with explicit
-AND/OR conjunctions on top of the JSON:API base spec's extension-friendly `filter`
-parameter family.
+[Read more about the JSON:API Fancy Filters recommendation this feature follows.](https://gist.github.com/e0ipso/efcc4e96ca2aed58e32948e4f70c2460)
 
 ### Including relations based on a request: `/users?include=posts`:
 
