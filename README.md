@@ -31,6 +31,34 @@ $users = QueryBuilder::for(User::class)
 
 [Read more about filtering features like: partial filters, exact filters, scope filters, custom filters, ignored values, default filter values, ...](https://spatie.be/docs/laravel-query-builder/v7/features/filtering/)
 
+### Grouping multiple filters with OR/AND: `/users?filter[q]=John`:
+
+```php
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
+
+$users = QueryBuilder::for(User::class)
+    ->allowedFilters(
+        AllowedFilter::partial('name'),
+        AllowedFilter::partial('full_name'),
+        AllowedFilter::groupOr('q', [
+            AllowedFilter::partial('name'),
+            AllowedFilter::partial('full_name'),
+        ]),
+    )
+    ->get();
+
+// /users?filter[q]=John
+//   → WHERE (name LIKE '%John%' OR full_name LIKE '%John%')
+//
+// /users?filter[q]=John&filter[name]=Doe
+//   → WHERE name LIKE '%Doe%' AND (name LIKE '%John%' OR full_name LIKE '%John%')
+```
+
+`AllowedFilter::groupAnd()` is also available. Members can be any `AllowedFilter` type and the shorthand value is broadcast to every member.
+
+[Read more about the JSON:API Fancy Filters recommendation this feature follows.](https://gist.github.com/e0ipso/efcc4e96ca2aed58e32948e4f70c2460)
+
 ### Including relations based on a request: `/users?include=posts`:
 
 ```php

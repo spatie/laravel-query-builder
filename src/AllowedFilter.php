@@ -2,6 +2,7 @@
 
 namespace Spatie\QueryBuilder;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\Enums\FilterOperator;
@@ -11,6 +12,7 @@ use Spatie\QueryBuilder\Filters\FiltersBelongsTo;
 use Spatie\QueryBuilder\Filters\FiltersCallback;
 use Spatie\QueryBuilder\Filters\FiltersEndsWith;
 use Spatie\QueryBuilder\Filters\FiltersExact;
+use Spatie\QueryBuilder\Filters\FiltersGroup;
 use Spatie\QueryBuilder\Filters\FiltersOperator;
 use Spatie\QueryBuilder\Filters\FiltersPartial;
 use Spatie\QueryBuilder\Filters\FiltersScope;
@@ -42,6 +44,14 @@ class AllowedFilter
 
     public function filter(QueryBuilder $query, mixed $value): void
     {
+        $this->applyTo($query->getEloquentBuilder(), $value);
+    }
+
+    /**
+     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     */
+    public function applyTo(Builder $builder, mixed $value): void
+    {
         $value = $this->splitFilterValue($value);
 
         $valueToFilter = $this->resolveValueForFiltering($value);
@@ -50,7 +60,7 @@ class AllowedFilter
             return;
         }
 
-        ($this->filterClass)($query->getEloquentBuilder(), $valueToFilter, $this->internalName);
+        ($this->filterClass)($builder, $valueToFilter, $this->internalName);
     }
 
     public function delimiter(string $delimiter): static
@@ -118,6 +128,22 @@ class AllowedFilter
         bool $addRelationConstraint = true,
     ): static {
         return new static($name, new FiltersOperator($addRelationConstraint, $filterOperator, $boolean), $internalName);
+    }
+
+    /**
+     * @param  AllowedFilter[]  $members
+     */
+    public static function groupOr(string $name, array $members): static
+    {
+        return new static($name, new FiltersGroup('or', $members));
+    }
+
+    /**
+     * @param  AllowedFilter[]  $members
+     */
+    public static function groupAnd(string $name, array $members): static
+    {
+        return new static($name, new FiltersGroup('and', $members));
     }
 
     public function getFilterClass(): Filter
