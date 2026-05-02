@@ -7,6 +7,7 @@ use Spatie\QueryBuilder\Filters\Filter;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ *
  * @template-implements \Spatie\QueryBuilder\Filters\Filter<TModelClass>
  */
 class FiltersTestModels implements Filter

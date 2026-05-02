@@ -27,7 +27,7 @@ class AllowedInclude
 
     public static function relationship(string $name, ?string $internalName = null): static
     {
-        return new static($name, new IncludedRelationship(), $internalName);
+        return new static($name, new IncludedRelationship, $internalName);
     }
 
     public static function count(string $name, ?string $internalName = null, ?Closure $constraint = null): static

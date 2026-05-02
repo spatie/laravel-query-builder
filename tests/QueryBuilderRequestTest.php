@@ -93,7 +93,7 @@ it('can get different sort query parameter name', function () {
 });
 
 it('will return an empty collection when no sort query param is specified', function () {
-    $request = new QueryBuilderRequest();
+    $request = new QueryBuilderRequest;
 
     expect($request->sorts())->toBeEmpty();
 });
@@ -109,7 +109,7 @@ it('can get multiple sort parameters from the request', function () {
 });
 
 it('will return an empty collection when no sort query params are specified', function () {
-    $request = new QueryBuilderRequest();
+    $request = new QueryBuilderRequest;
 
     $expected = collect();
 
@@ -134,16 +134,16 @@ it('can get the filter query params from the request', function () {
 
 it('can get the filter query params from the request body', function () {
     $request = new QueryBuilderRequest([], [
-            'filter' => [
-                'foo' => 'bar',
-                'baz' => 'qux',
-            ],
-        ], [], [], [], ['REQUEST_METHOD' => 'POST']);
-
-    $expected = collect([
+        'filter' => [
             'foo' => 'bar',
             'baz' => 'qux',
-        ]);
+        ],
+    ], [], [], [], ['REQUEST_METHOD' => 'POST']);
+
+    $expected = collect([
+        'foo' => 'bar',
+        'baz' => 'qux',
+    ]);
 
     expect($request->filters())->toEqual($expected);
 });
@@ -201,7 +201,7 @@ it('can get empty filters', function () {
 });
 
 it('will return an empty collection when no filter query params are specified', function () {
-    $request = new QueryBuilderRequest();
+    $request = new QueryBuilderRequest;
 
     $expected = collect();
 
@@ -286,7 +286,7 @@ it('can get different include query parameter name', function () {
 });
 
 it('will return an empty collection when no include query params are specified', function () {
-    $request = new QueryBuilderRequest();
+    $request = new QueryBuilderRequest;
 
     $expected = collect();
 
@@ -396,7 +396,7 @@ it('can get different append query parameter name', function () {
 });
 
 it('will return an empty collection when no append query params are specified', function () {
-    $request = new QueryBuilderRequest();
+    $request = new QueryBuilderRequest;
 
     $expected = collect();
 
@@ -481,7 +481,7 @@ it('does not split string fields when the global delimiter is empty', function (
 it('returns empty collections for omitted parameters when the global delimiter is empty', function () {
     config()->set('query-builder.delimiter', '');
 
-    $request = new QueryBuilderRequest();
+    $request = new QueryBuilderRequest;
 
     expect($request->includes())->toBeEmpty();
     expect($request->appends())->toBeEmpty();

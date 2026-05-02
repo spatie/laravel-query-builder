@@ -6,9 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Pest\Expectation;
-
-use function PHPUnit\Framework\assertObjectHasProperty;
-
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Enums\FilterOperator;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
@@ -19,6 +16,8 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\NestedRelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+
+use function PHPUnit\Framework\assertObjectHasProperty;
 
 beforeEach(function () {
     $this->models = TestModel::factory()->count(5)->create();
@@ -144,10 +143,10 @@ it('specifies escape character in supported databases', function (string $dbDriv
             ->allowedFilters('name', 'id')
             ->toSql();
 
-        expect($queryBuilderSql)->when(in_array($dbDriver, ["sqlite", "sqlsrv"]), fn (
+        expect($queryBuilderSql)->when(in_array($dbDriver, ['sqlite', 'sqlsrv']), fn (
             Expectation $query
         ) => $query->toContain("ESCAPE '\'"));
-        expect($queryBuilderSql)->when(in_array($dbDriver, ["mysql", "mariadb", "pgsql"]), fn (
+        expect($queryBuilderSql)->when(in_array($dbDriver, ['mysql', 'mariadb', 'pgsql']), fn (
             Expectation $query
         ) => $query->not->toContain("ESCAPE '\'"));
     });
@@ -194,7 +193,7 @@ test('falsy values are not ignored when applying a partial filter', function () 
         ->allowedFilters(AllowedFilter::partial('id'))
         ->get();
 
-    $this->assertQueryLogContains("select * from `test_models` where (LOWER(`test_models`.`id`) LIKE ?)");
+    $this->assertQueryLogContains('select * from `test_models` where (LOWER(`test_models`.`id`) LIKE ?)');
 });
 
 test('falsy values are not ignored when applying a begins with filter', function () {
@@ -206,7 +205,7 @@ test('falsy values are not ignored when applying a begins with filter', function
         ->allowedFilters(AllowedFilter::beginsWith('id'))
         ->get();
 
-    $this->assertQueryLogContains("select * from `test_models` where (`test_models`.`id` LIKE ?)");
+    $this->assertQueryLogContains('select * from `test_models` where (`test_models`.`id` LIKE ?)');
 });
 
 test('falsy values are not ignored when applying a ends with filter', function () {
@@ -218,7 +217,7 @@ test('falsy values are not ignored when applying a ends with filter', function (
         ->allowedFilters(AllowedFilter::endsWith('id'))
         ->get();
 
-    $this->assertQueryLogContains("select * from `test_models` where (`test_models`.`id` LIKE ?)");
+    $this->assertQueryLogContains('select * from `test_models` where (`test_models`.`id` LIKE ?)');
 });
 
 it('can filter partial using begins with', function () {
@@ -446,7 +445,8 @@ it('can filter results by scope with multiple parameters in an associative array
 it('can filter results by a custom filter class', function () {
     $testModel = $this->models->first();
 
-    $filterClass = new class () implements FilterInterface {
+    $filterClass = new class implements FilterInterface
+    {
         public function __invoke(Builder $query, mixed $value, string $property): void
         {
             $query->where('name', $value);
@@ -536,7 +536,8 @@ it('does not throw invalid filter exception when disable in config', function ()
 });
 
 it('can create a custom filter with an instantiated filter', function () {
-    $customFilter = new class ('test1') implements CustomFilter {
+    $customFilter = new class('test1') implements CustomFilter
+    {
         /** @var string */
         protected $filter;
 
@@ -545,9 +546,7 @@ it('can create a custom filter with an instantiated filter', function () {
             $this->filter = $filter;
         }
 
-        public function __invoke(Builder $query, mixed $value, string $property): void
-        {
-        }
+        public function __invoke(Builder $query, mixed $value, string $property): void {}
     };
 
     TestModel::create(['name' => 'abcdef']);
@@ -618,20 +617,20 @@ it('should apply the filter on the subset of allowed values regardless of the ke
 });
 
 it('can take an argument for custom column name resolution', function () {
-    $filter = AllowedFilter::custom('property_name', new FiltersExact(), 'property_column_name');
+    $filter = AllowedFilter::custom('property_name', new FiltersExact, 'property_column_name');
 
     expect($filter)->toBeInstanceOf(AllowedFilter::class);
     assertObjectHasProperty('internalName', $filter);
 });
 
 it('sets property column name to property name by default', function () {
-    $filter = AllowedFilter::custom('property_name', new FiltersExact());
+    $filter = AllowedFilter::custom('property_name', new FiltersExact);
 
     expect($filter->getInternalName())->toEqual($filter->getName());
 });
 
 it('resolves queries using property column name', function () {
-    $filter = AllowedFilter::custom('nickname', new FiltersExact(), 'name');
+    $filter = AllowedFilter::custom('nickname', new FiltersExact, 'name');
 
     TestModel::create(['name' => 'abcdef']);
 
@@ -716,7 +715,7 @@ it('should apply a nullable filter when filter exists and is null', function () 
         ->allowedFilters(AllowedFilter::exact('name')->nullable())
         ->get();
 
-    $this->assertQueryLogContains("select * from `test_models` where `test_models`.`name` is null");
+    $this->assertQueryLogContains('select * from `test_models` where `test_models`.`name` is null');
     expect($models->count())->toEqual(1);
 });
 
@@ -1102,12 +1101,13 @@ it('can filter with not-equal dynamic operator filter when value is empty after 
 });
 
 it('throws RelationNotFoundException when the relation method exists but does not return an Eloquent Relation', function () {
-    $ModelWithNonRelationMethod = new class () extends TestModel {
+    $ModelWithNonRelationMethod = new class extends TestModel
+    {
         protected $table = 'test_models';
 
         public function nonRelationMethod()
         {
-            return new stdClass();
+            return new stdClass;
         }
     };
 

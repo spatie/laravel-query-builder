@@ -14,6 +14,6 @@ enum FilterOperator: string
 
     public function isDynamic()
     {
-        return self::DYNAMIC === $this;
+        return $this === self::DYNAMIC;
     }
 }

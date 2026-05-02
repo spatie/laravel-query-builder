@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder\Filters;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ *
  * @template-implements Filter<TModelClass>
  */
 class FiltersEndsWith extends FiltersPartial implements Filter

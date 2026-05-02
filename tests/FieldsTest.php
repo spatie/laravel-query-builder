@@ -378,7 +378,6 @@ it('can fetch requested array columns from included models up to two levels deep
         'include' => ['nestedRelatedModels', 'relatedModels'],
     ]);
 
-
     $queryBuilder = QueryBuilder::for(TestModel::class, $request)
         ->allowedFields('id', 'name', 'relatedModels.id', 'relatedModels.name', 'nestedRelatedModels.id', 'nestedRelatedModels.name')
         ->allowedIncludes('relatedModels', 'nestedRelatedModels');

@@ -16,8 +16,8 @@ beforeEach(function () {
 
 it('can filter related model property', function () {
     $models = createQueryFromFilterRequest([
-            'relatedModels.name' => $this->models->first()->name,
-        ])
+        'relatedModels.name' => $this->models->first()->name,
+    ])
         ->allowedFilters('relatedModels.name')
         ->get();
 
@@ -26,8 +26,8 @@ it('can filter related model property', function () {
 
 it('can filter results based on the partial existence of a property in an array', function () {
     $results = createQueryFromFilterRequest([
-            'relatedModels.nestedRelatedModels.name' => 'est0,est1',
-        ])
+        'relatedModels.nestedRelatedModels.name' => 'est0,est1',
+    ])
         ->allowedFilters('relatedModels.nestedRelatedModels.name')
         ->get();
 
@@ -37,8 +37,8 @@ it('can filter results based on the partial existence of a property in an array'
 
 it('can filter models and return an empty collection', function () {
     $models = createQueryFromFilterRequest([
-            'relatedModels.name' => 'None existing first name',
-        ])
+        'relatedModels.name' => 'None existing first name',
+    ])
         ->allowedFilters('relatedModels.name')
         ->get();
 
@@ -47,8 +47,8 @@ it('can filter models and return an empty collection', function () {
 
 it('can filter related nested model property', function () {
     $models = createQueryFromFilterRequest([
-            'relatedModels.nestedRelatedModels.name' => 'test',
-        ])
+        'relatedModels.nestedRelatedModels.name' => 'test',
+    ])
         ->allowedFilters('relatedModels.nestedRelatedModels.name')
         ->get();
 
@@ -57,9 +57,9 @@ it('can filter related nested model property', function () {
 
 it('can filter related model and related nested model property', function () {
     $models = createQueryFromFilterRequest([
-            'relatedModels.name' => $this->models->first()->name,
-            'relatedModels.nestedRelatedModels.name' => 'test',
-        ])
+        'relatedModels.name' => $this->models->first()->name,
+        'relatedModels.nestedRelatedModels.name' => 'test',
+    ])
         ->allowedFilters('relatedModels.name', 'relatedModels.nestedRelatedModels.name')
         ->get();
 
@@ -70,10 +70,10 @@ it('can filter results based on the existence of a property in an array', functi
     $testModels = TestModel::whereIn('id', [1, 2])->get();
 
     $results = createQueryFromFilterRequest([
-            'relatedModels.id' => $testModels->map(function ($model) {
-                return $model->relatedModels->pluck('id');
-            })->flatten()->all(),
-        ])
+        'relatedModels.id' => $testModels->map(function ($model) {
+            return $model->relatedModels->pluck('id');
+        })->flatten()->all(),
+    ])
         ->allowedFilters(AllowedFilter::exact('relatedModels.id'))
         ->get();
 
@@ -85,8 +85,8 @@ it('can filter and reject results by exact property', function () {
     $testModel = TestModel::create(['name' => 'John Testing Doe']);
 
     $modelsResult = createQueryFromFilterRequest([
-            'relatedModels.nestedRelatedModels.name' => ' test ',
-        ])
+        'relatedModels.nestedRelatedModels.name' => ' test ',
+    ])
         ->allowedFilters(AllowedFilter::exact('relatedModels.nestedRelatedModels.name'))
         ->get();
 
@@ -97,8 +97,8 @@ it('can disable exact filtering based on related model properties', function () 
     $addRelationConstraint = false;
 
     $sql = createQueryFromFilterRequest([
-            'relatedModels.name' => $this->models->first()->name,
-        ])
+        'relatedModels.name' => $this->models->first()->name,
+    ])
         ->allowedFilters(AllowedFilter::exact('relatedModels.name', null, $addRelationConstraint))
         ->toSql();
 
@@ -109,8 +109,8 @@ it('can disable partial filtering based on related model properties', function (
     $addRelationConstraint = false;
 
     $sql = createQueryFromFilterRequest([
-            'relatedModels.name' => $this->models->first()->name,
-        ])
+        'relatedModels.name' => $this->models->first()->name,
+    ])
         ->allowedFilters(AllowedFilter::partial('relatedModels.name', null, $addRelationConstraint))
         ->toSql();
 
@@ -121,8 +121,8 @@ it('can disable operator filtering based on related model properties', function 
     $addRelationConstraint = false;
 
     $sql = createQueryFromFilterRequest([
-            'relatedModels.name' => $this->models->first()->name,
-        ])
+        'relatedModels.name' => $this->models->first()->name,
+    ])
         ->allowedFilters(AllowedFilter::operator('relatedModels.name', FilterOperator::EQUAL, 'and', null, $addRelationConstraint))
         ->toSql();
 

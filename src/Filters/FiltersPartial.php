@@ -7,15 +7,14 @@ use Spatie\QueryBuilder\Filters\Concerns\HandlesRelationConstraints;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ *
  * @template-implements Filter<TModelClass>
  */
 class FiltersPartial implements Filter
 {
     use HandlesRelationConstraints;
 
-    public function __construct(protected bool $addRelationConstraint = true)
-    {
-    }
+    public function __construct(protected bool $addRelationConstraint = true) {}
 
     public function __invoke(Builder $query, mixed $value, string $property): void
     {
@@ -72,7 +71,7 @@ class FiltersPartial implements Filter
     }
 
     /**
-     * @param 'sqlite'|'pgsql'|'sqlsrc'|'mysql'|'mariadb' $driver
+     * @param  'sqlite'|'pgsql'|'sqlsrc'|'mysql'|'mariadb'  $driver
      */
     protected static function maybeSpecifyEscapeChar(string $driver): string
     {

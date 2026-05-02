@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 interface Filter
 {
     /**
-     * @param Builder<TModelClass> $query
+     * @param  Builder<TModelClass>  $query
      */
     public function __invoke(Builder $query, mixed $value, string $property): void;
 }

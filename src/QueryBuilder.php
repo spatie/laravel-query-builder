@@ -15,6 +15,7 @@ use Spatie\QueryBuilder\Concerns\SortsQuery;
 
 /**
  * @template TModel of Model
+ *
  * @mixin EloquentBuilder<TModel>
  */
 class QueryBuilder implements ArrayAccess

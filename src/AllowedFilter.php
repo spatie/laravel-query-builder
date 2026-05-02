@@ -97,12 +97,12 @@ class AllowedFilter
 
     public static function belongsTo(string $name, ?string $internalName = null): static
     {
-        return new static($name, new FiltersBelongsTo(), $internalName);
+        return new static($name, new FiltersBelongsTo, $internalName);
     }
 
     public static function scope(string $name, ?string $internalName = null): static
     {
-        return new static($name, new FiltersScope(), $internalName);
+        return new static($name, new FiltersScope, $internalName);
     }
 
     public static function callback(string $name, callable $callback, ?string $internalName = null): static
@@ -112,7 +112,7 @@ class AllowedFilter
 
     public static function trashed(string $name = 'trashed', ?string $internalName = null): static
     {
-        return new static($name, new FiltersTrashed(), $internalName);
+        return new static($name, new FiltersTrashed, $internalName);
     }
 
     public static function custom(string $name, Filter $filterClass, ?string $internalName = null): static

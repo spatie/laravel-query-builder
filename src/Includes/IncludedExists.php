@@ -10,8 +10,7 @@ class IncludedExists implements IncludeInterface
 {
     public function __construct(
         protected ?Closure $constraint = null,
-    ) {
-    }
+    ) {}
 
     public function __invoke(Builder $query, string $exists): void
     {

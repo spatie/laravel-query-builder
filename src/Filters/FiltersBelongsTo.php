@@ -10,6 +10,7 @@ use Illuminate\Support\Arr;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ *
  * @template-implements Filter<TModelClass>
  */
 class FiltersBelongsTo implements Filter

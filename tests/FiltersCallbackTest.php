@@ -10,8 +10,8 @@ beforeEach(function () {
 
 it('should filter by closure', function () {
     $models = createQueryFromFilterRequest([
-            'callback' => $this->models->first()->name,
-        ])
+        'callback' => $this->models->first()->name,
+    ])
         ->allowedFilters(AllowedFilter::callback('callback', function (Builder $query, $value) {
             $query->where('name', $value);
         }))
@@ -22,8 +22,8 @@ it('should filter by closure', function () {
 
 it('should filter by array callback', function () {
     $models = createQueryFromFilterRequest([
-            'callback' => $this->models->first()->name,
-        ])
+        'callback' => $this->models->first()->name,
+    ])
         ->allowedFilters(AllowedFilter::callback('callback', [$this, 'filterCallback']))
         ->get();
 

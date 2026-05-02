@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ *
  * @template-implements Filter<TModelClass>
  */
 class FiltersTrashed implements Filter

@@ -15,6 +15,7 @@ use Spatie\QueryBuilder\Exceptions\InvalidFilterValue;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ *
  * @template-implements Filter<TModelClass>
  */
 class FiltersScope implements Filter

@@ -5,9 +5,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-
-use function PHPUnit\Framework\assertObjectHasProperty;
-
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\Exceptions\InvalidIncludeQuery;
 use Spatie\QueryBuilder\Includes\IncludedCount;
@@ -16,6 +13,8 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\MorphModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\RelatedModel;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+
+use function PHPUnit\Framework\assertObjectHasProperty;
 
 beforeEach(function () {
     $this->models = TestModel::factory()->count(5)->create();
@@ -35,7 +34,7 @@ beforeEach(function () {
 });
 
 it('does not require includes', function () {
-    $models = QueryBuilder::for(TestModel::class, new Request())
+    $models = QueryBuilder::for(TestModel::class, new Request)
         ->allowedIncludes('relatedModels')
         ->get();
 
@@ -43,7 +42,7 @@ it('does not require includes', function () {
 });
 
 it('can handle empty includes', function () {
-    $models = QueryBuilder::for(TestModel::class, new Request())
+    $models = QueryBuilder::for(TestModel::class, new Request)
         ->allowedIncludes(
             '',
         )
@@ -293,7 +292,7 @@ it('can query included many to many relationships', function () {
 
     // Based on the following query: TestModel::with('relatedThroughPivotModels')->get();
     // Without where-clause as that differs per Laravel version
-    //dump(DB::getQueryLog());
+    // dump(DB::getQueryLog());
     $this->assertQueryLogContains('select `related_through_pivot_models`.*, `pivot_models`.`test_model_id` as `pivot_test_model_id`, `pivot_models`.`related_through_pivot_model_id` as `pivot_related_through_pivot_model_id` from `related_through_pivot_models` inner join `pivot_models` on `related_through_pivot_models`.`id` = `pivot_models`.`related_through_pivot_model_id` where `pivot_models`.`test_model_id` in (1, 2, 3, 4, 5)');
 });
 
@@ -333,7 +332,8 @@ it('can alias multiple allowed includes', function () {
 });
 
 it('can include custom include class', function () {
-    $includeClass = new class () implements IncludeInterface {
+    $includeClass = new class implements IncludeInterface
+    {
         public function __invoke(Builder $query, string $include): void
         {
             $query->withCount($include);
@@ -348,7 +348,8 @@ it('can include custom include class', function () {
 });
 
 it('can include custom include class by alias', function () {
-    $includeClass = new class () implements IncludeInterface {
+    $includeClass = new class implements IncludeInterface
+    {
         public function __invoke(Builder $query, string $include): void
         {
             $query->withCount($include);
@@ -363,7 +364,7 @@ it('can include custom include class by alias', function () {
 });
 
 it('can take an argument for custom column name resolution', function () {
-    $include = AllowedInclude::custom('property_name', new IncludedCount(), 'property_column_name');
+    $include = AllowedInclude::custom('property_name', new IncludedCount, 'property_column_name');
 
     expect($include)->toBeInstanceOf(AllowedInclude::class);
     assertObjectHasProperty('internalName', $include);
@@ -375,7 +376,7 @@ it('can include a custom base query with select', function () {
     ]);
 
     $modelResult = QueryBuilder::for(TestModel::select('id', 'name'), $request)
-        ->allowedIncludes(AllowedInclude::custom('relatedModelsCount', new IncludedCount(), 'relatedModels'))
+        ->allowedIncludes(AllowedInclude::custom('relatedModelsCount', new IncludedCount, 'relatedModels'))
         ->first();
 
     $this->assertNotNull($modelResult->related_models_count);

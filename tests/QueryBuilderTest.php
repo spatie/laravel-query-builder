@@ -163,7 +163,8 @@ it('can query local scopes', function () {
 });
 
 it('executes the same query regardless of the order of applied filters or sorts', function () {
-    $customSort = new class () implements Sort {
+    $customSort = new class implements Sort
+    {
         public function __invoke(Builder $query, $descending, string $property): void
         {
             $query->join(
@@ -194,7 +195,8 @@ it('executes the same query regardless of the order of applied filters or sorts'
 });
 
 it('can filter when sorting by joining a related model which contains the same field name', function () {
-    $customSort = new class () implements Sort {
+    $customSort = new class implements Sort
+    {
         public function __invoke(Builder $query, $descending, string $property): void
         {
             $query->join(

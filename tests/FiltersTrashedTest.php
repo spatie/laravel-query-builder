@@ -14,8 +14,8 @@ beforeEach(function () {
 
 it('should filter not trashed by default', function () {
     $models = createQueryFromFilterRequest([
-            'trashed' => '',
-        ])
+        'trashed' => '',
+    ])
         ->allowedFilters(AllowedFilter::trashed())
         ->get();
 
@@ -24,8 +24,8 @@ it('should filter not trashed by default', function () {
 
 it('can filter only trashed', function () {
     $models = createQueryFromFilterRequest([
-            'trashed' => 'only',
-        ], SoftDeleteModel::class)
+        'trashed' => 'only',
+    ], SoftDeleteModel::class)
         ->allowedFilters(AllowedFilter::trashed())
         ->get();
 
@@ -34,8 +34,8 @@ it('can filter only trashed', function () {
 
 it('can filter only trashed by scope directly', function () {
     $models = createQueryFromFilterRequest([
-            'only_trashed' => true,
-        ], SoftDeleteModel::class)
+        'only_trashed' => true,
+    ], SoftDeleteModel::class)
         ->allowedFilters(AllowedFilter::scope('only_trashed'))
         ->get();
 
@@ -44,8 +44,8 @@ it('can filter only trashed by scope directly', function () {
 
 it('can filter with trashed', function () {
     $models = createQueryFromFilterRequest([
-            'trashed' => 'with',
-        ], SoftDeleteModel::class)
+        'trashed' => 'with',
+    ], SoftDeleteModel::class)
         ->allowedFilters(AllowedFilter::trashed())
         ->get();
 

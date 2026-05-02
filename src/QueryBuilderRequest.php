@@ -10,7 +10,7 @@ class QueryBuilderRequest extends Request
 {
     public static function fromRequest(Request $request): static
     {
-        return static::createFrom($request, new static());
+        return static::createFrom($request, new static);
     }
 
     /**

@@ -3,9 +3,6 @@
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
-use function PHPUnit\Framework\assertObjectHasProperty;
-
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Enums\SortDirection;
@@ -15,6 +12,8 @@ use Spatie\QueryBuilder\Sorts\Sort as SortInterface;
 use Spatie\QueryBuilder\Sorts\SortsField;
 use Spatie\QueryBuilder\Tests\Concerns\AssertsCollectionSorting;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
+
+use function PHPUnit\Framework\assertObjectHasProperty;
 
 uses(AssertsCollectionSorting::class);
 
@@ -163,7 +162,7 @@ test('an invalid sort query exception contains the unknown and allowed sorts', f
 });
 
 it('wont sort if no sort query parameter is given', function () {
-    $builderQuery = QueryBuilder::for(TestModel::class, new Request())
+    $builderQuery = QueryBuilder::for(TestModel::class, new Request)
         ->allowedSorts('name')
         ->toSql();
 
@@ -180,7 +179,7 @@ it('wont sort sketchy sort requests', function () {
 });
 
 it('uses default sort parameter when no sort was requested', function () {
-    $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+    $sortedModels = QueryBuilder::for(TestModel::class, new Request)
         ->defaultSort('name')
         ->get();
 
@@ -198,14 +197,15 @@ it('doesnt use the default sort parameter when a sort was requested', function (
 });
 
 it('allows default custom sort class parameter', function () {
-    $sortClass = new class () implements SortInterface {
+    $sortClass = new class implements SortInterface
+    {
         public function __invoke(Builder $query, bool $descending, string $property): void
         {
             $query->orderBy('name', $descending ? 'desc' : 'asc');
         }
     };
 
-    $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+    $sortedModels = QueryBuilder::for(TestModel::class, new Request)
         ->allowedSorts(AllowedSort::custom('custom_name', $sortClass))
         ->defaultSort(AllowedSort::custom('custom_name', $sortClass))
         ->get();
@@ -215,7 +215,7 @@ it('allows default custom sort class parameter', function () {
 });
 
 it('uses default descending sort parameter', function () {
-    $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+    $sortedModels = QueryBuilder::for(TestModel::class, new Request)
         ->allowedSorts('-name')
         ->defaultSort('-name')
         ->get();
@@ -225,14 +225,15 @@ it('uses default descending sort parameter', function () {
 });
 
 it('allows multiple default sort parameters', function () {
-    $sortClass = new class () implements SortInterface {
+    $sortClass = new class implements SortInterface
+    {
         public function __invoke(Builder $query, $descending, string $property): void
         {
             $query->orderBy('name', $descending ? 'desc' : 'asc');
         }
     };
 
-    $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+    $sortedModels = QueryBuilder::for(TestModel::class, new Request)
         ->allowedSorts(AllowedSort::custom('custom_name', $sortClass), 'id')
         ->defaultSort(AllowedSort::custom('custom_name', $sortClass), '-id')
         ->get();
@@ -242,14 +243,15 @@ it('allows multiple default sort parameters', function () {
 });
 
 it('allows multiple default sort parameters in an array', function () {
-    $sortClass = new class () implements SortInterface {
+    $sortClass = new class implements SortInterface
+    {
         public function __invoke(Builder $query, $descending, string $property): void
         {
             $query->orderBy('name', $descending ? 'desc' : 'asc');
         }
     };
 
-    $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+    $sortedModels = QueryBuilder::for(TestModel::class, new Request)
         ->allowedSorts(AllowedSort::custom('custom_name', $sortClass), 'id')
         ->defaultSort(AllowedSort::custom('custom_name', $sortClass), '-id')
         ->get();
@@ -289,7 +291,8 @@ it('can sort by multiple columns', function () {
 });
 
 it('can sort by a custom sort class', function () {
-    $sortClass = new class () implements SortInterface {
+    $sortClass = new class implements SortInterface
+    {
         public function __invoke(Builder $query, $descending, string $property): void
         {
             $query->orderBy('name', $descending ? 'desc' : 'asc');
@@ -305,20 +308,20 @@ it('can sort by a custom sort class', function () {
 });
 
 it('can take an argument for custom column name resolution', function () {
-    $sort = AllowedSort::custom('property_name', new SortsField(), 'property_column_name');
+    $sort = AllowedSort::custom('property_name', new SortsField, 'property_column_name');
 
     expect($sort)->toBeInstanceOf(AllowedSort::class);
     assertObjectHasProperty('internalName', $sort);
 });
 
 it('sets property column name to property name by default', function () {
-    $sort = AllowedSort::custom('property_name', new SortsField());
+    $sort = AllowedSort::custom('property_name', new SortsField);
 
     expect($sort->getInternalName())->toEqual($sort->getName());
 });
 
 it('resolves queries using property column name', function () {
-    $sort = AllowedSort::custom('nickname', new SortsField(), 'name');
+    $sort = AllowedSort::custom('nickname', new SortsField, 'name');
 
     $testModel = TestModel::create(['name' => 'zzzzzzzz']);
 
@@ -366,7 +369,8 @@ test('late specified sorts still check for allowance', function () {
 });
 
 it('can sort and use scoped filters at the same time', function () {
-    $sortClass = new class () implements SortInterface {
+    $sortClass = new class implements SortInterface
+    {
         public function __invoke(Builder $query, $descending, string $property): void
         {
             $query->orderBy('name', $descending ? 'desc' : 'asc');
@@ -413,14 +417,15 @@ test('raw sorts do not get purged when specifying allowed sorts', function () {
 });
 
 test('the default direction of an allow sort can be set', function () {
-    $sortClass = new class () implements SortInterface {
+    $sortClass = new class implements SortInterface
+    {
         public function __invoke(Builder $query, bool $descending, string $property): void
         {
             $query->orderBy('name', $descending ? 'desc' : 'asc');
         }
     };
 
-    $sortedModels = QueryBuilder::for(TestModel::class, new Request())
+    $sortedModels = QueryBuilder::for(TestModel::class, new Request)
         ->allowedSorts(AllowedSort::custom('custom_name', $sortClass))
         ->defaultSort(AllowedSort::custom('custom_name', $sortClass)->defaultDirection(SortDirection::Descending))
         ->get();

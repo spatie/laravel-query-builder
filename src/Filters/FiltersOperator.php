@@ -8,6 +8,7 @@ use Spatie\QueryBuilder\Filters\Concerns\HandlesRelationConstraints;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ *
  * @template-implements Filter<TModelClass>
  */
 class FiltersOperator implements Filter
@@ -18,8 +19,7 @@ class FiltersOperator implements Filter
         protected bool $addRelationConstraint,
         protected FilterOperator $filterOperator,
         protected string $boolean,
-    ) {
-    }
+    ) {}
 
     public function __invoke(Builder $query, mixed $value, string $property): void
     {

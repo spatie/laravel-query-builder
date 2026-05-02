@@ -3,9 +3,11 @@
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\QueryBuilder\QueryBuilder;
+
 use function PHPStan\Testing\assertType;
 
-class Book extends Model {
+class Book extends Model
+{
     /**
      * @return BelongsTo<Author, $this>
      */
