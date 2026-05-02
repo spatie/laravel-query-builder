@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\Enums\FilterOperator;
@@ -48,7 +49,7 @@ class AllowedFilter
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param  Builder<Model>  $builder
      */
     public function applyTo(Builder $builder, mixed $value): void
     {

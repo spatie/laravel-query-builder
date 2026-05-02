@@ -3,10 +3,11 @@
 namespace Spatie\QueryBuilder\Exceptions;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 
 class UnknownIncludedFieldsQuery extends InvalidQuery
 {
-    /** @var \Illuminate\Support\Collection */
+    /** @var Collection */
     public $unknownFields;
 
     public function __construct(array $unknownFields)

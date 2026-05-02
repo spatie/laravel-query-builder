@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\QueryBuilderRequest;
 use Spatie\QueryBuilder\Sorts\Sort;
@@ -182,13 +183,13 @@ it('executes the same query regardless of the order of applied filters or sorts'
     ]);
 
     $usingSortFirst = QueryBuilder::for(TestModel::class, $req)
-        ->allowedSorts(\Spatie\QueryBuilder\AllowedSort::custom('name', $customSort))
+        ->allowedSorts(AllowedSort::custom('name', $customSort))
         ->allowedFilters('name')
         ->toSql();
 
     $usingFilterFirst = QueryBuilder::for(TestModel::class, $req)
         ->allowedFilters('name')
-        ->allowedSorts(\Spatie\QueryBuilder\AllowedSort::custom('name', $customSort))
+        ->allowedSorts(AllowedSort::custom('name', $customSort))
         ->toSql();
 
     expect($usingFilterFirst)->toEqual($usingSortFirst);
@@ -214,7 +215,7 @@ it('can filter when sorting by joining a related model which contains the same f
     ]);
 
     QueryBuilder::for(NestedRelatedModel::class, $req)
-        ->allowedSorts(\Spatie\QueryBuilder\AllowedSort::custom('name', $customSort))
+        ->allowedSorts(AllowedSort::custom('name', $customSort))
         ->allowedFilters('name')
         ->get();
 

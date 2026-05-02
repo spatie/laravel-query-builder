@@ -356,14 +356,14 @@ it('throws an exception when trying to filter by belongs to with an inexistent r
         ->get();
 
 })->with([
-    ['inexistentRelation', \BadMethodCallException::class],
-    ['testModel.inexistentRelation', \BadMethodCallException::class], // existing 'testModel' belongsTo relation
-    ['inexistentRelation.inexistentRelation', \BadMethodCallException::class],
-    ['getTable', \Illuminate\Database\Eloquent\RelationNotFoundException::class],
-    ['testModel.getTable', \Illuminate\Database\Eloquent\RelationNotFoundException::class], // existing 'testModel' belongsTo relation
-    ['getTable.getTable', \Illuminate\Database\Eloquent\RelationNotFoundException::class],
-    ['nestedRelatedModels', \Illuminate\Database\Eloquent\RelationNotFoundException::class], // existing 'nestedRelatedModels' relation but not a belongsTo relation
-    ['testModel.relatedModels', \Illuminate\Database\Eloquent\RelationNotFoundException::class], // existing 'testModel' belongsTo relation and existing 'relatedModels' relation but not a belongsTo relation
+    ['inexistentRelation', BadMethodCallException::class],
+    ['testModel.inexistentRelation', BadMethodCallException::class], // existing 'testModel' belongsTo relation
+    ['inexistentRelation.inexistentRelation', BadMethodCallException::class],
+    ['getTable', RelationNotFoundException::class],
+    ['testModel.getTable', RelationNotFoundException::class], // existing 'testModel' belongsTo relation
+    ['getTable.getTable', RelationNotFoundException::class],
+    ['nestedRelatedModels', RelationNotFoundException::class], // existing 'nestedRelatedModels' relation but not a belongsTo relation
+    ['testModel.relatedModels', RelationNotFoundException::class], // existing 'testModel' belongsTo relation and existing 'relatedModels' relation but not a belongsTo relation
 ]);
 
 it('can filter results by scope', function () {
