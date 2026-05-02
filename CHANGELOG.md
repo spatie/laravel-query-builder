@@ -2,6 +2,21 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 7.3.0 - 2026-05-02
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 3.0.0 to 3.1.0 by @dependabot[bot] in https://github.com/spatie/laravel-query-builder/pull/1058
+* docs: add Angular front-end implementation by @AndreaAlhena in https://github.com/spatie/laravel-query-builder/pull/1059
+* feat: filter groups (OR/AND conjunction) — JSON:API Fancy Filters by @taskinbirtan in https://github.com/spatie/laravel-query-builder/pull/1060
+
+### New Contributors
+
+* @AndreaAlhena made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1059
+* @taskinbirtan made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1060
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/7.2.1...7.3.0
+
 ## Unreleased
 
 - Added `AllowedFilter::groupOr()` and `AllowedFilter::groupAnd()` for grouping multiple filters under a single URL parameter with an explicit AND/OR conjunction. Anchored on the [JSON:API Fancy Filters](https://gist.github.com/e0ipso/efcc4e96ca2aed58e32948e4f70c2460) recommendation. Members can be any `AllowedFilter` type. Multiple independent groups are supported, AND-joined to each other.
