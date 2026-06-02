@@ -9,8 +9,8 @@
 <h1>Build Eloquent queries from API requests</h1>
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
-![Test Status](https://img.shields.io/github/actions/workflow/status/spatie/laravel-query-builder/run-tests.yml?label=tests&branch=main)
-![Code Style Status](https://img.shields.io/github/actions/workflow/status/spatie/laravel-query-builder/pint.yml?label=code%20style&branch=main)
+![Test Status](https://github.com/spatie/laravel-query-builder/actions/workflows/run-tests.yml/badge.svg)
+![Code Style Status](https://github.com/spatie/laravel-query-builder/actions/workflows/pint.yml/badge.svg)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-query-builder.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-query-builder)
     
 </div>
