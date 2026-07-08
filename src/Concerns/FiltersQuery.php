@@ -70,4 +70,9 @@ trait FiltersQuery
             throw InvalidFilterQuery::filtersNotAllowed($diff, $allowedFilterNames);
         }
     }
+
+    public function getAllowedFilters(): ?Collection
+    {
+        return $this->allowedFilters;
+    }
 }

@@ -4,6 +4,7 @@ namespace Spatie\QueryBuilder;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Spatie\QueryBuilder\App\Console\Commands\CacheForeignKeys;
 
 class QueryBuilderServiceProvider extends PackageServiceProvider
 {
@@ -11,6 +12,7 @@ class QueryBuilderServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('laravel-query-builder')
+            ->hasConsoleCommands(CacheForeignKeys::class)
             ->hasConfigFile();
     }
 
