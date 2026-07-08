@@ -71,8 +71,7 @@ class FiltersPartial implements Filter
     }
 
     /**
-     * @param 'sqlite'|'pgsql'|'sqlsrc'|'mysql' $driver
-     * @return string
+     * @param  'sqlite'|'pgsql'|'sqlsrc'|'mysql'  $driver
      */
     protected static function maybeSpecifyEscapeChar(string $driver): string
     {

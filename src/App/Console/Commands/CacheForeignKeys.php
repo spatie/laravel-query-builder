@@ -23,11 +23,11 @@ class CacheForeignKeys extends Command
         $files = File::allFiles($modelsDirectory);
 
         $foreignKeys = [];
-        $this->info('Fetching all models in App\Models...' . PHP_EOL);
+        $this->info('Fetching all models in App\Models...'.PHP_EOL);
 
         foreach ($files as $file) {
             // Build the full class name
-            $fullClassName = 'App\\Models' . '\\' . $file->getRelativePath() . '\\' . pathinfo($file->getRelativePathname(), PATHINFO_FILENAME);
+            $fullClassName = 'App\\Models'.'\\'.$file->getRelativePath().'\\'.pathinfo($file->getRelativePathname(), PATHINFO_FILENAME);
             $fullClassName = Str::replace('/', '\\', $fullClassName);
 
             // Check if the class exists
@@ -55,10 +55,10 @@ class CacheForeignKeys extends Command
                     $this->error("The class $fullClassName is not instantiable.");
                 }
             } else {
-                $this->warn("The class $fullClassName does not exist or does not extend " . Model::class . '.');
+                $this->warn("The class $fullClassName does not exist or does not extend ".Model::class.'.');
             }
         }
-        $this->info(PHP_EOL . 'Cached foreign keys for ' . count($foreignKeys) . ' tables.');
+        $this->info(PHP_EOL.'Cached foreign keys for '.count($foreignKeys).' tables.');
 
         Cache::forever('QUERY_BUILDER_FKS', $foreignKeys);
     }
@@ -67,5 +67,4 @@ class CacheForeignKeys extends Command
     {
         return Cache::get('QUERY_BUILDER_FKS')[$table] ?? [];
     }
-
 }

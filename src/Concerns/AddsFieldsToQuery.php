@@ -16,7 +16,7 @@ trait AddsFieldsToQuery
     public function allowedFields(string ...$fields): static
     {
         if ($this->allowedIncludes instanceof Collection) {
-            throw new AllowedFieldsMustBeCalledBeforeAllowedIncludes();
+            throw new AllowedFieldsMustBeCalledBeforeAllowedIncludes;
         }
 
         $fields = is_array($fields) ? $fields : func_get_args();

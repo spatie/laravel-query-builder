@@ -30,7 +30,7 @@ class QueryBuilderRequest extends Request
 
     public static function fromRequest(Request $request): self
     {
-        return static::createFrom($request, new static());
+        return static::createFrom($request, new static);
     }
 
     public function includes(): Collection
@@ -63,7 +63,6 @@ class QueryBuilderRequest extends Request
         if (! $data) {
             return collect();
         }
-
 
         $fields = [];
 
