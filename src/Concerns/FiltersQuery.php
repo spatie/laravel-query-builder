@@ -18,7 +18,7 @@ trait FiltersQuery
      */
     public function allowedFilters(AllowedFilter|string ...$filters): static
     {
-        $this->allowedFilters = collect($filters)->map(function ($filter) {
+        $this->allowedFilters = collect($filters)->map(static function ($filter) {
             if ($filter instanceof AllowedFilter) {
                 return $filter;
             }
@@ -68,7 +68,9 @@ trait FiltersQuery
 
         $filterNames = $this->request->filters()->keys();
 
-        $allowedFilterNames = $this->allowedFilters->map(fn (AllowedFilter $allowedFilter) => $allowedFilter->getName());
+        $allowedFilterNames = $this->allowedFilters->map(
+            static fn (AllowedFilter $allowedFilter) => $allowedFilter->getName()
+        );
 
         $diff = $filterNames->diff($allowedFilterNames);
 
