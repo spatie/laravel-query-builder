@@ -1,24 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Class Spatie\\QueryBuilder\\Database\\Factories\\AppendModelFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: database/factories/AppendModelFactory.php
-
-		-
-			message: '#^Class Spatie\\QueryBuilder\\Database\\Factories\\SoftDeleteModelFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: database/factories/SoftDeleteModelFactory.php
-
-		-
-			message: '#^Class Spatie\\QueryBuilder\\Database\\Factories\\TestModelFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: database/factories/TestModelFactory.php
-
-		-
 			message: '#^Cannot unset property Spatie\\QueryBuilder\\AllowedFilter\:\:\$default because it might have hooks in a subclass\.$#'
 			identifier: unset.possiblyHookedProperty
 			count: 1
