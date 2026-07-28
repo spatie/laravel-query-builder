@@ -49,18 +49,6 @@ parameters:
 			path: src/AllowedSort.php
 
 		-
-			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidAppendQuery\:\:__construct\(\) has parameter \$allowedAppends with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Exceptions/InvalidAppendQuery.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidAppendQuery\:\:__construct\(\) has parameter \$appendsNotAllowed with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Exceptions/InvalidAppendQuery.php
-
-		-
 			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidAppendQuery\:\:appendsNotAllowed\(\) has parameter \$allowedAppends with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
 			count: 1

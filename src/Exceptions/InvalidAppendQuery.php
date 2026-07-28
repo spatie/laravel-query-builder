@@ -7,6 +7,10 @@ use Illuminate\Support\Collection;
 
 class InvalidAppendQuery extends InvalidQuery
 {
+    /**
+     * @param Collection<array-key,non-empty-string> $appendsNotAllowed
+     * @param Collection<array-key,non-empty-string> $allowedAppends
+     */
     public function __construct(
         public Collection $appendsNotAllowed,
         public Collection $allowedAppends
