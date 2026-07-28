@@ -25,12 +25,6 @@ parameters:
 			path: src/AllowedFilter.php
 
 		-
-			message: '#^Method Spatie\\QueryBuilder\\AllowedFilter\:\:getIgnored\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/AllowedFilter.php
-
-		-
 			message: '#^Property Spatie\\QueryBuilder\\AllowedFilter\:\:\$ignored with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
 			count: 1

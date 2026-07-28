@@ -171,6 +171,9 @@ class AllowedFilter
         return $this;
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function getIgnored(): array
     {
         return $this->ignored->toArray();
