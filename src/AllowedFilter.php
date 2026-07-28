@@ -23,6 +23,9 @@ class AllowedFilter
 {
     protected string $internalName;
 
+    /**
+     * @var \Illuminate\Support\Collection<array-key,mixed>
+     */
     protected Collection $ignored;
 
     protected mixed $default = null;

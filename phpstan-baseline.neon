@@ -25,12 +25,6 @@ parameters:
 			path: src/AllowedFilter.php
 
 		-
-			message: '#^Property Spatie\\QueryBuilder\\AllowedFilter\:\:\$ignored with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/AllowedFilter.php
-
-		-
 			message: '#^Method Spatie\\QueryBuilder\\AllowedInclude\:\:__construct\(\) has parameter \$includeClass with generic interface Spatie\\QueryBuilder\\Includes\\IncludeInterface but does not specify its types\: TModelClass$#'
 			identifier: missingType.generics
 			count: 1
