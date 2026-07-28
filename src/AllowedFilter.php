@@ -176,7 +176,7 @@ class AllowedFilter
      */
     public function getIgnored(): array
     {
-        return $this->ignored->toArray();
+        return $this->ignored->all();
     }
 
     public function getInternalName(): string
