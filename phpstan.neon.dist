@@ -15,7 +15,6 @@ parameters:
 
     checkModelProperties: true
     checkOctaneCompatibility: true
-    reportUnmatchedIgnoredErrors: false
     noUnnecessaryCollectionCall: true
     checkNullables: true
     treatPhpDocTypesAsCertain: false
