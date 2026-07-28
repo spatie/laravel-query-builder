@@ -497,21 +497,3 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/QueryBuilderServiceProvider.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\Sorts\\Sort\:\:__invoke\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Sorts/Sort.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\Sorts\\SortsCallback\:\:__invoke\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Sorts/SortsCallback.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\Sorts\\SortsField\:\:__invoke\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Sorts/SortsField.php

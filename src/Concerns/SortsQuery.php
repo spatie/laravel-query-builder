@@ -6,10 +6,16 @@ use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ */
 trait SortsQuery
 {
     protected Collection $allowedSorts;
 
+    /**
+     * @param AllowedSort<TModel>|non-empty-string $sorts
+     */
     public function allowedSorts(AllowedSort|string ...$sorts): static
     {
         $this->allowedSorts = collect($sorts)->map(function ($sort) {
@@ -27,11 +33,17 @@ trait SortsQuery
         return $this;
     }
 
+    /**
+     * @param AllowedSort<TModel>|non-empty-string $sorts
+     */
     public function defaultSort(AllowedSort|string ...$sorts): static
     {
         return $this->defaultSorts(...$sorts);
     }
 
+    /**
+     * @param AllowedSort<TModel>|non-empty-string $sorts
+     */
     public function defaultSorts(AllowedSort|string ...$sorts): static
     {
         if ($this->request->sorts()->isNotEmpty()) {
@@ -65,6 +77,9 @@ trait SortsQuery
             });
     }
 
+    /**
+     * @return ?AllowedSort<TModel>
+     */
     protected function findSort(string $property): ?AllowedSort
     {
         return $this->allowedSorts

@@ -24,6 +24,9 @@ class QueryBuilder implements ArrayAccess
     use AddsIncludesToQuery;
     use FiltersQuery;
     use ForwardsCalls;
+    /**
+     * @use SortsQuery<TModel>
+     */
     use SortsQuery;
 
     protected QueryBuilderRequest $request;
