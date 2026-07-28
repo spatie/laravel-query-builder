@@ -7,14 +7,16 @@ use InvalidArgumentException;
 use Spatie\QueryBuilder\AllowedFilter;
 
 /**
- * @template-implements Filter<\Illuminate\Database\Eloquent\Model>
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ *
+ * @template-implements Filter<TModel>
  */
 class FiltersGroup implements Filter
 {
-    /** @var AllowedFilter[] */
+    /** @var AllowedFilter<TModel>[] */
     protected array $members;
 
-    /** @param AllowedFilter[] $members */
+    /** @param AllowedFilter<TModel>[] $members */
     public function __construct(
         protected string $conjunction,
         array $members,

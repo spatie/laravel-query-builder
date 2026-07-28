@@ -7,12 +7,13 @@ use Spatie\QueryBuilder\Enums\FilterOperator;
 use Spatie\QueryBuilder\Filters\Concerns\HandlesRelationConstraints;
 
 /**
- * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ * @template TModel of \Illuminate\Database\Eloquent\Model
  *
- * @template-implements Filter<TModelClass>
+ * @template-implements Filter<TModel>
  */
 class FiltersOperator implements Filter
 {
+    /** @use HandlesRelationConstraints<TModel> */
     use HandlesRelationConstraints;
 
     public function __construct(
@@ -21,6 +22,9 @@ class FiltersOperator implements Filter
         protected string $boolean,
     ) {}
 
+    /**
+     * @param Builder<TModel|\Illuminate\Database\Eloquent\Model> $query
+     */
     public function __invoke(Builder $query, mixed $value, string $property): void
     {
         $filterOperator = $this->filterOperator;

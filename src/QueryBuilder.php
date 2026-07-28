@@ -20,14 +20,15 @@ use Spatie\QueryBuilder\Concerns\SortsQuery;
  */
 class QueryBuilder implements ArrayAccess
 {
-    use AddsFieldsToQuery;
-    use AddsIncludesToQuery;
-    use FiltersQuery;
-    use ForwardsCalls;
     /**
+     * @use FiltersQuery<TModel>
      * @use SortsQuery<TModel>
      */
-    use SortsQuery;
+    use AddsFieldsToQuery,
+        AddsIncludesToQuery,
+        FiltersQuery,
+        ForwardsCalls,
+        SortsQuery;
 
     protected QueryBuilderRequest $request;
 

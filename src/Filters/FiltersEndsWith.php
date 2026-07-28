@@ -3,9 +3,11 @@
 namespace Spatie\QueryBuilder\Filters;
 
 /**
- * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ * @template TModel of \Illuminate\Database\Eloquent\Model
  *
- * @template-implements Filter<TModelClass>
+ * @template-implements Filter<TModel>
+ *
+ * @extends parent<TModel>
  */
 class FiltersEndsWith extends FiltersPartial implements Filter
 {

@@ -6,15 +6,18 @@ use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ */
 trait FiltersQuery
 {
     /**
-     * @var Collection<array-key, AllowedFilter>
+     * @var Collection<array-key, AllowedFilter<TModel>>
      */
     protected Collection $allowedFilters;
 
     /**
-     * @param \Spatie\QueryBuilder\AllowedFilter|non-empty-string $filters
+     * @param \Spatie\QueryBuilder\AllowedFilter<TModel>|non-empty-string $filters
      */
     public function allowedFilters(AllowedFilter|string ...$filters): static
     {
@@ -23,6 +26,9 @@ trait FiltersQuery
                 return $filter;
             }
 
+            /**
+             * @var AllowedFilter<TModel>
+             */
             return AllowedFilter::partial($filter);
         });
 
@@ -49,12 +55,18 @@ trait FiltersQuery
         });
     }
 
+    /**
+     * @return AllowedFilter<TModel>
+     */
     protected function findFilter(string $property): ?AllowedFilter
     {
         return $this->allowedFilters
             ->first(fn (AllowedFilter $filter) => $filter->isForFilter($property));
     }
 
+    /**
+     * @param AllowedFilter<TModel> $allowedFilter
+     */
     protected function isFilterRequested(AllowedFilter $allowedFilter): bool
     {
         return $this->request->filters()->has($allowedFilter->getName());

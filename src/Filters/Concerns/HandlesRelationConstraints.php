@@ -7,10 +7,16 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ */
 trait HandlesRelationConstraints
 {
     protected array $relationConstraints = [];
 
+    /**
+     * @param Builder<TModel|\Illuminate\Database\Eloquent\Model> $query
+     */
     protected function isRelationProperty(Builder $query, string $property): bool
     {
         if (! Str::contains($property, '.')) {
@@ -30,6 +36,9 @@ trait HandlesRelationConstraints
         return is_a($query->getModel()->{$firstRelationship}(), Relation::class);
     }
 
+    /**
+     * @param Builder<TModel|\Illuminate\Database\Eloquent\Model> $query
+     */
     protected function withRelationConstraint(Builder $query, mixed $value, string $property): void
     {
         [$relation, $property] = collect(explode('.', $property))

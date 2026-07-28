@@ -19,6 +19,11 @@ use Spatie\QueryBuilder\Filters\FiltersPartial;
 use Spatie\QueryBuilder\Filters\FiltersScope;
 use Spatie\QueryBuilder\Filters\FiltersTrashed;
 
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ *
+ * @phpstan-import-type FiltersCallbackSchema from FiltersCallback
+ */
 class AllowedFilter
 {
     /**
@@ -41,6 +46,7 @@ class AllowedFilter
 
     /**
      * @param non-empty-string $name
+     * @param Filter<TModel> $filterClass
      * @param ?non-empty-string $internalName
      */
     public function __construct(
@@ -53,13 +59,16 @@ class AllowedFilter
         $this->internalName = $internalName ?? $name;
     }
 
+    /**
+     * @param QueryBuilder<TModel> $query
+     */
     public function filter(QueryBuilder $query, mixed $value): void
     {
         $this->applyTo($query->getEloquentBuilder(), $value);
     }
 
     /**
-     * @param  Builder<Model>  $builder
+     * @param  Builder<TModel>  $builder
      */
     public function applyTo(Builder $builder, mixed $value): void
     {
@@ -86,46 +95,108 @@ class AllowedFilter
         return $this->arrayValueDelimiter ?? config()->string('query-builder.delimiter', ',');
     }
 
+    /**
+     * @param non-empty-string $name
+     * @param ?non-empty-string $internalName
+     */
     public static function exact(string $name, ?string $internalName = null, bool $addRelationConstraint = true): static
     {
-        return new static($name, new FiltersExact($addRelationConstraint), $internalName);
+        /** @var FiltersExact<TModel> */
+        $filter = new FiltersExact($addRelationConstraint);
+
+        return new static($name, $filter, $internalName);
     }
 
+    /**
+     * @param non-empty-string $name
+     * @param ?non-empty-string $internalName
+     */
     public static function partial(string $name, ?string $internalName = null, bool $addRelationConstraint = true): static
     {
-        return new static($name, new FiltersPartial($addRelationConstraint), $internalName);
+        /** @var FiltersPartial<TModel> */
+        $filter = new FiltersPartial($addRelationConstraint);
+
+        return new static($name, $filter, $internalName);
     }
 
+    /**
+     * @param non-empty-string $name
+     * @param ?non-empty-string $internalName
+     */
     public static function beginsWith(string $name, ?string $internalName = null, bool $addRelationConstraint = true): static
     {
-        return new static($name, new FiltersBeginsWith($addRelationConstraint), $internalName);
+        /** @var FiltersBeginsWith<TModel> */
+        $filter = new FiltersBeginsWith($addRelationConstraint);
+
+        return new static($name, $filter, $internalName);
     }
 
+    /**
+     * @param non-empty-string $name
+     * @param ?non-empty-string $internalName
+     */
     public static function endsWith(string $name, ?string $internalName = null, bool $addRelationConstraint = true): static
     {
-        return new static($name, new FiltersEndsWith($addRelationConstraint), $internalName);
+        /** @var FiltersEndsWith<TModel> */
+        $filter = new FiltersEndsWith($addRelationConstraint);
+
+        return new static($name, $filter, $internalName);
     }
 
+    /**
+     * @param non-empty-string $name
+     * @param ?non-empty-string $internalName
+     */
     public static function belongsTo(string $name, ?string $internalName = null): static
     {
-        return new static($name, new FiltersBelongsTo, $internalName);
+        /** @var FiltersEndsWith<TModel> */
+        $filter = new FiltersBelongsTo;
+
+        return new static($name, $filter, $internalName);
     }
 
+    /**
+     * @param non-empty-string $name
+     * @param ?non-empty-string $internalName
+     */
     public static function scope(string $name, ?string $internalName = null): static
     {
-        return new static($name, new FiltersScope, $internalName);
+        /** @var FiltersScope<TModel> */
+        $filter = new FiltersScope;
+
+        return new static($name, $filter, $internalName);
     }
 
+    /**
+     * @param non-empty-string $name
+     * @param FiltersCallbackSchema $callback
+     * @param ?non-empty-string $internalName
+     */
     public static function callback(string $name, callable $callback, ?string $internalName = null): static
     {
-        return new static($name, new FiltersCallback($callback), $internalName);
+        /** @var FiltersCallback<TModel> */
+        $filter = new FiltersCallback($callback);
+
+        return new static($name, $filter, $internalName);
     }
 
+    /**
+     * @param non-empty-string $name
+     * @param ?non-empty-string $internalName
+     */
     public static function trashed(string $name = 'trashed', ?string $internalName = null): static
     {
-        return new static($name, new FiltersTrashed, $internalName);
+        /** @var FiltersTrashed<TModel> */
+        $filter = new FiltersTrashed;
+
+        return new static($name, $filter, $internalName);
     }
 
+    /**
+     * @param non-empty-string $name
+     * @param Filter<TModel> $filterClass
+     * @param ?non-empty-string $internalName
+     */
     public static function custom(string $name, Filter $filterClass, ?string $internalName = null): static
     {
         return new static($name, $filterClass, $internalName);
@@ -138,25 +209,39 @@ class AllowedFilter
         ?string $internalName = null,
         bool $addRelationConstraint = true,
     ): static {
-        return new static($name, new FiltersOperator($addRelationConstraint, $filterOperator, $boolean), $internalName);
+        /** @var FiltersOperator<TModel> */
+        $filter = new FiltersOperator($addRelationConstraint, $filterOperator, $boolean);
+
+        return new static($name, $filter, $internalName);
     }
 
     /**
-     * @param  AllowedFilter[]  $members
+     * @param non-empty-string $name
+     * @param  AllowedFilter<TModel>[]  $members
      */
     public static function groupOr(string $name, array $members): static
     {
-        return new static($name, new FiltersGroup('or', $members));
+        /** @var FiltersGroup<TModel> */
+        $filter = new FiltersGroup('or', $members);
+
+        return new static($name, $filter);
     }
 
     /**
-     * @param  AllowedFilter[]  $members
+     * @param non-empty-string $name
+     * @param  AllowedFilter<TModel>[]  $members
      */
     public static function groupAnd(string $name, array $members): static
     {
-        return new static($name, new FiltersGroup('and', $members));
+        /** @var FiltersGroup<TModel> */
+        $filter = new FiltersGroup('and', $members);
+
+        return new static($name, $filter);
     }
 
+    /**
+     * @return Filter<TModel>
+     */
     public function getFilterClass(): Filter
     {
         return $this->filterClass;
@@ -260,9 +345,7 @@ class AllowedFilter
     protected function resolveValueForFiltering(mixed $value): mixed
     {
         if (is_array($value)) {
-            $remainingProperties = array_map([$this, 'resolveValueForFiltering'], $value);
-
-            return ! empty($remainingProperties) ? $remainingProperties : null;
+            return array_map([$this, 'resolveValueForFiltering'], $value) ?: null;
         }
 
         return ! $this->ignored->contains($value) ? $value : null;

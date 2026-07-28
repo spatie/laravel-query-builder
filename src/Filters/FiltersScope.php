@@ -14,9 +14,9 @@ use ReflectionUnionType;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterValue;
 
 /**
- * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ * @template TModel of \Illuminate\Database\Eloquent\Model
  *
- * @template-implements Filter<TModelClass>
+ * @template-implements Filter<TModel>
  */
 class FiltersScope implements Filter
 {
@@ -42,6 +42,9 @@ class FiltersScope implements Filter
         $query->$scope(...$values);
     }
 
+    /**
+     * @param Builder<TModel> $query
+     */
     protected function resolveParameters(Builder $query, array $values, string $scope): array
     {
         if (! $query->getModel()->hasNamedScope($scope)) {
@@ -65,7 +68,7 @@ class FiltersScope implements Filter
                 continue;
             }
 
-            /** @var TModelClass $model */
+            /** @var TModel $model */
             $model = $this->getClass($parameter)->newInstance();
             $index = $parameter->getPosition() - 1;
             $value = $values[$index];

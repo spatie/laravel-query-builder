@@ -5,13 +5,15 @@ namespace Spatie\QueryBuilder\Filters;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ * @template TModel of \Illuminate\Database\Eloquent\Model
  *
- * @template-implements Filter<TModelClass>
+ * @template-implements Filter<TModel>
+ *
+ * @phpstan-type FiltersCallbackSchema callable(\Illuminate\Database\Eloquent\Builder<TModel>,mixed,non-empty-string): void
  */
 class FiltersCallback implements Filter
 {
-    /** @var callable */
+    /** @var FiltersCallbackSchema */
     private $callback;
 
     public function __construct(callable $callback)

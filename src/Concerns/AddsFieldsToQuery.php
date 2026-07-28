@@ -11,6 +11,9 @@ trait AddsFieldsToQuery
 {
     protected ?Collection $allowedFields = null;
 
+    /**
+     * @param non-empty-string $fields
+     */
     public function allowedFields(string ...$fields): static
     {
         $this->allowedFields = collect($fields)
