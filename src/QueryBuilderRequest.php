@@ -94,6 +94,9 @@ class QueryBuilderRequest extends Request
         return collect($this->toParameterArray($sortParts))->filter();
     }
 
+    /**
+     * @return Collection<non-empty-string,mixed>
+     */
     public function filters(): Collection
     {
         $filterParameterName = config('query-builder.parameters.filter', 'filter');

@@ -21,10 +21,13 @@ use Spatie\QueryBuilder\Filters\FiltersTrashed;
 
 class AllowedFilter
 {
+    /**
+     * @var non-empty-string
+     */
     protected string $internalName;
 
     /**
-     * @var \Illuminate\Support\Collection<array-key,mixed>
+     * @var \Illuminate\Support\Collection<int,mixed>
      */
     protected Collection $ignored;
 
@@ -36,6 +39,10 @@ class AllowedFilter
 
     protected ?string $arrayValueDelimiter = null;
 
+    /**
+     * @param non-empty-string $name
+     * @param ?non-empty-string $internalName
+     */
     public function __construct(
         protected string $name,
         protected Filter $filterClass,
@@ -155,6 +162,9 @@ class AllowedFilter
         return $this->filterClass;
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getName(): string
     {
         return $this->name;

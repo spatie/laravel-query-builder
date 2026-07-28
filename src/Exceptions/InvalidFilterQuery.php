@@ -7,6 +7,10 @@ use Illuminate\Support\Collection;
 
 class InvalidFilterQuery extends InvalidQuery
 {
+    /**
+     * @param Collection<int,non-empty-string> $unknownFilters
+     * @param Collection<int,non-empty-string> $allowedFilters
+     */
     public function __construct(
         public Collection $unknownFilters,
         public Collection $allowedFilters
@@ -18,6 +22,10 @@ class InvalidFilterQuery extends InvalidQuery
         parent::__construct(Response::HTTP_BAD_REQUEST, $message);
     }
 
+    /**
+     * @param Collection<int,non-empty-string> $unknownFilters
+     * @param Collection<int,non-empty-string> $allowedFilters
+     */
     public static function filtersNotAllowed(Collection $unknownFilters, Collection $allowedFilters): static
     {
         return new static(...func_get_args());

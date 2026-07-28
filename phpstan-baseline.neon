@@ -73,30 +73,6 @@ parameters:
 			path: src/Exceptions/InvalidFieldQuery.php
 
 		-
-			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFilterQuery\:\:__construct\(\) has parameter \$allowedFilters with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Exceptions/InvalidFilterQuery.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFilterQuery\:\:__construct\(\) has parameter \$unknownFilters with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Exceptions/InvalidFilterQuery.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFilterQuery\:\:filtersNotAllowed\(\) has parameter \$allowedFilters with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Exceptions/InvalidFilterQuery.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFilterQuery\:\:filtersNotAllowed\(\) has parameter \$unknownFilters with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Exceptions/InvalidFilterQuery.php
-
-		-
 			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFilterValue\:\:make\(\) has parameter \$value with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
@@ -457,12 +433,6 @@ parameters:
 			path: src/QueryBuilder.php
 
 		-
-			message: '#^Property Spatie\\QueryBuilder\\QueryBuilder\:\:\$allowedFilters with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/QueryBuilder.php
-
-		-
 			message: '#^Property Spatie\\QueryBuilder\\QueryBuilder\:\:\$allowedIncludes with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
 			count: 1
@@ -494,12 +464,6 @@ parameters:
 
 		-
 			message: '#^Method Spatie\\QueryBuilder\\QueryBuilderRequest\:\:fields\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/QueryBuilderRequest.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\QueryBuilderRequest\:\:filters\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
 			count: 1
 			path: src/QueryBuilderRequest.php

@@ -8,8 +8,8 @@ use Illuminate\Support\Collection;
 class InvalidAppendQuery extends InvalidQuery
 {
     /**
-     * @param Collection<array-key,non-empty-string> $appendsNotAllowed
-     * @param Collection<array-key,non-empty-string> $allowedAppends
+     * @param Collection<int,non-empty-string> $appendsNotAllowed
+     * @param Collection<int,non-empty-string> $allowedAppends
      */
     public function __construct(
         public Collection $appendsNotAllowed,
@@ -23,8 +23,8 @@ class InvalidAppendQuery extends InvalidQuery
     }
 
     /**
-     * @param Collection<array-key,non-empty-string> $appendsNotAllowed
-     * @param Collection<array-key,non-empty-string> $allowedAppends
+     * @param Collection<int,non-empty-string> $appendsNotAllowed
+     * @param Collection<int,non-empty-string> $allowedAppends
      */
     public static function appendsNotAllowed(Collection $appendsNotAllowed, Collection $allowedAppends): static
     {

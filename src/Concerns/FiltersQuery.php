@@ -8,8 +8,14 @@ use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
 trait FiltersQuery
 {
+    /**
+     * @var Collection<array-key, AllowedFilter>
+     */
     protected Collection $allowedFilters;
 
+    /**
+     * @param \Spatie\QueryBuilder\AllowedFilter|non-empty-string $filters
+     */
     public function allowedFilters(AllowedFilter|string ...$filters): static
     {
         $this->allowedFilters = collect($filters)->map(function ($filter) {
