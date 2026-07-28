@@ -83,7 +83,7 @@ class AllowedFilter
 
     public function getDelimiter(): string
     {
-        return $this->arrayValueDelimiter ?? config('query-builder.delimiter', ',');
+        return $this->arrayValueDelimiter ?? config()->string('query-builder.delimiter', ',');
     }
 
     public static function exact(string $name, ?string $internalName = null, bool $addRelationConstraint = true): static
@@ -270,7 +270,7 @@ class AllowedFilter
 
     protected function filterValueSplittingDisabled(): bool
     {
-        return \is_null($this->arrayValueDelimiter)
-            && ! config('query-builder.filter_value_splitting_enabled', true);
+        return null === $this->arrayValueDelimiter
+            && ! config()->boolean('query-builder.filter_value_splitting_enabled', true);
     }
 }

@@ -62,7 +62,9 @@ trait FiltersQuery
 
     protected function ensureAllFiltersExist(): void
     {
-        if (config('query-builder.disable_invalid_filter_query_exception', false)) {
+        $shouldSkip = config()->boolean('query-builder.disable_invalid_filter_query_exception', false);
+
+        if ($shouldSkip) {
             return;
         }
 

@@ -36,8 +36,8 @@ trait AddsIncludesToQuery
 
     protected function generateIncludesFromString(string $include): array
     {
-        $countSuffix = config('query-builder.suffixes.count', 'Count');
-        $existsSuffix = config('query-builder.suffixes.exists', 'Exists');
+        $countSuffix = config()->string('query-builder.suffixes.count', 'Count');
+        $existsSuffix = config()->string('query-builder.suffixes.exists', 'Exists');
 
         if (Str::endsWith($include, $countSuffix)) {
             return [AllowedInclude::count($include)];
@@ -80,7 +80,8 @@ trait AddsIncludesToQuery
 
     protected function ensureAllIncludesExist(): void
     {
-        if (config('query-builder.disable_invalid_include_query_exception', false)) {
+        $shouldSkip = config()->boolean('query-builder.disable_invalid_include_query_exception', false);
+        if ($shouldSkip) {
             return;
         }
 
@@ -97,7 +98,8 @@ trait AddsIncludesToQuery
 
     protected function filterNonExistingIncludes(Collection $includes): Collection
     {
-        if (! config('query-builder.disable_invalid_include_query_exception', false)) {
+        $shouldCalculateDiff = config()->boolean('query-builder.disable_invalid_include_query_exception', false);
+        if (! $shouldCalculateDiff) {
             return $includes;
         }
 

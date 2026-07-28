@@ -37,7 +37,7 @@ class QueryBuilderRequest extends Request
 
     public function includes(): Collection
     {
-        $includeParameterName = config('query-builder.parameters.include', 'include');
+        $includeParameterName = config()->string('query-builder.parameters.include', 'include');
 
         $includeParts = $this->getRequestData($includeParameterName);
 
@@ -46,7 +46,7 @@ class QueryBuilderRequest extends Request
 
     public function appends(): Collection
     {
-        $appendParameterName = config('query-builder.parameters.append', 'append');
+        $appendParameterName = config()->string('query-builder.parameters.append', 'append');
 
         $appendParts = $this->getRequestData($appendParameterName);
 
@@ -55,7 +55,8 @@ class QueryBuilderRequest extends Request
 
     public function fields(): Collection
     {
-        $fieldsParameterName = config('query-builder.parameters.fields', 'fields');
+        $fieldsParameterName = config()->string('query-builder.parameters.fields', 'fields');
+
         $fieldsData = $this->getRequestData($fieldsParameterName);
 
         $fieldsPerTable = collect($this->toParameterArray($fieldsData));
@@ -87,7 +88,7 @@ class QueryBuilderRequest extends Request
 
     public function sorts(): Collection
     {
-        $sortParameterName = config('query-builder.parameters.sort', 'sort');
+        $sortParameterName = config()->string('query-builder.parameters.sort', 'sort');
 
         $sortParts = $this->getRequestData($sortParameterName);
 
@@ -99,7 +100,7 @@ class QueryBuilderRequest extends Request
      */
     public function filters(): Collection
     {
-        $filterParameterName = config('query-builder.parameters.filter', 'filter');
+        $filterParameterName = config()->string('query-builder.parameters.filter', 'filter');
 
         $filterParts = $this->getRequestData($filterParameterName, []);
 
@@ -144,6 +145,6 @@ class QueryBuilderRequest extends Request
 
     protected function delimiter(): string
     {
-        return config('query-builder.delimiter', ',');
+        return config()->string('query-builder.delimiter', ',');
     }
 }

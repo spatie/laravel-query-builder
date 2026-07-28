@@ -14,7 +14,7 @@ class IncludedExists implements IncludeInterface
 
     public function __invoke(Builder $query, string $exists): void
     {
-        $exists = Str::before($exists, config('query-builder.suffixes.exists', 'Exists'));
+        $exists = Str::before($exists, config()->string('query-builder.suffixes.exists', 'Exists'));
 
         $query
             ->withExists($this->constraint ? [$exists => $this->constraint] : $exists)

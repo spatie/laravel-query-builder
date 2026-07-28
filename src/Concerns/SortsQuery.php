@@ -73,7 +73,8 @@ trait SortsQuery
 
     protected function ensureAllSortsExist(): void
     {
-        if (config('query-builder.disable_invalid_sort_query_exception', false)) {
+        $shouldSkip = config()->boolean('query-builder.disable_invalid_sort_query_exception', false);
+        if ($shouldSkip) {
             return;
         }
 

@@ -31,7 +31,7 @@ trait AddsFieldsToQuery
 
         $fields = $this->request->fields();
 
-        if (! $fields->isEmpty() && config('query-builder.convert_field_names_to_snake_case', false)) {
+        if (! $fields->isEmpty() && config()->boolean('query-builder.convert_field_names_to_snake_case', false)) {
             $fields = $fields->mapWithKeys(fn ($fields, $table) => [$table => collect($fields)->map(fn ($field) => Str::snake($field))->toArray()]);
         }
 
@@ -55,7 +55,7 @@ trait AddsFieldsToQuery
     public function getRequestedFieldsForRelatedTable(string $relation, ?string $tableName = null): array
     {
         $possibleRelatedNames = [
-            config('query-builder.convert_relation_names_to_snake_case_plural', true)
+            config()->boolean('query-builder.convert_relation_names_to_snake_case_plural', true)
                 ? Str::plural(Str::snake($relation))
                 : $relation,
         ];
@@ -73,7 +73,7 @@ trait AddsFieldsToQuery
         $possibleRelatedNames = array_filter($possibleRelatedNames);
 
         $fields = $this->request->fields()
-            ->mapWithKeys(fn ($fields, $table) => [$table => collect($fields)->map(fn ($field) => config('query-builder.convert_field_names_to_snake_case', false) ? Str::snake($field) : $field)])
+            ->mapWithKeys(fn ($fields, $table) => [$table => collect($fields)->map(fn ($field) => config()->boolean('query-builder.convert_field_names_to_snake_case', false) ? Str::snake($field) : $field)])
             ->filter(fn ($value, $table) => in_array($table, $possibleRelatedNames))
             ->first();
 
