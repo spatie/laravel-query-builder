@@ -49,12 +49,6 @@ parameters:
 			path: src/AllowedSort.php
 
 		-
-			message: '#^Method Spatie\\QueryBuilder\\Enums\\FilterOperator\:\:isDynamic\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Enums/FilterOperator.php
-
-		-
 			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidAppendQuery\:\:__construct\(\) has parameter \$allowedAppends with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
 			count: 1

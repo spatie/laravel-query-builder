@@ -12,7 +12,7 @@ enum FilterOperator: string
     case GREATER_THAN_OR_EQUAL = '>=';
     case NOT_EQUAL = '<>';
 
-    public function isDynamic()
+    public function isDynamic(): bool
     {
         return $this === self::DYNAMIC;
     }
