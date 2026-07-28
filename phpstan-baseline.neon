@@ -1,12 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Cannot unset property Spatie\\QueryBuilder\\AllowedFilter\:\:\$default because it might have hooks in a subclass\.$#'
-			identifier: unset.possiblyHookedProperty
-			count: 1
-			path: src/AllowedFilter.php
-
-		-
 			message: '#^Method Spatie\\QueryBuilder\\AllowedFilter\:\:__construct\(\) has parameter \$filterClass with generic interface Spatie\\QueryBuilder\\Filters\\Filter but does not specify its types\: TModelClass$#'
 			identifier: missingType.generics
 			count: 1

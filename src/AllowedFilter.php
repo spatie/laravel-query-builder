@@ -213,7 +213,7 @@ class AllowedFilter
     public function unsetDefault(): static
     {
         $this->hasDefault = false;
-        unset($this->default);
+        $this->default = null;
 
         return $this;
     }
