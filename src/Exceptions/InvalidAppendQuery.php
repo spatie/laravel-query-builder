@@ -22,6 +22,10 @@ class InvalidAppendQuery extends InvalidQuery
         parent::__construct(Response::HTTP_BAD_REQUEST, $message);
     }
 
+    /**
+     * @param Collection<array-key,non-empty-string> $appendsNotAllowed
+     * @param Collection<array-key,non-empty-string> $allowedAppends
+     */
     public static function appendsNotAllowed(Collection $appendsNotAllowed, Collection $allowedAppends): static
     {
         return new static(...func_get_args());
