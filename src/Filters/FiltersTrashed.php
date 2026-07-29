@@ -14,17 +14,17 @@ class FiltersTrashed implements Filter
     public function __invoke(Builder $query, mixed $value, string $property): void
     {
         if ($value === 'with') {
-            $query->withTrashed();
+            $query->withTrashed(); // @phpstan-ignore-line
 
             return;
         }
 
         if ($value === 'only') {
-            $query->onlyTrashed();
+            $query->onlyTrashed(); // @phpstan-ignore-line
 
             return;
         }
 
-        $query->withoutTrashed();
+        $query->withoutTrashed(); // @phpstan-ignore-line
     }
 }
