@@ -20,7 +20,9 @@ class QueryBuilderServiceProvider extends PackageServiceProvider
             return QueryBuilderRequest::fromRequest($app['request']);
         });
     }
-
+    /**
+     * @return list<class-string>
+     */
     public function provides(): array
     {
         return [

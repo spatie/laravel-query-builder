@@ -313,8 +313,3 @@ parameters:
 			count: 1
 			path: src/QueryBuilderRequest.php
 
-		-
-			message: '#^Method Spatie\\QueryBuilder\\QueryBuilderServiceProvider\:\:provides\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/QueryBuilderServiceProvider.php
