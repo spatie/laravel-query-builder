@@ -115,7 +115,8 @@ class QueryBuilderRequest extends Request
      */
     public function filters(): Collection
     {
-        $filterParameterName = config()->string('query-builder.parameters.filter', 'filter');
+        /** @var ?non-empty-string */
+        $filterParameterName = config('query-builder.parameters.filter', 'filter');
 
         /**
          * @var array<non-empty-string,mixed>
