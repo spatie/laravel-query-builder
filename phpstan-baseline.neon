@@ -19,12 +19,6 @@ parameters:
 			path: src/AllowedInclude.php
 
 		-
-			message: '#^Method Spatie\\QueryBuilder\\AllowedSort\:\:sort\(\) has parameter \$query with generic class Spatie\\QueryBuilder\\QueryBuilder but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/AllowedSort.php
-
-		-
 			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidFieldQuery\:\:__construct\(\) has parameter \$allowedFields with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
 			count: 1
@@ -77,30 +71,6 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: src/Exceptions/InvalidIncludeQuery.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidSortQuery\:\:__construct\(\) has parameter \$allowedSorts with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Exceptions/InvalidSortQuery.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidSortQuery\:\:__construct\(\) has parameter \$unknownSorts with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Exceptions/InvalidSortQuery.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidSortQuery\:\:sortsNotAllowed\(\) has parameter \$allowedSorts with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Exceptions/InvalidSortQuery.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\InvalidSortQuery\:\:sortsNotAllowed\(\) has parameter \$unknownSorts with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Exceptions/InvalidSortQuery.php
 
 		-
 			message: '#^Method Spatie\\QueryBuilder\\Exceptions\\UnknownIncludedFieldsQuery\:\:__construct\(\) has parameter \$unknownFields with no value type specified in iterable type array\.$#'
@@ -332,25 +302,7 @@ parameters:
 			path: src/QueryBuilder.php
 
 		-
-			message: '#^Unable to resolve the template type TKey in call to function collect$#'
-			identifier: argument.templateType
-			count: 2
-			path: src/QueryBuilder.php
-
-		-
-			message: '#^Unable to resolve the template type TValue in call to function collect$#'
-			identifier: argument.templateType
-			count: 2
-			path: src/QueryBuilder.php
-
-		-
 			message: '#^Method Spatie\\QueryBuilder\\QueryBuilderRequest\:\:appends\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/QueryBuilderRequest.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\QueryBuilderRequest\:\:fields\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
 			count: 1
 			path: src/QueryBuilderRequest.php
@@ -358,24 +310,6 @@ parameters:
 		-
 			message: '#^Method Spatie\\QueryBuilder\\QueryBuilderRequest\:\:includes\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
-			count: 1
-			path: src/QueryBuilderRequest.php
-
-		-
-			message: '#^Method Spatie\\QueryBuilder\\QueryBuilderRequest\:\:sorts\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/QueryBuilderRequest.php
-
-		-
-			message: '#^Unable to resolve the template type TKey in call to function collect$#'
-			identifier: argument.templateType
-			count: 1
-			path: src/QueryBuilderRequest.php
-
-		-
-			message: '#^Unable to resolve the template type TValue in call to function collect$#'
-			identifier: argument.templateType
 			count: 1
 			path: src/QueryBuilderRequest.php
 
