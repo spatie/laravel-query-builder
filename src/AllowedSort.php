@@ -46,6 +46,9 @@ class AllowedSort
         return str_starts_with($name, '-') ? SortDirection::Descending : SortDirection::Ascending;
     }
 
+    /**
+     * @param QueryBuilder<TModel> $query
+     */
     public function sort(QueryBuilder $query, ?bool $descending = null): void
     {
         $descending = $descending ?? ($this->defaultDirection === SortDirection::Descending);

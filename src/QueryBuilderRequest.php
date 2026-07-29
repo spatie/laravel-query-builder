@@ -53,18 +53,27 @@ class QueryBuilderRequest extends Request
         return collect($this->toParameterArray($appendParts))->filter();
     }
 
+    /**
+     * @return Collection<non-empty-string, list<non-empty-string>>
+     */
     public function fields(): Collection
     {
         $fieldsParameterName = config()->string('query-builder.parameters.fields', 'fields');
 
         $fieldsData = $this->getRequestData($fieldsParameterName);
 
+        /**
+         * @var Collection<non-empty-string, non-empty-string>
+         */
         $fieldsPerTable = collect($this->toParameterArray($fieldsData));
 
         if ($fieldsPerTable->isEmpty()) {
             return collect();
         }
 
+        /**
+         * @var array<non-empty-string, list<non-empty-string>>
+         */
         $fields = [];
 
         $fieldsPerTable->each(function ($tableFields, $model) use (&$fields) {
@@ -83,9 +92,15 @@ class QueryBuilderRequest extends Request
             $fields[$model] = array_merge($fields[$model], $tableFields);
         });
 
+        /**
+         * @var Collection<non-empty-string, list<non-empty-string>>
+         */
         return collect($fields);
     }
 
+    /**
+     * @return Collection<int, non-empty-string>
+     */
     public function sorts(): Collection
     {
         $sortParameterName = config()->string('query-builder.parameters.sort', 'sort');
@@ -102,17 +117,23 @@ class QueryBuilderRequest extends Request
     {
         $filterParameterName = config()->string('query-builder.parameters.filter', 'filter');
 
+        /**
+         * @var array<non-empty-string,mixed>
+         */
         $filterParts = $this->getRequestData($filterParameterName, []);
 
         if (is_string($filterParts)) {
             return collect();
         }
 
+        /**
+         * @var Collection<non-empty-string,mixed>
+         */
         $filters = collect($filterParts);
 
-        return $filters->map(function ($value) {
-            return $this->getFilterValue($value);
-        });
+        return $filters->map(
+            fn(mixed $value) => $this->getFilterValue($value)
+        );
     }
 
     protected function getFilterValue(mixed $value): mixed
