@@ -89,6 +89,9 @@ You can specify custom sorting methods using the `AllowedSort::custom()` method.
 For example sorting by string column length:
 
 ```php
+/**
+ * @implements \Spatie\QueryBuilder\Sorts\Sort<\Illuminate\Database\Eloquent\Model>
+ */
 class StringLengthSort implements \Spatie\QueryBuilder\Sorts\Sort
 {
     public function __invoke(Builder $query, bool $descending, string $property)

@@ -3,7 +3,13 @@
 namespace Spatie\QueryBuilder\Sorts;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @template TModel of Model
+ *
+ * @implements Sort<TModel>
+ */
 class SortsCallback implements Sort
 {
     /** @var callable */

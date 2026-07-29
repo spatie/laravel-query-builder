@@ -4,8 +4,14 @@ namespace Spatie\QueryBuilder\Includes;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * @template TModel of Model
+ *
+ * @implements IncludeInterface<TModel>
+ */
 class IncludedCount implements IncludeInterface
 {
     public function __construct(

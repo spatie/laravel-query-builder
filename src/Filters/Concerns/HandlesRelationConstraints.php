@@ -3,14 +3,25 @@
 namespace Spatie\QueryBuilder\Filters\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Spatie\QueryBuilder\Filters\Filter;
 
+/**
+ * @template TModel of Model
+ *
+ * @phpstan-require-implements Filter<TModel>
+ */
 trait HandlesRelationConstraints
 {
+    /** @var array<int, string> */
     protected array $relationConstraints = [];
 
+    /**
+     * @param  Builder<TModel>  $query
+     */
     protected function isRelationProperty(Builder $query, string $property): bool
     {
         if (! Str::contains($property, '.')) {
@@ -30,18 +41,22 @@ trait HandlesRelationConstraints
         return is_a($query->getModel()->{$firstRelationship}(), Relation::class);
     }
 
+    /**
+     * @param  Builder<TModel>  $query
+     */
     protected function withRelationConstraint(Builder $query, mixed $value, string $property): void
     {
         [$relation, $property] = collect(explode('.', $property))
             ->pipe(fn (Collection $parts) => [
-                $parts->except(count($parts) - 1)->implode('.'),
+                $parts->except([$parts->count() - 1])->implode('.'),
                 $parts->last(),
             ]);
 
-        $query->whereHas($relation, function (Builder $query) use ($property, $value) {
-            $this->relationConstraints[] = $property = $query->qualifyColumn($property);
+        $query->whereHas($relation, function (Builder $relationQuery) use ($property, $value) {
+            /** @var Builder<TModel> $relationQuery */
+            $this->relationConstraints[] = $property = $relationQuery->qualifyColumn($property);
 
-            $this->__invoke($query, $value, $property);
+            $this->__invoke($relationQuery, $value, $property);
         });
     }
 }

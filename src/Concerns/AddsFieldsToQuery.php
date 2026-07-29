@@ -9,6 +9,7 @@ use Spatie\QueryBuilder\Exceptions\UnknownIncludedFieldsQuery;
 
 trait AddsFieldsToQuery
 {
+    /** @var Collection<array-key, string>|null */
     protected ?Collection $allowedFields = null;
 
     public function allowedFields(string ...$fields): static
@@ -52,6 +53,9 @@ trait AddsFieldsToQuery
         $this->select($prependedFields);
     }
 
+    /**
+     * @return array<array-key, string>
+     */
     public function getRequestedFieldsForRelatedTable(string $relation, ?string $tableName = null): array
     {
         $possibleRelatedNames = [
@@ -114,6 +118,10 @@ trait AddsFieldsToQuery
         }
     }
 
+    /**
+     * @param  array<array-key, string>  $fields
+     * @return array<array-key, string>
+     */
     protected function prependFieldsWithTableName(array $fields, string $tableName): array
     {
         return array_map(function ($field) use ($tableName) {

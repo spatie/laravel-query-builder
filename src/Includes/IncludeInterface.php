@@ -3,14 +3,15 @@
 namespace Spatie\QueryBuilder\Includes;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 /**
- * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ * @template TModel of Model
  */
 interface IncludeInterface
 {
     /**
-     * @param  Builder<TModelClass>  $query
+     * @param  Builder<TModel>  $query
      */
     public function __invoke(Builder $query, string $include): void;
 }

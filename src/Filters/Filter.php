@@ -3,14 +3,15 @@
 namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 /**
- * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ * @template TModel of Model
  */
 interface Filter
 {
     /**
-     * @param  Builder<TModelClass>  $query
+     * @param  Builder<TModel>  $query
      */
     public function __invoke(Builder $query, mixed $value, string $property): void;
 }

@@ -3,15 +3,17 @@
 namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Filters\Concerns\HandlesRelationConstraints;
 
 /**
- * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ * @template TModel of Model
  *
- * @template-implements Filter<TModelClass>
+ * @implements Filter<TModel>
  */
 class FiltersPartial implements Filter
 {
+    /** @use HandlesRelationConstraints<TModel> */
     use HandlesRelationConstraints;
 
     public function __construct(protected bool $addRelationConstraint = true) {}
@@ -35,7 +37,7 @@ class FiltersPartial implements Filter
             $query->where(function (Builder $query) use ($value, $wrappedProperty, $databaseDriver) {
                 foreach (array_filter($value, fn ($item) => $item != '') as $partialValue) {
                     [$sql, $bindings] = $this->getWhereRawParameters($partialValue, $wrappedProperty, $databaseDriver);
-                    $query->orWhereRaw($sql, $bindings); /** @phpstan-ignore-line */
+                    $query->orWhereRaw($sql, $bindings);
                 }
             });
 
@@ -46,11 +48,17 @@ class FiltersPartial implements Filter
         $query->whereRaw($sql, $bindings);
     }
 
+    /**
+     * @param  Builder<TModel>  $query
+     */
     protected function getDatabaseDriver(Builder $query): string
     {
         return $query->getConnection()->getDriverName(); /** @phpstan-ignore-line */
     }
 
+    /**
+     * @return array{string, array<int, string>}
+     */
     protected function getWhereRawParameters(mixed $value, string $property, string $driver): array
     {
         $value = mb_strtolower((string) $value, 'UTF8');

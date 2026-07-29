@@ -5,8 +5,14 @@ namespace Spatie\QueryBuilder\Includes;
 use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
+/**
+ * @template TModel of Model
+ *
+ * @implements IncludeInterface<TModel>
+ */
 class IncludedRelationship implements IncludeInterface
 {
     private ?Closure $fieldsCallback = null;
@@ -54,6 +60,9 @@ class IncludedRelationship implements IncludeInterface
         $query->with($withs);
     }
 
+    /**
+     * @return Collection<int, string>
+     */
     public static function getIndividualRelationshipPathsFromInclude(string $include): Collection
     {
         return collect(explode('.', $include))

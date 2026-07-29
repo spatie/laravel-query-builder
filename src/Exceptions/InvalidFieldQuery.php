@@ -5,8 +5,15 @@ namespace Spatie\QueryBuilder\Exceptions;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 
+/**
+ * @consistent-constructor
+ */
 class InvalidFieldQuery extends InvalidQuery
 {
+    /**
+     * @param  Collection<array-key, mixed>  $unknownFields
+     * @param  Collection<array-key, mixed>  $allowedFields
+     */
     public function __construct(
         public Collection $unknownFields,
         public Collection $allowedFields
@@ -18,6 +25,10 @@ class InvalidFieldQuery extends InvalidQuery
         parent::__construct(Response::HTTP_BAD_REQUEST, $message);
     }
 
+    /**
+     * @param  Collection<array-key, mixed>  $unknownFields
+     * @param  Collection<array-key, mixed>  $allowedFields
+     */
     public static function fieldsNotAllowed(Collection $unknownFields, Collection $allowedFields): static
     {
         return new static(...func_get_args());

@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 
 /**
- * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ * @template TModel of Model
  *
- * @template-implements Filter<TModelClass>
+ * @implements Filter<TModel>
  */
 class FiltersBelongsTo implements Filter
 {

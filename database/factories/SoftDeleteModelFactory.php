@@ -5,6 +5,9 @@ namespace Spatie\QueryBuilder\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\SoftDeleteModel;
 
+/**
+ * @extends Factory<SoftDeleteModel>
+ */
 class SoftDeleteModelFactory extends Factory
 {
     protected $model = SoftDeleteModel::class;

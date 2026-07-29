@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+/**
+ * @consistent-constructor
+ */
 class QueryBuilderRequest extends Request
 {
     public static function fromRequest(Request $request): static
@@ -14,7 +17,7 @@ class QueryBuilderRequest extends Request
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     protected function toParameterArray(mixed $parts): array
     {
@@ -35,6 +38,9 @@ class QueryBuilderRequest extends Request
         return explode($delimiter, (string) $parts);
     }
 
+    /**
+     * @return Collection<array-key, string>
+     */
     public function includes(): Collection
     {
         $includeParameterName = config('query-builder.parameters.include', 'include');
@@ -44,6 +50,9 @@ class QueryBuilderRequest extends Request
         return collect($this->toParameterArray($includeParts))->filter();
     }
 
+    /**
+     * @return Collection<array-key, string>
+     */
     public function appends(): Collection
     {
         $appendParameterName = config('query-builder.parameters.append', 'append');
@@ -53,6 +62,9 @@ class QueryBuilderRequest extends Request
         return collect($this->toParameterArray($appendParts))->filter();
     }
 
+    /**
+     * @return Collection<array-key, array<array-key, string>>
+     */
     public function fields(): Collection
     {
         $fieldsParameterName = config('query-builder.parameters.fields', 'fields');
@@ -66,7 +78,7 @@ class QueryBuilderRequest extends Request
 
         $fields = [];
 
-        $fieldsPerTable->each(function ($tableFields, $model) use (&$fields) {
+        $fieldsPerTable->each(function (mixed $tableFields, mixed $model) use (&$fields) {
             if (is_numeric($model)) {
                 $model = Str::contains($tableFields, '.') ? Str::beforeLast($tableFields, '.') : '_';
             }
@@ -85,6 +97,9 @@ class QueryBuilderRequest extends Request
         return collect($fields);
     }
 
+    /**
+     * @return Collection<array-key, string>
+     */
     public function sorts(): Collection
     {
         $sortParameterName = config('query-builder.parameters.sort', 'sort');
@@ -94,6 +109,9 @@ class QueryBuilderRequest extends Request
         return collect($this->toParameterArray($sortParts))->filter();
     }
 
+    /**
+     * @return Collection<array-key, mixed>
+     */
     public function filters(): Collection
     {
         $filterParameterName = config('query-builder.parameters.filter', 'filter');
@@ -104,11 +122,10 @@ class QueryBuilderRequest extends Request
             return collect();
         }
 
+        /** @var iterable<array-key, mixed> $filterParts */
         $filters = collect($filterParts);
 
-        return $filters->map(function ($value) {
-            return $this->getFilterValue($value);
-        });
+        return $filters->map(fn (mixed $value): mixed => $this->getFilterValue($value));
     }
 
     protected function getFilterValue(mixed $value): mixed
@@ -118,9 +135,7 @@ class QueryBuilderRequest extends Request
         }
 
         if (is_array($value)) {
-            return collect($value)->map(function ($valueValue) {
-                return $this->getFilterValue($valueValue);
-            })->all();
+            return array_map(fn (mixed $nestedValue): mixed => $this->getFilterValue($nestedValue), $value);
         }
 
         if ($value === 'true') {

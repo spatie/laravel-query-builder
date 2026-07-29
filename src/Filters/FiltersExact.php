@@ -3,15 +3,17 @@
 namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Filters\Concerns\HandlesRelationConstraints;
 
 /**
- * @template TModelClass of \Illuminate\Database\Eloquent\Model
+ * @template TModel of Model
  *
- * @template-implements Filter<TModelClass>
+ * @implements Filter<TModel>
  */
 class FiltersExact implements Filter
 {
+    /** @use HandlesRelationConstraints<TModel> */
     use HandlesRelationConstraints;
 
     public function __construct(protected bool $addRelationConstraint = true) {}

@@ -7,9 +7,12 @@ use Illuminate\Support\Collection;
 
 class UnknownIncludedFieldsQuery extends InvalidQuery
 {
-    /** @var Collection */
-    public $unknownFields;
+    /** @var Collection<array-key, mixed> */
+    public Collection $unknownFields;
 
+    /**
+     * @param  array<array-key, mixed>  $unknownFields
+     */
     public function __construct(array $unknownFields)
     {
         $this->unknownFields = collect($unknownFields);
