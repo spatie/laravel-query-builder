@@ -178,8 +178,12 @@ For example:
 ```php
 use Spatie\QueryBuilder\Includes\IncludeInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use App\Models\Post;
 
+/**
+ * @implements IncludeInterface<Model>
+ */
 class AggregateInclude implements IncludeInterface
 {
     protected string $column;

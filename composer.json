@@ -31,8 +31,8 @@
         "larastan/larastan": "^3.3",
         "mockery/mockery": "^1.4",
         "orchestra/testbench": "^10.0|^11.0",
-        "pestphp/pest": "^4.0",
-        "phpunit/phpunit": "^12.0",
+        "pestphp/pest": "^4.0|^5.0",
+        "phpunit/phpunit": "^12.0|^13.0",
         "spatie/invade": "^2.0"
     },
     "autoload": {

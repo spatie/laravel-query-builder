@@ -4,7 +4,13 @@ namespace Spatie\QueryBuilder\Includes;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @template TModel of Model
+ *
+ * @implements IncludeInterface<TModel>
+ */
 class IncludedAvg implements IncludeInterface
 {
     public function __construct(

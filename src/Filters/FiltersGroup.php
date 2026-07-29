@@ -3,18 +3,19 @@
 namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use Spatie\QueryBuilder\AllowedFilter;
 
 /**
- * @template-implements Filter<\Illuminate\Database\Eloquent\Model>
+ * @implements Filter<Model>
  */
 class FiltersGroup implements Filter
 {
-    /** @var AllowedFilter[] */
+    /** @var array<int, AllowedFilter> */
     protected array $members;
 
-    /** @param AllowedFilter[] $members */
+    /** @param array<int, AllowedFilter> $members */
     public function __construct(
         protected string $conjunction,
         array $members,
@@ -45,14 +46,12 @@ class FiltersGroup implements Filter
         $query->where(function (Builder $sub) use ($value) {
             foreach ($this->members as $member) {
                 if ($this->conjunction === 'or') {
-                    $sub->orWhere(function (Builder $inner) use ($member, $value) {
-                        $member->applyTo($inner, $value);
-                    });
-                } else {
-                    $sub->where(function (Builder $inner) use ($member, $value) {
-                        $member->applyTo($inner, $value);
-                    });
+                    $sub->orWhere(fn (Builder $inner) => $member->applyTo($inner, $value));
+
+                    continue;
                 }
+
+                $sub->where(fn (Builder $inner) => $member->applyTo($inner, $value));
             }
         });
     }

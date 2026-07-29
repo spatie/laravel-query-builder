@@ -19,10 +19,14 @@ use Spatie\QueryBuilder\Filters\FiltersPartial;
 use Spatie\QueryBuilder\Filters\FiltersScope;
 use Spatie\QueryBuilder\Filters\FiltersTrashed;
 
+/**
+ * @consistent-constructor
+ */
 class AllowedFilter
 {
     protected string $internalName;
 
+    /** @var Collection<array-key, mixed> */
     protected Collection $ignored;
 
     protected mixed $default = null;
@@ -33,6 +37,9 @@ class AllowedFilter
 
     protected ?string $arrayValueDelimiter = null;
 
+    /**
+     * @param  Filter<Model>  $filterClass
+     */
     public function __construct(
         protected string $name,
         protected Filter $filterClass,
@@ -43,6 +50,9 @@ class AllowedFilter
         $this->internalName = $internalName ?? $name;
     }
 
+    /**
+     * @param  QueryBuilder<*>  $query
+     */
     public function filter(QueryBuilder $query, mixed $value): void
     {
         $this->applyTo($query->getEloquentBuilder(), $value);
@@ -106,6 +116,9 @@ class AllowedFilter
         return new static($name, new FiltersScope, $internalName);
     }
 
+    /**
+     * @param  callable(Builder<Model>, mixed, string): mixed  $callback
+     */
     public static function callback(string $name, callable $callback, ?string $internalName = null): static
     {
         return new static($name, new FiltersCallback($callback), $internalName);
@@ -116,6 +129,9 @@ class AllowedFilter
         return new static($name, new FiltersTrashed, $internalName);
     }
 
+    /**
+     * @param  Filter<Model>  $filterClass
+     */
     public static function custom(string $name, Filter $filterClass, ?string $internalName = null): static
     {
         return new static($name, $filterClass, $internalName);
@@ -132,7 +148,7 @@ class AllowedFilter
     }
 
     /**
-     * @param  AllowedFilter[]  $members
+     * @param  array<int, AllowedFilter>  $members
      */
     public static function groupOr(string $name, array $members): static
     {
@@ -140,13 +156,16 @@ class AllowedFilter
     }
 
     /**
-     * @param  AllowedFilter[]  $members
+     * @param  array<int, AllowedFilter>  $members
      */
     public static function groupAnd(string $name, array $members): static
     {
         return new static($name, new FiltersGroup('and', $members));
     }
 
+    /**
+     * @return Filter<Model>
+     */
     public function getFilterClass(): Filter
     {
         return $this->filterClass;
@@ -171,6 +190,9 @@ class AllowedFilter
         return $this;
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function getIgnored(): array
     {
         return $this->ignored->toArray();
@@ -213,7 +235,7 @@ class AllowedFilter
     public function unsetDefault(): static
     {
         $this->hasDefault = false;
-        unset($this->default);
+        $this->default = null;
 
         return $this;
     }

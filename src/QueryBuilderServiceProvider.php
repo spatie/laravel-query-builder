@@ -21,6 +21,9 @@ class QueryBuilderServiceProvider extends PackageServiceProvider
         });
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function provides(): array
     {
         return [

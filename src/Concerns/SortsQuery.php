@@ -8,6 +8,7 @@ use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 
 trait SortsQuery
 {
+    /** @var Collection<array-key, AllowedSort> */
     protected Collection $allowedSorts;
 
     public function allowedSorts(AllowedSort|string ...$sorts): static

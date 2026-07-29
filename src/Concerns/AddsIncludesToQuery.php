@@ -10,6 +10,7 @@ use Spatie\QueryBuilder\Includes\IncludedRelationship;
 
 trait AddsIncludesToQuery
 {
+    /** @var Collection<array-key, AllowedInclude>|null */
     protected ?Collection $allowedIncludes = null;
 
     public function allowedIncludes(AllowedInclude|string ...$includes): static
@@ -34,6 +35,9 @@ trait AddsIncludesToQuery
         return $this;
     }
 
+    /**
+     * @return array<int, AllowedInclude>
+     */
     protected function generateIncludesFromString(string $include): array
     {
         $countSuffix = config('query-builder.suffixes.count', 'Count');
@@ -63,9 +67,12 @@ trait AddsIncludesToQuery
         return $includes;
     }
 
+    /**
+     * @param  Collection<array-key, string>  $includes
+     */
     protected function addIncludesToQuery(Collection $includes): void
     {
-        $includes->each(function ($include) {
+        $includes->each(function (string $include) {
             $include = $this->findInclude($include);
 
             $include?->include($this);
@@ -95,6 +102,10 @@ trait AddsIncludesToQuery
         }
     }
 
+    /**
+     * @param  Collection<array-key, string>  $includes
+     * @return Collection<array-key, string>
+     */
     protected function filterNonExistingIncludes(Collection $includes): Collection
     {
         if (! config('query-builder.disable_invalid_include_query_exception', false)) {

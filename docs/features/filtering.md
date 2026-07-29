@@ -311,7 +311,11 @@ For example:
 ```php
 use Spatie\QueryBuilder\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @implements Filter<Model>
+ */
 class FiltersUserPermission implements Filter
 {
     public function __invoke(Builder $query, $value, string $property)

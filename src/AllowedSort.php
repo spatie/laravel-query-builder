@@ -2,17 +2,25 @@
 
 namespace Spatie\QueryBuilder;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Enums\SortDirection;
 use Spatie\QueryBuilder\Sorts\Sort;
 use Spatie\QueryBuilder\Sorts\SortsCallback;
 use Spatie\QueryBuilder\Sorts\SortsField;
 
+/**
+ * @consistent-constructor
+ */
 class AllowedSort
 {
     protected SortDirection $defaultDirection;
 
     protected string $internalName;
 
+    /**
+     * @param  Sort<Model>  $sortClass
+     */
     public function __construct(
         protected string $name,
         protected Sort $sortClass,
@@ -30,6 +38,9 @@ class AllowedSort
         return str_starts_with($name, '-') ? SortDirection::Descending : SortDirection::Ascending;
     }
 
+    /**
+     * @param  QueryBuilder<*>  $query
+     */
     public function sort(QueryBuilder $query, ?bool $descending = null): void
     {
         $descending = $descending ?? ($this->defaultDirection === SortDirection::Descending);
@@ -42,11 +53,17 @@ class AllowedSort
         return new static($name, new SortsField, $internalName);
     }
 
+    /**
+     * @param  Sort<Model>  $sortClass
+     */
     public static function custom(string $name, Sort $sortClass, ?string $internalName = null): static
     {
         return new static($name, $sortClass, $internalName);
     }
 
+    /**
+     * @param  callable(Builder<Model>, bool, string): mixed  $callback
+     */
     public static function callback(string $name, callable $callback, ?string $internalName = null): static
     {
         return new static($name, new SortsCallback($callback), $internalName);

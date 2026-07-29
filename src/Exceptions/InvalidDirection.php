@@ -5,6 +5,9 @@ namespace Spatie\QueryBuilder\Exceptions;
 use Exception;
 use Spatie\QueryBuilder\Enums\SortDirection;
 
+/**
+ * @consistent-constructor
+ */
 class InvalidDirection extends Exception
 {
     public static function make(string $sort): static

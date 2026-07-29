@@ -5,6 +5,9 @@ namespace Spatie\QueryBuilder\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Spatie\QueryBuilder\Tests\TestClasses\Models\TestModel;
 
+/**
+ * @extends Factory<TestModel>
+ */
 class TestModelFactory extends Factory
 {
     protected $model = TestModel::class;

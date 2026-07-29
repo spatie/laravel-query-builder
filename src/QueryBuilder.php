@@ -16,7 +16,11 @@ use Spatie\QueryBuilder\Concerns\SortsQuery;
 /**
  * @template TModel of Model
  *
+ * @implements ArrayAccess<mixed, mixed>
+ *
  * @mixin EloquentBuilder<TModel>
+ *
+ * @consistent-constructor
  */
 class QueryBuilder implements ArrayAccess
 {
@@ -74,12 +78,14 @@ class QueryBuilder implements ArrayAccess
             $subject = $subject::query();
         }
 
-        /** @var static<T> $queryBuilder */
-        $queryBuilder = new static($subject, $request);
-
-        return $queryBuilder;
+        // PHPStan cannot infer the template type of `new static()` on a generic class.
+        /** @phpstan-ignore return.type */
+        return new static($subject, $request);
     }
 
+    /**
+     * @param  array<array-key, mixed>  $arguments
+     */
     public function __call(string $name, array $arguments): mixed
     {
         $result = $this->forwardCallTo($this->subject, $name, $arguments);

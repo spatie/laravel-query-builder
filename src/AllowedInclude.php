@@ -3,6 +3,7 @@
 namespace Spatie\QueryBuilder;
 
 use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Includes\IncludedAvg;
 use Spatie\QueryBuilder\Includes\IncludedCallback;
 use Spatie\QueryBuilder\Includes\IncludedCount;
@@ -13,10 +14,16 @@ use Spatie\QueryBuilder\Includes\IncludedRelationship;
 use Spatie\QueryBuilder\Includes\IncludedSum;
 use Spatie\QueryBuilder\Includes\IncludeInterface;
 
+/**
+ * @consistent-constructor
+ */
 class AllowedInclude
 {
     protected string $internalName;
 
+    /**
+     * @param  IncludeInterface<Model>  $includeClass
+     */
     public function __construct(
         protected string $name,
         protected IncludeInterface $includeClass,
@@ -65,11 +72,17 @@ class AllowedInclude
         return new static($name, new IncludedCallback($callback), $internalName);
     }
 
+    /**
+     * @param  IncludeInterface<Model>  $includeClass
+     */
     public static function custom(string $name, IncludeInterface $includeClass, ?string $internalName = null): static
     {
         return new static($name, $includeClass, $internalName);
     }
 
+    /**
+     * @param  QueryBuilder<*>  $query
+     */
     public function include(QueryBuilder $query): void
     {
         if ($this->includeClass instanceof IncludedRelationship) {
