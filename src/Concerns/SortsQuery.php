@@ -93,7 +93,10 @@ trait SortsQuery
             return;
         }
 
-        $requestedSortNames = $this->request->sorts()->map(fn (string $sort) => ltrim($sort, '-'));
+        /** @var Collection<int,non-empty-string> */
+        $requestedSortNames = $this->request->sorts()->map(
+            static fn (string $sort) => ltrim($sort, '-')
+        );
 
         $allowedSortNames = $this->allowedSorts->map(fn (AllowedSort $sort) => $sort->getName());
 
