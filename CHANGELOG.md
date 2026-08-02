@@ -2,6 +2,16 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 7.3.1 - 2026-08-02
+
+### What's Changed
+
+* Bump actions/checkout from 5 to 6 by @dependabot[bot] in https://github.com/spatie/laravel-query-builder/pull/1061
+* Bump actions/checkout from 6 to 7 by @dependabot[bot] in https://github.com/spatie/laravel-query-builder/pull/1063
+* Make PHPStan level 6 pass without a baseline by @freekmurze in https://github.com/spatie/laravel-query-builder/pull/1066
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/7.3.0...7.3.1
+
 ## 7.3.0 - 2026-05-02
 
 ### What's Changed
