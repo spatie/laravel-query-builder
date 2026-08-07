@@ -8,6 +8,7 @@ use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Enums\FilterOperator;
 use Spatie\QueryBuilder\Filters\Filter;
+use Spatie\QueryBuilder\Includes\IncludeInterface;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\Sorts\Sort;
 
@@ -27,7 +28,9 @@ class Book extends Model
 class Author extends Model {}
 
 /**
- * @implements Filter<Model>
+ * A filter written against one specific model.
+ *
+ * @implements Filter<Book>
  */
 class BooksPublishedInFilter implements Filter
 {
@@ -38,13 +41,37 @@ class BooksPublishedInFilter implements Filter
 }
 
 /**
- * @implements Sort<Model>
+ * A filter written against any model.
+ *
+ * @implements Filter<Model>
+ */
+class NotNullFilter implements Filter
+{
+    public function __invoke(Builder $query, mixed $value, string $property): void
+    {
+        $query->whereNotNull($property);
+    }
+}
+
+/**
+ * @implements Sort<Book>
  */
 class BooksByPopularitySort implements Sort
 {
     public function __invoke(Builder $query, bool $descending, string $property): void
     {
         $query->orderBy('popularity', $descending ? 'desc' : 'asc');
+    }
+}
+
+/**
+ * @implements IncludeInterface<Book>
+ */
+class BooksWithAuthorInclude implements IncludeInterface
+{
+    public function __invoke(Builder $query, string $include): void
+    {
+        $query->with('author');
     }
 }
 
@@ -62,6 +89,7 @@ assertType('Spatie\QueryBuilder\QueryBuilder<Book>', QueryBuilder::for(Book::cla
         AllowedFilter::operator('pages', FilterOperator::GREATER_THAN),
         AllowedFilter::callback('title_length', fn (Builder $query, mixed $value) => $query->whereRaw('length(title) = ?', [$value])),
         AllowedFilter::custom('published_in', new BooksPublishedInFilter),
+        AllowedFilter::custom('subtitle', new NotNullFilter),
         AllowedFilter::groupOr('search', [
             AllowedFilter::partial('title'),
             AllowedFilter::partial('author.name'),
@@ -77,4 +105,5 @@ assertType('Spatie\QueryBuilder\QueryBuilder<Book>', QueryBuilder::for(Book::cla
         'author',
         AllowedInclude::count('reviewsCount'),
         AllowedInclude::callback('recentReviews', fn (Builder $query) => $query->latest()),
+        AllowedInclude::custom('authorDetails', new BooksWithAuthorInclude),
     ));

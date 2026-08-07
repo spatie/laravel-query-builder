@@ -19,7 +19,7 @@ class AllowedSort
     protected string $internalName;
 
     /**
-     * @param  Sort<Model>  $sortClass
+     * @param  Sort<*>  $sortClass
      */
     public function __construct(
         protected string $name,
@@ -54,7 +54,7 @@ class AllowedSort
     }
 
     /**
-     * @param  Sort<Model>  $sortClass
+     * @param  Sort<*>  $sortClass
      */
     public static function custom(string $name, Sort $sortClass, ?string $internalName = null): static
     {

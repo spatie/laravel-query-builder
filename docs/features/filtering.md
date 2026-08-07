@@ -338,6 +338,8 @@ $users = QueryBuilder::for(User::class)
 // $users will contain all users that have the `createPosts` permission
 ```
 
+The `@implements` annotation is only there for static analysis. Use `Filter<Model>` for a filter that works on any model, or name a concrete model (`Filter<User>`) when the filter is written for one. The same goes for the `Sort` and `IncludeInterface` interfaces.
+
 ## Filter aliases
 
 It can be useful to specify an alias for a filter to avoid exposing database column names. For example, your users table might have a `user_passport_full_name` column, which is a horrible name for a filter. Using aliases you can specify a new, shorter name for this filter:
