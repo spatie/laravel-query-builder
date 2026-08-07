@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 7.3.3 - 2026-08-07
+
+- Allow model-specific custom filters, sorts and includes by @freekmurze in https://github.com/spatie/laravel-query-builder/pull/1069
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/7.3.2...7.3.3
+
 ## 7.3.2 - 2026-08-07
 
 ### What's Changed
