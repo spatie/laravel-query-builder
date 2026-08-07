@@ -38,7 +38,7 @@ class AllowedFilter
     protected ?string $arrayValueDelimiter = null;
 
     /**
-     * @param  Filter<Model>  $filterClass
+     * @param  Filter<*>  $filterClass
      */
     public function __construct(
         protected string $name,
@@ -130,7 +130,7 @@ class AllowedFilter
     }
 
     /**
-     * @param  Filter<Model>  $filterClass
+     * @param  Filter<*>  $filterClass
      */
     public static function custom(string $name, Filter $filterClass, ?string $internalName = null): static
     {
@@ -164,7 +164,7 @@ class AllowedFilter
     }
 
     /**
-     * @return Filter<Model>
+     * @return Filter<*>
      */
     public function getFilterClass(): Filter
     {

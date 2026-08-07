@@ -3,7 +3,6 @@
 namespace Spatie\QueryBuilder;
 
 use Closure;
-use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\Includes\IncludedAvg;
 use Spatie\QueryBuilder\Includes\IncludedCallback;
 use Spatie\QueryBuilder\Includes\IncludedCount;
@@ -22,7 +21,7 @@ class AllowedInclude
     protected string $internalName;
 
     /**
-     * @param  IncludeInterface<Model>  $includeClass
+     * @param  IncludeInterface<*>  $includeClass
      */
     public function __construct(
         protected string $name,
@@ -73,7 +72,7 @@ class AllowedInclude
     }
 
     /**
-     * @param  IncludeInterface<Model>  $includeClass
+     * @param  IncludeInterface<*>  $includeClass
      */
     public static function custom(string $name, IncludeInterface $includeClass, ?string $internalName = null): static
     {
