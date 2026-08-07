@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 7.3.2 - 2026-08-07
+
+### What's Changed
+
+* Default direction getter for AllowedSort by @67cwr3ej in https://github.com/spatie/laravel-query-builder/pull/1067
+
+### New Contributors
+
+* @67cwr3ej made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1067
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/7.3.1...7.3.2
+
 ## 7.3.1 - 2026-08-02
 
 ### What's Changed
