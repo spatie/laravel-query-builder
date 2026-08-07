@@ -90,4 +90,9 @@ class AllowedSort
 
         return $this;
     }
+
+    public function getDefaultDirection(): SortDirection
+    {
+        return $this->defaultDirection;
+    }
 }
