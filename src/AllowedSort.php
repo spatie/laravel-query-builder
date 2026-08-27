@@ -62,7 +62,9 @@ class AllowedSort
     }
 
     /**
-     * @param  callable(Builder<Model>, bool, string): mixed  $callback
+     * @template TModel of Model
+     *
+     * @param  callable(Builder<TModel>, bool, string): mixed  $callback
      */
     public static function callback(string $name, callable $callback, ?string $internalName = null): static
     {

@@ -65,6 +65,26 @@ class BooksByPopularitySort implements Sort
 }
 
 /**
+ * A callback filter written against one specific model.
+ *
+ * @param  Builder<Book>  $query
+ */
+function filterBooksByPublicationYear(Builder $query, mixed $value, string $property): void
+{
+    $query->whereYear('published_at', $value);
+}
+
+/**
+ * A callback sort written against one specific model.
+ *
+ * @param  Builder<Book>  $query
+ */
+function sortBooksByPopularity(Builder $query, bool $descending, string $property): void
+{
+    $query->orderBy('popularity', $descending ? 'desc' : 'asc');
+}
+
+/**
  * @implements IncludeInterface<Book>
  */
 class BooksWithAuthorInclude implements IncludeInterface
@@ -88,6 +108,7 @@ assertType('Spatie\QueryBuilder\QueryBuilder<Book>', QueryBuilder::for(Book::cla
         AllowedFilter::trashed(),
         AllowedFilter::operator('pages', FilterOperator::GREATER_THAN),
         AllowedFilter::callback('title_length', fn (Builder $query, mixed $value) => $query->whereRaw('length(title) = ?', [$value])),
+        AllowedFilter::callback('published_in_year', filterBooksByPublicationYear(...)),
         AllowedFilter::custom('published_in', new BooksPublishedInFilter),
         AllowedFilter::custom('subtitle', new NotNullFilter),
         AllowedFilter::groupOr('search', [
@@ -99,6 +120,7 @@ assertType('Spatie\QueryBuilder\QueryBuilder<Book>', QueryBuilder::for(Book::cla
         'title',
         AllowedSort::field('published', 'published_at'),
         AllowedSort::callback('random', fn (Builder $query, bool $descending) => $query->inRandomOrder()),
+        AllowedSort::callback('popularity_callback', sortBooksByPopularity(...)),
         AllowedSort::custom('popularity', new BooksByPopularitySort),
     )
     ->allowedIncludes(
