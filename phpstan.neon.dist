@@ -8,7 +8,6 @@ parameters:
         - src/
         - config/
         - database/
-        - types/
 
     # Level 9 is the highest level
     level: 6

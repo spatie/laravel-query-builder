@@ -117,7 +117,9 @@ class AllowedFilter
     }
 
     /**
-     * @param  callable(Builder<Model>, mixed, string): mixed  $callback
+     * @template TModel of Model
+     *
+     * @param  callable(Builder<TModel>, mixed, string): mixed  $callback
      */
     public static function callback(string $name, callable $callback, ?string $internalName = null): static
     {
