@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 7.3.4 - 2026-09-01
+
+### What's Changed
+
+* Allow model-specific closures in AllowedFilter::callback() and AllowedSort::callback() by @Pronesti in https://github.com/spatie/laravel-query-builder/pull/1070
+
+### New Contributors
+
+* @Pronesti made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1070
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/7.3.3...7.3.4
+
 ## 7.3.3 - 2026-08-07
 
 - Allow model-specific custom filters, sorts and includes by @freekmurze in https://github.com/spatie/laravel-query-builder/pull/1069
