@@ -267,13 +267,33 @@ class AllowedFilter
 
     protected function resolveValueForFiltering(mixed $value): mixed
     {
-        if (is_array($value)) {
-            $remainingProperties = array_map([$this, 'resolveValueForFiltering'], $value);
-
-            return ! empty($remainingProperties) ? $remainingProperties : null;
+        if (! is_array($value)) {
+            return ! $this->ignored->contains($value) ? $value : null;
         }
 
-        return ! $this->ignored->contains($value) ? $value : null;
+        $remainingProperties = [];
+
+        foreach ($value as $key => $item) {
+            if (is_array($item)) {
+                $resolvedItem = $this->resolveValueForFiltering($item);
+
+                if (! is_null($resolvedItem)) {
+                    $remainingProperties[$key] = $resolvedItem;
+                }
+
+                continue;
+            }
+
+            if (! $this->ignored->contains($item)) {
+                $remainingProperties[$key] = $item;
+            }
+        }
+
+        if ($remainingProperties === []) {
+            return null;
+        }
+
+        return array_is_list($value) ? array_values($remainingProperties) : $remainingProperties;
     }
 
     protected function filterValueSplittingDisabled(): bool
