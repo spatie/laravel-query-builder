@@ -65,6 +65,10 @@ class AllowedFilter
     {
         $value = $this->splitFilterValue($value);
 
+        if ($this->containsOnlyIgnoredValues($value)) {
+            return;
+        }
+
         $valueToFilter = $this->resolveValueForFiltering($value);
 
         if (! $this->nullable && is_null($valueToFilter)) {
@@ -294,6 +298,21 @@ class AllowedFilter
         }
 
         return array_is_list($value) ? array_values($remainingProperties) : $remainingProperties;
+    }
+
+    protected function containsOnlyIgnoredValues(mixed $value): bool
+    {
+        if (! is_array($value)) {
+            return $this->ignored->contains($value);
+        }
+
+        foreach ($value as $item) {
+            if (! $this->containsOnlyIgnoredValues($item)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     protected function filterValueSplittingDisabled(): bool

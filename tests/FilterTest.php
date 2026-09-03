@@ -636,6 +636,33 @@ it('should not apply a filter when every value of a multi value filter is ignore
         ->and($query->get())->toHaveCount(TestModel::count());
 });
 
+it('should not apply a nullable filter when the supplied scalar value is ignored', function () {
+    $query = createQueryFromFilterRequest([
+        'name' => 'John Doe',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->ignore('John Doe')->nullable());
+
+    expect($query->toSql())->not->toContain('where');
+});
+
+it('should not apply a nullable filter when null is ignored', function () {
+    $query = createQueryFromFilterRequest([
+        'name' => null,
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->ignore(null)->nullable());
+
+    expect($query->toSql())->not->toContain('where');
+});
+
+it('should not apply a nullable filter when every value of a multi value filter is ignored', function () {
+    $query = createQueryFromFilterRequest([
+        'name' => 'John Doe,John Doe',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->ignore('John Doe')->nullable());
+
+    expect($query->toSql())->not->toContain('where');
+});
+
 it('should apply the filter on the subset of allowed values regardless of the values order', function () {
     TestModel::create(['name' => 'Tom']);
     TestModel::create(['name' => 'Jim']);
