@@ -616,6 +616,117 @@ it('should apply the filter on the subset of allowed values regardless of the ke
     expect($models)->toHaveCount(1);
 });
 
+it('should remove ignored values from a multi value filter instead of replacing them with null', function () {
+    $query = createQueryFromFilterRequest([
+        'name' => 'John Doe,John Deer',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->ignore('John Doe'));
+
+    expect($query->toSql())->toContain('in (?)')
+        ->and($query->getBindings())->toEqual(['John Deer']);
+});
+
+it('should not apply a filter when every value of a multi value filter is ignored', function () {
+    $query = createQueryFromFilterRequest([
+        'name' => ',,',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->ignore(''));
+
+    expect($query->toSql())->not->toContain('where')
+        ->and($query->get())->toHaveCount(TestModel::count());
+});
+
+it('should not apply a nullable filter when the supplied scalar value is ignored', function () {
+    $query = createQueryFromFilterRequest([
+        'name' => 'John Doe',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->ignore('John Doe')->nullable());
+
+    expect($query->toSql())->not->toContain('where');
+});
+
+it('should not apply a nullable filter when null is ignored', function () {
+    $query = createQueryFromFilterRequest([
+        'name' => null,
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->ignore(null)->nullable());
+
+    expect($query->toSql())->not->toContain('where');
+});
+
+it('should not apply a nullable filter when every value of a multi value filter is ignored', function () {
+    $query = createQueryFromFilterRequest([
+        'name' => 'John Doe,John Doe',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->ignore('John Doe')->nullable());
+
+    expect($query->toSql())->not->toContain('where');
+});
+
+it('should apply the filter on the subset of allowed values regardless of the values order', function () {
+    TestModel::create(['name' => 'Tom']);
+    TestModel::create(['name' => 'Jim']);
+
+    $bindingsForFirstOrder = createQueryFromFilterRequest([
+        'name' => 'Tom,Jim',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->ignore('Tom'))
+        ->getBindings();
+
+    $bindingsForSecondOrder = createQueryFromFilterRequest([
+        'name' => 'Jim,Tom',
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->ignore('Tom'))
+        ->getBindings();
+
+    expect($bindingsForFirstOrder)->toEqual(['Jim'])
+        ->and($bindingsForSecondOrder)->toEqual(['Jim']);
+});
+
+it('should remove ignored values from a nested array filter value', function () {
+    $receivedValue = null;
+
+    createQueryFromFilterRequest([
+        'conditions' => [
+            ['John Doe', 'John Deer'],
+            ['John Doe'],
+        ],
+    ])
+        ->allowedFilters(
+            AllowedFilter::callback('conditions', function ($query, $value) use (&$receivedValue) {
+                $receivedValue = $value;
+            })->ignore('John Doe')
+        )
+        ->get();
+
+    expect($receivedValue)->toEqual([['John Deer']]);
+});
+
+it('should keep the keys of an associative filter value when removing ignored values', function () {
+    $receivedValue = null;
+
+    createQueryFromFilterRequest([
+        'created_between' => ['start' => '2016-01-01', 'end' => 'ignore_me'],
+    ])
+        ->allowedFilters(
+            AllowedFilter::callback('created_between', function ($query, $value) use (&$receivedValue) {
+                $receivedValue = $value;
+            })->ignore('ignore_me')
+        )
+        ->get();
+
+    expect($receivedValue)->toEqual(['start' => '2016-01-01']);
+});
+
+it('should keep null values inside an array filter value for a nullable filter', function () {
+    $query = createQueryFromFilterRequest([
+        'name' => [null, 'John Deer'],
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->nullable());
+
+    expect($query->getBindings())->toEqual([null, 'John Deer']);
+});
+
 it('can take an argument for custom column name resolution', function () {
     $filter = AllowedFilter::custom('property_name', new FiltersExact, 'property_column_name');
 
