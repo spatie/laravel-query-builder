@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 7.3.5 - 2026-09-03
+
+### What's Changed
+
+* Remove ignored values from array filter values by @danielebarbaro in https://github.com/spatie/laravel-query-builder/pull/1071
+
+### New Contributors
+
+* @danielebarbaro made their first contribution in https://github.com/spatie/laravel-query-builder/pull/1071
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/7.3.4...7.3.5
+
 ## 7.3.4 - 2026-09-01
 
 ### What's Changed
