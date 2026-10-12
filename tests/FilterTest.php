@@ -1168,6 +1168,20 @@ it('can filter salary with dynamic array operator filter', function () {
     expect($results)->toHaveCount(2);
 });
 
+it('can filter with dynamic operator filter when value contains an equals sign', function () {
+    TestModel::create(['name' => 'key=value']);
+    TestModel::create(['name' => 'ey=value']);
+
+    $results = createQueryFromFilterRequest([
+        'name' => 'key=value',
+    ])
+        ->allowedFilters(AllowedFilter::operator('name', FilterOperator::DYNAMIC))
+        ->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->name)->toBe('key=value');
+});
+
 it('can filter with nullable operator filter when value is null', function () {
     TestModel::create(['name' => null, 'salary' => 1000]);
     TestModel::create(['name' => 'John', 'salary' => 2000]);
