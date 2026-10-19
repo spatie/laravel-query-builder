@@ -78,8 +78,6 @@ class QueryBuilder implements ArrayAccess
             $subject = $subject::query();
         }
 
-        // PHPStan cannot infer the template type of `new static()` on a generic class.
-        /** @phpstan-ignore return.type */
         return new static($subject, $request);
     }
 

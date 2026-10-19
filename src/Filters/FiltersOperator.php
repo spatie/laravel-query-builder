@@ -69,7 +69,7 @@ class FiltersOperator implements Filter
 
     protected function removeDynamicFilterOperatorFromValue(string &$value, FilterOperator $filterOperator): void
     {
-        if (str_contains($value, $filterOperator->value)) {
+        if (str_starts_with($value, $filterOperator->value)) {
             $value = substr_replace($value, '', 0, strlen($filterOperator->value));
         }
     }
