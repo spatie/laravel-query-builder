@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "illuminate/database": "^12.0|^13.0",
         "illuminate/http": "^12.0|^13.0",
         "illuminate/support": "^12.0|^13.0",
@@ -31,8 +31,8 @@
         "larastan/larastan": "^3.3",
         "mockery/mockery": "^1.4",
         "orchestra/testbench": "^10.0|^11.0",
-        "pestphp/pest": "^4.0|^5.0",
-        "phpunit/phpunit": "^12.0|^13.0",
+        "pestphp/pest": "^5.3",
+        "phpunit/phpunit": "^13.4",
         "spatie/invade": "^2.0"
     },
     "autoload": {
@@ -48,7 +48,7 @@
     },
     "scripts": {
         "test": "vendor/bin/pest",
-        "test-coverage": "phpunit --coverage-html coverage",
+        "test-coverage": "vendor/bin/pest --coverage-html coverage",
         "analyse": "vendor/bin/phpstan analyse --ansi --memory-limit=4G",
         "baseline": "vendor/bin/phpstan analyse --generate-baseline --memory-limit=4G"
     },
