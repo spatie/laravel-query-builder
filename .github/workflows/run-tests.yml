@@ -18,10 +18,12 @@ jobs:
         include:
           - laravel: 12.*
             testbench: 10.*
+            pest: 4.*
           - laravel: 13.*
             testbench: 11.*
+            pest: 5.*
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - Pest ${{ matrix.pest }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
     services:
       mysql:
@@ -58,7 +60,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}"  --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer require --dev "orchestra/testbench:${{ matrix.testbench }}" "pestphp/pest:${{ matrix.pest }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests
