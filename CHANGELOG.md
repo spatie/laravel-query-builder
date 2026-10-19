@@ -2,6 +2,21 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 7.3.6 - 2026-10-19
+
+### Fixed
+
+- Preserve the complete value when a dynamic operator filter contains an equals sign that is not a leading operator (including Base64 padding and URL query strings). Thanks to @123mousab in #1072.
+- Expand regression coverage to verify implicit and explicit equality, Base64 values, and URLs.
+
+### Maintenance
+
+- Require PHP 8.4 or newer; retain Laravel 12 and 13 support.
+- Test PHP 8.4 and 8.5 with Pest 4/PHPUnit 12 on Laravel 12 and Pest 5/PHPUnit 13 on Laravel 13. Laravel 12 Testbench requires Symfony Process 7 and cannot use Pest 5.
+- Update PHPUnit configuration and PHPStan tooling; fix the Pest HTML coverage command and source configuration.
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/7.3.5...7.3.6
+
 ## 7.3.5 - 2026-09-03
 
 ### What's Changed
