@@ -9,6 +9,7 @@ use Pest\Expectation;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Enums\FilterOperator;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterValue;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 use Spatie\QueryBuilder\Filters\FiltersExact;
@@ -94,6 +95,23 @@ it('can filter results based on the partial existence of a property in an array'
     expect($results)->toHaveCount(2);
     expect($results->pluck('id')->all())->toEqual([$model1->id, $model2->id]);
 });
+
+it('ignores malformed related partial filter values and preserves valid siblings', function (array $value, array $expectedIds) {
+    $this->models->first()->relatedModels()->create(['name' => 'Room0']);
+    $this->models->get(1)->relatedModels()->create(['name' => 'Other']);
+
+    $results = createQueryFromFilterRequest(['relatedModels.name' => $value])
+        ->allowedFilters(AllowedFilter::partial('relatedModels.name'))
+        ->orderBy('id')
+        ->get();
+
+    expect($results->modelKeys())->toBe($expectedIds);
+})->with([
+    'malformed only' => [[['x' => 1]], [1, 2, 3, 4, 5]],
+    'valid sibling' => [[['x' => 1], 'Other'], [2]],
+    'numeric zero sibling' => [[['x' => 1], 0], [1]],
+    'empty values' => [['', null, false], [1, 2, 3, 4, 5]],
+]);
 
 it('can filter models and return an empty collection', function () {
     $models = createQueryFromFilterRequest([
@@ -416,6 +434,23 @@ it('can filter results by regular and type hinted scope', function () {
         ->get();
 
     expect($modelsResult)->toHaveCount(1);
+});
+
+it('throws an invalid filter value exception when a type hinted scope value is missing', function () {
+    createQueryFromFilterRequest(['named_user' => 'John Testing Doe'])
+        ->allowedFilters(AllowedFilter::scope('named_user'))
+        ->get();
+})->throws(InvalidFilterValue::class);
+
+it('resolves the model after a scalar scope parameter', function () {
+    $matchingModel = TestModel::create(['name' => 'John Testing Doe']);
+    TestModel::create(['name' => 'John Testing Doe']);
+
+    $models = createQueryFromFilterRequest(['named_user' => ['John Testing Doe', $matchingModel->id]])
+        ->allowedFilters(AllowedFilter::scope('named_user'))
+        ->get();
+
+    expect($models->modelKeys())->toBe([$matchingModel->id]);
 });
 
 it('can filter results by scope with multiple parameters', function () {

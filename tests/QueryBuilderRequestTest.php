@@ -74,6 +74,27 @@ it('can get the sort query param from the request', function () {
     expect($request->sorts()->toArray())->toEqual(['foobar']);
 });
 
+it('preserves scalar array parameters while ignoring nested arrays', function () {
+    $parts = [12, -7, 1.5, true, false, '', null, ['x' => 1], 'name'];
+    $request = new QueryBuilderRequest([
+        'sort' => $parts,
+        'include' => $parts,
+        'append' => $parts,
+        'fields' => ['table' => [12, ['x' => 1], 'name']],
+    ]);
+
+    expect($request->sorts()->values()->all())->toBe([12, -7, 1.5, true, 'name']);
+    expect($request->includes()->values()->all())->toBe([12, -7, 1.5, true, 'name']);
+    expect($request->appends()->values()->all())->toBe([12, -7, 1.5, true, 'name']);
+    expect($request->fields()->all())->toBe(['table' => ['12', 'name']]);
+});
+
+it('preserves unqualified numeric fields', function () {
+    $request = new QueryBuilderRequest(['fields' => [12, 'name']]);
+
+    expect($request->fields()->all())->toBe(['_' => ['12', 'name']]);
+});
+
 it('can get the sort query param from the request body', function () {
     $request = new QueryBuilderRequest([], [
         'sort' => 'foobar',

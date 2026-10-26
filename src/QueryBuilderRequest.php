@@ -22,7 +22,7 @@ class QueryBuilderRequest extends Request
     protected function toParameterArray(mixed $parts): array
     {
         if (is_array($parts)) {
-            return $parts;
+            return array_filter($parts, fn (mixed $part) => is_scalar($part));
         }
 
         if (is_null($parts) || $parts === '') {
@@ -70,7 +70,7 @@ class QueryBuilderRequest extends Request
         $fieldsParameterName = config('query-builder.parameters.fields', 'fields');
         $fieldsData = $this->getRequestData($fieldsParameterName);
 
-        $fieldsPerTable = collect($this->toParameterArray($fieldsData));
+        $fieldsPerTable = collect(is_array($fieldsData) ? $fieldsData : $this->toParameterArray($fieldsData));
 
         if ($fieldsPerTable->isEmpty()) {
             return collect();
@@ -79,17 +79,25 @@ class QueryBuilderRequest extends Request
         $fields = [];
 
         $fieldsPerTable->each(function (mixed $tableFields, mixed $model) use (&$fields) {
-            if (is_numeric($model)) {
-                $model = Str::contains($tableFields, '.') ? Str::beforeLast($tableFields, '.') : '_';
+            if (is_numeric($model) && ! is_scalar($tableFields)) {
+                return;
             }
 
-            if (! isset($fields[$model])) {
-                $fields[$model] = [];
+            if (is_numeric($model)) {
+                $model = Str::contains($tableFields, '.') ? Str::beforeLast($tableFields, '.') : '_';
             }
 
             $tableFields = array_map(function (string $field) {
                 return Str::afterLast($field, '.');
             }, $this->toParameterArray($tableFields));
+
+            if ($tableFields === []) {
+                return;
+            }
+
+            if (! isset($fields[$model])) {
+                $fields[$model] = [];
+            }
 
             $fields[$model] = array_merge($fields[$model], $tableFields);
         });

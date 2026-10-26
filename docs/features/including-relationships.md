@@ -6,6 +6,8 @@ weight: 3
 The `include` query parameter will load any Eloquent relation or relation count on the resulting models.
 All includes must be explicitly allowed using `allowedIncludes()`. This method takes relationship names or `AllowedInclude` instances as arguments.
 
+Nested array values in `include` are ignored while valid sibling includes are still loaded. Unsupported values do not bypass validation of the remaining include names.
+
 ## Basic usage
 
 ```php

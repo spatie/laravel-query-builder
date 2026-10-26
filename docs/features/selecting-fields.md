@@ -25,6 +25,8 @@ SELECT "id", "name" FROM "users"
 
 When not allowing any fields explicitly, Eloquent's default behaviour of selecting all fields will be used. 
 
+Unsupported nested field values are ignored. Valid sibling fields keep their model mapping, and a model entry containing only unsupported values does not override unqualified fields.
+
 ## Disallowed fields/selects
 
 When trying to select a column that's not specified in `allowedFields()` an `InvalidFieldQuery` exception will be thrown:
