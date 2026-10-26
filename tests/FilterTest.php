@@ -9,6 +9,7 @@ use Pest\Expectation;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Enums\FilterOperator;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterValue;
 use Spatie\QueryBuilder\Filters\Filter as CustomFilter;
 use Spatie\QueryBuilder\Filters\Filter as FilterInterface;
 use Spatie\QueryBuilder\Filters\FiltersExact;
@@ -417,6 +418,12 @@ it('can filter results by regular and type hinted scope', function () {
 
     expect($modelsResult)->toHaveCount(1);
 });
+
+it('throws an invalid filter value exception when a type hinted scope value is missing', function () {
+    createQueryFromFilterRequest(['named_user' => 'John Testing Doe'])
+        ->allowedFilters(AllowedFilter::scope('named_user'))
+        ->get();
+})->throws(InvalidFilterValue::class);
 
 it('can filter results by scope with multiple parameters', function () {
     Carbon::setTestNow(Carbon::parse('2016-05-05'));

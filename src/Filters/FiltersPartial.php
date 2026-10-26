@@ -30,12 +30,14 @@ class FiltersPartial implements Filter
         $databaseDriver = $this->getDatabaseDriver($query);
 
         if (is_array($value)) {
-            if (count(array_filter($value, fn ($item) => $item != '')) === 0) {
+            $value = array_filter($value, fn (mixed $item) => is_scalar($item) && $item != '');
+
+            if (count($value) === 0) {
                 return;
             }
 
             $query->where(function (Builder $query) use ($value, $wrappedProperty, $databaseDriver) {
-                foreach (array_filter($value, fn ($item) => $item != '') as $partialValue) {
+                foreach ($value as $partialValue) {
                     [$sql, $bindings] = $this->getWhereRawParameters($partialValue, $wrappedProperty, $databaseDriver);
                     $query->orWhereRaw($sql, $bindings);
                 }

@@ -73,6 +73,11 @@ class FiltersScope implements Filter
             /** @var Model $model */
             $model = $this->getClass($parameter)->newInstance();
             $index = $parameter->getPosition() - 1;
+
+            if (! array_key_exists($index, $values)) {
+                throw InvalidFilterValue::make(null);
+            }
+
             $value = $values[$index];
 
             $result = $model->resolveRouteBinding($value);

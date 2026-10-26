@@ -85,6 +85,13 @@ class TestModel extends Model
             ->where('name', $name);
     }
 
+    public function scopeNamedUser(Builder $query, string $name, self $user): Builder
+    {
+        return $query
+            ->where('name', $name)
+            ->where('id', $user->id);
+    }
+
     public function scopeCreatedBetween(Builder $query, $from, $to): Builder
     {
         return $query->whereBetween('created_at', [
