@@ -2,6 +2,25 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 7.3.7 - 2026-10-26
+
+### Fixed
+
+- Ignore unsupported nested array values in sort, include, fields, and partial-filter parameters instead of raising PHP errors. Preserve supported scalar siblings, sorting, included relations, and model-specific field selections.
+- Prevent malformed model field mappings from overriding valid unqualified fields, and avoid adding relation-existence constraints when all related partial-filter values are ignored.
+- Throw `InvalidFilterValue` when a model-valued scope argument is missing, consistently with unresolved model values.
+- Add result-level regressions for malformed and valid sibling values, numeric zero, empty values, field mappings, and scope binding. Document the malformed-input behavior.
+
+Thanks to @AlexVanderbist for the fix and Michael Stochl (ICT IronByte) for reporting these issues.
+
+### Maintenance
+
+- Move the README ad-image URL to spatie.be.
+
+PHP and Laravel support requirements are unchanged.
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/7.3.6...7.3.7
+
 ## 7.3.6 - 2026-10-19
 
 ### Fixed
