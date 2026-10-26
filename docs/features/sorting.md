@@ -7,6 +7,8 @@ The `sort` query parameter is used to determine by which property the results co
 
 All sorts have to be explicitly allowed using the `allowedSorts()` method. The `allowedSorts` method takes column names as strings or instances of `AllowedSort`.
 
+Nested array values in `sort` are ignored while valid sibling sorts are still applied. If no usable sorts remain, the configured default sorts apply.
+
 For more advanced use cases, [custom sorts](#content-custom-sorts) can be used.
 
 ## Basic usage

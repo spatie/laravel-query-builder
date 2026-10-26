@@ -52,6 +52,8 @@ By default the option is set false.
 
 By default, all values passed to `allowedFilters` are converted to partial filters. The underlying query will be modified to use a `LIKE LOWER(%value%)` statement. Because this can cause missed indexes, it's often worth considering a `beginsWith` filter for the beginning of the value, or an `endsWith` filter for the end of the value. These filters will use a `LIKE value%` statement and a `LIKE %value` statement respectively, instead of the default partial filter. This can help optimize query performance and index utilization.
 
+These filters ignore nested arrays in their values while preserving scalar siblings. For example, `filter[name][0][x]=ignored&filter[name][1]=John` filters for `John`. If no usable values remain, no filter constraint is added, including for related properties.
+
 ## Exact filters
 
 When filtering IDs, boolean values or a literal string, you'll want to use exact filters. This way `/users?filter[id]=1` won't match all users having the digit `1` in their ID.
@@ -238,6 +240,8 @@ public function scopeEvent(Builder $query, \App\Models\Event $event): Builder
 
 // GET /events?filter[event]=1 - the event with ID 1 will automatically be resolved and passed to the scoped filter
 ```
+
+If a model argument is missing from a requested scope filter, or its value cannot be resolved to a model, an `InvalidFilterValue` exception is thrown.
 
 If you use any other column aside `id` column for route model binding (ULID,UUID). Remember to specify the value of the column used in route model binding
 

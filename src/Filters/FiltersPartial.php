@@ -20,6 +20,14 @@ class FiltersPartial implements Filter
 
     public function __invoke(Builder $query, mixed $value, string $property): void
     {
+        if (is_array($value)) {
+            $value = array_filter($value, fn (mixed $item) => is_scalar($item) && $item != '');
+
+            if (count($value) === 0) {
+                return;
+            }
+        }
+
         if ($this->addRelationConstraint && $this->isRelationProperty($query, $property)) {
             $this->withRelationConstraint($query, $value, $property);
 
@@ -30,12 +38,6 @@ class FiltersPartial implements Filter
         $databaseDriver = $this->getDatabaseDriver($query);
 
         if (is_array($value)) {
-            $value = array_filter($value, fn (mixed $item) => is_scalar($item) && $item != '');
-
-            if (count($value) === 0) {
-                return;
-            }
-
             $query->where(function (Builder $query) use ($value, $wrappedProperty, $databaseDriver) {
                 foreach ($value as $partialValue) {
                     [$sql, $bindings] = $this->getWhereRawParameters($partialValue, $wrappedProperty, $databaseDriver);
