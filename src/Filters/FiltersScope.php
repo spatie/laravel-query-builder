@@ -27,17 +27,20 @@ class FiltersScope implements Filter
         $scope = Str::camel($propertyParts->pop());
 
         $values = array_values(Arr::wrap($values));
-        $values = $this->resolveParameters($query, $values, $scope);
 
         $relation = $propertyParts->implode('.');
 
         if ($relation) {
             $query->whereHas($relation, function (Builder $query) use ($scope, $values) {
+                $values = $this->resolveParameters($query, $values, $scope);
+
                 $query->$scope(...$values);
             });
 
             return;
         }
+
+        $values = $this->resolveParameters($query, $values, $scope);
 
         $query->$scope(...$values);
     }
