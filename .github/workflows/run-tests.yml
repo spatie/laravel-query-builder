@@ -12,9 +12,13 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest]
-        php: ['8.5', '8.4']
+        php: ['8.6', '8.5', '8.4']
         laravel: ['12.*', '13.*']
         stability: [prefer-stable]
+        exclude:
+          # Pest 4's ParaTest dependency does not support PHP 8.6.
+          - php: '8.6'
+            laravel: 12.*
         include:
           - laravel: 12.*
             testbench: 10.*
@@ -52,6 +56,10 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
           coverage: none
+
+      - name: Verify PHP version
+        run: |
+          php -r 'echo PHP_VERSION, PHP_EOL; exit(PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION === "${{ matrix.php }}" ? 0 : 1);'
 
       - name: Setup problem matchers
         run: |
