@@ -1286,3 +1286,50 @@ it('throws RelationNotFoundException when the relation method exists but does no
         ->allowedFilters(AllowedFilter::belongsTo('author', 'nonRelationMethod'))
         ->get();
 })->throws(RelationNotFoundException::class);
+
+it('resolves model bindings on the related model for nested scope filters', function () {
+    $parent = TestModel::create(['name' => 'parent']);
+    $relatedModel = $parent->relatedModels()->create(['name' => 'related']);
+    $matchingModel = $relatedModel->nestedRelatedModels()->create(['name' => 'matching']);
+    $parent->relatedModels()->create(['name' => 'other'])
+        ->nestedRelatedModels()->create(['name' => 'other']);
+
+    $models = createQueryFromFilterRequest(['relatedModel.matching' => $relatedModel->id], NestedRelatedModel::class)
+        ->allowedFilters(AllowedFilter::scope('relatedModel.matching'))
+        ->get();
+
+    expect($models->modelKeys())->toBe([$matchingModel->id]);
+});
+
+it('rejects missing model bindings on nested scope filters', function () {
+    createQueryFromFilterRequest(['relatedModel.matching' => 999], NestedRelatedModel::class)
+        ->allowedFilters(AllowedFilter::scope('relatedModel.matching'))
+        ->get();
+})->throws(InvalidFilterValue::class);
+
+it('resolves matching scope names on the related model instead of the parent', function () {
+    $model = TestModel::create(['name' => 'parent']);
+    $related = $model->relatedModels()->create(['name' => 'related']);
+    TestModel::create(['name' => 'other'])->relatedModels()->create(['name' => 'other']);
+
+    $models = createQueryFromFilterRequest(['relatedModels.matching' => $related->id])
+        ->allowedFilters(AllowedFilter::scope('relatedModels.matching'))
+        ->get();
+
+    expect($models->modelKeys())->toBe([$model->id]);
+});
+
+it('resolves model bindings on deeply nested relation scopes', function () {
+    $model = TestModel::create(['name' => 'parent']);
+    $related = $model->relatedModels()->create(['name' => 'related']);
+    $related->nestedRelatedModels()->create(['name' => 'nested']);
+    TestModel::create(['name' => 'other'])
+        ->relatedModels()->create(['name' => 'other'])
+        ->nestedRelatedModels()->create(['name' => 'other nested']);
+
+    $models = createQueryFromFilterRequest(['relatedModels.nestedRelatedModels.relatedModel.matching' => $related->id])
+        ->allowedFilters(AllowedFilter::scope('relatedModels.nestedRelatedModels.relatedModel.matching'))
+        ->get();
+
+    expect($models->modelKeys())->toBe([$model->id]);
+});
