@@ -1319,11 +1319,14 @@ it('resolves matching scope names on the related model instead of the parent', f
 
 it('resolves model bindings on deeply nested relation scopes', function () {
     $model = TestModel::create(['name' => 'parent']);
-    $model->relatedModels()->create(['name' => 'related']);
-    TestModel::create(['name' => 'other'])->relatedModels()->create(['name' => 'other']);
+    $related = $model->relatedModels()->create(['name' => 'related']);
+    $related->nestedRelatedModels()->create(['name' => 'nested']);
+    TestModel::create(['name' => 'other'])
+        ->relatedModels()->create(['name' => 'other'])
+        ->nestedRelatedModels()->create(['name' => 'other nested']);
 
-    $models = createQueryFromFilterRequest(['relatedModels.testModel.user' => $model->id])
-        ->allowedFilters(AllowedFilter::scope('relatedModels.testModel.user'))
+    $models = createQueryFromFilterRequest(['relatedModels.nestedRelatedModels.relatedModel.matching' => $related->id])
+        ->allowedFilters(AllowedFilter::scope('relatedModels.nestedRelatedModels.relatedModel.matching'))
         ->get();
 
     expect($models->modelKeys())->toBe([$model->id]);
