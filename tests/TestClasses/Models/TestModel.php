@@ -72,6 +72,11 @@ class TestModel extends Model
         return $query->where('id', $user->id);
     }
 
+    public function scopeMatching(Builder $query, self $model): Builder
+    {
+        return $this->scopeUser($query, $model);
+    }
+
     #[Scope]
     public function userNewStyle(Builder $query, self $user): Builder
     {
