@@ -2,6 +2,24 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 7.3.8 - 2026-11-06
+
+### Fixed
+
+- Resolve model-bound arguments for nested scope filters on the related query model, including deeply nested relationships and scopes whose names also exist on the root model.
+- Preserve root scope behavior and custom route model binding; unresolved related model values now raise the documented `InvalidFilterValue` exception instead of a PHP `TypeError`.
+- Add public regressions for related bindings, unresolved values, matching scope names, and deep relationships.
+
+Thanks to @AleksandrSpicyn in #1075.
+
+### Maintenance
+
+- Include the previously merged CI-only PHP 8.6/Laravel 13 test lane and explicit runtime-version verification from #1074.
+
+PHP and Laravel requirements and public APIs are unchanged.
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/7.3.7...7.3.8
+
 ## 7.3.7 - 2026-10-26
 
 ### Fixed
