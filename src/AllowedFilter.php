@@ -272,7 +272,7 @@ class AllowedFilter
     protected function resolveValueForFiltering(mixed $value): mixed
     {
         if (! is_array($value)) {
-            return ! $this->ignored->contains($value) ? $value : null;
+            return ! $this->isIgnored($value) ? $value : null;
         }
 
         $remainingProperties = [];
@@ -288,7 +288,7 @@ class AllowedFilter
                 continue;
             }
 
-            if (! $this->ignored->contains($item)) {
+            if (! $this->isIgnored($item)) {
                 $remainingProperties[$key] = $item;
             }
         }
@@ -300,10 +300,21 @@ class AllowedFilter
         return array_is_list($value) ? array_values($remainingProperties) : $remainingProperties;
     }
 
+    protected function isIgnored(mixed $value): bool
+    {
+        // The request turns "true" and "false" into booleans, which a loose comparison takes as equal
+        // to any string, '' or null; they only match themselves or the string they came from.
+        return $this->ignored->contains(fn (mixed $ignored): bool => match (true) {
+            is_bool($value) && is_string($ignored) => $ignored === ($value ? 'true' : 'false'),
+            is_bool($value) || is_bool($ignored) => $value === $ignored,
+            default => $value == $ignored,
+        });
+    }
+
     protected function containsOnlyIgnoredValues(mixed $value): bool
     {
         if (! is_array($value)) {
-            return $this->ignored->contains($value);
+            return $this->isIgnored($value);
         }
 
         foreach ($value as $item) {

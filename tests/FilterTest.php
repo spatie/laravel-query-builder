@@ -689,6 +689,29 @@ it('should not apply a nullable filter when null is ignored', function () {
     expect($query->toSql())->not->toContain('where');
 });
 
+it('does not take a boolean filter value for an ignored null, empty string or other string', function (string $requestValue, bool $expected, mixed $ignored) {
+    $query = createQueryFromFilterRequest([
+        'name' => $requestValue,
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->ignore($ignored));
+
+    expect($query->toSql())->toContain('where')
+        ->and($query->getBindings())->toEqual([$expected]);
+})->with([
+    'false with null ignored' => ['false', false, null],
+    'false with an empty string ignored' => ['false', false, ''],
+    'true with a string ignored' => ['true', true, 'any'],
+]);
+
+it('still ignores true and false given as strings', function (string $requestValue) {
+    $query = createQueryFromFilterRequest([
+        'name' => $requestValue,
+    ])
+        ->allowedFilters(AllowedFilter::exact('name')->ignore('true', 'false'));
+
+    expect($query->toSql())->not->toContain('where');
+})->with(['true', 'false']);
+
 it('should not apply a nullable filter when every value of a multi value filter is ignored', function () {
     $query = createQueryFromFilterRequest([
         'name' => 'John Doe,John Doe',
