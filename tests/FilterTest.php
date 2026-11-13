@@ -703,7 +703,7 @@ it('does not take a boolean filter value for an ignored null, empty string or ot
     'true with a string ignored' => ['true', true, 'any'],
 ]);
 
-it('still ignores true and false given as strings', function (string $requestValue) {
+it('ignores true and false given as strings', function (string $requestValue) {
     $query = createQueryFromFilterRequest([
         'name' => $requestValue,
     ])
@@ -711,6 +711,60 @@ it('still ignores true and false given as strings', function (string $requestVal
 
     expect($query->toSql())->not->toContain('where');
 })->with(['true', 'false']);
+
+it('matches ignored request and default values without coercing booleans', function (mixed $value, array $ignored, array $expectedValues, bool $useDefault) {
+    $receivedValues = [];
+
+    $filter = AllowedFilter::callback('conditions', function ($query, $value) use (&$receivedValues) {
+        $receivedValues[] = $value;
+    })->ignore($ignored)->nullable();
+
+    if ($useDefault) {
+        $filter->default($value);
+    }
+
+    createQueryFromFilterRequest($useDefault ? [] : ['conditions' => $value])
+        ->allowedFilters($filter);
+
+    expect($receivedValues)->toBe($expectedValues);
+})->with([
+    'false survives null and empty string' => [false, [null, ''], [false]],
+    'true survives unrelated strings' => [true, ['any'], [true]],
+    'false survives numeric zero' => [false, [0, '0'], [false]],
+    'true survives numeric one' => [true, [1, '1'], [true]],
+    'false is explicitly ignored' => [false, [false], []],
+    'true is explicitly ignored' => [true, [true], []],
+    'false matches its string' => [false, ['false'], []],
+    'true matches its string' => [true, ['true'], []],
+    'opposite boolean is retained' => [false, [true, 'true'], [false]],
+    'list removes only ignored values' => [[false, null, true, 'any'], [null, 'any'], [[false, true]]],
+    'list of ignored booleans is skipped' => [[false, true], ['false', true], []],
+    'nested arrays preserve keys and boolean values' => [
+        ['keep' => ['inactive' => false, 'active' => true, 'skip' => 'any'], 'skip' => ['any']],
+        ['any'],
+        [['keep' => ['inactive' => false, 'active' => true]]],
+    ],
+    'numeric strings still match loosely' => ['6', [6], []],
+    'non-boolean strings still match ignored booleans loosely' => ['any', [true], []],
+    'numeric values still match ignored booleans loosely' => [0, [false], []],
+    'null still matches ignored false loosely' => [null, [false], []],
+    'comma-separated strings still match loosely after splitting' => ['6,7', [6], [['7']]],
+])->with(['request' => false, 'default' => true]);
+
+it('filters boolean records when unrelated values are ignored', function (string $requestValue, mixed $ignored, bool $expected) {
+    TestModel::query()->update(['is_visible' => ! $expected]);
+    $matchingModel = TestModel::factory()->create(['is_visible' => $expected]);
+
+    $models = createQueryFromFilterRequest(['is_visible' => $requestValue])
+        ->allowedFilters(AllowedFilter::exact('is_visible')->ignore($ignored)->default(! $expected))
+        ->get();
+
+    expect($models->modelKeys())->toBe([$matchingModel->id]);
+})->with([
+    'inactive with null ignored' => ['false', null, false],
+    'inactive with empty string ignored' => ['false', '', false],
+    'active with unrelated string ignored' => ['true', 'any', true],
+]);
 
 it('should not apply a nullable filter when every value of a multi value filter is ignored', function () {
     $query = createQueryFromFilterRequest([

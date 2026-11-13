@@ -378,6 +378,8 @@ The `ignore()` method takes one or more values, where each may be an array of ig
 
 The filter values `true` and `false` are only ignored by `ignore('true')`/`ignore(true)` or `ignore('false')`/`ignore(false)`, so ignoring `null` or `''` on a boolean filter does not drop `filter[active]=false`.
 
+This also applies to boolean values in arrays and defaults. Non-boolean values still use loose comparisons, so `ignore(6)` also ignores `'6'`.
+
 Given an array of values to filter for, only the subset of non-ignored values get passed to the filter. If all values are ignored, the filter does not get applied.
 
 ```php

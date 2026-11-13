@@ -302,13 +302,12 @@ class AllowedFilter
 
     protected function isIgnored(mixed $value): bool
     {
-        // The request turns "true" and "false" into booleans, which a loose comparison takes as equal
-        // to any string, '' or null; they only match themselves or the string they came from.
-        return $this->ignored->contains(fn (mixed $ignored): bool => match (true) {
-            is_bool($value) && is_string($ignored) => $ignored === ($value ? 'true' : 'false'),
-            is_bool($value) || is_bool($ignored) => $value === $ignored,
-            default => $value == $ignored,
-        });
+        if (! is_bool($value)) {
+            return $this->ignored->contains($value);
+        }
+
+        return $this->ignored->containsStrict($value)
+            || $this->ignored->containsStrict($value ? 'true' : 'false');
     }
 
     protected function containsOnlyIgnoredValues(mixed $value): bool
