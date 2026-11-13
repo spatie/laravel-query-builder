@@ -2,6 +2,19 @@
 
 All notable changes to `laravel-query-builder` will be documented in this file
 
+## 7.3.9 - 2026-11-13
+
+### Fixed
+
+- Keep boolean filter values when unrelated values such as `null`, an empty string, or another string are ignored. This prevents boolean filters from silently returning unfiltered results.
+- Match boolean inputs only against the same boolean or its literal `true`/`false` string, including array and default filter values. Preserve existing loose comparisons for non-boolean inputs.
+
+Thanks to @skybleak333 in #1076.
+
+PHP and Laravel requirements are unchanged.
+
+**Full Changelog**: https://github.com/spatie/laravel-query-builder/compare/7.3.8...7.3.9
+
 ## 7.3.8 - 2026-11-06
 
 ### Fixed
