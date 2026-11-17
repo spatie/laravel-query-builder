@@ -200,6 +200,18 @@ public function scopeStartsBefore(Builder $query, $date): Builder
 }
 ```
 
+Starting in Laravel 12, scopes can also be defined using the `#[Scope]` attribute without the `scope` method prefix:
+
+```php
+use Illuminate\Database\Eloquent\Attributes\Scope;
+
+#[Scope]
+public function startsBefore(Builder $query, $date): Builder
+{
+    return $query->where('starts_at', '<=', Carbon::parse($date));
+}
+```
+
 To filter based on the `startsBefore` scope, add it to the `allowedFilters` array on the query builder:
 
 ```php
